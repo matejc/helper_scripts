@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+LENGTH=$1
+[ "$LENGTH" == "" ] && LENGTH=16
+tr -dc A-Za-z0-9_ < /dev/urandom | head -c ${LENGTH} | xargs

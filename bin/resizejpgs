@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+RESIZEBY=$1
+WORKPATH="$(pwd)"
+TARGETPATH="$(mktemp -d)"
+
+if [ -z "$RESIZEBY" ]
+then
+    RESIZEBY="50%"
+fi
+
+echo "Processing images from: '$WORKPATH'"
+
+find "$WORKPATH" -type f \( -iname \*.jpg -o -iname \*.jpeg -o -iname \*.png \) -print0 | while read -d $'\0' FILEPATH
+do
+    PATHNAME=$(echo $FILEPATH | sed "s:^$WORKPATH\/\(.*\)$:\1:")
+    echo "$TARGETPATH/$PATHNAME"
+    mkdir -p $(dirname $TARGETPATH/$PATHNAME)
+    convert -resize $RESIZEBY -quality 90% "$FILEPATH" "$TARGETPATH/${PATHNAME%.*}.jpg"
+done
+
+echo "Saved to: '$TARGETPATH'"
+
+if which xdg-open >/dev/null; then
+    xdg-open $TARGETPATH
+fi

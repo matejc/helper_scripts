@@ -1,0 +1,4 @@
+#!/bin/bash
+VBoxManage setextradata "$1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/$2/Protocol" TCP
+VBoxManage setextradata "$1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/$2/GuestPort" $3
+VBoxManage setextradata "$1" "VBoxInternal/Devices/pcnet/0/LUN#0/Config/$2/HostPort" $4

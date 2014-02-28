@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+# WARNING: DO NOT USE THIS
+
+function trytorun {
+    "$@"
+    status=$?
+    if [ $status -ne 0 ]; then
+        echo "error with \"$1\""
+        exit $status
+    fi
+    return $status
+}
+
+LUKSFILE=$1
+LUKSSIZE=$2
+
+if [ -z "$LUKSFILE" ] || [ ! -z "$3" ] ; then
+    echo "Usage: luks-file <filename> <size>"
+    echo "Example: luks-file luksfile.ext 5M"
+    exit 1
+fi
+
+if [ -f "$LUKSFILE" ] ; then
+    echo "File exists ... continue"
+else
+    if [ -z "$LUKSSIZE" ]; then
+        echo "ERROR: Missing file size!"
+        exit 1
+    fi
+
+    echo "Creating empty file ..."
+    trytorun head -c $LUKSSIZE /dev/urandom > "$LUKSFILE"  # create empty file
+    echo "File created."
+fi
+
+# get already used loop device by this file
+DEVICES_INFO=$(sudo losetup -j "$LUKSFILE")
+IFS=':' read -ra CHUNKS <<< "$DEVICES_INFO"
+LOOPDEVICE="${CHUNKS[0]}"
+
+if [ ! -z "$LOOPDEVICE" ] && [ -e "$LOOPDEVICE" ] ; then
+    echo "Device \"$LOOPDEVICE\" is mapped for file \"$LUKSFILE\" ... continue"
+else
+    LOOPDEVICE=$(sudo losetup --find)  # get free loop device
+    echo "Mapping $LUKSFILE to $LOOPDEVICE ..."
+    trytorun sudo losetup "$LOOPDEVICE" "$LUKSFILE"  # map file to loop device
+    echo "Mapping done."
+fi
+
+LUKSNAME=$(basename $LUKSFILE)
+LUKSDEV="/dev/mapper/$LUKSNAME"
+
+echo "Trying to open \"$LOOPDEVICE\" ..."
+OPENOUTPUT=$(sudo cryptsetup luksOpen "$LOOPDEVICE" "$LUKSNAME")
+status=$?
+
+if [[ ! "$OPENOUTPUT" == *"already exists"* ]]; then
+    if [ $status -ne 0 ]; then
+        # ask user for formatting device
+        read -p "Do you wish to format \"$LOOPDEVICE\" device? [y/n]" ANSWER
+        if [ ! "$ANSWER" = "y" ]; then
+            echo "Exiting ..."
+            exit 1
+        fi
+        # format loop device
+        echo "Formatting \"$LOOPDEVICE\" ..."
+        # create LUKS on loop device
+        trytorun sudo cryptsetup --cipher aes-xts-plain64 --key-size 512 --hash sha512 luksFormat "$LOOPDEVICE"
+        trytorun sudo cryptsetup luksOpen "$LOOPDEVICE" "$LUKSNAME"
+        trytorun sudo mke2fs -t ext4 "$LUKSDEV"
+        echo "Done."
+    fi
+fi
+
+TARGETDIR="$(pwd)/${LUKSNAME}_mounted"
+MYUID=$(id -u)
+
+echo "Mounting \"$LUKSDEV\" to \"$TARGETDIR\" ..."
+mkdir "$TARGETDIR"
+trytorun sudo mount -t ext4 "$LUKSDEV" "$TARGETDIR"
+echo "Done."
+
+echo "Setting owner ..."
+trytorun sudo chown -R $MYUID "$TARGETDIR"
+echo "Done."
+
+# open the blocking application
+nano -wc "${TARGETDIR}/${LUKSNAME}.txt"
+sleep 1
+
+echo "Unmounting \"$LUKSDEV\" ..."
+# try to unmount
+sudo umount "$LUKSDEV"
+while [ $? -ne 0 ]
+do
+    read -p "Close everything and press ENTER."
+    sudo umount "$LUKSDEV"
+done
+trytorun sudo cryptsetup luksClose "$LUKSNAME"
+echo "Done."
+
+echo "Detaching \"$LOOPDEVICE\" ..."
+trytorun sudo losetup --detach "$LOOPDEVICE"
+
+echo "Removing \"$TARGETDIR\" ..."
+trytorun rmdir "$TARGETDIR"
+echo "Done."

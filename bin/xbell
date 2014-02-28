@@ -1,0 +1,52 @@
+#!/bin/sh
+
+case "$1" in
+start-beep)
+        $0 status
+        status=$?
+        if [ $status -eq 0 ]; then
+                echo "xbelld is already running!"
+        else
+			/usr/bin/xbelld -ct 500 -f /home/matej/Dropbox/matej/workarea/pys/beep.wav > /dev/null 2>&1 &
+			echo "xbelld (beep) is starting ..."
+        fi
+;;
+
+start)
+    $0 start-beep
+;;
+
+start-notify)
+        $0 status
+        status=$?
+        if [ $status -eq 0 ]; then
+                echo "xbelld is already running!"
+        else
+			/usr/bin/xbelld -e notify-send -u low "Bell" > /dev/null 2>&1 &
+			echo "xbelld (notify) is starting ..."
+        fi
+;;
+
+stop)
+	killall xbelld && echo "xbelld killed!"
+;;
+
+restart)
+    $0 stop
+    $0 start
+;;
+
+status)
+	if [ -z "$(pgrep xbelld)" ]; then
+		echo "xbelld is NOT running!"
+		exit 1
+	else
+		echo "xbelld is running!"
+		exit 0
+	fi
+;;
+
+*)
+        echo "Usage: $0 {status|start|start-beep|start-notify|stop|restart}"
+        exit 1
+esac

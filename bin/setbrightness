@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+MAX=$(cat /sys/class/backlight/acpi_video0/max_brightness)
+CURR=$(cat /sys/class/backlight/acpi_video0/brightness)
+
+if [[ $1 == 'inc' ]]; then
+    NEW=$(( $CURR + $MAX / 10 ))
+elif [[ $1 == 'dec' ]]; then
+    NEW=$(( $CURR - $MAX / 10 ))
+fi
+
+echo $NEW > /sys/class/backlight/acpi_video0/brightness

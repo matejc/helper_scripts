@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+env DISPLAY=:0 USER=matej XAUTHORITY=/home/matej/.Xauthority "$@"

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+TSESSION="local"
+
+tmux has-session -t $TSESSION
+
+if [ $? -eq 0 ];
+then
+    tmux attach-session -d -t $TSESSION
+else
+    tmux new-session -d -s $TSESSION;
+    tmux new-window -t $TSESSION:1 "ssh matej@matejc.scriptores.com";
+    tmux attach-session -d -t $TSESSION
+#    tmux new-window -t $TSESSION:2 "/usr/bin/env python /home/matej/Dropbox/matej/workarea/pys/wnotify/wnotify-client.py";
+#    tmux new-window -t $TSESSION:3 "/home/matej/workarea/buildout.python/python-2.7/bin/python /home/matej/Dropbox/matej/workarea/pys/wnotify/wnotify-client.py";
+fi

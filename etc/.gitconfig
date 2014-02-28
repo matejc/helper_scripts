@@ -1,0 +1,13 @@
+[user]
+	name = Matej Cotman
+	email = cotman.matej@gmail.com
+[core]
+	editor = vim
+	excludesfile = /home/matej/.gitignore
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[alias]
+        lol = log --graph --decorate --pretty=oneline --abbrev-commit --branches --remotes --tags
