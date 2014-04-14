@@ -123,7 +123,7 @@
         postgresql
         pycrypto
         python27Full
-        python27Packages.ipython
+#        python27Packages.ipython
         python27Packages.pyyaml
 #        python27Packages.readline
 #        python27Packages.sqlite3
@@ -132,14 +132,14 @@
         stdenv
         wget
         zlib
-        lynx
+        w3m
         poppler
 #        rubyLibs.docsplit
-        python27Packages.ipdb
-        docutils
-        python27Packages.pygments
+#        python27Packages.ipdb
+#        docutils
+#        python27Packages.pygments
         vimprobable2
-        python27Packages.cssselect
+#        python27Packages.cssselect
         gettext
         python27Packages.libarchive
 #        python27.modules.curses
@@ -153,8 +153,12 @@
 
         nodePackages.jshint
 
-        python27Packages.jinja2
+#        python27Packages.jinja2
         vimHugeX
+        lessc  # searx
+
+        python27Packages.pyflakes
+        python27Packages.pep8
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
