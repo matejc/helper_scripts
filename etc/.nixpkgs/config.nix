@@ -134,7 +134,7 @@
         zlib
         lynx
         poppler
-        rubyLibs.docsplit
+#        rubyLibs.docsplit
         python27Packages.ipdb
         docutils
         python27Packages.pygments
@@ -175,6 +175,15 @@
       ];
     };
 
+    nodeenv = pkgs.buildEnv {
+      name = "nodeenv";
+      paths = with pkgs; [
+        stdenv git
+        nodejs
+
+        (with nodePackages; [ bower ])
+      ];
+    };
 
     test = pkgs.buildEnv {
       name = "test";
@@ -227,5 +236,5 @@
     };
 
   };
-  st.conf = builtins.readFile ./.st.conf;
+#  st.conf = builtins.readFile ./.st.conf;
 }
