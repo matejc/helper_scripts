@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-/home/matej/sync/bin/i3lock-wrapper &
+$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/i3lock-wrapper &
 /run/current-system/sw/bin/sleep 1
 /run/current-system/sw/bin/xset dpms force off
