@@ -75,7 +75,7 @@ run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [join(sorted(dirs())), join(
 if run:
     match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
     if match:
-        subprocess.call(match.groups()[0])
+        subprocess.call(match.groups()[0], shell=True)
     match = re.match(r'.+\s+\[Open\: \'(.+)\'\]', run)
     if match:
         subprocess.call(['xdg-open', match.groups()[0]])
