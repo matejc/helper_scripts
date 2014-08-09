@@ -76,6 +76,9 @@ if run:
     match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
     if match:
         subprocess.call(match.groups()[0], shell=True)
+        os.exit(0)
     match = re.match(r'.+\s+\[Open\: \'(.+)\'\]', run)
     if match:
         subprocess.call(['xdg-open', match.groups()[0]])
+        os.exit(0)
+    subprocess.call(run, shell=True)
