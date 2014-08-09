@@ -26,7 +26,7 @@ def list_paths(path, executable=False, directory=False, recursive=False, regular
                 if executable and os.access(abspath, os.X_OK):
                     result += [(root, file)]
                     continue
-                if regular and os.isfile(abspath):
+                if regular and os.path.isfile(abspath):
                     result += [(root, file)]
 
         if not recursive:
@@ -40,16 +40,16 @@ def executables():
 
     for directory in list_env_var('PATH'):
         paths = list_paths(directory, executable=True)
-        result += map(lambda item: "{0} [Executable: '{1}']".format(item[1], os.path.join(item[0], item[1])), paths)
+        result += map(lambda item: "{0:<50} [Executable: '{1}']".format(item[1], os.path.join(item[0], item[1])), paths)
 
     return result
 
 
 def dirs():
     result = []
-    result += list_paths(os.environ['HOME'], directory=True)
+    result += list_paths(os.environ['HOME'], directory=True, regular=True)
     # result += list_paths("/your/custom/dir", directory=True)
-    return map(lambda item: "{0} [Directory: '{1}']".format(item[1], os.path.join(item[0], item[1])), result)
+    return map(lambda item: "{0:<50} [Open: '{1}']".format(item[1], os.path.join(item[0], item[1])), result)
 
 
 def join(paths):
@@ -73,9 +73,9 @@ def dmenu(args=[], options=[]):
 
 run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [join(sorted(dirs())), join(sorted(executables()))])
 if run:
-    match = re.match(r'.+\ \[Executable\: \'(.+)\'\]', run)
+    match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
     if match:
         subprocess.call(match.groups()[0])
-    match = re.match(r'.+\ \[Directory\: \'(.+)\'\]', run)
+    match = re.match(r'.+\s+\[Open\: \'(.+)\'\]', run)
     if match:
         subprocess.call(['xdg-open', match.groups()[0]])
