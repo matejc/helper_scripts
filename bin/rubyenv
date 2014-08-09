@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# 1. Install rubygems and rubyLibs.nix.
+# 2. Add $your_profile/${ruby.gemPath} to GEM_PATH.
+# 3. export RUBYLIB=$your_profile/lib RUBYOPT=rubygems.
+# 4. Run `gem nix --[no-]user-install gem1 gem2 ...` to generate Nix
+# expression from gem repository.
+# 5. Install rubyLibs.gem1 etc.
+
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+nixprofile=$NIX_USER_PROFILE_DIR/rubyenv
+
+export PATH="$nixprofile/bin"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="rubyenv $PS1"
+
+
+export INCLUDE="$nixprofile/include:$INCLUDE"
+export LIB="$nixprofile/lib:$LIB"
+export C_INCLUDE_PATH="$nixprofile/include:$C_INCLUDE_PATH"
+export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
+export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
+export CFLAGS=$NIX_CFLAGS_COMPILE
+export LDFLAGS=$NIX_LDFLAGS
+
+export RUBYLIB=$nixprofile/lib
+export RUBYOPT=rubygems
+
+export GEM_PATH=`echo "let pkgs = import <nixpkgs> {}; in \"$nixprofile/\" + pkgs.ruby.gemPath" | nix-instantiate --eval-only --strict - | sed -e 's/^"//'  -e 's/"$//'`
+
+"$@"

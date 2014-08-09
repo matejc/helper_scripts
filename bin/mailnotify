@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+subject="Subject: "
+
+/run/current-system/sw/bin/notify-send "${1/$subject/}" "`cat /proc/${$}/fd/0 | tail -n 1`"

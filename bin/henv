@@ -1,16 +1,14 @@
 #!/bin/sh
 
-# XXX: for some reason this variable is not set in here ?!
 NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
-nixprofile=$NIX_USER_PROFILE_DIR/py27
+nixprofile=$NIX_USER_PROFILE_DIR/rubyenv
 
 export PATH="$nixprofile/bin:/usr/local/heroku/bin"
 export LD_LIBRARY_PATH="$nixprofile/lib"
 export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
-export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
 export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
-export PYTHONPATH="$nixprofile/lib/python2.7/site-packages"
-export PS1="py27 $PS1"
+export PS1="rubyenv $PS1"
 
 
 export INCLUDE="$nixprofile/include:$INCLUDE"

@@ -13,7 +13,7 @@
 
     workEnv = pkgs.buildEnv {
       name = "workEnv";
-      paths = [ pkgs.emacs23 pkgs.perl ];
+      paths = [ pkgs.perl ];
     };
 
     envTex = pkgs.buildEnv {
@@ -83,7 +83,7 @@
       name = "aerofs";
       paths = with pkgs; [
         coreutils
-        oraclejre7
+        #oraclejre7
         procps
         which
         openssl
@@ -159,11 +159,28 @@
 
         python27Packages.pyflakes
         python27Packages.pep8
+        python27Packages.pillow
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
     };
 
+    # ruby environment
+    rubyenv = pkgs.buildEnv {
+      name = "rubyenv";
+      paths = with pkgs; [
+        stdenv
+        git
+        ruby
+        rubygems
+        rubyLibs.nix
+        nix
+
+        rubyLibs.heroku rubyLibs.rb_readline
+        rubyLibs.travis
+      ];
+      ignoreCollisions = true;
+    };
 
     # for robot tests
     robotenv = pkgs.buildEnv {
@@ -176,23 +193,25 @@
         xlibs.libX11
         stdenv
         tightvnc
+        git
       ];
     };
 
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv git
+        stdenv git nix
         nodejs
 
-        (with nodePackages; [ bower ])
+        (with nodePackages; [ bower grunt-cli node-inspector ])
       ];
+      ignoreCollisions = true;
     };
 
     test = pkgs.buildEnv {
       name = "test";
       paths = with pkgs; [
-        sqlite3
+        #sqlite3
       ];
     };
 
@@ -241,4 +260,5 @@
 
   };
 #  st.conf = builtins.readFile ./.st.conf;
+  allowUnfree = true;
 }

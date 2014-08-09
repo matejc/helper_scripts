@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+dmenu_run -l 10 -p run: -b
