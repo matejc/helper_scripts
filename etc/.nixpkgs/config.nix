@@ -160,6 +160,8 @@
         python27Packages.pyflakes
         python27Packages.pep8
         python27Packages.pillow
+
+        python27Packages.dbus
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
