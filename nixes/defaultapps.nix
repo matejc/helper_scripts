@@ -1,41 +1,40 @@
-# 1. declare mimetypes and assign application to it inside 'applist' variable
-# 2. backup
-# 3. ln -sf `nix-build defaultapps.nix`/* ~/.local/share/applications/
-
-# and now
-# xdg-open /path/to/some/file.ext
-# will open with correct application
-
+{ pkgs }:
 let
-  pkgs = import <nixpkgs> {};
-
   applist = [
-    {mimetypes = ["text/plain" "text/css"]; applicationName = "Sublime"; applicationExec = "${pkgs.sublime3}/bin/sublime";}
-    {mimetypes = ["text/html"]; applicationName = "Firefox"; applicationExec = "${pkgs.firefox}/bin/firefox";}
+    {mimetypes = ["text/plain" "text/css"]; applicationExec = "${pkgs.sublime3}/bin/sublime";}
+    {mimetypes = ["text/html"]; applicationExec = "${pkgs.firefox}/bin/firefox";}
   ];
 
+  zeroArgv = cmd: builtins.head (pkgs.lib.splitString " " cmd);
+  lastInPath = path: pkgs.lib.last (pkgs.lib.splitString "/" path);
+
   mimetype_list = pkgs.lib.flatten (map (item: (map (m: rec {
-    mimetype = m; desktopFileName = (pkgs.lib.last (pkgs.lib.splitString "/" desktopFilePath)); desktopFilePath = (desktop_file item.applicationName item.applicationExec);
+    mimetype = m;
+    applicationExec = item.applicationExec;
+    desktopFileName = lastInPath desktopFilePath;
+    desktopFilePath = desktop_file (zeroArgv (lastInPath applicationExec)) applicationExec;
   }) item.mimetypes)) applist);
 
-  defaults_list_str = pkgs.lib.concatStringsSep "\n" (map (item: item.mimetype+"="+item.desktopFileName+";") mimetype_list);
+  desktop_file = desktopFileName: applicationExec:
+    pkgs.writeTextFile rec {
+      name = "${builtins.unsafeDiscardStringContext desktopFileName}.desktop";
+      text = ''
+        [Desktop Entry]
+        Hidden=false
+        Exec=${applicationExec}
+        Type=Application
+        NoDisplay=false
+        Version=1.0
+        StartupNotify=false
+        Terminal=false
+        Name=${desktopFileName}
+      '';
+    };
 
-  defaults_list_file = pkgs.writeText "defaults.list" defaults_list_str;
+  defaults_files = map (item: item.desktopFilePath) mimetype_list;
+  defaults_list = map (item: item.mimetype+"="+item.desktopFileName+";") mimetype_list;
+  defaults_list_str = pkgs.lib.concatStringsSep "\n" defaults_list;
   
-  desktop_file = applicationName: applicationExec: pkgs.writeText "${applicationName}.desktop" ''
-    [Desktop Entry]
-    Hidden=false
-    Exec=${applicationExec}
-    Type=Application
-    NoDisplay=false
-    Version=1.0
-    StartupNotify=false
-    Terminal=false
-    Name=${applicationName}
-  '';
-  
-  desktop_files = map (item: desktop_file item.applicationName item.applicationExec) applist;
-
   mimeapps_list_file = pkgs.writeText "mimeapps.list" ''
     [Default Applications]
     ${defaults_list_str}
@@ -47,14 +46,13 @@ let
   applications = pkgs.stdenv.mkDerivation {
     name = "applications";
     buildCommand = ''
-      mkdir -p $out
-      for DESKTOP_FILE in ${toString (desktop_files)}
+      mkdir -p $out/share/applications
+      for DESKTOP_FILE in ${toString (defaults_files)}
       do
-        ln -s $DESKTOP_FILE $out
+        ln -sv $DESKTOP_FILE $out/share/applications || true
       done
 
-      ln -s ${defaults_list_file} $out/defaults.list
-      ln -s ${mimeapps_list_file} $out/mimeapps.list
+      ln -sv ${mimeapps_list_file} $out/share/applications/mimeapps.list
     '';
   };
 
