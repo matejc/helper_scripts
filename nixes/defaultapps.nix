@@ -1,9 +1,10 @@
-{ pkgs }:
+{ pkgs, applist }:
 let
-  applist = [
-    {mimetypes = ["text/plain" "text/css"]; applicationExec = "${pkgs.sublime3}/bin/sublime";}
-    {mimetypes = ["text/html"]; applicationExec = "${pkgs.firefox}/bin/firefox";}
-  ];
+  # Example:
+  # applist = [
+  #   {mimetypes = ["text/plain" "text/css"]; applicationExec = "${pkgs.sublime3}/bin/sublime";}
+  #   {mimetypes = ["text/html"]; applicationExec = "${pkgs.firefox}/bin/firefox";}
+  # ];
 
   zeroArgv = cmd: builtins.head (pkgs.lib.splitString " " cmd);
   lastInPath = path: pkgs.lib.last (pkgs.lib.splitString "/" path);
