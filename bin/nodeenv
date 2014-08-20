@@ -6,4 +6,24 @@ nixprofile=$NIX_USER_PROFILE_DIR/nodeenv
 export PATH="/home/matej/workarea/npm2nix/bin:$nixprofile/bin"
 export PS1="nodeenv $PS1"
 
+# NPM packages in homedir
+export NPM_PACKAGES="$HOME/.npm-packages"
+
+# Tell our environment about user-installed node tools
+export PATH="$NPM_PACKAGES/bin:$PATH"
+
+# Tell Node about these packages
+export NODE_PATH="$NPM_PACKAGES/lib/node_modules"
+
+npm_global_install() {
+    npm install -g --prefix="$NPM_PACKAGES" "$@"
+}
+npm_global_link() {
+    npm link --prefix="$NPM_PACKEGES" "$@"
+}
+npm_local_install() {
+    npm install "$@"
+}
+
+
 "$@"

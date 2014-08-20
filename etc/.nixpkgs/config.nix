@@ -1,7 +1,3 @@
-# This is mostly a work in progress and might not work with what is in
-# nixpkgs trunk. If you have questions, feel free to contact me:
-# Florian Friesdorf <flo@chaoflow.net>
-
 {
   packageOverrides = pkgs:
   rec {
@@ -204,7 +200,8 @@
       paths = with pkgs; [
         stdenv git nix
         nodejs
-
+        python
+        utillinux
         (with nodePackages; [ bower grunt-cli node-inspector ])
       ];
       ignoreCollisions = true;
