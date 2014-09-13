@@ -156,8 +156,6 @@
         python27Packages.pyflakes
         python27Packages.pep8
         python27Packages.pillow
-
-        python27Packages.dbus
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -202,7 +200,8 @@
         nodejs
         python
         utillinux
-        (with nodePackages; [ bower grunt-cli node-inspector ])
+        node_webkit
+        (with nodePackages; [ grunt-cli node-inspector ])
       ];
       ignoreCollisions = true;
     };
