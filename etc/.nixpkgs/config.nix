@@ -15,7 +15,7 @@
     envTex = pkgs.buildEnv {
       name = "mytex";
       paths = with pkgs; [
-        (let myTexLive = 
+        (let myTexLive =
           pkgs.texLiveAggregationFun {
             paths =
               [ pkgs.texLive
@@ -156,8 +156,6 @@
         python27Packages.pyflakes
         python27Packages.pep8
         python27Packages.pillow
-
-        python27Packages.dbus
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -202,6 +200,7 @@
         nodejs
         python
         utillinux
+        node_webkit
         (with nodePackages; [ grunt-cli node-inspector ])
       ];
       ignoreCollisions = true;
