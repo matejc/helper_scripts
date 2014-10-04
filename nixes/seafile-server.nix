@@ -16,7 +16,7 @@ let
   };
 
   seafileServer = pkgs.seafile-server.override {
-    seafile_topdir = "${destination}/haiwen"
+    seafile_topdir = "${destination}/haiwen";
   };
 
   deps = pkgs.buildEnv {
