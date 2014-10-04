@@ -171,11 +171,11 @@
         git
         ruby
         rubygems
-        rubyLibs.nix
+        #rubyLibs.nix
         nix
 
-        rubyLibs.heroku rubyLibs.rb_readline
-        rubyLibs.travis
+        #rubyLibs.heroku rubyLibs.rb_readline
+        #rubyLibs.travis
       ];
       ignoreCollisions = true;
     };
@@ -202,7 +202,7 @@
         nodejs
         python
         utillinux
-        (with nodePackages; [ bower grunt-cli node-inspector ])
+        (with nodePackages; [ grunt-cli node-inspector ])
       ];
       ignoreCollisions = true;
     };
@@ -260,4 +260,5 @@
   };
 #  st.conf = builtins.readFile ./.st.conf;
   allowUnfree = true;
+  mpv.vaapiSupport = true;
 }
