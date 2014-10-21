@@ -169,11 +169,12 @@
         git
         ruby
         rubygems
-        #rubyLibs.nix
+        rubyLibs.nix
         nix
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
+        nodejs rubyLibs.jekyll rubyLibs.kramdown which python2 pythonPackages.pygments
       ];
       ignoreCollisions = true;
     };
