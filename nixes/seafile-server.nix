@@ -4,15 +4,18 @@ let
   # nix-build /home/matej/workarea/helper_scripts/nixes/seafile-server.nix
   # ./result/bin/setup_env
 
-  # First time:
+  # First time only (interactive setup):
   # ./result/bin/run_env seafile-admin setup
 
-  # To run:
+  # To run (you will need Nginx or something to serve, otherwise use without `--fastcgi`):
   # ./result/bin/run_env seafile-admin start --fastcgi
+  #
+  # First time, after starting server (interactive creation of admin user):
+  # ./result/bin/run_env seafile-admin create-admin
 
   seahubSrc = pkgs.fetchurl {
-    url = https://github.com/haiwen/seahub/archive/v3.1.5-server-testing.tar.gz;
-    sha256 = "1x9y45crgj3w2pcrncx21dnp7cl3wcpscf1crhx9293bv8ws4vw2";
+    url = https://github.com/haiwen/seahub/archive/v3.1.4-server-testing.tar.gz;
+    sha256 = "16vjfnsmvxbrm3f5lyd0c213mgj8rci9vg2056bkfw1i83b7jjdn";
   };
 
   seafileServer = pkgs.seafile-server.override {
@@ -22,7 +25,7 @@ let
   deps = pkgs.buildEnv {
     name = "deps";
     paths = with pkgs.pythonPackages; [ pkgs.python.modules.sqlite3 pillow
-      django_1_5 djblets seafileServer pkgs.ccnet pkgs.libsearpc gunicorn
+      django_1_5 djblets seafileServer pkgs.ccnet31 pkgs.libsearpc gunicorn
       six flup chardet dateutil ];
   };
 
@@ -45,7 +48,7 @@ let
 
   env = pkgs.buildEnv {
     name = "seafile-server-env";
-    paths = [ setupEnv runEnv pkgs.ccnet seafileServer ];
+    paths = [ setupEnv runEnv pkgs.ccnet31 seafileServer ];
   };
 
 in env
