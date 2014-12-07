@@ -1,0 +1,10 @@
+#!/bin/sh
+
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+nixprofile=$NIX_USER_PROFILE_DIR/nixenv
+
+export PATH="$nixprofile/bin"
+export PS1="nixenv $PS1"
+
+
+"$@"

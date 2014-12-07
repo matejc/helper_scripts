@@ -12,6 +12,11 @@
       paths = [ pkgs.perl ];
     };
 
+    nixenv = pkgs.buildEnv {
+      name = "nixenv";
+      paths = [ pkgs.nixUnstable ];
+    };
+
     envTex = pkgs.buildEnv {
       name = "mytex";
       paths = with pkgs; [
