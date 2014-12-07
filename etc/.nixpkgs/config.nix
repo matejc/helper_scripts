@@ -51,18 +51,6 @@
       ];
     };
 
-    mpl = pkgs.buildEnv {
-      name = "mpl";
-      paths = with pkgs; [
-          (python27Full.override {
-            extraLibs = [
-#              python27Packages.needsmpl
-              python27Packages.ipython
-            ];
-          })
-      ];
-    };
-
     # we want ipython with custom modules!
     ipythonenv = pkgs.buildEnv {
       name = "ipythonenv";
