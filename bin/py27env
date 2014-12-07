@@ -4,7 +4,7 @@
 NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
 nixprofile=$NIX_USER_PROFILE_DIR/py27
 
-export PATH="$nixprofile/bin:/usr/local/heroku/bin"
+export PATH="`pwd`/bin:$nixprofile/bin:/usr/local/heroku/bin"
 export LD_LIBRARY_PATH="$nixprofile/lib"
 export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
 export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl"
@@ -20,5 +20,6 @@ export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
 export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
 export CFLAGS=$NIX_CFLAGS_COMPILE
 export LDFLAGS=$NIX_LDFLAGS
+
 
 "$@"

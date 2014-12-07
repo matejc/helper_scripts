@@ -2,6 +2,12 @@
   packageOverrides = pkgs:
   rec {
 
+    dockerenv = pkgs.buildEnv {
+      name = "dockerenv";
+      paths = [ pkgs.bash pkgs.coreutils
+        pkgs.pythonPackages.fig pkgs.docker pkgs.which ];
+    };
+
     homeEnv = pkgs.buildEnv {
       name = "homeEnv";
       paths = [ pkgs.emacs24 pkgs.bsdgames ];
@@ -138,7 +144,7 @@
         python27Packages.pysqlite
 
         youtubeDL ffmpeg
-        postgresql openldap libjpeg
+        postgresql openldap libjpeg optipng
 
         nodePackages.jshint
 
@@ -149,6 +155,16 @@
         python27Packages.pyflakes
         python27Packages.pep8
         python27Packages.pillow
+      ];
+      pathsToLink = [ "/" ];
+      ignoreCollisions = true;
+    };
+
+    wwwenv = pkgs.buildEnv {
+      name = "wwwenv";
+      paths = with pkgs; [
+        gitFull
+        python27
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;

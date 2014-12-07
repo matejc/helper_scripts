@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# XXX: for some reason this variable is not set in here ?!
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+nixprofile=$NIX_USER_PROFILE_DIR/wwwenv
+
+export PATH="$nixprofile/bin"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PYTHONPATH="$nixprofile/lib/python2.7/site-packages"
+export PS1="wwwenv $PS1"
