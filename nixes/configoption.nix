@@ -9,7 +9,7 @@ let
 
   createEntry = path: root: visitList:
     let
-      value = if path == [""] then builtins.trace "root" root else pkgs.lib.attrByPath path "<error>" root;
+      value = if path == [""] then root else pkgs.lib.attrByPath path "<error>" root;
       val = scrubOptionValue path value visitList;
     in (
       {inherit val path;}

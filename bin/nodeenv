@@ -3,7 +3,7 @@
 NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
 nixprofile=$NIX_USER_PROFILE_DIR/nodeenv
 
-export PATH="/home/matej/workarea/npm2nix/bin:$nixprofile/bin"
+export PATH="$nixprofile/bin"  # /home/matej/workarea/npm2nix/bin
 export PS1="nodeenv $PS1"
 
 # NPM packages in homedir

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+nixprofile=$NIX_USER_PROFILE_DIR/ruby2env
+
+export GEM_HOME=$HOME/.gems
+export PATH="$HOME/.gems/bin:$nixprofile/bin"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="ruby2env $PS1"
+
+export EXECJS_RUNTIME=Node
+
+function nokogiri() {
+    gem install nokogiri -- --use-system-libraries \
+        --with-xslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xml2-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/include/libxml2\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xml2-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'`
+}
+
+function sqlite3() {
+    gem install sqlite3 -- \
+        --with-sqlite3-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.sqlite + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-sqlite3-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.sqlite + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'`
+}
+
+
+"$@"

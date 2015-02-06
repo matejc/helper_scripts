@@ -29,6 +29,24 @@ export LDFLAGS=$NIX_LDFLAGS
 export RUBYLIB=$nixprofile/lib
 export RUBYOPT=rubygems
 
-export GEM_PATH=`echo "let pkgs = import <nixpkgs> {}; in \"$nixprofile/\" + pkgs.ruby.gemPath" | nix-instantiate --eval-only --strict - | sed -e 's/^"//'  -e 's/"$//'`
+
+export GEM_PATH=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in \"$nixprofile/\" + pkgs.ruby.gemPath" | sed -e 's/^"//'  -e 's/"$//'`
+
+
+
+function bundleinstall() {
+    export GEM_HOME=./gems
+    bundle install --verbose $@
+}
+
+function bundleclean() {
+    rm -rf ./gems
+}
+
+function bundleexec() {
+    export GEM_HOME=./gems
+    ./gems/bin/bundle exec $@
+}
+
 
 "$@"

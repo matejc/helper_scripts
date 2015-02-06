@@ -174,16 +174,34 @@
     rubyenv = pkgs.buildEnv {
       name = "rubyenv";
       paths = with pkgs; [
-        stdenv
+        stdenv gcc busybox gnumake
         git
         ruby
         rubygems
-        rubyLibs.nix
+        #rubyLibs.nix
         nix
+
+        #bundler2nix
+        gnused coreutils
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
-        nodejs rubyLibs.jekyll rubyLibs.kramdown which python2 pythonPackages.pygments
+        nodejs which python2 pythonPackages.pygments
+      ];
+      ignoreCollisions = true;
+    };
+
+    ruby2env = pkgs.buildEnv {
+      name = "ruby2env";
+      paths = with pkgs; [
+        stdenv gcc busybox gnumake
+        nix
+        git
+        ruby_2_1
+        (rubygemsFun ruby_2_1)
+        readline
+        gnused coreutils
+        nodejs
       ];
       ignoreCollisions = true;
     };
@@ -206,12 +224,12 @@
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv git nix
+        stdenv git nix gnumake busybox bashInteractive
         nodejs
         python
         utillinux
         node_webkit
-        (with nodePackages; [ grunt-cli node-inspector ])
+        (with nodePackages; [ grunt-cli node-inspector npm2nix ])
       ];
       ignoreCollisions = true;
     };
@@ -270,4 +288,6 @@
 #  st.conf = builtins.readFile ./.st.conf;
   allowUnfree = true;
   mpv.vaapiSupport = true;
+  nixui.dataDir = "/home/matej/.nixui";
+  nixui.NIX_PATH = "nixpkgs=/home/matej/workarea/nixpkgs:nixos=/home/matej/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";
 }
