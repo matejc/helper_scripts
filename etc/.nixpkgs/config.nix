@@ -102,6 +102,8 @@
     py27 = pkgs.buildEnv {
       name = "py27";
       paths = with pkgs; [
+        stdenv.cc gnumake bashInteractive curl nix
+        busybox
         cyrus_sasl
         db4
         file
@@ -194,14 +196,14 @@
     ruby2env = pkgs.buildEnv {
       name = "ruby2env";
       paths = with pkgs; [
-        stdenv gcc busybox gnumake
+        stdenv busybox gnumake
         nix
         git
         ruby_2_1
-        (rubygemsFun ruby_2_1)
         readline
-        gnused coreutils
+        gnused
         nodejs
+        bundix
       ];
       ignoreCollisions = true;
     };
@@ -224,12 +226,13 @@
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv git nix gnumake busybox bashInteractive
+        stdenv.cc git nix gnumake busybox bashInteractive ruby
         nodejs
         python
         utillinux
         node_webkit
-        (with nodePackages; [ grunt-cli node-inspector npm2nix ])
+        xdg_utils
+        (with nodePackages; [ grunt-cli node-inspector npm2nix npm bower ])
       ];
       ignoreCollisions = true;
     };

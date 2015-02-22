@@ -21,5 +21,4 @@ export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
 export CFLAGS=$NIX_CFLAGS_COMPILE
 export LDFLAGS=$NIX_LDFLAGS
 
-
 "$@"
