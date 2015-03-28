@@ -23,6 +23,8 @@ def list_paths(path, executable=False, directory=False, recursive=False, regular
         if files and (executable or regular):
             for file in files:
                 abspath = os.path.join(root, file)
+                if abspath.split("/")[-1][0] == ".":
+                    continue
                 if executable and os.access(abspath, os.X_OK):
                     result += [(root, file)]
                     continue
@@ -71,7 +73,7 @@ def dmenu(args=[], options=[]):
     return stdout.decode('utf-8').strip('\n')
 
 
-run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [join(sorted(dirs())), join(sorted(executables()))])
+run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [join(sorted(executables())), join(sorted(dirs()))])
 if run:
     match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
     if match:

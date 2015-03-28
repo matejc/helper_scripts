@@ -203,7 +203,7 @@
         readline
         gnused
         nodejs
-        bundix
+        bundix nix-prefetch-scripts
       ];
       ignoreCollisions = true;
     };
@@ -232,7 +232,8 @@
         utillinux
         node_webkit
         xdg_utils
-        (with nodePackages; [ grunt-cli node-inspector npm2nix npm bower ])
+        graphicsmagick
+        (with nodePackages; [ grunt-cli node-inspector npm2nix bower ])
       ];
       ignoreCollisions = true;
     };
