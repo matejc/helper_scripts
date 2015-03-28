@@ -1,0 +1,31 @@
+# /home/matej/.i3minator/workspace5.yml
+
+# The Name of the project
+name: workspace5
+
+# If needes, where the project lives. If present, all terminal will be opened here
+# and all commands are relative to this path.
+root: /home/matej
+
+# The name of the workspace to open the project.
+# If not present, current workspace is used
+workspace_name: '5'
+
+# Chain of commands to populate workspace.
+# Every element can be either a node (see below), or a command between:
+#   go_vertical, vertical, v:      change split mode into vertical
+#   go_horizontal, horizontal, h:  change split mode into vertical
+#   go_stacked, stacked:           set the layout to stacked
+#
+window_chain:
+  - net
+
+# Nodes. Each node represent a window. The available parameters are:
+#   command:  the command to execute
+#   terminal: whatever the command should be run in a terminal window
+#   timeout:  A window can take a while to be placed, if your layout does not come as you want,
+#             inceremnt the timeout for slow windows. default: 0.1
+nodes:
+    net:
+        terminal: false
+        command: /run/current-system/sw/bin/cmst
