@@ -17,28 +17,39 @@ let
     ${pkgs.xlibs.xinput}/bin/xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Middle Button Timeout" 50
   '';
 
-  nixmy = pkgs.writeScript "nixmy.sh" ''
-    #!/usr/bin/env bash
-    source /home/matej/workarea/nixmy/nixmy.sh
-    export PATH="${nixmy_env}/bin:$PATH"
-    $@
-  '';
-
-  nixmy_env = pkgs.writeScriptBin "nix-env" ''
-    #!/usr/bin/env bash
-    source /home/matej/workarea/nixmy/nixmy.sh
-    ${config.nix.package}/bin/nix-env -f "$NIX_MY_PKGS" $@
-  '';
-
-
   applist = [
-    {mimetypes = ["text/plain" "text/css"]; exec = "${pkgs.sublime3}/bin/sublime";}
+    {mimetypes = ["image/png" "image/jpeg" "image/gif" "image/x-apple-ios-png"]; exec = "${pkgs.gpicview}/bin/gpicview";}
+    {mimetypes = ["text/plain" "text/css"]; exec = "${pkgs.e19.ecrire}/bin/ecrire";}
     {mimetypes = ["text/html"]; exec = "${pkgs.firefox}/bin/firefox";}
-    {mimetypes = ["inode/directory"]; exec = "/run/current-system/sw/bin/enlightenment_filemanager";}
+    {mimetypes = ["inode/directory"]; exec = "/run/current-system/sw/bin/spacefm";}
     {mimetypes = ["x-scheme-handler/http" "x-scheme-handler/https"]; exec = "/run/current-system/sw/bin/firefox";}
+    {mimetypes = ["application/x-compressed-tar" "application/zip"]; exec = "/run/current-system/sw/bin/xarchiver";}
   ];
+/*
+  westonRun = pkgs.writeScriptBin "westonRun" ''
+    #!${pkgs.stdenv.shell}
+    set -e
+    set -x
+
+    #export GDK_BACKEND=wayland
+    #export QT_QPA_PLATFORM=wayland-egl
+    #export CLUTTER_BACKEND=wayland
+    #export SDL_VIDEODRIVER=wayland
+    export WAYLAND_DISPLAY=wayland-system-0
+    #export KWIN_OPENGL_INTERFACE=egl_wayland
+    export XDG_RUNTIME_DIR="/tmp/weston"
+    export DISPLAY=:99
+    export HOME=/home/matej
+
+    mkdir -p $XDG_RUNTIME_DIR
+
+    ${pkgs.kbd}/bin/openvt -v -c 9 -- ${pkgs.sudo}/bin/sudo -Eu matej /var/setuid-wrappers/weston-launch -- --backend=drm-backend.so --socket=wayland-system-0 --log=/tmp/weston.log
+  '';
+*/
+  secrets = import ./secrets.nix;
 
 in {
+
   require =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
@@ -46,17 +57,20 @@ in {
     ];
 
 #  hardware.firmware = [ pkgs.radeonR700 pkgs.radeonR600 ];
-#  hardware.firmware = [ pkgs.radeonARUBA pkgs.radeonR600 pkgs.radeonR700 ];
+#  hardware.firmware = [ pkgs.linuxPackages_4_0.mt7601 ];
   #hardware.cpu.amd.updateMicrocode = true;
   hardware.enableAllFirmware = true;
 
 #  hardware.opengl.videoDrivers = [ "intel" ];
 
-  hardware.pulseaudio.enable = false;
+  hardware.pulseaudio.enable = true;
 
   boot = {
+    extraTTYs = [ "tty9" ];
+    kernelModules = [ "dm-crypt" "ext4" "ecb" "tun" "kvm-intel" "dm_mod" ];
     initrd = {
-      kernelModules = [ "dm-crypt" "ext4" "ecb" "tun" ];  # "radeon" "wl"
+      kernelModules = [ "dm-crypt" "ext4" "ecb" "tun" "kvm-intel" "dm_mod" ];  # "radeon" "wl"
+      availableKernelModules = [ "dm_mod" "ehci_pci" "ahci" "xhci_hcd" "usb_storage" ];
       luks = {
         devices = [ {
           name = "lvm_pool1";
@@ -65,7 +79,7 @@ in {
           } ];
       };
     };
-    kernelPackages = pkgs.linuxPackages_3_17;
+    kernelPackages = pkgs.linuxPackages_4_0;
     blacklistedKernelModules = [ "snd_pcsp" "pcspkr" ];
 #    extraModprobeConfig = ''
 #      options sdhci debug_quirks=0x4670
@@ -94,12 +108,26 @@ in {
     networkmanager.enable = false;
     connman.enable = true;
     firewall = {
-      allowedTCPPorts = [ 22 55555 ];
+      allowedTCPPorts = [ 22 55555 3058 ];
       allowedUDPPorts = [ 55555 ];
       enable = true;
       allowPing = true;
     };
-    #interfaceMonitor.enable = false; # Watch for plugged cable.
+
+    interfaces.br0 = {
+      ip4 = [{ address = "192.168.123.1"; prefixLength = 24; }];
+    };
+    bridges.br0.interfaces = [ ];
+    nat = {
+      enable = true;
+      externalInterface = "+";
+      internalInterfaces = [ "br0" ];
+      forwardPorts = [
+        { destination = "192.168.123.103:80"; sourcePort = 7890; }
+      ];
+    };
+
+    interfaceMonitor.enable = true; # Watch for plugged cable.
     hostName = "matej41"; # Define your hostname.
     #interfaces.enp1s0 = {
     #  ipAddress = "192.168.111.11";
@@ -107,13 +135,14 @@ in {
     #};
     #defaultGateway = "192.168.111.10";
     #nameservers = [ "192.168.111.10" ];
-    #enableIPv6 = false;
-
-#    extraHosts = ''
-#      blog.matejc.com matejc.github.io
-#    '';
-
-    #bridges.br0.interfaces = [ "enp0s25" "wlp3s0" ];
+    enableIPv6 = false;
+/*
+    extraHosts = ''
+      192.168.0.81 dokku
+      192.168.0.81 abcasting-api.dokku
+      192.168.0.81 abcasting.dokku
+    '';
+*/
   };
 
   #powerManagement.enable = true;
@@ -136,7 +165,7 @@ in {
   security.pam.loginLimits = [
     { domain = "@audio"; item = "rtprio"; type = "-"; value = "99"; }
   ];
-
+/*
   # Add file system entries for each partition that you want to see mounted
   # at boot time. You can add filesystems which are not mounted at boot by
   # adding the noauto option.
@@ -172,7 +201,7 @@ in {
   swapDevices =
     [ { device = "/dev/vg_pool1/lv_swap"; }
     ];
-
+*/
 #  fonts = {
 #    enableFontDir = true;
 #    enableGhostscriptFonts = true;
@@ -213,52 +242,64 @@ in {
     matej = {
       uid = 499;
       createHome = true;
-      extraGroups = [ "wheel" "networkmanager" "docker" "libvirtd" "vboxusers" ];
+      extraGroups = [ "wheel" "networkmanager" "docker" "libvirtd" "vboxusers" "weston-launch" ];
       group = "users";
       home = "/home/matej";
       shell = "/run/current-system/sw/bin/zsh";
     };
   };
+  users.extraGroups = { "weston-launch" = { gid = 490; }; };
+
 
   services = {
-    # List services that you want to enable:
-/*
-
     #mpd.enable = true;
     #mpd.network.host = ''"/var/lib/mpd/socket"'';
 
-    #httpd = {
-    #  enable = true;
-    #  adminAddr = "cotman.matej@gmail.com";
-    #  port = 11111;
-    #  extraSubservices =
-    #    [ {
-    #      serviceType = "owncloud";
-    #      dbServer = "localhost:/tmp/.s.PGSQL.5432";
-    #      dbPassword = "<password>";
-    #      adminUser = "admin";
-    #      adminPassword = "admin";
-    #      libreofficePath = "${pkgs.libreoffice}/bin/libreoffice";
-    #      overwriteHost = "";
-    #      overwriteProtocol = "";
-    #    } ];
-    #};
+    dhcpd = {
+      interfaces = [ "br0" ];
+      enable = true;
+      extraConfig = ''
+        option subnet-mask 255.255.255.0;
+        option broadcast-address 192.168.123.255;
+        option routers 192.168.123.1;
+        option domain-name-servers 8.8.8.8, 8.8.4.4, 4.4.4.4;
+        subnet 192.168.123.0 netmask 255.255.255.0 {
+          range 192.168.123.100 192.168.123.200;
+        }
+      '';
+    };
+
+    glowingbear = {
+      enable = true;
+    };
+
+      nginx.apps.dobrojutrocms = {
+        enable = true;
+        root = "/var/lib/www/procloud-app";
+        #root = "/var/lib/www/dobro-jutro-cms";
+        extraServerConfig = ''
+          location / {
+              if ($request_method = 'GET') {
+                  add_header 'Access-Control-Allow-Origin' '*';
+                  add_header 'Access-Control-Allow-Credentials' 'true';
+                  add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                  add_header 'Access-Control-Allow-Headers' 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+              }
+              try_files $uri $uri/ /index.html;
+          }
+        '';
+        listenAddress="localhost";
+        listenPort="9001";
+        serverName = "localhost";
+      };
 
     postgresql.enable = false;
-    postgresql.package = pkgs.postgresql92;
-    postgresql.authentication = ''
-      local owncloud all trust
-      local all all trust
-    '';
+    postgresql.package = pkgs.postgresql94;
+  #  postgresql.authentication = ''
+ #   '';
+#	      host civicrm civicrm 127.0.0.1/32 md5
 
-    tiddly.enable = true;
-
-    tiddlywiki.enable = true;
-    tiddlywiki.port = 8888;
-    tiddlywiki.username = "matejc";
-    tiddlywiki.password = "<haha>";
-*/
-    locate.enable = true;
+    locate.enable = false;
     nixosManual.showManual = true;
 
     # Enable the OpenSSH daemon.
@@ -268,11 +309,20 @@ in {
     # Enable CUPS to print documents.
     printing.enable = true;
 
-    printing.drivers = [ pkgs.hplip pkgs.gutenprint pkgs.foomatic_filters ];
+    printing.drivers = [ pkgs.hplip ];
 
-    #acpid.lidEventCommands = ''
-    #  /run/current-system/sw/bin/echo "lidEventCommands" >> /tmp/lidEventCommands.log
-    #'';
+    acpid.enable = true;
+    acpid.lidEventCommands = ''
+      if [ ! -f /tmp/i3lock-wrapper.lock ]; then
+        touch /tmp/i3lock-wrapper.lock;
+        /run/current-system/sw/bin/systemctl suspend;
+        /home/matej/workarea/helper_scripts/bin/thissession /home/matej/workarea/helper_scripts/bin/i3lock-wrapper;
+      else
+        rm /tmp/i3lock-wrapper.lock;
+      fi
+    '';
+#      /home/matej/workarea/helper_scripts/bin/thissession /home/matej/workarea/helper_scripts/bin/i3lock-wrapper &
+#      /run/current-system/sw/bin/systemctl suspend
 
     # Enable the X11 windowing system.
     xserver = {
@@ -291,15 +341,18 @@ in {
       xkbOptions = "eurosign:e";
       autorun = true;
       exportConfiguration = true;
+      windowManager.i3.enable = true;
       desktopManager.xfce.enable = false;
       desktopManager.e19.enable = true;
-      desktopManager.kde5.enable = true;
+      desktopManager.kde5.enable = false;
       desktopManager.gnome3.enable = false;
-      desktopManager.default = "E19";
+      desktopManager.default = "none";
+      windowManager.default = "i3";
       displayManager.slim.enable = true;
+#      displayManager.slim.theme = pkgs.slimThemes.nixosSlim;
       displayManager.lightdm.enable = false;
       displayManager.kdm.enable = false;
-      displayManager.desktopManagerHandlesLidAndPower = false;
+#      displayManager.desktopManagerHandlesnLidAndPower = false;
       synaptics = {
         enable = true;
         twoFingerScroll = true;
@@ -316,12 +369,18 @@ in {
       enable = true;
       checkForUpdates = false;
       deviceName = "matej41";
-      enableWebUI = true;
+      enableWebUI = false;
       httpListenAddr = "127.0.0.1";
       httpListenPort = 9000;
       httpLogin = "matej";
-      httpPass = "<password>";
+      httpPass = secrets.btsync.httpPass;
       listeningPort = 55555;
+      sharedFolders = [
+        {
+          directory = "/var/lib/btsync/sync";
+          secret = secrets.btsync.sync;
+        }
+      ];
     };
 
     #searx.enable = true;
@@ -367,17 +426,29 @@ tls-remote "matejc.scriptores.com"
     #];
 
     cron.enable = true;
-    cron.systemCronJobs = [
-      "@reboot  root  ${pkgs.bindfs}/bin/bindfs -u matej /var/lib/btsync/sync /home/matej/sync"
-    ];
+#    cron.systemCronJobs = [
+#      "@reboot  root  ${pkgs.bindfs}/bin/bindfs -u matej /var/lib/btsync/sync /home/matej/sync"
+#    ];
 
     dbus.enable = true;
     dbus.packages = [ pkgs.gnome3.dconf ];
 
-    virtualboxHost.enable = true;
+    #virtualboxHost.enable = true;
+
+    panamax.enable = false;
+    cadvisor.enable = false;
+    mongodb.enable = true;
+    unifi.enable = false;
   };
 
   time.timeZone = "Europe/Ljubljana";
+  programs.zsh = {
+    enable = true;
+    interactiveShellInit = ''
+      compctl -k "(profile log rebuild revision update nix-env nox)" nixmy
+    '';
+  };
+
   environment = {
     interactiveShellInit = ''
         export PATH=$HOME/bin:$HOME/sync/bin:$PATH
@@ -430,7 +501,7 @@ tls-remote "matejc.scriptores.com"
       evince
       vlc
       mpv
-      sublime3
+      atom
       wgetpaste
       gparted
       unetbootin
@@ -461,13 +532,11 @@ tls-remote "matejc.scriptores.com"
       psmisc
       upower
       pmutils
-      virtmanager
-
-      kde4.ark
+      #virtmanager
 
       #gtk-engine-murrine
 
-      e19.terminology e19.rage
+      e19.terminology e19.rage e19.ephoto e19.ecrire
 
       # texstudio texLiveFull
       zed nixui
@@ -484,12 +553,38 @@ tls-remote "matejc.scriptores.com"
 
       nixopsUnstable
 
-      chromium
+      chromiumDev
 
       #libreoffice
 
-      nox
-      ncdu
+      ncdu python27Packages.tarman
+
+      (pkgs.callPackage /home/matej/workarea/nixmy/default.nix { })
+
+      dmenu xclip twmn
+      xfce.xfce4screenshooter
+
+      i3minator xcompmgr
+
+      which nodejs gnumake
+
+      thunderbird
+
+      shared_mime_info
+
+      tango-icon-theme xlibs.xbacklight #haskellPackages.ncIndicators
+      hicolor_icon_theme
+
+      lynx
+      inetutils
+      filezilla
+      xarchiver
+
+      opera-beta
+
+      orion
+      tcpdump
+      spaceFM
     ];
   };
 
@@ -499,6 +594,13 @@ tls-remote "matejc.scriptores.com"
 
     nixui.dataDir = "/home/matej/.nixui";
     nixui.NIX_PATH = "nixpkgs=/home/matej/workarea/nixpkgs:nixos=/home/matej/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";
+
+    nixmy = {
+      NIX_MY_PKGS = "/home/matej/workarea/nixpkgs";
+      NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matej";
+      NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
+      extraPaths = [ pkgs.gnumake ];
+    };
 
     allowUnfree = true;
 
@@ -541,7 +643,6 @@ tls-remote "matejc.scriptores.com"
   system.activationScripts.matej_bin = ''
       mkdir -p /home/matej/bin
       ln -sf "${trackpoint_scroll}" "/home/matej/bin/trackpoint-scroll.sh"
-      ln -sf "${nixmy}" "/home/matej/bin/nixmy-env"
   '';
   system.activationScripts.bin_lib_links = ''
       mkdir -p /usr/bin
@@ -550,7 +651,21 @@ tls-remote "matejc.scriptores.com"
       ln -fs ${pkgs.bash}/bin/bash /bin/bash
       mkdir -p /usr/lib
       ln -fs ${pkgs.xlibs.libX11}/lib/libX11.so.6 /usr/lib/libX11.so.6
+
   '';
+    systemd.services."after-syslog" =
+      { description = "After syslog";
+        wantedBy = [ "multi-user.target" ];
+        after = [ "syslog.target" ];
+        script =
+          ''
+            test -f /sys/devices/virtual/hwmon/hwmon0/temp1_input || ln -sf /sys/devices/virtual/hwmon/hwmon1/temp1_input /tmp/temp1_input || true
+            test -f /sys/devices/virtual/hwmon/hwmon1/temp1_input || ln -sf /sys/devices/virtual/hwmon/hwmon0/temp1_input /tmp/temp1_input || true
+            echo 3000 > /sys/class/backlight/intel_backlight/brightness || true
+          '';
+        serviceConfig.Type = "simple";
+      };
+
 #  system.activationScripts.connman = ''
 #    ln -fs ${pkgs.connman}/usr/share/dbus-1/system-services/connman.service /etc/static/systemd/system/connman.service
 #    ln -fs ${pkgs.connman}/usr/share/dbus-1/system-services/connman-vpn.service /etc/static/systemd/system/connman-vpn.service
@@ -594,7 +709,8 @@ tls-remote "matejc.scriptores.com"
       SystemdService = "connman-vpn.service";
     };
   };
-
+*/
+/*
 
     systemd.services."my-post-suspend" =
       { description = "Post-Suspend Actions";
@@ -608,8 +724,12 @@ tls-remote "matejc.scriptores.com"
       };
 
   systemd.services.docker.preStart = "${pkgs.nettools}/bin/ifconfig docker0 down && ${pkgs.bridge_utils}/sbin/brctl delbr docker0 || true";
+   virtualisation.docker.enable = true;
+   virtualisation.docker.socketActivation = false;
+   virtualisation.docker.extraOptions = ''
+   --ip=127.0.0.1 --dns=8.8.8.8 -H unix:///var/run/docker.sock
+   '';
 */
-
   nix.trustedBinaryCaches = [
     "https://hydra.nixos.org/"
     "https://cache.nixos.org/"
@@ -620,11 +740,7 @@ tls-remote "matejc.scriptores.com"
     "https://cache.nixos.org/"
   ];
 
-   virtualisation.docker.enable = false;
-   virtualisation.docker.socketActivation = false;
-   virtualisation.docker.extraOptions = ''
-   --ip=127.0.0.1 --dns=8.8.8.8
-   '';
+  nix.maxJobs = 4;
 
     systemd.services.keylogger = {
       description = "keylogger";
@@ -636,9 +752,69 @@ tls-remote "matejc.scriptores.com"
       };
     };
 
-  #virtualisation.libvirtd = {
-  #  enable = true;
-  #  enableKVM = true;
-  #};
+  virtualisation = {
+    libvirtd = {
+      enable = true;
+      enableKVM = true;
+    };
+    vswitch.enable = true;
+  };
+
+  systemd.services."btsync-mount" =
+    { description = "btsync-mount";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "local-fs.target" ];
+      preStart = "/var/setuid-wrappers/fusermount -u /home/matej/sync || true";
+      serviceConfig = {
+        ExecStart = "${pkgs.bindfs}/bin/bindfs -f -u matej /var/lib/btsync/sync /home/matej/sync";
+      };
+    };
+  systemd.services."develop-mount" =
+    { description = "develop-mount";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "local-fs.target" ];
+      preStart = "/var/setuid-wrappers/fusermount -u /var/lib/www/procloud-app || true";
+      serviceConfig = {
+        ExecStart = "${pkgs.bindfs}/bin/bindfs -f -u nginx /home/matej/workarea/proxima/procloud/procloud-app /var/lib/www/procloud-app";
+      };
+    };
+/*
+  systemd.services."develop-mount" =
+    { description = "develop mount";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "local-fs.target" ];
+      serviceConfig = {
+        ExecStart = "/run/current-system/sw/bin/mount --bind /home/matej/workarea/proxima/procloud/procloud-app /var/lib/www/procloud-app";
+        ExecStop = "/run/current-system/sw/bin/umount /var/lib/www/procloud-app";
+        User = "root";
+        Type = "simple";
+      };
+    };
+*/
+/*
+  system.activationScripts."develop-mount" = ''
+#    /run/current-system/sw/bin/systemctl restart btsync-mount
+  '';
+*/
+/*
+      security.setuidOwners = [{
+        program = "weston-launch";
+        source = "${pkgs.weston}/bin/weston-launch";
+        owner = "root";
+        group = "weston-launch";
+        setuid = true;
+        setgid = true;
+        permissions = "u+rx,g+rx,o-rx";
+      }
+      {
+        program = "weston";
+        source = "${pkgs.weston}/bin/weston";
+        owner = "root";
+        group = "weston-launch";
+        setuid = true;
+        setgid = true;
+        permissions = "u+rx,g+rx,o-rx";
+      }];
+*/
 
 }

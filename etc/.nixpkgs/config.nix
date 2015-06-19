@@ -204,6 +204,7 @@
         gnused
         nodejs
         bundix nix-prefetch-scripts
+        jekyll
       ];
       ignoreCollisions = true;
     };
@@ -226,14 +227,29 @@
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake busybox bashInteractive ruby
+        stdenv.cc git nix gnumake unzip which coreutils gnused gnugrep bashInteractive ruby
         nodejs
         python
         utillinux
         node_webkit
         xdg_utils
         graphicsmagick
+        imagemagick
+        youtube-dl mplayer psmisc ffmpeg vlc
+        gnutar bzip2
         (with nodePackages; [ grunt-cli node-inspector npm2nix bower ])
+      ];
+      ignoreCollisions = true;
+    };
+
+    goenv = pkgs.buildEnv {
+      name = "goenv";
+      paths = with pkgs; [
+        stdenv.cc git nix gnumake unzip which coreutils gnused gnugrep bashInteractive
+        utillinux
+        gnutar bzip2
+        go
+        (with goPackages; [ ])
       ];
       ignoreCollisions = true;
     };

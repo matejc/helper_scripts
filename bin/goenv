@@ -1,0 +1,10 @@
+#!/bin/sh
+
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+nixprofile=$NIX_USER_PROFILE_DIR/goenv
+
+export PATH="$nixprofile/bin"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="goenv $PS1"
+
+"$@"

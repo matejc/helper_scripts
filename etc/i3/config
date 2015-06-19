@@ -31,9 +31,9 @@ floating_modifier $mod
 mode "monitor_select" {
 
   # only one
-  bindsym 1 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_lap --auto; mode "default"
-  bindsym 2 exec --no-startup-id xrandr --output $mon_lap --off --output $mon_ext --auto; mode "default"
-  bindsym 3 exec --no-startup-id xrandr --output $mon_lap --off --output $mon_ext1 --auto; mode "default"
+  bindsym 1 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --off --output $mon_lap --auto; mode "default"
+  bindsym 2 exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --right-of $mon_lap; mode "default"
+  bindsym 3 exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --right-of $mon_lap; mode "default"
 
   # left and right
   bindsym l exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --left-of $mon_lap ; mode "default"
@@ -212,7 +212,7 @@ bindsym $mod+r mode "resize"
 #{{{   Tiling / Floating / Fullscreen
 
 # toggle tiling / floating
-bindsym $mod+Shift+space floating toggle
+bindsym $mod+space floating toggle
 
 # change focus between tiling / floating windows
 #bindsym $mod+space focus mode_toggle
@@ -241,7 +241,7 @@ bindsym $mod+u border none
 #{{{   Shortcuts
 # start dmenu (a program launcher)
 #bindsym $mod+d exec dmenu_run
-bindsym $mod+space exec --no-startup-id ~/workarea/helper_scripts/bin/dmenu-run.py
+#bindsym $mod+space exec --no-startup-id ~/workarea/helper_scripts/bin/dmenu-run.py
 #dmenu_run -l 7 -p ">>>" -fn "7x14"
 
 # start a terminal
@@ -322,9 +322,9 @@ bindsym Ctrl+Mod1+Shift+Right exec WSNUM=$(~/workarea/helper_scripts/bin/i3_work
 bindcode 179 exec /run/current-system/sw/bin/vlc /home/matej/Dropbox/matej/workarea/radios/favorites.m3u8
 bindcode 121 exec ~/workarea/helper_scripts/bin/volume $snd_card toggle
 bindcode 122 exec ~/workarea/helper_scripts/bin/volume $snd_card decrease
-bindcode 123 exec ~/workarea/helper_scripts/bin/volume $snd_card increase 
-bindcode 233 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 1.0
-bindcode 232 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.8
+bindcode 123 exec ~/workarea/helper_scripts/bin/volume $snd_card increase
+bindcode 233 exec /run/current-system/sw/bin/xbacklight -inc 10
+bindcode 232 exec /run/current-system/sw/bin/xbacklight -dec 10
 bindsym $mod+0 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 1.0
 bindsym $mod+9 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.9
 bindsym $mod+8 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.8
@@ -337,7 +337,7 @@ bindsym Ctrl+Mod1+2 exec xrandr --output LVDS1 --primary --auto --output VGA1 --
 bindsym Ctrl+Mod1+1 exec xrandr --output VGA1 --off --output LVDS1 --auto
 #bindsym Ctrl+Mod1+c exec /home/matej/workarea/connman_dmenu/connman_dmenu
 bindsym Ctrl+Mod1+l exec ~/workarea/helper_scripts/bin/lockscreen
-bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/pcmanfm-qt /home/matej
+bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/spacefm
 bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
 bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/terminology
 #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matej/Pictures/'
@@ -346,6 +346,7 @@ bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/curren
 bindsym Mod1+F4 kill
 bindsym $mod+p move workspace to output left
 bindsym $mod+n move workspace to output right
+bindsym $mod+k kill
 
 # }}}
 #}}}
@@ -390,14 +391,15 @@ bar {
 
 exec --no-startup-id "~/bin/trackpoint-scroll.sh"
 exec --no-startup-id "~/workarea/helper_scripts/bin/autolock"
-exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/xrandr --output LVDS1 --auto"
-exec --no-startup-id /bin/sh -c "sleep 4; /run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matej/Dropbox/matej/workarea/pys/randimage.py /home/matej/Pictures/wallpapers/); /run/current-system/sw/bin/i3-msg restart"
+exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output LVDS1 --auto"
+exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matej/Dropbox/matej/workarea/pys/randimage.py /home/matej/Pictures/wallpapers/); /run/current-system/sw/bin/i3-msg restart"
 exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/i3minator start workspace1" &
-exec --no-startup-id /bin/sh -c "sleep 3; /run/current-system/sw/bin/i3minator start workspace2" &
-exec --no-startup-id /bin/sh -c "sleep 5; /run/current-system/sw/bin/i3minator start workspace3" &
-exec --no-startup-id /bin/sh -c "sleep 7; /run/current-system/sw/bin/i3minator start workspace4" &
-exec --no-startup-id /bin/sh -c "sleep 9; /run/current-system/sw/bin/i3minator start workspace5" &
+exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/i3minator start workspace4" &
+exec --no-startup-id /bin/sh -c "sleep 3; /run/current-system/sw/bin/i3minator start workspace5" &
+exec --no-startup-id /bin/sh -c "sleep 4; /run/current-system/sw/bin/i3minator start workspace3" &
+exec --no-startup-id /bin/sh -c "sleep 6; /run/current-system/sw/bin/i3minator start workspace2" &
 exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/xcompmgr -c -f -n -D1" &
+exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/twmnd" &
+#exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/nc-indicators" &
 
 # }}}
-
