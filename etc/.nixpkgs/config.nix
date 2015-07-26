@@ -4,8 +4,7 @@
 
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
-      paths = [ pkgs.bash pkgs.coreutils
-        pkgs.pythonPackages.fig pkgs.docker pkgs.which ];
+      paths = [ pkgs.bashInteractive pkgs.docker pkgs.which ];
     };
 
     homeEnv = pkgs.buildEnv {
@@ -157,6 +156,9 @@
         python27Packages.pyflakes
         python27Packages.pep8
         python27Packages.pillow
+        python27Packages.wxPython
+
+        which
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
