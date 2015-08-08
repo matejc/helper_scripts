@@ -40,7 +40,8 @@ def list_paths(path, executable=False, directory=False, recursive=False, regular
 def executables():
     result = []
 
-    for directory in list_env_var('PATH'):
+    # for directory in list_env_var('PATH'):
+    for directory in ["/home/matej/bin","/var/setuid-wrappers","/home/matej/.nix-profile/bin","/home/matej/.nix-profile/sbin","/nix/var/nix/profiles/default/bin","/nix/var/nix/profiles/default/sbin","/run/current-system/sw/bin","/run/current-system/sw/sbin"]:
         paths = list_paths(directory, executable=True)
         result += map(lambda item: "{0:<50} [Executable: '{1}']".format(item[1], os.path.join(item[0], item[1])), paths)
 

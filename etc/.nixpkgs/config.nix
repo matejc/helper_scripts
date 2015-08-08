@@ -159,6 +159,11 @@
         python27Packages.wxPython
 
         which
+
+        python27Packages.pyudev
+
+        # for robottests
+        phantomjs2-bin
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -229,16 +234,24 @@
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which coreutils gnused gnugrep bashInteractive ruby
+        stdenv.cc git nix gnumake unzip which gnused gnugrep bashInteractive ruby
         nodejs
         python
         utillinux
-        node_webkit
+        node_webkit_0_11
         xdg_utils
         graphicsmagick
         imagemagick
         youtube-dl mplayer psmisc ffmpeg vlc
         gnutar bzip2
+        libpng nasm zlib libtool autoconf automake
+        libarchive
+        busybox
+
+        # selenium
+        phantomjs2-bin
+        # selenium-server-standalone
+
         (with nodePackages; [ grunt-cli node-inspector npm2nix bower ])
       ];
       ignoreCollisions = true;
