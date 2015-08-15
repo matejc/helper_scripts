@@ -17,14 +17,18 @@ function any_to_mp3 {
        -B $MAX_BITRATE -s $SAMPLE_FREQ "$PIPE" "$OUTPUT_FILE" > /dev/null 2>&1
 
   rm "$PIPE"
+
+  mp3gain "$OUTPUT_FILE"
 }
 
 {
   type mplayer &&
-  type lame
+  type lame &&
+  type mp3gain
 } && {
   INPUT_FILE="$1"
   OUTPUT_FILE="$INPUT_FILE.mp3"
+  echo "Start $OUTPUT_FILE ..." &&
   any_to_mp3 &&
   echo "Done ($OUTPUT_FILE)!"
 } || echo "Command not found!"
