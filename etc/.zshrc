@@ -50,10 +50,10 @@ alias v='gvim'
 export TERM="xterm-256color"
 
 # Customize to your needs...
-export PATH=$PATH:/home/matej/bin:/home/matej/sync/bin:/var/setuid-wrappers:/home/matej/.nix-profile/bin:/home/matej/.nix-profile/sbin:/home/matej/.nix-profile/lib/kde4/libexec:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/nix/var/nix/profiles/default/lib/kde4/libexec:/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/current-system/sw/lib/kde4/libexec
+export PATH=$PATH:/home/matejc/bin:/home/matejc/sync/bin:/var/setuid-wrappers:/home/matejc/.nix-profile/bin:/home/matejc/.nix-profile/sbin:/home/matejc/.nix-profile/lib/kde4/libexec:/nix/var/nix/profiles/default/bin:/nix/var/nix/profiles/default/sbin:/nix/var/nix/profiles/default/lib/kde4/libexec:/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/current-system/sw/lib/kde4/libexec
 
-#export NIX_DEV_ROOT=/home/matej/workarea/nixdev
-#. /home/matej/workarea/nixdev/nixrc
+#export NIX_DEV_ROOT=/home/matejc/workarea/nixdev
+#. /home/matejc/workarea/nixdev/nixrc
 #alias cdnixdev='cd $NIX_DEV_ROOT'
 
-. /home/matej/sync/bin/nixmy
+. /home/matejc/sync/bin/nixmy

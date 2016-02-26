@@ -4,7 +4,8 @@
 
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
-      paths = [ pkgs.bashInteractive pkgs.docker pkgs.which ];
+      paths = [ pkgs.bashInteractive pkgs.docker pkgs.which
+        pkgs.python27Packages.docker_compose ];
     };
 
     homeEnv = pkgs.buildEnv {
@@ -108,15 +109,15 @@
         file
         gitAndTools.gitFull
         groff
-        jdk
+        #jdk
         libxml2
         libxslt
-        mercurial
+        #mercurial
         openssh
         openssl
         pcre
         pkgconfig
-        postgresql
+        #postgresql
         pycrypto
         python27Full
 #        python27Packages.ipython
@@ -128,7 +129,7 @@
         stdenv
         wget
         zlib
-        w3m
+        #w3m
         poppler
 #        rubyLibs.docsplit
 #        python27Packages.ipdb
@@ -147,11 +148,16 @@
         youtubeDL ffmpeg
         postgresql openldap libjpeg optipng
 
-        nodePackages.jshint
+        #nodePackages.jshint
 
 #        python27Packages.jinja2
-        vimHugeX
+        #vimHugeX
         lessc  # searx
+        libffi  # searx
+
+        python27Packages.pyopenssl
+        python27Packages.ndg-httpsclient
+        python27Packages.pyasn1
 
         python27Packages.pyflakes
         python27Packages.pep8
@@ -160,10 +166,10 @@
 
         which
 
-        python27Packages.pyudev
+        #python27Packages.pyudev
 
         # for robottests
-        phantomjs2-bin
+        #phantomjs2-bin
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -183,15 +189,14 @@
     rubyenv = pkgs.buildEnv {
       name = "rubyenv";
       paths = with pkgs; [
-        stdenv gcc busybox gnumake
+        stdenv busybox
         git
         ruby
         rubygems
         #rubyLibs.nix
         nix
 
-        #bundler2nix
-        gnused coreutils
+        bundler bundix gnumake stdenv.cc
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
@@ -234,7 +239,7 @@
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which gnused gnugrep bashInteractive ruby
+        stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
         nodejs
         python
         utillinux
@@ -243,16 +248,40 @@
         graphicsmagick
         imagemagick
         youtube-dl mplayer psmisc ffmpeg vlc
-        gnutar bzip2
-        libpng nasm zlib libtool autoconf automake
+        bzip2
+        libpng nasm libtool autoconf automake
         libarchive
         busybox
 
         # selenium
-        phantomjs2-bin
+        # phantomjs2-bin
         # selenium-server-standalone
 
-        (with nodePackages; [ grunt-cli node-inspector npm2nix bower ])
+        openssh
+
+        flow
+
+        graphviz-nox
+
+        #electron libnotify
+
+        libpcap
+
+        (with nodePackages; [ grunt-cli npm2nix bower ])
+      ];
+      ignoreCollisions = true;
+    };
+
+    blackenv = pkgs.buildEnv {
+      name = "blackenv";
+      paths = with pkgs; [
+        stdenv.cc git nix gnumake unzip which bashInteractive
+        nodejs-5_x
+        busybox
+        python
+
+        electron libnotify
+        (with nodePackages; [ bower ])
       ];
       ignoreCollisions = true;
     };
@@ -267,6 +296,19 @@
         (with goPackages; [ ])
       ];
       ignoreCollisions = true;
+    };
+
+    gstenv = pkgs.buildEnv {
+      name = "gstenv";
+      paths = with pkgs; [
+        gst_all_1.gstreamer
+        gst_all_1.gst-plugins-base
+        gst_all_1.gst-plugins-good
+        gst_all_1.gst-plugins-bad
+        gst_all_1.gst-plugins-ugly
+        gst_all_1.gst-libav
+        gst_all_1.gst-vaapi
+      ];
     };
 
     test = pkgs.buildEnv {
@@ -323,6 +365,11 @@
 #  st.conf = builtins.readFile ./.st.conf;
   allowUnfree = true;
   mpv.vaapiSupport = true;
-  nixui.dataDir = "/home/matej/.nixui";
-  nixui.NIX_PATH = "nixpkgs=/home/matej/workarea/nixpkgs:nixos=/home/matej/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";
+  nixui.dataDir = "/home/matejc/.nixui";
+  nixui.NIX_PATH = "nixpkgs=/home/matejc/workarea/nixpkgs:nixos=/home/matejc/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";
+  nixmy = {
+      NIX_MY_PKGS = "/home/matejc/workarea/nixpkgs";
+      NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
+      NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
+  };
 }

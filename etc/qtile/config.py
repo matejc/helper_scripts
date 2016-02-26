@@ -16,12 +16,12 @@ import json
 
 mod = "mod4"
 
-os.environ['PATH'] += ':/run/current-system/sw/bin:/home/matej/workarea/helper_scripts/bin'
+os.environ['PATH'] += ':/run/current-system/sw/bin:/home/matejc/workarea/helper_scripts/bin'
 
 def feh(qtile):
-    os.system("feh --bg-fill $(randimage.py /home/matej/Pictures/wallpapers/)")
-    
-    
+    os.system("feh --bg-fill $(randimage.py /home/matejc/Pictures/wallpapers/)")
+
+
 def get_fake_screens(obj):
     if not obj or obj['count'] == 1:
         return []
@@ -40,7 +40,7 @@ def get_fake_screens(obj):
                 width=obj['mon1']['width'],
                 height=obj['mon1']['height'],
                 # bottom=bottomBar
-            )    
+            )
         ]
 
 
@@ -54,7 +54,7 @@ def set_fake_screens(obj):
 
 def xrandr_exec(qtile):
     try:
-        output = check_output("/home/matej/workarea/helper_scripts/etc/qtile/scan_screens.sh")
+        output = check_output("/home/matejc/workarea/helper_scripts/etc/qtile/scan_screens.sh")
         obj = json.loads(output)
         # debug(json.dumps(obj))
         # set_fake_screens(obj)
@@ -103,6 +103,7 @@ keys = [
     ),
     Key([mod], "Return", lazy.spawn("xfce4-terminal")),
     Key(["control", "mod1"], "t", lazy.spawn("xfce4-terminal")),
+    Key(["control", "mod1"], "h", lazy.spawn("spacefm")),
     Key(["control", "mod1"], "space", lazy.spawn("dmenu-run.py")),
     Key(["control", "mod1"], "l", lazy.spawn("lockscreen")),
     Key(["control", "mod1"], "w", lazy.function(feh)),
@@ -140,9 +141,9 @@ for i in groups:
 
 groups = [
     Group('ext'),
-    Group('term'),
-    Group('edit'),
-    Group('web', spawn='chromium'),
+    Group('t'),
+    Group('e'),
+    Group('w', spawn='chromium'),
 ] + groups
 
 def moveExtToOne(qtile):
@@ -241,12 +242,12 @@ bottomBar = bar.Bar(
         widget.CPUGraph(width=30, graph_color='18EBBA', border_width=0),
         widget.MemoryGraph(width=30, graph_color='FAFA9B', border_width=0),
         widget.HDDBusyGraph(width=30, graph_color='EB187A', border_width=0),
-        widget.Clock(format='%d.%m.%Y %a %H:%M', padding=3),
+        widget.Battery(padding=3, foreground='BABABA'),
         widget.GenPollText(update_interval=5, func=temp, padding=3, foreground='EB187A'),
         widget.Volume(padding=3, foreground='FAFA9B'),
         widget.Wlan(interface='wlp3s0', padding=3, interval=5, foreground='18BAEB'),
         widget.NetGraph(width=30, border_width=0),
-        widget.Battery(padding=3, foreground='BABABA'),
+        widget.Clock(format='%d.%m.%Y %a %H:%M', padding=3),
         widget.Systray(),
     ],
     22,
@@ -286,9 +287,9 @@ auto_fullscreen = True
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
 
-@hook.subscribe.startup
+@hook.subscribe.startup_once
 def runner():
-    call("/home/matej/workarea/helper_scripts/etc/qtile/start.sh")
+    call("/home/matejc/workarea/helper_scripts/etc/qtile/start.sh")
     # try:
     #     lazy.group['ext'].to_screen(1)
     # except Exception, e:
@@ -301,7 +302,7 @@ def detect_screens(qtile):
     """
     Detect if a new screen is plugged and reconfigure/restart qtile
     """
-    
+
     def setup_monitors(action=None, device=None):
         obj = xrandr_exec(qtile)
         if action == 'change':
@@ -317,7 +318,7 @@ def detect_screens(qtile):
     monitor = pyudev.Monitor.from_netlink(context)
     monitor.filter_by('drm')
     monitor.enable_receiving()
-    
+
     # observe if the monitors change and reset monitors config
     observer = pyudev.MonitorObserver(monitor, setup_monitors)
     observer.start()

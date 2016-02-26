@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+MYCOMMAND="${@:2}"
+MYDIR=`pwd`
+MYPORT=$1
+
+test -z "$MYCOMMAND" && exit 1
+
+# This will take down the whole process tree on script exit
+trap "exit" INT TERM
+trap "kill 0" EXIT
+
+OLD_OUTPUT="placeholder";
+
+while true; do
+    NEW_OUTPUT="`find $MYDIR -maxdepth 4 -type f -mtime -1 -iname '*.js' -exec ls -l {} \;`"
+
+    if [ "$NEW_OUTPUT" != "$OLD_OUTPUT" ]
+    then
+        # output changed
+        if [ "$MYPID" ]; then echo "killing..."; lsof -n -i4TCP:$MYPORT | grep LISTEN | tr -s ' ' | cut -f 2 -d ' ' | xargs kill -INT; fi
+        echo "starting..."
+        bash -c "$MYCOMMAND" &
+        MYPID=$!;
+        OLD_OUTPUT="$NEW_OUTPUT";
+    fi
+
+    sleep 2;
+done

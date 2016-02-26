@@ -1,5 +1,5 @@
 [Desktop Entry]
-Exec=/run/current-system/sw/bin/supervisord -c /home/matej/.supervisord.conf
+Exec=/run/current-system/sw/bin/supervisord -c /home/matejc/.supervisord.conf
 Hidden=true
 Name=Supervisord - matej
 NoDisplay=false

@@ -3,7 +3,7 @@
 	email = cotman.matej@gmail.com
 [core]
 	editor = vim
-	excludesfile = /home/matej/.gitignore
+	excludesfile = /home/matejc/.gitignore
 [color]
 	branch = auto
 	diff = auto

@@ -1,11 +1,9 @@
-# /home/matej/.i3minator/workspace2.yml
-
 # The Name of the project
 name: workspace2
 
 # If needes, where the project lives. If present, all terminal will be opened here
 # and all commands are relative to this path.
-root: /home/matej
+root: /home/matejc
 
 # The name of the workspace to open the project.
 # If not present, current workspace is used
@@ -28,4 +26,4 @@ window_chain:
 nodes:
     editor:
         terminal: false
-        command: /run/current-system/sw/bin/zed
+        command: /run/current-system/sw/bin/atom 

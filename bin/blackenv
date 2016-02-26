@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
-nixprofile=$NIX_USER_PROFILE_DIR/nodeenv
+nixprofile=$NIX_USER_PROFILE_DIR/blackenv
 
 export GEM_HOME=$HOME/.gems
 export PATH="$HOME/.gems/bin:$nixprofile/bin:$NIX_USER_PROFILE_DIR/profile/bin"  # /home/matej/workarea/npm2nix/bin
@@ -23,7 +22,7 @@ export C_INCLUDE_PATH="$nixprofile/include:$C_INCLUDE_PATH"
 export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
 export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
 
-
+export ELECTRON_PATH="$nixprofile/bin"
 
 npm_global_install() {
     npm install -g --prefix="$NPM_PACKAGES" "$@"

@@ -1,10 +1,5 @@
 #!/run/current-system/sw/bin/bash
-/run/current-system/sw/bin/scrot /tmp/screen_locked.png
-/run/current-system/sw/bin/convert /tmp/screen_locked.png -scale 10% -scale 1000% /tmp/screen_locked.png
-/run/current-system/sw/bin/chmod o+w /tmp/screen_locked.png
-#/run/current-system/sw/bin/killall -SIGUSR1 dunst
-#/run/current-system/sw/bin/notify-send DUNST_COMMAND_PAUSE
-/run/current-system/sw/bin/i3lock -i /tmp/screen_locked.png --nofork
-#/run/current-system/sw/bin/notify-send DUNST_COMMAND_RESUME
-#/run/current-system/sw/bin/killall -SIGUSR2 dunst
-#/run/current-system/sw/bin/killall dunst
+I3LOCKIMAGE=/home/matejc/tmp/.screen_locked.png
+/run/current-system/sw/bin/scrot $I3LOCKIMAGE
+/run/current-system/sw/bin/convert $I3LOCKIMAGE -scale 10% -scale 1000% $I3LOCKIMAGE
+/run/current-system/sw/bin/i3lock -i $I3LOCKIMAGE --nofork

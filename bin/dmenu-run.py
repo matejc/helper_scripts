@@ -16,10 +16,10 @@ def list_paths(path, executable=False, directory=False, recursive=False, regular
     result = []
 
     for root, dirs, files in os.walk(path, followlinks=True):
-        
+
         if directory:
             result += map(lambda x: (root, x), dirs)
-        
+
         if files and (executable or regular):
             for file in files:
                 abspath = os.path.join(root, file)
@@ -41,7 +41,7 @@ def executables():
     result = []
 
     # for directory in list_env_var('PATH'):
-    for directory in ["/home/matej/bin","/var/setuid-wrappers","/home/matej/.nix-profile/bin","/home/matej/.nix-profile/sbin","/nix/var/nix/profiles/default/bin","/nix/var/nix/profiles/default/sbin","/run/current-system/sw/bin","/run/current-system/sw/sbin"]:
+    for directory in ["/home/matejc/bin","/var/setuid-wrappers","/home/matejc/.nix-profile/bin","/home/matejc/.nix-profile/sbin","/nix/var/nix/profiles/default/bin","/nix/var/nix/profiles/default/sbin","/run/current-system/sw/bin","/run/current-system/sw/sbin"]:
         paths = list_paths(directory, executable=True)
         result += map(lambda item: "{0:<50} [Executable: '{1}']".format(item[1], os.path.join(item[0], item[1])), paths)
 

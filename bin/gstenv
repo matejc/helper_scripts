@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+nixprofile=$NIX_USER_PROFILE_DIR/gstenv
+
+export PATH="$nixprofile/bin:$PATH"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="gstenv $PS1"
+
+export GST_PLUGIN_PATH="$nixprofile/lib/gstreamer-1.0"
+
+"$@"

@@ -7,7 +7,7 @@ start-beep)
         if [ $status -eq 0 ]; then
                 echo "xbelld is already running!"
         else
-			/usr/bin/xbelld -ct 500 -f /home/matej/Dropbox/matej/workarea/pys/beep.wav > /dev/null 2>&1 &
+			/usr/bin/xbelld -ct 500 -f /home/matejc/Dropbox/matej/workarea/pys/beep.wav > /dev/null 2>&1 &
 			echo "xbelld (beep) is starting ..."
         fi
 ;;

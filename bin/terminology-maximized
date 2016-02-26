@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+function countwin {
+  xwininfo -root -tree 2>/dev/null | grep '("main" "terminology")' | wc -l;
+}
+
+count1=`countwin`
+
+terminology &
+
+for i in `seq 1 10`;
+do
+  sleep 0.5
+  count2=`countwin`;
+  echo "$i: $count1 != $count2"
+  if [ $count1 -ne $count2 ]
+  then
+    sleep 0.5
+    xwininfo -root -tree 2>/dev/null | grep '("main" "terminology")' | awk '{print $1}' | xargs -i wmctrl -i -c {} -b add,maximized_vert,maximized_horz
+    break
+  fi
+done   
+
+echo done

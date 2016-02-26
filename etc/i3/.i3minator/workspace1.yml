@@ -1,11 +1,9 @@
-# /home/matej/.i3minator/workspace1.yml
-
 # The Name of the project
 name: workspace1
 
 # If needes, where the project lives. If present, all terminal will be opened here
 # and all commands are relative to this path.
-root: /home/matej
+root: /home/matejc
 
 # The name of the workspace to open the project.
 # If not present, current workspace is used
@@ -28,4 +26,4 @@ window_chain:
 nodes:
     console:
         terminal: false
-        command: /run/current-system/sw/bin/terminology --maximized
+        command: /run/current-system/sw/bin/xfce4-terminal

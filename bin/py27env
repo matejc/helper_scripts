@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # XXX: for some reason this variable is not set in here ?!
-NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
+NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matejc
 nixprofile=$NIX_USER_PROFILE_DIR/py27
 
 export PATH="`pwd`/bin:$nixprofile/bin:/usr/local/heroku/bin"
