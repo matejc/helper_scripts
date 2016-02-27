@@ -73,15 +73,47 @@ def dmenu(args=[], options=[]):
         stdout, _ = p.communicate()
     return stdout.decode('utf-8').strip('\n')
 
+def read_last(path):
+    result = []
+    if not os.path.isfile(path):
+        return result
+    with open(path, 'r') as f:
+        for line in f:
+            s = line.strip()
+            if s:
+                result += [s]
+    return result
 
-run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [join(sorted(executables())), join(sorted(dirs()))])
+def write_last(path, newentry):
+    lines = read_last(path)
+    if not newentry:
+        return
+    s = newentry.strip()
+    lines.insert(0, s)
+    with open(path, 'w') as f:
+        f.write(join(remove_duplicates(lines[0:4])))
+
+def remove_duplicates(values):
+    result = []
+    seen = set()
+    for value in values:
+        if not value in seen:
+            result.append(value)
+            seen.add(value)
+    return result
+
+
+s = join(read_last('/home/matejc/.dmenu_last') + sorted(executables()) + sorted(dirs()))
+run = dmenu(['-p', 'run:', '-l', '10', '-b', '-i'], [s])
 if run:
     match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
     if match:
+        write_last('/home/matejc/.dmenu_last', run)
         subprocess.call(match.groups()[0], shell=True)
         os.exit(0)
     match = re.match(r'.+\s+\[Open\: \'(.+)\'\]', run)
     if match:
+        write_last('/home/matejc/.dmenu_last', run)
         subprocess.call(['xdg-open', match.groups()[0]])
         os.exit(0)
     subprocess.call(run, shell=True)

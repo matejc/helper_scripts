@@ -61,8 +61,9 @@ mode "monitor_select" {
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 #font -*-terminus-medium-r-normal-*-14-*-*-*-c-*-iso10646-1
 # font -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso10646-1
-font pango:DejaVu Sans Mono 9
-#font pango:Bitstream Vera Sans Mono Roman 8
+#font pango:DejaVu Sans Mono 9
+#font pango:Bitstream Vera Sans Mono Roman 9
+font pango:Cantarell 10
 
 
 #}}}
@@ -313,13 +314,13 @@ bindsym $mod+Shift+E exit
 
 
 # matejc's key bindings
-bindsym Mod1+Shift+Tab focus left
-bindsym Mod1+Tab focus right
+bindsym Mod1+Shift+Tab focus output left
+bindsym Mod1+Tab focus output right
 bindsym Ctrl+Mod1+Left exec i3-msg workspace $(~/workarea/helper_scripts/bin/i3_workspace.py left)
 bindsym Ctrl+Mod1+Right exec i3-msg workspace $(~/workarea/helper_scripts/bin/i3_workspace.py right)
 bindsym Ctrl+Mod1+Shift+Left exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
 bindsym Ctrl+Mod1+Shift+Right exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
-bindcode 179 exec /run/current-system/sw/bin/vlc /home/matej/Dropbox/matej/workarea/radios/favorites.m3u8
+bindcode 179 exec /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
 bindcode 121 exec ~/workarea/helper_scripts/bin/volume $snd_card toggle
 bindcode 122 exec ~/workarea/helper_scripts/bin/volume $snd_card decrease
 bindcode 123 exec ~/workarea/helper_scripts/bin/volume $snd_card increase
@@ -335,14 +336,14 @@ bindsym Ctrl+Mod1+space exec ~/workarea/helper_scripts/bin/dmenu-run.py
 bindsym Ctrl+Mod1+s exec ~/workarea/helper_scripts/bin/searx.py
 bindsym Ctrl+Mod1+2 exec xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
 bindsym Ctrl+Mod1+1 exec xrandr --output VGA1 --off --output LVDS1 --auto
-#bindsym Ctrl+Mod1+c exec /home/matej/workarea/connman_dmenu/connman_dmenu
+#bindsym Ctrl+Mod1+c exec /home/matejc/workarea/connman_dmenu/connman_dmenu
 bindsym Ctrl+Mod1+l exec ~/workarea/helper_scripts/bin/lockscreen
 bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/spacefm
 bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
-bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/terminology
-#bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matej/Pictures/'
-bindsym --release Print exec /run/current-system/sw/bin/xfce4-screenshooter --region --save /home/matej/Pictures
-bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matej/Dropbox/matej/workarea/pys/randimage.py /home/matej/Pictures/wallpapers/)"
+bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/xfce4-terminal
+#bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
+bindsym --release Print exec /run/current-system/sw/bin/xfce4-screenshooter --region --save /home/matejc/Pictures
+bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
 bindsym Mod1+F4 kill
 bindsym $mod+p move workspace to output left
 bindsym $mod+n move workspace to output right
@@ -355,9 +356,14 @@ bindsym $mod+k kill
 # class border backgr. text
 #client.focused #c0c0c0 #c0c0c0 #595959
 #client.focused_inactive #292929 #292929 #c0c0c0
-client.unfocused #292929 #292929 #c9c9c9
+#client.unfocused #292929 #292929 #c9c9c9
 #client.urgent #ff4500 #ff4500 #c0c0c0
 #client.background #000000
+
+# class                 border  backgr. text    indicator
+client.focused          #859900 #859900 #fdf6e3 #2e9ef4
+client.focused_inactive #268bd2 #268bd2 #fdf6e3 #484e50
+client.unfocused        #333333 #93a1a1 #fdf6e3 #292d2e
 
 #}}}
 #{{{ i3bar
@@ -370,13 +376,20 @@ bar {
     #tray_output $mon_lap
 #{{{ i3bar colors
     colors {
-        background #0e0e0e
-        statusline #c0c0c0
+#        background #0e0e0e
+#        statusline #c0c0c0
 
-        focused_workspace #ffffff #0e3e9e
-        inactive_workspace #a0a0a0 #0e0e0e
-        urgent_workspace #000033 #ff4500
+#        focused_workspace #ffffff #0e3e9e
+#        inactive_workspace #a0a0a0 #0e0e0e
+#        urgent_workspace #000033 #ff4500
         #active_workspace #696969 #0e0e0e
+
+        # solarized
+        background #073642
+        statusline #eee8d5
+        focused_workspace #cb4b16 #cb4b16 #eee8d5
+        active_workspace #cb4b16 #cb4b16 #eee8d5
+        inactive_workspace #b58900 #b58900 #eee8d5
     }
 #}}}
 }
@@ -389,15 +402,15 @@ bar {
 #exec --no-startup-id urxvtc -name calendar -e cal -y
 #exec --no-startup-id urxvtc -name ncmpcpp -e ncmpcpp
 
-exec --no-startup-id "~/bin/trackpoint-scroll.sh"
+#exec --no-startup-id "~/bin/trackpoint-scroll.sh"
 exec --no-startup-id "~/workarea/helper_scripts/bin/autolock"
-exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output LVDS1 --auto"
-exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matej/Dropbox/matej/workarea/pys/randimage.py /home/matej/Pictures/wallpapers/); /run/current-system/sw/bin/i3-msg restart"
-exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/i3minator start workspace1" &
-exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/i3minator start workspace4" &
-exec --no-startup-id /bin/sh -c "sleep 3; /run/current-system/sw/bin/i3minator start workspace5" &
-exec --no-startup-id /bin/sh -c "sleep 4; /run/current-system/sw/bin/i3minator start workspace3" &
-exec --no-startup-id /bin/sh -c "sleep 6; /run/current-system/sw/bin/i3minator start workspace2" &
+exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output $mon_lap --primary --auto --output $mon_ext --auto --right-of $mon_lap"
+exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/); /run/current-system/sw/bin/i3-msg restart"
+#exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/i3minator start workspace1" &
+#exec --no-startup-id /bin/sh -c "sleep 2; /run/current-system/sw/bin/i3minator start workspace4" &
+#exec --no-startup-id /bin/sh -c "sleep 3; /run/current-system/sw/bin/i3minator start workspace5" &
+#exec --no-startup-id /bin/sh -c "sleep 4; /run/current-system/sw/bin/i3minator start workspace3" &
+#exec --no-startup-id /bin/sh -c "sleep 6; /run/current-system/sw/bin/i3minator start workspace2" &
 exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/xcompmgr -c -f -n -D1" &
 exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/twmnd" &
 #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/nc-indicators" &
