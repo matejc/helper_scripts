@@ -20,6 +20,7 @@ let
     email = "cotman.matej@gmail.com";
     editor = "nano";
     font = "pango:Cantarell 10";
+    wallpaper = "${variables.homeDir}/Pictures/3.jpg";
     inherit startScript;
   };
 
