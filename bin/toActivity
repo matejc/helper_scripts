@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+qdbus org.kde.ActivityManager /ActivityManager/Activities SetCurrentActivity $(qdbus org.kde.ActivityManager /ActivityManager/Activities ListActivities | xargs echo | awk "{print \$$1}")

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+nixprofile=$NIX_USER_PROFILE_DIR/py3env
+
+export PATH="`pwd`/bin:$nixprofile/bin:/usr/local/heroku/bin"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PYTHONPATH="$nixprofile/lib/python3.5/site-packages:`pwd`"
+export PS1="py3 $PS1"
+
+
+export INCLUDE="$nixprofile/include:$INCLUDE"
+export LIB="$nixprofile/lib:$LIB"
+export C_INCLUDE_PATH="$nixprofile/include:$C_INCLUDE_PATH"
+export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
+export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
+export CFLAGS=$NIX_CFLAGS_COMPILE
+export LDFLAGS=$NIX_LDFLAGS
+
+"$@"
