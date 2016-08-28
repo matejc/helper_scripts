@@ -75,7 +75,7 @@
   # font -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso10646-1
   #font pango:DejaVu Sans Mono 9
   #font pango:Bitstream Vera Sans Mono Roman 9
-  font pango:Cantarell 12
+  font ${variables.font}
 
 
   #}}}
@@ -439,7 +439,7 @@
   #}}}
   #{{{ Autostart
 
-  exec --no-startup-id xinput_custom_script.sh
+  exec --no-startup-id ${variables.startScript}
   exec --no-startup-id "~/workarea/helper_scripts/bin/autolock"
   #exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output $mon_lap --primary --auto --output $mon_ext --off --output $mon_ext1 --off"
   #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill /home/matejc/Pictures/simplave_by_voytecghost-d518thv.jpg; /run/current-system/sw/bin/i3-msg restart"

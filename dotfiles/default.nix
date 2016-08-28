@@ -19,6 +19,8 @@ let
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     editor = "nano";
+    font = "pango:Cantarell 10";
+    inherit startScript;
   };
 
   dotFilePaths = [
@@ -27,6 +29,11 @@ let
     ./gitconfig.nix
     ./gitignore.nix
   ];
+
+  startScript = pkgs.writeScript "start-script.sh" ''
+    #!${pkgs.stdenv.shell}
+    echo start
+  '';
 
   extra = ''
     mkdir -p ${variables.homeDir}/.nixpkgs
@@ -37,6 +44,7 @@ let
 
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
+    ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
 
     rm /tmp/temp1_input
     if [ -f "/sys/devices/virtual/hwmon/hwmon0/temp1_input" ]; then
