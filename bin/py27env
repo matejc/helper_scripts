@@ -12,6 +12,7 @@ export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
 export PYTHONPATH="$nixprofile/lib/python2.7/site-packages"
 export PS1="py27 $PS1"
 
+export MAGICK_HOME="$nixprofile"
 
 export INCLUDE="$nixprofile/include:$INCLUDE"
 export LIB="$nixprofile/lib:$LIB"

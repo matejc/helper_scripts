@@ -8,6 +8,12 @@
         pkgs.python27Packages.docker_compose ];
     };
 
+    py3env = pkgs.buildEnv {
+      name = "py3env";
+      paths = [ pkgs.python3 pkgs.python3Packages.requests2
+        pkgs.python35Packages.virtualenv pkgs.phantomjs2 ];
+    };
+
     homeEnv = pkgs.buildEnv {
       name = "homeEnv";
       paths = [ pkgs.emacs24 pkgs.bsdgames ];
@@ -102,12 +108,12 @@
     py27 = pkgs.buildEnv {
       name = "py27";
       paths = with pkgs; [
-        stdenv.cc gnumake bashInteractive curl nix
-        busybox
+        # stdenv.cc gnumake bashInteractive
+        # busybox
         cyrus_sasl
         db4
         file
-        gitAndTools.gitFull
+        # gitAndTools.gitFull
         groff
         #jdk
         libxml2
@@ -118,7 +124,6 @@
         pcre
         pkgconfig
         #postgresql
-        pycrypto
         python27Full
 #        python27Packages.ipython
         python27Packages.pyyaml
@@ -126,50 +131,57 @@
 #        python27Packages.sqlite3
         python27Packages.virtualenv
         subversionClient
-        stdenv
-        wget
+        # stdenv
+        # wget
         zlib
         #w3m
-        poppler
+        # poppler
 #        rubyLibs.docsplit
 #        python27Packages.ipdb
 #        docutils
 #        python27Packages.pygments
-        vimprobable2
+        # vimprobable2
 #        python27Packages.cssselect
         gettext
-        python27Packages.libarchive
+        # python27Packages.libarchive
 #        python27.modules.curses
-        rsync
+        # rsync
         python27Packages.setuptools
-        nano
+        # nano
         python27Packages.pysqlite
 
-        youtubeDL ffmpeg
-        postgresql openldap libjpeg optipng
+        # youtubeDL ffmpeg
+        # postgresql openldap libjpeg optipng
 
         #nodePackages.jshint
 
 #        python27Packages.jinja2
         #vimHugeX
-        lessc  # searx
-        libffi  # searx
+        # lessc  # searx
+        # libffi  # searx
 
-        python27Packages.pyopenssl
-        python27Packages.ndg-httpsclient
-        python27Packages.pyasn1
+        # python27Packages.pyopenssl
+        # python27Packages.ndg-httpsclient
+        # python27Packages.pyasn1
 
-        python27Packages.pyflakes
-        python27Packages.pep8
-        python27Packages.pillow
-        python27Packages.wxPython
+        # python27Packages.pyflakes
+        # python27Packages.pep8
+        # python27Packages.pillow
+        # python27Packages.wxPython
 
-        which
+        # which
 
         #python27Packages.pyudev
 
         # for robottests
         #phantomjs2-bin
+        python27Packages.pyperclip
+        python27Packages.requests
+
+        opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
+        python27Packages.flask python27Packages.sqlite3 python27Packages.werkzeug
+        python27Packages.jinja2 python27Packages.markupsafe python27Packages.itsdangerous
+        strace python27Packages.opencv
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -240,10 +252,10 @@
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs
+        nodejs-6_x
         python
         utillinux
-        node_webkit_0_11
+        # node_webkit_0_11
         xdg_utils
         graphicsmagick
         imagemagick
@@ -268,6 +280,7 @@
         libpcap
 
         (with nodePackages; [ grunt-cli npm2nix bower ])
+
       ];
       ignoreCollisions = true;
     };

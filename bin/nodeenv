@@ -3,8 +3,10 @@
 # NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
 nixprofile=$NIX_USER_PROFILE_DIR/nodeenv
 
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+
 export GEM_HOME=$HOME/.gems
-export PATH="$HOME/.gems/bin:$nixprofile/bin:$NIX_USER_PROFILE_DIR/profile/bin"  # /home/matej/workarea/npm2nix/bin
+export PATH="$HOME/.gems/bin:$nixprofile/bin:$NIX_USER_PROFILE_DIR/profile/bin:$PATH"  # /home/matej/workarea/npm2nix/bin
 export PS1="nodeenv $PS1"
 
 # NPM packages in homedir
@@ -45,5 +47,8 @@ to() {
 
 # test -d ./node_modules/selenium-standalone/.selenium/chromedriver && ln -sf `which chromedriver` node_modules/selenium-standalone/.selenium/chromedriver/2.16-x64-chromedriver
 
+f() {
+    forever --minUptime 1000 --spinSleepTime 1000 -w --watchIgnore '*.log' --watchIgnore '*.json' --watchIgnore '*.html' --watchIgnore '*.css' "$@"
+}
 
 "$@"
