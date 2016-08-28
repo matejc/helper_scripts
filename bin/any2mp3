@@ -1,34 +1,76 @@
 #!/usr/bin/env bash
 
-QUALITY=2
-VBR_QUALITY=4
-MIN_BITRATE=64
-MAX_BITRATE=256
-SAMPLE_FREQ=44.1
+#QUALITY=2
+#VBR_QUALITY=4
+#MIN_BITRATE=64
+#MAX_BITRATE=256
+#SAMPLE_FREQ=44.1
 
 
-function any_to_mp3 {
-  PIPE=`mktemp -u -t mp3ify.pipe.XXXXXX`
-  mkfifo "$PIPE"
+# function any_to_mp3 {
+#   PIPE=`mktemp -u -t mp3ify.pipe.XXXXXX`
+#   mkfifo "$PIPE"
+#
+#   mplayer -vc null -vo null -ao pcm -ao pcm:file="$PIPE" "$INPUT_FILE" -noconsolecontrols > /dev/null 2>&1 &
+#
+#   lame -m j -q $QUALITY -v -V $VBR_QUALITY -b $MIN_BITRATE \
+#        -B $MAX_BITRATE -s $SAMPLE_FREQ "$PIPE" "$OUTPUT_FILE" > /dev/null 2>&1
+#
+#   rm "$PIPE"
+#
+#   mp3gain "$OUTPUT_FILE"
+# }
+#
+# {
+#   type mplayer &&
+#   type lame &&
+#   type mp3gain
+# } && {
+#   INPUT_FILE="$1"
+#   OUTPUT_FILE="$INPUT_FILE.mp3"
+#   echo "Start $OUTPUT_FILE ..." &&
+#   any_to_mp3 &&
+#   echo "Done ($OUTPUT_FILE)!"
+# } || echo "Command not found!"
 
-  mplayer -vc null -vo null -ao pcm -ao pcm:file="$PIPE" "$INPUT_FILE" -noconsolecontrols > /dev/null 2>&1 &
+#{
+#  type ffmpeg &&
+#  type mp3gain
+#} && {
+#  INPUT_FILE="$1"
+#  OUTPUT_FILE="$INPUT_FILE.mp3"
+#  test ! -f "$OUTPUT_FILE" &&
+#  echo "Start $OUTPUT_FILE ..." &&
+#  ffmpeg -i "$INPUT_FILE" -vn -acodec libmp3lame "$OUTPUT_FILE" &&
+#  mp3gain "$OUTPUT_FILE" &&
+#  echo "Done ($OUTPUT_FILE)!"
+#} || echo "Command not found!"
 
-  lame -m j -q $QUALITY -v -V $VBR_QUALITY -b $MIN_BITRATE \
-       -B $MAX_BITRATE -s $SAMPLE_FREQ "$PIPE" "$OUTPUT_FILE" > /dev/null 2>&1
 
-  rm "$PIPE"
+set -e
 
-  mp3gain "$OUTPUT_FILE"
-}
+INPUT_FILE="$1"
 
-{
-  type mplayer &&
-  type lame &&
-  type mp3gain
-} && {
-  INPUT_FILE="$1"
+if [ -d "$2" ]
+then
+  OUTPUT_FILE="$2/`basename "$INPUT_FILE"`.mp3"
+  WORK_FILE="$2/`basename "$INPUT_FILE"`.work"
+else
   OUTPUT_FILE="$INPUT_FILE.mp3"
-  echo "Start $OUTPUT_FILE ..." &&
-  any_to_mp3 &&
-  echo "Done ($OUTPUT_FILE)!"
-} || echo "Command not found!"
+  WORK_FILE="$INPUT_FILE.work"
+fi
+
+if [ -f "$OUTPUT_FILE" ]
+then
+  echo "Output file already exists, skipping ... ($OUTPUT_FILE)!"
+  exit 0;
+fi
+
+echo "Start $WORK_FILE ..."
+ffmpeg -i "$INPUT_FILE" -vn -acodec libmp3lame -f mp3 "$WORK_FILE"
+mp3gain "$WORK_FILE"
+
+mv "$WORK_FILE" "$OUTPUT_FILE"
+
+echo "Done ($OUTPUT_FILE)!"
+

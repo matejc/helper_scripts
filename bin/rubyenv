@@ -27,25 +27,34 @@ export LDFLAGS=$NIX_LDFLAGS
 
 export RUBYLIB=$nixprofile/lib
 export RUBYOPT=rubygems
+export GEM_HOME=$HOME/.gems
 
 
 export GEM_PATH=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in \"$nixprofile/\" + pkgs.ruby.gemPath" | sed -e 's/^"//'  -e 's/"$//'`
 
 
+function nokogiri() {
+    echo bundle config build.nokogiri -- --use-system-libraries\' \
+        --with-xslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xml2-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/include/libxml2\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --with-xml2-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --without-zlib-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.zlib + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+        --without-zlib-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.zlib + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'`
+    # gem install nokogiri
+}
+
 
 function bundleinstall() {
-    export GEM_HOME=./gems
-    bundle install --verbose $@
+    bundle install --path ./vendor/bundle --verbose $@
 }
 
 function bundleclean() {
-    rm -rf ./gems
+    rm -rf ./vendor/bundle
 }
 
 function bundleexec() {
-    export GEM_HOME=./gems
     bundle exec $@
 }
-
 
 "$@"
