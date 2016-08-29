@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-xautolock -time 20 -locker $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/lockscreen

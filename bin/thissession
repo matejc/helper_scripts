@@ -1,2 +1,0 @@
-#!/run/current-system/sw/bin/bash
-env DISPLAY=:0 USER=matejc XAUTHORITY=/home/matejc/.Xauthority "$@"

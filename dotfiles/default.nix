@@ -5,22 +5,23 @@ let
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/matejc";
-    monitorPrimary = "eDP1";
-    monitorTwo = "VGA1";
-    monitorThree = "DP1";
+    monitorPrimary = "HDMI-0";
+    monitorTwo = "DVI-I-0";
+    monitorThree = "DVI-I-1";
     soundCard = "0";
-    ethernetInterface = "enp0s25";
+    ethernetInterface = "enp3s0";
     wirelessInterface = "wlp3s0";
     vpnInterface = "vpn0";
-    mounts = [ "/" "/home" ];
+    mounts = [ "/" ];
     temperatureFiles = [ "/tmp/temp1_input" ];
-    batteries = [ "0" "1" ];
+    batteries = [ ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     editor = "nano";
     font = "pango:Cantarell 10";
     wallpaper = "${variables.homeDir}/Pictures/3.jpg";
+    lockImage = "/etc/nixos/nixos.png";
     inherit startScript;
   };
 
@@ -29,6 +30,10 @@ let
     ./i3status.nix
     ./gitconfig.nix
     ./gitignore.nix
+    ./autolock.nix
+    ./i3lock-wrapper.nix
+    ./lockscreen.nix
+    ./thissession.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''

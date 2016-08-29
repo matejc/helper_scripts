@@ -355,7 +355,7 @@
   bindsym Ctrl+Mod1+2 exec xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
   bindsym Ctrl+Mod1+1 exec xrandr --output VGA1 --off --output LVDS1 --auto
   #bindsym Ctrl+Mod1+c exec /home/matejc/workarea/connman_dmenu/connman_dmenu
-  bindsym Ctrl+Mod1+l exec ~/workarea/helper_scripts/bin/lockscreen
+  bindsym Ctrl+Mod1+l exec ~/bin/lockscreen
   bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/thunar
   #bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
   bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/xfce4-terminal
@@ -440,7 +440,7 @@
   #{{{ Autostart
 
   exec --no-startup-id ${variables.startScript}
-  exec --no-startup-id "~/workarea/helper_scripts/bin/autolock"
+  exec --no-startup-id "~/bin/autolock"
   #exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output $mon_lap --primary --auto --output $mon_ext --off --output $mon_ext1 --off"
   #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill /home/matejc/Pictures/simplave_by_voytecghost-d518thv.jpg; /run/current-system/sw/bin/i3-msg restart"
   exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart"
