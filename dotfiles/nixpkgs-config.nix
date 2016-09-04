@@ -281,6 +281,8 @@
 
         (with nodePackages; [ grunt-cli npm2nix bower ])
 
+        electron libnotify
+
       ];
       ignoreCollisions = true;
     };
