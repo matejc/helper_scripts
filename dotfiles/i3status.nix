@@ -9,31 +9,30 @@
   }
 
   ${lib.concatMapStringsSep "\n" (i: ''order += "disk ${i}"'') variables.mounts}
-  order += "ethernet ${variables.ethernetInterface}"
-  order += "wireless ${variables.wirelessInterface}"
-  order += "ethernet ${variables.vpnInterface}"
+
+  ${lib.concatMapStringsSep "\n" (i: ''order += "ethernet ${i}"'') variables.ethernetInterfaces}
+  ${lib.concatMapStringsSep "\n" (i: ''order += "wireless ${i}"'') variables.wirelessInterfaces}
+
   ${lib.concatMapStringsSep "\n" (i: ''order += "battery ${i}"'') variables.batteries}
   ${lib.concatImapStringsSep "\n" (pos: i: ''order += "cpu_temperature ${toString pos}"'') variables.temperatureFiles}
   order += "load"
   order += "volume master"
   order += "tztime local"
 
-  wireless ${variables.wirelessInterface} {
-          format_up = "%quality at %essid, %bitrate, %ip"
-          format_down = "W: down"
-  }
+  ${lib.concatMapStringsSep "\n" (i: ''
+    wireless ${i} {
+            format_up = "${i}: %quality at %essid, %bitrate, %ip"
+            format_down = "${i}: down"
+    }
+  '') variables.wirelessInterfaces}
 
-  ethernet ${variables.ethernetInterface} {
-          # if you use %speed, i3status requires the cap_net_admin capability
-          format_up = "%ip (%speed)"
-          format_down = "E: down"
-  }
-
-  ethernet ${variables.vpnInterface} {
-          # if you use %speed, i3status requires the cap_net_admin capability
-          format_up = "%ip"
-          format_down = "V: down"
-  }
+  ${lib.concatMapStringsSep "\n" (i: ''
+    ethernet ${i} {
+            # if you use %speed, i3status requires the cap_net_admin capability
+            format_up = "${i}: %ip (%speed)"
+            format_down = "${i}: down"
+    }
+  '') variables.ethernetInterfaces}
 
   ${lib.concatMapStringsSep "\n" (i: ''
   battery ${i} {

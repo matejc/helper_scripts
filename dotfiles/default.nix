@@ -38,7 +38,15 @@ let
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
-    echo start
+    xinput_custom_script.sh
+
+    TEMPFILE="${variables.homeDir}/.temp1_input"
+    rm $TEMPFILE
+    if [ -f "/sys/devices/virtual/hwmon/hwmon0/temp1_input" ]; then
+      ln -s /sys/devices/virtual/hwmon/hwmon0/temp1_input $TEMPFILE
+    else
+      ln -s /sys/devices/virtual/hwmon/hwmon1/temp1_input $TEMPFILE
+    fi
   '';
 
   extra = ''
@@ -51,13 +59,6 @@ let
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
-
-    rm /tmp/temp1_input
-    if [ -f "/sys/devices/virtual/hwmon/hwmon0/temp1_input" ]; then
-      ln -s /sys/devices/virtual/hwmon/hwmon0/temp1_input /tmp/temp1_input
-    else
-      ln -s /sys/devices/virtual/hwmon/hwmon1/temp1_input /tmp/temp1_input
-    fi
   '';
 
 
