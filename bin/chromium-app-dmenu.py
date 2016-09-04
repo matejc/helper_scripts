@@ -35,7 +35,7 @@ def join(paths):
 
 
 def dmenu(args=[], options=[]):
-    dmenu_cmd = ["dmenu"]
+    dmenu_cmd = ["rofi", "-dmenu"]
     if args:
         dmenu_cmd += args
     p = subprocess.Popen(
@@ -87,4 +87,4 @@ if run:
     match = re.match(r'.+\s+\[app_id\: \'(.+)\'\]', run)
     if match:
         write_last('/home/matejc/.dmenu_chrome_apps_last', run)
-        subprocess.call('chromium --profile-directory=Default --app-id='+match.groups()[0], shell=True)
+        subprocess.call('nodeenv electron /home/matejc/workarea/electron-chrome --app-id='+match.groups()[0], shell=True)
