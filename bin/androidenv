@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+nixprofile=$NIX_USER_PROFILE_DIR/androidenv
+
+export PATH="$nixprofile/bin:$PATH"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="androidenv $PS1"
+
+export JAVA_HOME="$nixprofile"
+
+export ANDROID_HOME="$nixprofile/libexec"
+
+export GRADLE_USER_HOME=/home/matejc/tmp/gradle
+
+export KEYSTORE_PATH=/home/matejc/.android/debug.keystore
+
+export KEY_ALIAS=androiddebugkey
+export KEYSTORE_PASSWORD=android
+export KEY_PASSWORD=android
+
+"$@"
