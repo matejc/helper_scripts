@@ -9,11 +9,10 @@ let
     monitorTwo = "DVI-I-0";
     monitorThree = "DVI-I-1";
     soundCard = "0";
-    ethernetInterface = "enp3s0";
-    wirelessInterface = "wlp3s0";
-    vpnInterface = "vpn0";
+    ethernetInterfaces = ["enp3s0" "vpn0"];
+    wirelessInterfaces = ["wlp3s0"];
     mounts = [ "/" ];
-    temperatureFiles = [ "/tmp/temp1_input" ];
+    temperatureFiles = [ "${variables.homeDir}/.temp1_input" ];
     batteries = [ ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
@@ -23,6 +22,7 @@ let
     wallpaper = "${variables.homeDir}/Pictures/3.jpg";
     lockImage = "/etc/nixos/nixos.png";
     inherit startScript;
+    timeFormat = "%a %d %b %Y %H:%M:%S";
   };
 
   dotFilePaths = [

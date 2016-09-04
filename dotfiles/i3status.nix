@@ -43,7 +43,7 @@
   '') variables.batteries}
 
   tztime local {
-          format = "%Y-%m-%d %H:%M:%S"
+          format = "${variables.timeFormat}"
   }
 
   load {
