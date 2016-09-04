@@ -376,6 +376,26 @@
       ];
     };
 
+    androidenv = pkgs.buildEnv {
+      name = "androidenv";
+      paths = with pkgs; [
+        stdenv
+        bash
+        git
+        jdk strace gcc.cc.lib
+
+        ((import <nixpkgs/pkgs/development/mobile/androidenv> {
+          inherit pkgs;
+          pkgs_i686 = pkgs.pkgsi686Linux;
+        }).androidsdk {
+          platformVersions = [ "24" ];
+          /*abiVersions = [ "x86" "x86_64"];*/
+          abiVersions = [ "x86" ];
+          useGoogleAPIs = false;
+        })
+      ];
+    };
+
   };
 #  st.conf = builtins.readFile ./.st.conf;
   allowUnfree = true;
