@@ -1,10 +1,10 @@
 #!/bin/sh
 
 # XXX: for some reason this variable is not set in here ?!
-NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matejc
+# NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matejc
 nixprofile=$NIX_USER_PROFILE_DIR/py27
 
-export PATH="`pwd`/bin:$nixprofile/bin:/usr/local/heroku/bin"
+export PATH="`pwd`/bin:$nixprofile/bin:/usr/local/heroku/bin:$PATH"
 export LD_LIBRARY_PATH="$nixprofile/lib"
 export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
 export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl"

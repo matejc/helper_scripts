@@ -178,10 +178,12 @@
         python27Packages.pyperclip
         python27Packages.requests
 
-        opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
+        /*opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
         python27Packages.flask python27Packages.sqlite3 python27Packages.werkzeug
         python27Packages.jinja2 python27Packages.markupsafe python27Packages.itsdangerous
-        strace python27Packages.opencv
+        strace python27Packages.opencv*/
+
+        pypi2nix gcc.cc libarchive gcc.cc.lib python27Packages.libarchive
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
