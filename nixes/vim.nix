@@ -13,6 +13,7 @@ vimrcConfig = {
         "The_NERD_Commenter"
         "The_NERD_tree"
         "taglist"
+        "youcompleteme"
     ];
   }];
   customRC = ''
@@ -230,12 +231,15 @@ vimrcConfig = {
       return join(lines, "\n")
     endfunction
 
+    highlight Pmenu ctermfg=0 ctermbg=3 guifg=#ffffff guibg=#0000ff
+
     map <PageUp> 30<up>
     map <PageDown> 30<down>
 
     map <C-PageUp> :bprev<Return>
     map <C-PageDown> :bnext<Return>
     map <C-w> :bd<Return>
+    map <C-n> :badd new.file
     map <C-q> :q<Return>
 
     map <left> h
@@ -245,6 +249,8 @@ vimrcConfig = {
 
     vmap <C-c> "+yi
     vmap <C-x> "+c
+    nmap <C-x> "+dd
+    imap <C-x> <esc>"+ddi
     vmap <C-v> c<ESC>"+p
     imap <C-v> <C-r><C-o>+
 
@@ -290,6 +296,9 @@ vimrcConfig = {
     imap <S-Left> <Esc>v<Left>
     imap <S-Right> <Esc>v<Right>
 
+    imap <C-BS> <C-W>
+    imap <C-Delete> <C-O>dw
+
     set guioptions-=m  "remove menu bar
     set guioptions-=T  "remove toolbar
     set guioptions-=r  "remove right-hand scroll bar
@@ -310,8 +319,9 @@ vimrcConfig = {
     map <C-t> :TlistToggle<CR> 
 
     let g:NERDCustomDelimiters = { 'nix': { 'left': '#' } }
+
     vmap <C-Insert> <leader>cc
-    vmap <C-Delete> <leader>cu
+    vmap <C-S-Insert> <leader>cu
 
     function! FindProjectName()
       let s:name = getcwd()
