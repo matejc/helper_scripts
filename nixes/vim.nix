@@ -259,6 +259,7 @@ vimrcConfig = {
     map <C-y> <C-R>
     map! <C-y> <esc><C-R>
     map <C-Enter> o
+    imap <C-Enter> <esc>o
     map <C-k> dd
     map <C-s> :w<Return>
     map! <C-s> <esc>:w<Return>
@@ -355,6 +356,11 @@ vimrcConfig = {
       autocmd VimEnter * call RestoreSession(FindProjectName())
       autocmd VimLeave * call SaveSession(FindProjectName())
     end
+
+    set splitright
+    nnoremap <leader><right> <C-W><C-L>
+    nnoremap <leader><left> <C-W><C-H>
+    nnoremap <leader>c :vsp<CR>
 
     exec 'source '.fnameescape($HOME.'/.vimrc')
     '';
