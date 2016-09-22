@@ -235,9 +235,12 @@ vimrcConfig = {
     let g:syntastic_javascript_jshint_exec = '/home/matejc/.npm-packages/bin/jshint'
     let g:syntastic_jshint_exec = '/home/matejc/.npm-packages/bin/jshint'
 
+    function! SessionId()
+      return system("echo " . getcwd() . " | ${pkgs.coreutils}/bin/sha1sum - | ${pkgs.gawk}/bin/awk '{printf $1}'")
+    endfunction
 
     function! MakeSession()
-      let b:sessiondir = $HOME . "/.vim/sessions" . getcwd()
+      let b:sessiondir = $HOME . "/.vim/sessions/" . SessionId()
       if (filewritable(b:sessiondir) != 2)
         exe 'silent !mkdir -p ' b:sessiondir
         redraw!
@@ -247,7 +250,7 @@ vimrcConfig = {
     endfunction
 
     function! LoadSession()
-      let b:sessiondir = $HOME . "/.vim/sessions" . getcwd()
+      let b:sessiondir = $HOME . "/.vim/sessions/" . SessionId()
       let b:sessionfile = b:sessiondir . "/session.vim"
       if (filereadable(b:sessionfile))
         exe 'source ' b:sessionfile
