@@ -310,7 +310,7 @@
         utillinux
         gnutar bzip2
         go
-        (with goPackages; [ ])
+        go2nix
       ];
       ignoreCollisions = true;
     };
