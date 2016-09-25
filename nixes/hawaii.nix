@@ -25,12 +25,11 @@ let
     '';
   };
 
-  qt5 = pkgs.qt56;
+  qt5 = pkgs.qt57;
 
   env = pkgs.buildEnv {
     name = "hawaii-env";
     paths = [
-      qt5.qtquickcontrols.out
       qt5.qtquickcontrols2.out
       qt5.qtdeclarative.out
       qt5.qtwayland.out
@@ -50,13 +49,12 @@ let
       hawaii.qtconfiguration
       hawaiiSchemas
 
-      weston glib.dev gnome3.dconf
+      weston xwayland glib.dev gnome3.dconf
       mesa mesa.out mesa_drivers
     ]);
   };
 
   envVars = pkgs.writeScript "envVars" ''
-    #!/bin/sh
     export VNCFONTS="${pkgs.xorg.fontmiscmisc}/lib/X11/fonts/misc,${pkgs.xorg.fontcursormisc}/lib/X11/fonts/misc"
 
     export PATH="$PATH:${env}/bin"
@@ -69,61 +67,59 @@ let
     #export GDK_BACKEND=wayland
     #export CLUTTER_BACKEND=wayland
     #export SDL_VIDEODRIVER=wayland
-    export DISPLAY=:99
-    export WAYLAND_DISPLAY=greenisland-seat0
+    #export DISPLAY=:99
+    #export WAYLAND_DISPLAY=greenisland-seat0
+    #export WAYLAND_DISPLAY=greenisland-master-seat0
     export QML2_IMPORT_PATH="${env}/lib/qt5/qml"
     export XDG_RUNTIME_DIR=/tmp/hawaii/greenisland
     export HOME=/tmp/hawaii
-    export QML_IMPORT_PATH="${env}/lib/qt5/imports"
+    #export QML_IMPORT_PATH="${env}/lib/qt5/imports"
     export RUNTIME_XDG_DATA_DIRS="${env}/share"
     export RUNTIME_XDG_CONFIG_DIRS="${env}/etc/xdg"
     export PKG_CONFIG_PATH=${env}/lib/pkgconfig/:$PKG_CONFIG_PATH
     export GREENISLAND_QPA_INTEGRATION=kms
     export GBM_DRIVERS_PATH=${pkgs.mesa_drivers}/lib/dri
-
-    echo $@
-    "$@"
+    export GREENISLAND_PLUGINS=plasma.so:xwayland.so
   '';
 
   s = name: pkgs.writeScript "strace.sh" ''
     #!/bin/sh
-    source ${envVars} true
+    . ${envVars}
     ${pkgs.strace}/bin/strace -o /tmp/strace_${name}.log $@
   '';
 
   hawaiiBin = pkgs.writeScript "hawaii.sh" ''
     #!/bin/sh
-    source ${envVars} true
-
+    . ${envVars}
     find $HOME
-
-    #su matejc -c "${envVars} ${pkgs.dbus.out}/bin/dbus-launch ${s "matejc-hawaii"} ${env}/bin/hawaii $@"
     ${s "hawaii"} ${env}/bin/hawaii $@
   '';
 
   hawaiiRun = pkgs.writeScript "hawaii-run.sh" ''
     #!/bin/sh
-    source ${envVars} true
-    set -e
+    . ${envVars}
+
+    echo $HOME
 
     mkdir -p $XDG_RUNTIME_DIR
     #chown -R matejc:users $XDG_RUNTIME_DIR
     chmod -R 0700 $XDG_RUNTIME_DIR
 
     mkdir -p $HOME/.config/greenisland
-    echo '{ "kms": { "device": "/dev/dri/card0", "hwcursor": true } }' > $HOME/.config/greenisland/platform.json
+    echo '{ "kms": { "device": "/dev/dri/card0" } }' > $HOME/.config/greenisland/platform.json
 
-    echo ${env}
-
+    echo "[core]" > ~/.config/weston.ini
+    echo "modules=xwayland.so" >> ~/.config/weston.ini
 
     # openvt -v -f -c 8 --
-    ${pkgs.dbus.out}/bin/dbus-launch  openvt -v -f -c 8 -- ${s "launcher"} greenisland-launcher --mode=eglfs --execute="${hawaiiBin}"
+    openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch  ${s "launcher"} greenisland-launcher --mode=eglfs --execute="${hawaiiBin}"
+    #openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch ${s "launcher"} greenisland-launcher --mode=x11 --execute="${hawaiiBin}"
+    echo ${env}
   '';
 in pkgs.stdenv.mkDerivation {
   name = "hawaii";
   shellHook = ''
-    alias envVars="${envVars}"
-    source ${envVars} true
+    . ${envVars}
     sudo ${hawaiiRun}
   '';
 }
