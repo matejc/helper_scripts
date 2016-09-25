@@ -136,7 +136,7 @@ vimrcConfig = {
     map <C-PageDown> :bnext<Return>
     map <C-w> :bd<Return>
     map <C-n> :badd new.file
-    map <C-q> :q<Return>
+    map <C-q> :qall<Return>
 
     map <left> h
     map <right> l
@@ -230,6 +230,10 @@ vimrcConfig = {
     set splitright
     nnoremap <leader><right> <C-W><C-L>
     nnoremap <leader><left> <C-W><C-H>
+
+    nnoremap <C-]> <C-W><C-L>
+    nnoremap <C-[> <C-W><C-H>
+
     nnoremap <leader>c :vsp<CR>
 
     let g:syntastic_javascript_jshint_exec = '/home/matejc/.npm-packages/bin/jshint'
