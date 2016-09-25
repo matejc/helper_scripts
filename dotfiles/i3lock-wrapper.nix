@@ -8,7 +8,7 @@
     #/run/current-system/sw/bin/convert $I3LOCKIMAGE -scale 10% -scale 1000% $I3LOCKIMAGE
     #/run/current-system/sw/bin/i3lock -i $I3LOCKIMAGE --nofork
 
-    i3lock-color -i ${variables.lockImage} --nofork --insidecolor=00000000 --ringcolor=007BA755 --keyhlcolor=007BA7CC --line-uses-ring --separatorcolor=007BA7CC --bshlcolor=FF0000CC
+    ${pkgs.i3lock-color}/bin/i3lock-color -i ${variables.lockImage} --nofork --insidecolor=00000000 --ringcolor=007BA755 --keyhlcolor=007BA7CC --line-uses-ring --separatorcolor=007BA7CC --bshlcolor=FF0000CC
 
     #/run/current-system/sw/bin/i3lock-fancy --greyscale --pixelate
   '';
