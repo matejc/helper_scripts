@@ -1,0 +1,14 @@
+#!/bin/sh
+
+nixprofile=$NIX_USER_PROFILE_DIR/javaenv
+
+export PATH="$nixprofile/bin"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="javaenv $PS1"
+export JAVA_HOME="$nixprofile"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+
+"$@"

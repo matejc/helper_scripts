@@ -34,6 +34,9 @@ let
     ./i3lock-wrapper.nix
     ./lockscreen.nix
     ./thissession.nix
+    ./atom_ctags.nix
+    ./atom_ctags-symbols.nix
+    ./oath.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
@@ -47,6 +50,8 @@ let
     else
       ln -s /sys/devices/virtual/hwmon/hwmon1/temp1_input $TEMPFILE
     fi
+
+    ${variables.homeDir}/bin/autolock &
   '';
 
   extra = ''

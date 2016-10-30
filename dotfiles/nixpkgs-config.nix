@@ -311,6 +311,14 @@
         gnutar bzip2
         go
         go2nix
+        findutils
+        gawk
+
+        git
+        nix-prefetch-scripts
+        pkgconfig
+        oniguruma
+
       ];
       ignoreCollisions = true;
     };
@@ -395,6 +403,16 @@
           abiVersions = [ "x86" ];
           useGoogleAPIs = false;
         })
+      ];
+    };
+
+    javaenv = pkgs.buildEnv {
+      name = "javaenv";
+      paths = with pkgs; [
+        stdenv
+        bash
+        git
+        jdk strace gcc.cc.lib maven coreutils
       ];
     };
 
