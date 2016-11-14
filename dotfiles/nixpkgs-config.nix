@@ -10,8 +10,17 @@
 
     py3env = pkgs.buildEnv {
       name = "py3env";
-      paths = [ pkgs.python3 pkgs.python3Packages.requests2
-        pkgs.python35Packages.virtualenv pkgs.phantomjs2 ];
+      paths = with pkgs; [
+        python3
+        python3Packages.virtualenv
+        gcc
+        python3Packages.yapf
+        python3Packages.pep8
+        coreutils
+        atom
+        which
+        nix
+      ];
     };
 
     homeEnv = pkgs.buildEnv {
@@ -398,9 +407,10 @@
           inherit pkgs;
           pkgs_i686 = pkgs.pkgsi686Linux;
         }).androidsdk {
-          platformVersions = [ "24" ];
+          /*platformVersions = [ "24" ];*/
+          platformVersions = [ ];
           /*abiVersions = [ "x86" "x86_64"];*/
-          abiVersions = [ "x86" ];
+          abiVersions = [ ];
           useGoogleAPIs = false;
         })
       ];
