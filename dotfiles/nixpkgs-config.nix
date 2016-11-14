@@ -38,18 +38,11 @@
       paths = [ pkgs.nixUnstable ];
     };
 
-    envTex = pkgs.buildEnv {
-      name = "mytex";
+    texenv = pkgs.buildEnv {
+      name = "texenv";
       paths = with pkgs; [
-        (let myTexLive =
-          pkgs.texLiveAggregationFun {
-            paths =
-              [ pkgs.texLive
-                pkgs.texLiveCMSuper
-                pkgs.texLiveExtra
-                pkgs.texLiveBeamer ];
-          };
-         in myTexLive)
+        texstudio
+        texlive.combined.scheme-full
       ];
     };
 
