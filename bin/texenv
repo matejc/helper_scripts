@@ -1,0 +1,11 @@
+#!/bin/sh
+
+nixprofile=$NIX_USER_PROFILE_DIR/texenv
+
+export PATH="$nixprofile/bin"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="texenv $PS1"
+
+echo $nixprofile
+
+"$@"

@@ -168,7 +168,7 @@ vimrcConfig = {
     map <C-d> Yp
     map <leader>f :grep -R '<C-R>=expand('<cword>')<CR>' .
     map <C-f> /<C-R>=expand('<cword>')<CR>
-    map <C-a> <esc>ggVG<CR>
+    "map <C-a> <esc>ggVG<CR>
     map <C-h> :%s/<C-R>=expand('<cword>')<CR>/<C-R>=expand('<cword>')<CR>/g
 
     nnoremap <C-down> :m .+1<CR>==
