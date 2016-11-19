@@ -1,5 +1,31 @@
 #!/usr/bin/env bash
 
+# On all involved machines:
+# install gitAndTools.git-annex gitAndTools.gitRemoteGcrypt gnupg1
+#
+# On server:
+# $ mkdir -p ~/annex && cd ~/annex && git init --bare
+#
+# On your computer:
+#
+# $ ssh-keygen -t rsa -b 2048 -f ~/.ssh/gitannexkey
+#
+# add pub key (ex: ~/.ssh/gitannexkey.pub) to server's ~/.ssh/authorized_keys
+#
+# contents of .ssh/config:
+# ...
+# Host server1
+#     HostName server1.yourdomain.com
+#     User notroot
+#     Port 1234
+#     IdentityFile /home/notroot/.ssh/gitannexkey
+# ...
+#
+# this script:
+# $ git-annex-add-remote <local destination> <server name> <ssh endpoint> <gpg id>
+# ex: git-annex-add-remote ~/annex server1 server1:/home/user/annex matej@matejc.com
+
+
 INIT_DIR="$1"
 REMOTE_NAME="$2"
 REMOTE_SSH="$3"
@@ -20,10 +46,11 @@ if [ ! -d "$INIT_DIR/.git" ]; then
     git init
 fi
 git-annex init
+git-annex wanted . standard
+git-annex group . client
 
 EXCODE="0"
-git remote get-url $REMOTE_NAME || EXCODE="$?"
-if [ "$EXCODE" != "0" ]; then
-    git remote add "$REMOTE_NAME" "$REMOTE_SSH"
-fi
-git-annex enableremote "$REMOTE_NAME" encryption=pubkey keyid=$KEYID
+git-annex initremote "$REMOTE_NAME" type=gcrypt gitrepo="$REMOTE_SSH" keyid="$KEYID" || EXCODE="$?"
+git-annex wanted "$REMOTE_NAME" standard
+git-annex group "$REMOTE_NAME" backup
+echo "exit status: $EXCODE"
