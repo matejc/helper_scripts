@@ -16,10 +16,12 @@
         gcc
         python3Packages.yapf
         python3Packages.pep8
+        python3Packages.gevent
         coreutils
         atom
         which
         nix
+        gnused gawk diffutils gnugrep
       ];
     };
 

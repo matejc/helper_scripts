@@ -1,4 +1,4 @@
-#!/run/current-system/sw/bin/python
+#!/run/current-system/sw/bin/python2
 
 import subprocess
 import json

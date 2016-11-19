@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+INIT_DIR="$1"
+REMOTE_NAME="$2"
+REMOTE_SSH="$3"
+KEYID="$4"
+
+set -xe
+
+test -n "$INIT_DIR"
+test -n "$REMOTE_NAME"
+test -n "$REMOTE_SSH"
+test -n "$KEYID"
+
+mkdir -p $INIT_DIR
+
+cd $INIT_DIR
+
+if [ ! -d "$INIT_DIR/.git" ]; then
+    git init
+fi
+git-annex init
+
+EXCODE="0"
+git remote get-url $REMOTE_NAME || EXCODE="$?"
+if [ "$EXCODE" != "0" ]; then
+    git remote add "$REMOTE_NAME" "$REMOTE_SSH"
+fi
+git-annex enableremote "$REMOTE_NAME" encryption=pubkey keyid=$KEYID

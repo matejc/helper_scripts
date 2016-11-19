@@ -37,6 +37,7 @@ let
     ./atom_ctags.nix
     ./atom_ctags-symbols.nix
     ./oath.nix
+    ./i3minators.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
@@ -51,7 +52,14 @@ let
       ln -s /sys/devices/virtual/hwmon/hwmon1/temp1_input $TEMPFILE
     fi
 
+    sleep 1
+    ${pkgs.i3minator}/bin/i3minator start w1
+    sleep 1
+    ${pkgs.i3minator}/bin/i3minator start w3
+    sleep 1
+    ${pkgs.i3minator}/bin/i3minator start w4
     ${variables.homeDir}/bin/autolock &
+    echo "DONE"
   '';
 
   extra = ''
@@ -64,17 +72,26 @@ let
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
+
+    if [ -f "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee" ]; then
+        ${pkgs.gnused}/bin/sed -i -e's|@run(".*yapf"|@run("${pkgs.python3Packages.yapf}/bin/yapf"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee"
+        ${pkgs.gnused}/bin/sed -i -e's|@run(".*isort"|@run("${pkgs.python3Packages.isort}/bin/isort"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee"
+    fi
+    if [ -f "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee" ]; then
+        ${pkgs.gnused}/bin/sed -i -e's|@run(".*autopep8"|@run("${pkgs.python3Packages.autopep8}/bin/autopep8"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee"
+        ${pkgs.gnused}/bin/sed -i -e's|@run(".*isort"|@run("${pkgs.python3Packages.isort}/bin/isort"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee"
+    fi
   '';
 
 
   dotFileFun = nixFilePath:
     let
-      nix = import nixFilePath { inherit variables config pkgs lib; };
-    in {
+      nixes = lib.toList (import nixFilePath { inherit variables config pkgs lib; });
+    in map (nix: {
       source = nix.source;
       target = nix.target;
-    };
-  dotAttrs = map dotFileFun dotFilePaths;
+    }) nixes;
+  dotAttrs = lib.flatten (map dotFileFun dotFilePaths);
   dotFilesScript = pkgs.writeScript "dot-files-script.sh" ''
     #!${pkgs.stdenv.shell}
 
