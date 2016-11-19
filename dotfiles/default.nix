@@ -38,6 +38,7 @@ let
     ./atom_ctags-symbols.nix
     ./oath.nix
     ./i3minators.nix
+    ./git-annex-helpers.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
