@@ -1,32 +1,32 @@
 #!/usr/bin/env bash
 
 # On all involved machines:
-# install gitAndTools.git-annex gitAndTools.gitRemoteGcrypt gnupg1
+#   install gitAndTools.git-annex gitAndTools.gitRemoteGcrypt gnupg1
 #
 # On server:
-# $ mkdir -p ~/annex && cd ~/annex && git init --bare
+#   $ mkdir -p ~/annex && cd ~/annex && git init --bare
 #
 # On your computer:
 #
-# $ ssh-keygen -t rsa -b 2048 -f ~/.ssh/gitannexkey
+#   $ ssh-keygen -t rsa -b 2048 -f ~/.ssh/gitannexkey
 #
-# add pub key (ex: ~/.ssh/gitannexkey.pub) to server's ~/.ssh/authorized_keys
+#   add pub key (ex: ~/.ssh/gitannexkey.pub) to server's ~/.ssh/authorized_keys
 #
-# contents of .ssh/config:
-# ...
-# Host server1
-#     HostName server1.yourdomain.com
-#     User notroot
-#     Port 1234
-#     IdentityFile /home/notroot/.ssh/gitannexkey
-# ...
+#   contents of .ssh/config:
+#   ...
+#   Host server1
+#       HostName server1.yourdomain.com
+#       User notroot
+#       Port 1234
+#       IdentityFile /home/notroot/.ssh/gitannexkey
+#   ...
 #
-# this script:
-# $ git-annex-add-remote <local destination> <server name> <ssh endpoint> <gpg id>
-# ex: git-annex-add-remote ~/annex server1 server1:/home/user/annex matej@matejc.com
+#   _this_ script:
+#   $ git-annex-add-remote <local destination> <server name> <ssh endpoint> <gpg id>
+#   ex: git-annex-add-remote ~/annex server1 server1:/home/user/annex matej@matejc.com
 #
-# for automatic syncing use something like:
-# $ git-annex assistant --foreground --debug
+#   for automatic syncing use something like:
+#   $ git-annex assistant --foreground --debug
 
 
 INIT_DIR="$1"
