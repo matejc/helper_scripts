@@ -52,8 +52,8 @@
     nodes:
         browser:
             terminal: false
-            command: /run/current-system/sw/bin/chromium
-            timeout: 2
+            command: /run/current-system/sw/bin/chromium || /run/current-system/sw/bin/vivaldi
+            timeout: 1
   '';
 } {
   target = "${variables.homeDir}/.i3minator/w4.yml";
@@ -81,6 +81,6 @@
         chat:
             terminal: false
             command: /run/current-system/sw/bin/Franz
-            timeout: 2
+            timeout: 1
   '';
 }]
