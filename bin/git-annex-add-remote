@@ -24,6 +24,9 @@
 # this script:
 # $ git-annex-add-remote <local destination> <server name> <ssh endpoint> <gpg id>
 # ex: git-annex-add-remote ~/annex server1 server1:/home/user/annex matej@matejc.com
+#
+# for automatic syncing use something like:
+# $ git-annex assistant --foreground --debug
 
 
 INIT_DIR="$1"
