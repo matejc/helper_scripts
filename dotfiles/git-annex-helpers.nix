@@ -32,7 +32,7 @@
   #   for automatic syncing use something like:
   #   $ git-annex assistant --foreground --debug
 
-  export PATH="${pkgs.gitAndTools.git-annex}:${pkgs.gitAndTools.gitRemoteGcrypt}:${pkgs.gnupg1}:$PATH"
+  export PATH="${pkgs.gitAndTools.git-annex}/bin:${pkgs.gitAndTools.gitRemoteGcrypt}/bin:${pkgs.gnupg1}/bin:$PATH"
 
   INIT_DIR="$1"
   REMOTE_NAME="$2"
@@ -68,7 +68,7 @@
   source = pkgs.writeScript "git-annex-sync.sh" ''
   #!/usr/bin/env bash
 
-  export PATH="${pkgs.gitAndTools.git-annex}:${pkgs.gitAndTools.gitRemoteGcrypt}:${pkgs.gnupg1}:$PATH"
+  export PATH="${pkgs.gitAndTools.git-annex}/bin:${pkgs.gitAndTools.gitRemoteGcrypt}/bin:${pkgs.gnupg1}/bin:$PATH"
 
   REPOSITORY_DIR="$1"
 
@@ -89,7 +89,7 @@
   source = pkgs.writeScript "git-annex-assistant.sh" ''
   #!/usr/bin/env bash
 
-  export PATH="${pkgs.gitAndTools.git-annex}:${pkgs.gitAndTools.gitRemoteGcrypt}:${pkgs.gnupg1}:$PATH"
+  export PATH="${pkgs.gitAndTools.git-annex}/bin:${pkgs.gitAndTools.gitRemoteGcrypt}/bin:${pkgs.gnupg1}/bin:$PATH"
 
   REPOSITORY_DIR="$1"
 
