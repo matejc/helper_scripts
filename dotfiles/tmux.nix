@@ -5,7 +5,7 @@
     set -ga terminal-overrides ",xterm-256color:Tc"
     set -g default-terminal "screen-256color"
 
-    set -g mouse off
+    set -g mouse on
 
     bind-key -n WheelUpPane \
         if-shell -Ft= "#{?pane_in_mode,1,#{mouse_button_flag}}" \
@@ -34,8 +34,6 @@
 
     bind-key -n MouseDrag1Status swap-window -t=
 
-    bind -n F10 copy-mode -u \; set -g status-bg red
-
     bind-key -n C-PageDown next-window
     bind-key -n C-PageUp previous-window
     bind-key -n C-N new-window
@@ -59,6 +57,13 @@
     set-window-option -g xterm-keys on
 
     set -g history-limit 10000
+
+    # COPY & PASTE
+    bind-key -t emacs-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
+    bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
+    # bind-key -n MouseDragEnd1Pane run -b "sleep 0.3 && tmux show-buffer | xclip -i -selection primary > /dev/null && tmux display-message \"beje\""
+    # bind -n F10 run -b "tmux show-buffer | xclip -i -selection primary > /dev/null"
+    bind -n F11 run -b "exec </dev/null; xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
 
     source-file "${variables.homeDir}/.green.tmuxtheme"
   '';

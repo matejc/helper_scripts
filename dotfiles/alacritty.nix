@@ -186,8 +186,8 @@
       - { key: Delete,                  chars: "\x1b[P",   mode: ~AppKeypad  }
       - { key: PageDown, mods: Control, chars: "\x1b[6;5~"                   }
       - { key: PageUp,   mods: Control, chars: "\x1b[5;5~"                   }
-      - { key: V,        mods: Control|Shift, action: Paste                  }
-      - { key: C,        mods: Control|Shift, action: Copy                   }
+      - { key: V,        mods: Control|Shift, chars: "\x1b[23~"              }
+      - { key: C,        mods: Control|Shift, chars: "\x1b[21~"              }
       - { key: Slash,    mods: Alt, chars: "\x1bOR"                }
       - { key: Backslash,mods: Alt, chars: "\x1bOS"                }
       - { key: PageUp,   mods: Control|Shift, chars: "\x1bOR"                }
@@ -199,7 +199,6 @@
       - { key: Up,       mods: Alt, chars: "\x1b[18~"                        }
       - { key: Down,     mods: Alt, chars: "\x1b[19~"                        }
       - { key: T,        mods: Control|Shift, chars: "\x1b[20~"              }
-      - { key: PageUp,   mods: Shift,         chars: "\x1b[21~"              }
 
 
     # Mouse bindings
