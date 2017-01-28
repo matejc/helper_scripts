@@ -43,7 +43,7 @@
       # as modifying the linespacing, and offset.x as modifying the letter spacing.
       offset:
         x: 2.0
-        y: -14.0
+        y: -12.0
 
       # OS X only: use thin stroke font rendering. Thin strokes are suitable
       # for retina displays, but for non-retina you probably want this set to
