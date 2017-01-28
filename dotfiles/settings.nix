@@ -43,6 +43,8 @@ let
     ./httpserver.nix
     ./wcontrol.nix
     ./batstatus.nix
+    ./alacritty.nix
+    ./tmux.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
