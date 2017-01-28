@@ -390,10 +390,10 @@
   #client.unfocused        #333333 #93a1a1 #fdf6e3 #292d2e
 
   #                          border       backgr.       text   indicator
-  client.focused              $dark        $dark         $white $lgrey
-  client.unfocused            $dark        $dark         $grey $lgrey
-  client.focused_inactive     $dark        $dark         $mgrey $lgrey
-  client.urgent               $dark        $blue         $mgrey $lgrey
+  client.focused              $mgray       $mgray        $white $lgrey $gray
+  client.unfocused            $dark        $dark         $grey  $lgrey $gray
+  client.focused_inactive     $dark        $dark         $mgrey $lgrey $gray
+  client.urgent               $dark        $blue         $mgrey $lgrey $gray
 
 
 

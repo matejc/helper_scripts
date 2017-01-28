@@ -13,15 +13,16 @@
       paths = with pkgs; [
         python3
         python3Packages.virtualenv
-        gcc
+        gcc libffi libffi.dev
         python3Packages.yapf
         python3Packages.pep8
         python3Packages.gevent
         coreutils
         atom
         which
-        nix
+        nix nix-prefetch-scripts
         gnused gawk diffutils gnugrep
+        rofi  # for lpp.sh
       ];
     };
 
@@ -258,37 +259,25 @@
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs-6_x
+        nodejs-7_x
         python
         utillinux
-        # node_webkit_0_11
-        xdg_utils
+
         graphicsmagick
         imagemagick
-        youtube-dl mplayer psmisc ffmpeg vlc
+
         bzip2
         libpng nasm libtool autoconf automake
         libarchive
         busybox
 
-        # selenium
-        # phantomjs2-bin
-        # selenium-server-standalone
-
-        openssh
-
         flow
-
-        graphviz-nox
-
-        #electron libnotify
 
         libpcap
 
-        (with nodePackages; [ grunt-cli npm2nix bower ])
+        (with nodePackages; [ grunt-cli bower ])
 
         electron libnotify
-
       ];
       ignoreCollisions = true;
     };
