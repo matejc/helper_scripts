@@ -13,7 +13,7 @@ vimrcConfig = {
         "The_NERD_Commenter"
         "The_NERD_tree"
         "taglist"
-        "youcompleteme"
+        # "youcompleteme"
         "molokai"
     ];
   }];
@@ -136,7 +136,7 @@ vimrcConfig = {
     map <C-PageDown> :bnext<Return>
     map <C-w> :bd<Return>
     map <C-n> :badd new.file
-    map <C-q> :qall<Return>
+    map <C-q> <ESC>:qall<Return>
 
     map <left> h
     map <right> l
