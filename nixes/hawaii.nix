@@ -91,8 +91,9 @@ let
   hawaiiBin = pkgs.writeScript "hawaii.sh" ''
     #!/bin/sh
     . ${envVars}
-    find $HOME
-    ${s "hawaii"} ${env}/bin/hawaii $@
+    # find $HOME
+    # ${s "hawaii"} ${env}/bin/hawaii $@
+    ${env}/bin/hawaii $@ &>/tmp/hawaii.log
   '';
 
   hawaiiRun = pkgs.writeScript "hawaii-run.sh" ''
@@ -108,16 +109,22 @@ let
     mkdir -p $HOME/.config/greenisland
     echo '{ "kms": { "device": "/dev/dri/card0" } }' > $HOME/.config/greenisland/platform.json
 
-    echo "[core]" > ~/.config/weston.ini
-    echo "modules=xwayland.so" >> ~/.config/weston.ini
+    # echo "[core]" > ~/.config/weston.ini
+    # echo "modules=xwayland.so" >> ~/.config/weston.ini
 
     # openvt -v -f -c 8 --
-    openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch  ${s "launcher"} greenisland-launcher --mode=eglfs --execute="${hawaiiBin}"
+    # openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch  ${s "launcher"} greenisland-launcher --mode=eglfs --execute="${hawaiiBin}"
+    openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch greenisland-launcher --mode=eglfs --execute="${hawaiiBin}"
     #openvt -v -f -c 9 -- ${pkgs.dbus.out}/bin/dbus-launch ${s "launcher"} greenisland-launcher --mode=x11 --execute="${hawaiiBin}"
     echo ${env}
   '';
 in pkgs.stdenv.mkDerivation {
   name = "hawaii";
+  unpackPhase = "true";
+  installPhase = ''
+    mkdir -p $out/bin
+    ln -s ${hawaiiRun} $out/bin/hawaii-run.sh
+  '';
   shellHook = ''
     . ${envVars}
     sudo ${hawaiiRun}
