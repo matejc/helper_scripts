@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+git rev-list --all --date-order | PAGER=cat xargs git grep -n "$@"
