@@ -36,17 +36,17 @@
 
     bind-key -n C-PageDown next-window
     bind-key -n C-PageUp previous-window
-    bind-key -n C-N new-window
+    bind-key -n C-N new-window -c '#{pane_current_path}'
 
-    bind-key -n F9 new-window
+    bind-key -n F9 new-window -c '#{pane_current_path}'
 
     bind -n F5 select-pane -L
     bind -n F6 select-pane -R
     bind -n F7 select-pane -U
     bind -n F8 select-pane -D
 
-    bind-key -n F3 splitw -v -p 50
-    bind-key -n F4 splitw -h -p 50
+    bind-key -n F3 splitw -v -p 50 -c '#{pane_current_path}'
+    bind-key -n F4 splitw -h -p 50 -c '#{pane_current_path}'
 
     setw -g monitor-activity on
     set -g visual-activity on
@@ -81,7 +81,7 @@
     #
 
     # Status update interval
-    #set -g status-interval 5
+    set -g status-interval 3
 
     # Basic status bar colors
     set -g status-fg colour240
@@ -100,8 +100,8 @@
     set -g status-right "#[fg=colour240,bg=colour233]#[fg=colour245,bg=colour233,bold] #H "
 
     # Window status
-    set -g window-status-format " #I:#P:#W "
-    set -g window-status-current-format "#[fg=colour240,bg=colour233,nobold] #I:#P:#[fg=colour190,bg=colour233,nobold]#W #[fg=black,bg=colour233,nobold]"
+    set -g window-status-format " #I:#P:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "
+    set -g window-status-current-format "#[fg=colour240,bg=colour233,nobold] #I:#P:#[fg=colour190,bg=colour233,nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=colour233,nobold]"
 
     # Current window status
     set -g window-status-current-bg colour100
