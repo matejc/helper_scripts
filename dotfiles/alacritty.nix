@@ -182,8 +182,9 @@
       - { key: F11,                     chars: "\x1b[23~"                    }
       - { key: F12,                     chars: "\x1b[24~"                    }
       - { key: Back,                    chars: "\x7f"                        }
-      - { key: Delete,                  chars: "\x1b[3~",  mode: AppKeypad   }
-      - { key: Delete,                  chars: "\x1b[P",   mode: ~AppKeypad  }
+      - { key: Delete,                  chars: "\x1b[3~",                    }
+      # - { key: Delete,                  chars: "\x1b[3~",  mode: AppKeypad   }
+      # - { key: Delete,                  chars: "\x1b[P",   mode: ~AppKeypad  }
       - { key: PageDown, mods: Control, chars: "\x1b[6;5~"                   }
       - { key: PageUp,   mods: Control, chars: "\x1b[5;5~"                   }
       - { key: V,        mods: Control|Shift, chars: "\x1b[23~"              }

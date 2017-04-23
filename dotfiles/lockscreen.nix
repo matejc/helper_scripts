@@ -3,8 +3,13 @@
   target = "${variables.homeDir}/bin/lockscreen";
   source = pkgs.writeScript "lockscreen" ''
     #!${pkgs.stdenv.shell}
-    ${variables.homeDir}/bin/i3lock-wrapper &
+    revert() {
+      xset dpms 0 0 0
+    }
+    trap revert HUP INT TERM
+    xset +dpms dpms 5 5 5
     sleep 1
-    xset dpms force off
+    /run/wrappers/bin/slock
+    revert
   '';
 }

@@ -81,7 +81,7 @@
     #
 
     # Status update interval
-    set -g status-interval 3
+    set -g status-interval 5
 
     # Basic status bar colors
     set -g status-fg colour240
@@ -97,7 +97,7 @@
     set -g status-right-bg colour243
     set -g status-right-fg colour233
     set -g status-right-length 150
-    set -g status-right "#[fg=colour240,bg=colour233]#[fg=colour245,bg=colour233,bold] #H "
+    set -g status-right "#[fg=colour240,bg=colour233]#[fg=colour245,bg=colour233,bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 )))'') variables.temperatureFiles}]"
 
     # Window status
     set -g window-status-format " #I:#P:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "

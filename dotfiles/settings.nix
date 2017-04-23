@@ -20,9 +20,10 @@ let
     editor = "nano";
     font = "pango:Cantarell 12";
     wallpaper = "${variables.homeDir}/Pictures/27058-Overflowed.jpg";
-    lockImage = "${variables.homeDir}/Pictures/bl1920_nixos_1.png";
+    lockImage = "${variables.homeDir}/Pictures/27058-Overflowed_blur.png";
     inherit startScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
+    backlightSysDir = "/sys/class/backlight/intel_backlight";
   };
 
   dotFilePaths = [
@@ -34,8 +35,8 @@ let
     ./i3lock-wrapper.nix
     ./lockscreen.nix
     ./thissession.nix
-    ./atom_ctags.nix
-    ./atom_ctags-symbols.nix
+    # ./atom_ctags.nix
+    # ./atom_ctags-symbols.nix
     ./oath.nix
     ./i3minators.nix
     ./git-annex-helpers.nix
@@ -45,19 +46,18 @@ let
     ./batstatus.nix
     ./alacritty.nix
     ./tmux.nix
+    ./temp.nix
+    ./brightness.nix
+    ./xbacklight.nix
+    ./volume.nix
+    ./fish.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
     xinput_custom_script.sh
 
-    TEMPFILE="${variables.homeDir}/.temp1_input"
-    rm $TEMPFILE
-    if [ -f "/sys/devices/virtual/hwmon/hwmon0/temp1_input" ]; then
-      ln -s /sys/devices/virtual/hwmon/hwmon0/temp1_input $TEMPFILE
-    else
-      ln -s /sys/devices/virtual/hwmon/hwmon1/temp1_input $TEMPFILE
-    fi
+    ${variables.homeDir}/bin/temp-init
 
     sleep 1
     ${pkgs.i3minator}/bin/i3minator start w1

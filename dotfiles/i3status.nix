@@ -64,7 +64,7 @@
   '') variables.mounts}
 
   volume master {
-          format = "♪ %volume"
+          format = "♪: %volume"
           device = "default"
           mixer = "Master"
           mixer_idx = ${variables.soundCard}

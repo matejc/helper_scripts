@@ -13,7 +13,7 @@ vimrcConfig = {
         "The_NERD_Commenter"
         "The_NERD_tree"
         "taglist"
-        # "youcompleteme"
+        "youcompleteme"
         "molokai"
     ];
   }];

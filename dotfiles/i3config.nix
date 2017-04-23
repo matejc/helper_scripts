@@ -341,8 +341,8 @@
   bindcode 121 exec ~/workarea/helper_scripts/bin/volume $snd_card toggle
   bindcode 122 exec ~/workarea/helper_scripts/bin/volume $snd_card decrease
   bindcode 123 exec ~/workarea/helper_scripts/bin/volume $snd_card increase
-  bindcode 233 exec /run/current-system/sw/bin/xbacklight -inc 5
-  bindcode 232 exec /run/current-system/sw/bin/xbacklight -dec 5
+  bindcode 233 exec ${variables.homeDir}/bin/setxbacklight inc
+  bindcode 232 exec ${variables.homeDir}/bin/setxbacklight dec
   #bindsym $mod+0 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 1.0
   #bindsym $mod+9 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.9
   #bindsym $mod+8 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.8
@@ -355,11 +355,11 @@
   bindsym Ctrl+Mod1+2 exec xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
   bindsym Ctrl+Mod1+1 exec xrandr --output VGA1 --off --output LVDS1 --auto
   #bindsym Ctrl+Mod1+c exec /home/matejc/workarea/connman_dmenu/connman_dmenu
-  bindsym Ctrl+Mod1+l exec ~/bin/lockscreen
+  bindsym Ctrl+Mod1+l exec ${variables.homeDir}/bin/lockscreen
   bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/thunar
   #bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
   bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/xfce4-terminal
-  bindsym F12 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
+  bindcode 152 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
@@ -445,7 +445,8 @@
   #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill /home/matejc/Pictures/simplave_by_voytecghost-d518thv.jpg; /run/current-system/sw/bin/i3-msg restart"
   exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart"
   exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/dunst" &
-  exec --no-startup-id cmst --minimized
+  # exec --no-startup-id cmst --minimized
+  # exec --no-startup-id ${pkgs.xfce.xfce4_power_manager}/bin/xfce4-power-manager
 
   # }}}
   '';

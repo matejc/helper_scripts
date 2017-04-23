@@ -260,6 +260,8 @@
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
         nodejs-7_x
+        (yarn.override { nodejs = nodejs-7_x; })
+        ((import /home/matejc/workarea/yarn2nix { inherit pkgs; }).yarn2nix)
         python
         utillinux
 
@@ -278,6 +280,23 @@
         (with nodePackages; [ grunt-cli bower ])
 
         electron libnotify
+      ];
+      ignoreCollisions = true;
+    };
+
+    nodestableenv = pkgs.buildEnv {
+      name = "nodestableenv";
+      paths = with pkgs; [
+        stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
+        nodejs
+        yarn
+        python
+        utillinux
+
+        bzip2
+        libpng nasm libtool autoconf automake
+        libarchive
+        busybox
       ];
       ignoreCollisions = true;
     };
