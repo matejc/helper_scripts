@@ -66,6 +66,8 @@ let
     sleep 1
     ${pkgs.i3minator}/bin/i3minator start w4
     ${variables.homeDir}/bin/autolock &
+    ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart
+    ${pkgs.dunst}/bin/dunst &
     echo "DONE"
   '';
 
