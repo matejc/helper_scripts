@@ -58,6 +58,8 @@
 
     set -g history-limit 10000
 
+    bind -t emacs-copy F10 rectangle-toggle
+
     # COPY & PASTE
     bind-key -t emacs-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
     bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"

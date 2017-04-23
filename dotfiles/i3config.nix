@@ -338,9 +338,11 @@
   bindsym Ctrl+Mod1+Shift+Left exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
   bindsym Ctrl+Mod1+Shift+Right exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
   bindcode 179 exec /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
-  bindcode 121 exec ~/workarea/helper_scripts/bin/volume $snd_card toggle
-  bindcode 122 exec ~/workarea/helper_scripts/bin/volume $snd_card decrease
-  bindcode 123 exec ~/workarea/helper_scripts/bin/volume $snd_card increase
+  bindcode 121 exec ${variables.homeDir}/bin/volume $snd_card toggle
+  bindcode 122 exec ${variables.homeDir}/bin/volume $snd_card decrease
+  bindsym Ctrl+Mod1+Shift+Down exec ${variables.homeDir}/bin/volume $snd_card decrease
+  bindcode 123 exec ${variables.homeDir}/bin/bin/volume $snd_card increase
+  bindsym Ctrl+Mod1+Shift+Up exec ${variables.homeDir}/bin/volume $snd_card increase
   bindcode 233 exec ${variables.homeDir}/bin/setxbacklight inc
   bindcode 232 exec ${variables.homeDir}/bin/setxbacklight dec
   #bindsym $mod+0 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 1.0

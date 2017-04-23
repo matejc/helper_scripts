@@ -22,8 +22,7 @@ let
   # example #1:
   # mapAttrsRecursiveDrv (path: value: path) pkgs.pythonPackages ["pkgs" "pythonPackages"] []
   # => [ [ "pkgs" "pythonPackages" "searx" ] [ "pkgs" "pythonPackages" "tarman" ] ... ]
-  # example #2:
-  # mapAttrsRecursiveDrv (path: value: path) pkgs ["pkgs"] []
+  # example #2:0 # mapAttrsRecursiveDrv (path: value: path) pkgs ["pkgs"] []
   # => [ [ "pkgs" "bash" ] [ "pkgs" "zsh" ] [ "pkgs" "pythonPackages" "searx" ] [ "pkgs" "pythonPackages" "tarman" ] ... ]
   mapAttrsRecursiveDrv = f: set: path: list:
     let

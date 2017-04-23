@@ -200,6 +200,7 @@
       - { key: Up,       mods: Alt, chars: "\x1b[18~"                        }
       - { key: Down,     mods: Alt, chars: "\x1b[19~"                        }
       - { key: T,        mods: Control|Shift, chars: "\x1b[20~"              }
+      - { key: PageUp,   mods: Shift, chars: "\x1b[21~"                      }
 
 
     # Mouse bindings

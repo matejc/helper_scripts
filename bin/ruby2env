@@ -4,7 +4,7 @@
 nixprofile=$NIX_USER_PROFILE_DIR/ruby2env
 
 export GEM_HOME=$HOME/.gems
-export PATH="$HOME/.gems/bin:$nixprofile/bin"
+export PATH="$HOME/.gems/bin:$nixprofile/bin:$PATH"
 export LD_LIBRARY_PATH="$nixprofile/lib"
 export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
 export NIX_CFLAGS_COMPILE="-I$nixprofile/include"
@@ -14,11 +14,14 @@ export PS1="ruby2env $PS1"
 export EXECJS_RUNTIME=Node
 
 function nokogiri() {
-    gem install nokogiri -- --use-system-libraries \
-        --with-xslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
-        --with-xslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
-        --with-xml2-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/include/libxml2\"" | sed -e 's/^"//'  -e 's/"$//'` \
-        --with-xml2-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2 + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'`
+    gem install nokogiri
+    # -- --use-system-libraries \
+    #     --with-xslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+    #     --with-exslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+    #     --with-xml2-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2.dev + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
+    #     --with-xslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+    #     --with-exslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
+    #     --with-xml2-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxml2.dev + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'`
 }
 
 function sqlite3() {

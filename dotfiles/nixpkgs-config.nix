@@ -170,7 +170,7 @@
         # python27Packages.pyasn1
 
         # python27Packages.pyflakes
-        # python27Packages.pep8
+        python27Packages.pep8
         # python27Packages.pillow
         # python27Packages.wxPython
 
@@ -189,6 +189,8 @@
         strace python27Packages.opencv*/
 
         pypi2nix gcc.cc libarchive gcc.cc.lib python27Packages.libarchive
+
+        libpulseaudio libusb1
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -227,15 +229,13 @@
     ruby2env = pkgs.buildEnv {
       name = "ruby2env";
       paths = with pkgs; [
-        stdenv busybox gnumake
-        nix
+        stdenv gnumake coreutils strace
         git
-        ruby_2_1
+        ruby bundler libffi.dev stdenv.cc gnugrep gawk pkgconfig libxml2.dev libxslt.dev zlib zlib.dev
         readline
         gnused
         nodejs
-        bundix nix-prefetch-scripts
-        jekyll
+        nix-prefetch-scripts
       ];
       ignoreCollisions = true;
     };
@@ -280,6 +280,8 @@
         (with nodePackages; [ grunt-cli bower ])
 
         electron libnotify
+
+        nwjs_0_21
       ];
       ignoreCollisions = true;
     };
@@ -404,7 +406,7 @@
         stdenv
         bash
         git
-        jdk strace gcc.cc.lib
+        # jdk strace gcc.cc.lib
 
         ((import <nixpkgs/pkgs/development/mobile/androidenv> {
           inherit pkgs;
