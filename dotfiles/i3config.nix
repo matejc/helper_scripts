@@ -362,6 +362,7 @@
   #bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
   bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/xfce4-terminal
   bindcode 152 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
+  bindsym F12 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'

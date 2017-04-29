@@ -24,6 +24,23 @@ let
     inherit startScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
+    i3minator = {
+      chat = {
+        workspace = "1";
+        command = "${pkgs.franz}/bin/Franz";
+        timeout = "2";
+      };
+      console = {
+        workspace = "2";
+        command = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+        timeout = "0.4";
+      };
+      browser = {
+        workspace = "4";
+        command = "/run/current-system/sw/bin/chromium";
+        timeout = "2";
+      };
+    };
   };
 
   dotFilePaths = [
