@@ -24,7 +24,7 @@ let
       #   timeout:  A window can take a while to be placed, if your layout does not come as you want,
       #             inceremnt the timeout for slow windows. default: 0.1
       nodes:
-          console:
+          ${name}:
               terminal: false
               command: ${v.command}
               timeout: ${v.timeout}

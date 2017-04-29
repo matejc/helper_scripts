@@ -28,12 +28,12 @@ let
       chat = {
         workspace = "1";
         command = "${pkgs.franz}/bin/Franz";
-        timeout = "2";
+        timeout = "3";
       };
       console = {
         workspace = "2";
         command = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
-        timeout = "0.4";
+        timeout = "0.5";
       };
       browser = {
         workspace = "4";
@@ -68,6 +68,7 @@ let
     ./xbacklight.nix
     ./volume.nix
     ./fish.nix
+    ./dunst.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
@@ -76,12 +77,10 @@ let
 
     ${variables.homeDir}/bin/temp-init
 
-    sleep 1
-    ${pkgs.i3minator}/bin/i3minator start w1
-    sleep 1
-    ${pkgs.i3minator}/bin/i3minator start w3
-    sleep 1
-    ${pkgs.i3minator}/bin/i3minator start w4
+    ${pkgs.i3minator}/bin/i3minator start chat
+    ${pkgs.i3minator}/bin/i3minator start console
+    ${pkgs.i3minator}/bin/i3minator start browser
+
     ${variables.homeDir}/bin/autolock &
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart
     ${pkgs.dunst}/bin/dunst &
