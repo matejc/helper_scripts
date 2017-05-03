@@ -69,6 +69,7 @@ let
     ./volume.nix
     ./fish.nix
     ./dunst.nix
+    ./yaml2nix.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
