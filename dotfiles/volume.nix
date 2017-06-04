@@ -19,7 +19,7 @@
     ls $pulsefolder/volume &> /dev/null
     if [[ $? != 0 ]]
     then
-        echo "65536" > $pulsefolder/volume
+        echo "0" > $pulsefolder/volume
     fi
 
     CURVOL=`cat $pulsefolder/volume`     #Reads in the current volume
