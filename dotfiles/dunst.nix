@@ -3,7 +3,7 @@
   target = "${variables.homeDir}/.config/dunst/dunstrc";
   source = pkgs.writeText "dunstrc" ''
 [global]
-    font = Source Code Pro 12
+    font = Source Code Pro 10
 
 [frame]
     width = 0

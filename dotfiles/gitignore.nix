@@ -57,6 +57,5 @@
   lib64
   my.py
   *.swp
-  share
   '';
 }

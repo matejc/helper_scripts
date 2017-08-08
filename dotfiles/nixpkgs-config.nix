@@ -18,7 +18,6 @@
         python3Packages.pep8
         python3Packages.gevent
         coreutils
-        atom
         which
         nix nix-prefetch-scripts
         gnused gawk diffutils gnugrep
@@ -259,9 +258,10 @@
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs-7_x
-        (yarn.override { nodejs = nodejs-7_x; })
-        ((import /home/matejc/workarea/yarn2nix { inherit pkgs; }).yarn2nix)
+        nodejs-8_x
+        (yarn.override { nodejs = nodejs-8_x; })
+        (npm2nix.override { nodejs = nodejs-8_x; })
+        ((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
         python
         utillinux
 
@@ -279,9 +279,9 @@
 
         (with nodePackages; [ grunt-cli bower ])
 
-        electron libnotify
+        # electron libnotify
 
-        nwjs_0_21
+        # nwjs_0_21
       ];
       ignoreCollisions = true;
     };
@@ -331,7 +331,7 @@
         git
         nix-prefetch-scripts
         pkgconfig
-        oniguruma
+        /*oniguruma*/
 
       ];
       ignoreCollisions = true;

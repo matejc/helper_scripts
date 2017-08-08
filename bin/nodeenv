@@ -36,6 +36,9 @@ npm_global_update() {
 npm_global_link() {
     npm link --prefix="$NPM_PACKEGES" "$@"
 }
+npm_global_remove() {
+    npm remove -g --prefix="$NPM_PACKEGES" "$@"
+}
 npm_local_install() {
     npm install "$@"
 }
@@ -53,6 +56,10 @@ f() {
 
 d() {
     node --harmony-async-await --debug=5858 "$@"
+}
+
+np() {
+    node_modules/.bin/np --no-publish "$@"
 }
 
 "$@"
