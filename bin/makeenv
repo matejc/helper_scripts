@@ -18,6 +18,8 @@ export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
 export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
 export CFLAGS=$NIX_CFLAGS_COMPILE
 export LDFLAGS=$NIX_LDFLAGS
-
+export ACLOCAL_PATH="$nixprofile/share/aclocal"
+export ACLOCAL_FLAGS="-I$nixprofile/share/aclocal"
+export PERL5LIB="$nixprofile/lib/perl5/site_perl/5.24.2/x86_64-linux-thread-multi"
 
 "$@"

@@ -70,8 +70,11 @@ let
     ./fish.nix
     ./dunst.nix
     ./yaml2nix.nix
-    ./mysql-create-db.nix
+    ./mysql-utils.nix
     ./kanban.nix
+    ./atom.nix
+    ./jstools.nix
+    ./tray.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''

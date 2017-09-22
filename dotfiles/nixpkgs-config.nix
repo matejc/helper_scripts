@@ -239,6 +239,28 @@
       ignoreCollisions = true;
     };
 
+    makeenv = pkgs.buildEnv {
+      name = "makeenv";
+      paths = with pkgs; [
+        stdenv gnumake coreutils strace
+        git
+        pkgconfig
+        autoconf
+        intltool
+        automake
+        bash
+        gnome3.gnome_common
+        which
+        gnused
+        gnugrep
+        autoconf-archive
+        gettext
+        gawk
+        perl perlPackages.XMLParser
+      ];
+      ignoreCollisions = true;
+    };
+
     # for robot tests
     robotenv = pkgs.buildEnv {
       name = "robotenv";
@@ -278,6 +300,8 @@
         libpcap
 
         (with nodePackages; [ grunt-cli bower ])
+
+        sqlite
 
         # electron libnotify
 

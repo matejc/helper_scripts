@@ -58,7 +58,7 @@ d() {
     node --harmony-async-await --debug=5858 "$@"
 }
 
-np() {
+nopublish() {
     node_modules/.bin/np --no-publish "$@"
 }
 
