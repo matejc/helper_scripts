@@ -17,7 +17,7 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
-    editor = "nano";
+    editor = "${pkgs.ne}/bin/ne";
     font = "pango:Cantarell 12";
     wallpaper = "${variables.homeDir}/Pictures/27058-Overflowed.jpg";
     lockImage = "${variables.homeDir}/Pictures/27058-Overflowed_blur.png";
@@ -83,13 +83,13 @@ let
 
     ${variables.homeDir}/bin/temp-init
 
-    ${pkgs.i3minator}/bin/i3minator start chat
-    ${pkgs.i3minator}/bin/i3minator start console
-    ${pkgs.i3minator}/bin/i3minator start browser
+    # ${pkgs.i3minator}/bin/i3minator start chat
+    # ${pkgs.i3minator}/bin/i3minator start console
+    # ${pkgs.i3minator}/bin/i3minator start browser
 
-    ${variables.homeDir}/bin/autolock &
+    # ${variables.homeDir}/bin/autolock &
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart
-    ${pkgs.dunst}/bin/dunst &
+    # ${pkgs.dunst}/bin/dunst &
     echo "DONE"
   '';
 

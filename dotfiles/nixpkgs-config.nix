@@ -22,6 +22,7 @@
         nix nix-prefetch-scripts
         gnused gawk diffutils gnugrep
         rofi  # for lpp.sh
+        libxml2.dev libxslt.dev zlib
       ];
     };
 

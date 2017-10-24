@@ -57,5 +57,6 @@
   lib64
   my.py
   *.swp
+  .idea
   '';
 }

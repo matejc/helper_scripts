@@ -51,11 +51,11 @@ to() {
 # test -d ./node_modules/selenium-standalone/.selenium/chromedriver && ln -sf `which chromedriver` node_modules/selenium-standalone/.selenium/chromedriver/2.16-x64-chromedriver
 
 f() {
-    forever -c "node --harmony-async-await" --minUptime 1000 --spinSleepTime 1000 -w --watchIgnore '*.log' --watchIgnore '*.json' --watchIgnore '*.html' --watchIgnore '*.css' --watchIgnore '*.db*' "$@"
+    forever -c "node --harmony" --minUptime 1000 --spinSleepTime 1000 -w --watchIgnore '*.log' --watchIgnore '*.json' --watchIgnore '*.html' --watchIgnore '*.css' --watchIgnore '*.db*' "$@"
 }
 
 d() {
-    node --harmony-async-await --debug=5858 "$@"
+    node --harmony --debug=5858 "$@"
 }
 
 nopublish() {
