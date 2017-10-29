@@ -75,6 +75,7 @@ let
     ./atom.nix
     ./jstools.nix
     ./tray.nix
+    ./zsh.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
