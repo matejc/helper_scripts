@@ -5,8 +5,16 @@ let
 in
 {
     target = "${variables.homeDir}/bin/batstatus";
-    source = pkgs.writeScript "batstatus.sh" ''
-    #!${pkgs.stdenv.shell}
-    ${pkgs.coreutils}/bin/printf "%.1f\n" $(${pkgs.bc}/bin/bc -l <<< "(${now}) / (${full}) * 100")
-    '';
+    source =
+        if ((builtins.length variables.batteries) == 0)
+        then
+            pkgs.writeScript "batstatus.sh" ''
+                #!${pkgs.stdenv.shell}
+                echo
+            ''
+        else
+            pkgs.writeScript "batstatus.sh" ''
+                #!${pkgs.stdenv.shell}
+                ${pkgs.coreutils}/bin/printf "%.1f\n" $(${pkgs.bc}/bin/bc -l <<< "(${now}) / (${full}) * 100")
+            '';
 }

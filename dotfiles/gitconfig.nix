@@ -8,7 +8,7 @@
     [core]
         editor = ${variables.editor}
         excludesfile = ${variables.homeDir}/.gitignore
-        pager = diff-so-fancy | less --tabs=4 -RFX
+        pager = ${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX
     [color]
         branch = auto
         diff = auto

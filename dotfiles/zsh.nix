@@ -35,19 +35,20 @@
       fi
 
       bat=$(batstatus)
-      bat_color=yellow
-      if [[ $bat -lt 30 ]]
+      if [ -n "$bat" ]
       then
-        bat_color=red
-      elif [[ $bat -gt 60 ]]
-      then
-        bat_color=green
+        bat_color=yellow
+        if [[ $bat -lt 30 ]]
+        then
+          bat_color=red
+        elif [[ $bat -gt 60 ]]
+        then
+          bat_color=green
+        fi
+        RPROMPT="''${RPROMPT} %F{$bat_color}''${bat}%%%{$reset_color%}"
+        unset bat
+        unset bat_color
       fi
-      RPROMPT="''${RPROMPT} %F{$bat_color}''${bat}%%%{$reset_color%}"
-      unset bat
-      unset bat_color
-
-      #RPROMPT="''${RPROMPT} $FG[240]%`date +%T`%{$reset_color%}"
       export RPROMPT
     }
   '';
