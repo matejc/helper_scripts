@@ -2,6 +2,11 @@
   packageOverrides = pkgs:
   rec {
 
+    mypidgin =
+      (pkgs.pidgin.override {
+        plugins = with pkgs; [ purple-matrix pidginotr telegram-purple purple-facebook ];
+      });
+
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
       paths = [ pkgs.bashInteractive pkgs.docker pkgs.which
