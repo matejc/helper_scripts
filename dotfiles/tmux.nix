@@ -122,11 +122,11 @@
 
     # Pane border
     set -g pane-border-bg default
-    set -g pane-border-fg colour238
+    set -g pane-border-fg colour248
 
     # Active pane border
     set -g pane-active-border-bg default
-    set -g pane-active-border-fg colour100
+    set -g pane-active-border-fg colour34
 
     # Pane number indicator
     set -g display-panes-colour "#fdf6e3"
