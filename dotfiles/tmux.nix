@@ -53,7 +53,7 @@
     bind-key -n C-S-End splitw -v -p 50 -c '#{pane_current_path}'
 
     setw -g monitor-activity on
-    set -g visual-activity on
+    set -g visual-activity off
 
     # Automatically set window title
     setw -g automatic-rename
