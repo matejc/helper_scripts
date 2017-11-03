@@ -341,5 +341,11 @@ key_bindings:
   - { key: F10,      mods: Super,   chars: "\x1b[21;3~"                  }
   - { key: F11,      mods: Super,   chars: "\x1b[23;3~"                  }
   - { key: F12,      mods: Super,   chars: "\x1b[24;3~"                  }
+  - { key: Home,        mods: Control|Shift, chars: "\x1b[1;6H"                }
+  - { key: End,        mods: Control|Shift, chars: "\x1b[1;6F"                }
+  - { key: Up,        mods: Control|Shift, chars: "\x1b[1;6A"                }
+  - { key: Down,        mods: Control|Shift, chars: "\x1b[1;6B"                }
+  - { key: Right,        mods: Control|Shift, chars: "\x1b[1;6C"                }
+  - { key: Left,        mods: Control|Shift, chars: "\x1b[1;6D"                }
   '';
 }

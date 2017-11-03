@@ -19,6 +19,11 @@
             "send-keys -M" \
             "send-keys Down Down Down"
 
+    bind-key -n S-PageUp \
+            copy-mode\; send-keys Up Up Up Up Up Up
+    bind-key -n S-PageDown \
+            copy-mode\; send-keys Down Down Down Down Down Down
+
     bind m run "\
         tmux show-options -g | grep -q "mouse.*on"; \
         if [ \$? = 0 ]; \
@@ -37,16 +42,15 @@
     bind-key -n C-PageDown next-window
     bind-key -n C-PageUp previous-window
     bind-key -n C-N new-window -c '#{pane_current_path}'
+    #bind-key -n C-S-T new-window -c '#{pane_current_path}'
 
-    bind-key -n F9 new-window -c '#{pane_current_path}'
+    bind-key -n C-S-Left select-pane -L
+    bind-key -n C-S-Right select-pane -R
+    bind-key -n C-S-Up select-pane -U
+    bind-key -n C-S-Down select-pane -D
 
-    bind -n F5 select-pane -L
-    bind -n F6 select-pane -R
-    bind -n F7 select-pane -U
-    bind -n F8 select-pane -D
-
-    bind-key -n F3 splitw -v -p 50 -c '#{pane_current_path}'
-    bind-key -n F4 splitw -h -p 50 -c '#{pane_current_path}'
+    bind-key -n C-S-Home splitw -h -p 50 -c '#{pane_current_path}'
+    bind-key -n C-S-End splitw -v -p 50 -c '#{pane_current_path}'
 
     setw -g monitor-activity on
     set -g visual-activity on
@@ -58,20 +62,17 @@
 
     set -g history-limit 10000
 
-    #bind -t emacs-copy F10 rectangle-toggle
+    set-option -s set-clipboard off
+    # For vi copy mode bindings
+    bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
+    # For emacs copy mode bindings
+    bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
 
-    # COPY & PASTE
-    #bind-key -t emacs-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
-    #bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
-    # bind-key -n MouseDragEnd1Pane run -b "sleep 0.3 && tmux show-buffer | xclip -i -selection primary > /dev/null && tmux display-message \"beje\""
-    # bind -n F10 run -b "tmux show-buffer | xclip -i -selection primary > /dev/null"
-    #bind -n F11 run -b "exec </dev/null; xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
-
-    source-file "${variables.homeDir}/.green.tmuxtheme"
+    source-file "${variables.homeDir}/.tmuxtheme"
   '';
 } {
-  target = "${variables.homeDir}/.green.tmuxtheme";
-  source = pkgs.writeText "green.tmuxtheme" ''
+  target = "${variables.homeDir}/.tmuxtheme";
+  source = pkgs.writeText "tmuxtheme" ''
     #
     # Powerline Green - Tmux Theme
     # Created by Jim Myhrberg <contact@jimeh.me>.
