@@ -5,16 +5,18 @@ let
 in
 {
     target = "${variables.homeDir}/bin/batstatus";
-    source =
+    source = pkgs.writeScript "batstatus.sh" (
         if ((builtins.length variables.batteries) == 0)
         then
-            pkgs.writeScript "batstatus.sh" ''
+            ''
                 #!${pkgs.stdenv.shell}
-                echo
+                PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin"
+                batstatuses="$(upower -i $(upower -e | grep -i 'ups\|bat') | grep 'percentage:' | grep -oP '[0-9]+') | grep -v '^$'"
+                echo "$batstatuses" | awk '{ total += $1; count++ } END { print total/count }'
             ''
         else
-            pkgs.writeScript "batstatus.sh" ''
+            ''
                 #!${pkgs.stdenv.shell}
                 ${pkgs.coreutils}/bin/printf "%.1f\n" $(${pkgs.bc}/bin/bc -l <<< "(${now}) / (${full}) * 100")
-            '';
+            '');
 }
