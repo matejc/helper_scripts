@@ -1,0 +1,50 @@
+{ variables, config, pkgs, lib }:
+{
+  target = "${variables.homeDir}/.config/xfce4/terminal/terminalrc";
+  source = pkgs.writeText "terminalrc" ''
+[Configuration]
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscBordersDefault=TRUE
+MiscCursorBlinks=TRUE
+MiscDefaultGeometry=106x49
+MiscInheritGeometry=FALSE
+MiscMenubarDefault=FALSE
+MiscMouseAutohide=FALSE
+MiscToolbarDefault=FALSE
+MiscConfirmClose=TRUE
+MiscCycleTabs=TRUE
+MiscTabCloseButtons=TRUE
+MiscTabCloseMiddleClick=TRUE
+MiscTabPosition=GTK_POS_TOP
+MiscHighlightUrls=TRUE
+ScrollingOnOutput=FALSE
+ScrollingBar=TERMINAL_SCROLLBAR_NONE
+ScrollingLines=10000
+BackgroundMode=TERMINAL_BACKGROUND_TRANSPARENT
+BackgroundDarkness=0.900000
+FontName=Source Code Pro for Powerline Semi-Bold 11
+DropdownWidth=96
+DropdownHeight=96
+MiscCursorShape=TERMINAL_CURSOR_SHAPE_BLOCK
+TitleMode=TERMINAL_TITLE_REPLACE
+DropdownToggleFocus=FALSE
+DropdownKeepOpenDefault=TRUE
+MiscBellUrgent=FALSE
+MiscMouseWheelZoom=TRUE
+MiscMiddleClickOpensUri=FALSE
+MiscCopyOnSelect=FALSE
+MiscDefaultWorkingDir=
+MiscRewrapOnResize=TRUE
+MiscUseShiftArrowsToScroll=FALSE
+MiscSlimTabs=TRUE
+BindingBackspace=TERMINAL_ERASE_BINDING_ASCII_BACKSPACE
+ColorPalette=#073642;#dc322f;#859900;#b58900;#268bd2;#d33682;#2aa198;#073642;#002b36;#cb4b16;#93a1a1;#839496;#657b83;#6c71c4;#586e75;#002b36
+ColorForeground=#657b83
+ColorBackground=#fdf6e3
+ColorCursor=
+ColorBold=#586e75
+ColorBoldUseDefault=FALSE
+TabActivityColor=#dc322f
+  '';
+}

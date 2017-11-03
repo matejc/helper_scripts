@@ -58,14 +58,14 @@
 
     set -g history-limit 10000
 
-    bind -t emacs-copy F10 rectangle-toggle
+    #bind -t emacs-copy F10 rectangle-toggle
 
     # COPY & PASTE
-    bind-key -t emacs-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
-    bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
+    #bind-key -t emacs-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
+    #bind-key -t vi-copy MouseDragEnd1Pane copy-pipe "xclip -i -selection primary > /dev/null"
     # bind-key -n MouseDragEnd1Pane run -b "sleep 0.3 && tmux show-buffer | xclip -i -selection primary > /dev/null && tmux display-message \"beje\""
     # bind -n F10 run -b "tmux show-buffer | xclip -i -selection primary > /dev/null"
-    bind -n F11 run -b "exec </dev/null; xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
+    #bind -n F11 run -b "exec </dev/null; xclip -o -selection clipboard | tmux load-buffer - ; tmux paste-buffer"
 
     source-file "${variables.homeDir}/.green.tmuxtheme"
   '';
@@ -86,32 +86,32 @@
     set -g status-interval 5
 
     # Basic status bar colors
-    set -g status-fg colour240
-    set -g status-bg colour233
+    set -g status-fg colour248
+    set -g status-bg "#fdf6e3"
 
     # Left side of status bar
-    set -g status-left-bg colour233
-    set -g status-left-fg colour243
+    set -g status-left-bg "#fdf6e3"
+    set -g status-left-fg colour32
     set -g status-left-length 40
-    set -g status-left "#[fg=colour100,bg=colour233,bold] #S #[fg=colour240,bg=colour233,nobold]#[fg=colour240,bg=colour233] #(whoami) #[fg=colour235,bg=colour233]#[fg=colour235,bg=colour233,nobold]"
+    set -g status-left "#[fg=colour100,bg=\"#fdf6e3\",bold] #S #[fg=colour32,bg=\"#fdf6e3\",nobold]#[fg=colour32,bg=\"#fdf6e3\"] #(whoami) #[fg=colour235,bg=\"#fdf6e3\"]#[fg=colour235,bg=\"#fdf6e3\",nobold]"
 
     # Right side of status bar
-    set -g status-right-bg colour243
-    set -g status-right-fg colour233
+    set -g status-right-bg "#fdf6e3"
+    set -g status-right-fg colour32
     set -g status-right-length 150
-    set -g status-right "#[fg=colour240,bg=colour233]#[fg=colour245,bg=colour233,bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 )))'') variables.temperatureFiles}]"
+    set -g status-right "#[fg=colour32,bg=\"#fdf6e3\"]#[fg=colour245,bg=\"#fdf6e3\",bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     # Window status
     set -g window-status-format " #I:#P:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "
-    set -g window-status-current-format "#[fg=colour240,bg=colour233,nobold] #I:#P:#[fg=colour190,bg=colour233,nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=colour233,nobold]"
+    set -g window-status-current-format "#[fg=colour32,bg=\"#fdf6e3\",nobold] #I:#P:#[fg=colour208,bg=\"#fdf6e3\",nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=\"#fdf6e3\",nobold]"
 
     # Current window status
-    set -g window-status-current-bg colour100
-    set -g window-status-current-fg colour235
+    set -g window-status-current-bg "#fdf6e3"
+    set -g window-status-current-fg colour208
 
     # Window with activity status
     set -g window-status-activity-bg colour107 # fg and bg are flipped here due to
-    set -g window-status-activity-fg colour233 # a bug in tmux
+    set -g window-status-activity-fg "#fdf6e3" # a bug in tmux
 
     # Window separator
     set -g window-status-separator ""
@@ -128,7 +128,7 @@
     set -g pane-active-border-fg colour100
 
     # Pane number indicator
-    set -g display-panes-colour colour233
+    set -g display-panes-colour "#fdf6e3"
     set -g display-panes-active-colour colour245
 
     # Clock mode
@@ -140,7 +140,7 @@
     set -g message-fg black
 
     # Command message
-    set -g message-command-bg colour233
+    set -g message-command-bg "#fdf6e3"
     set -g message-command-fg black
 
     # Mode

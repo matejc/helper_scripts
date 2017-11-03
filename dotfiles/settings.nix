@@ -76,6 +76,7 @@ let
     ./jstools.nix
     ./tray.nix
     ./zsh.nix
+    ./xfce4-terminal.nix
   ];
 
   startScript = pkgs.writeScript "start-script.sh" ''
