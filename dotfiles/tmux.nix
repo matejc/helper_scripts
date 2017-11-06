@@ -24,6 +24,11 @@
     bind-key -n S-PageDown \
             copy-mode\; send-keys Down Down Down Down Down Down
 
+    bind-key -n S-Up \
+            copy-mode\; send-keys Up
+    bind-key -n S-Down \
+            copy-mode\; send-keys Down
+
     bind m run "\
         tmux show-options -g | grep -q "mouse.*on"; \
         if [ \$? = 0 ]; \
@@ -67,6 +72,28 @@
     bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
     # For emacs copy mode bindings
     bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
+
+    # Double LMB Select & Copy (Word)
+    bind-key -T copy-mode-vi DoubleClick1Pane \
+        select-pane \; \
+        send-keys -X select-word \; \
+        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
+    bind-key -n DoubleClick1Pane \
+        select-pane \; \
+        copy-mode -M \; \
+        send-keys -X select-word \; \
+        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
+
+    # Triple LMB Select & Copy (Line)
+    bind-key -T copy-mode-vi TripleClick1Pane \
+        select-pane \; \
+        send-keys -X select-line \; \
+        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
+    bind-key -n TripleClick1Pane \
+        select-pane \; \
+        copy-mode -M \; \
+        send-keys -X select-line \; \
+        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';

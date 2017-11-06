@@ -10,8 +10,8 @@ in
         then
             ''
                 #!${pkgs.stdenv.shell}
-                PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin"
-                batstatuses="$(upower -i $(upower -e | grep -i 'ups\|bat') | grep 'percentage:' | grep -oP '[0-9]+') | grep -v '^$'"
+                PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.findutils}/bin"
+                batstatuses="$(upower -e | grep -i 'ups\|bat' | xargs -i upower -i '{}' | grep 'percentage:' | grep -oP '[0-9]+' | grep -v '^$')"
                 echo "$batstatuses" | awk '{ total += $1; count++ } END { print total/count }'
             ''
         else
