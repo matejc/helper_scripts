@@ -28,6 +28,8 @@
             copy-mode\; send-keys Up
     bind-key -n S-Down \
             copy-mode\; send-keys Down
+    bind-key -n C-F \
+            copy-mode\; send-keys ?\; send-keys C-R
 
     bind m run "\
         tmux show-options -g | grep -q "mouse.*on"; \
@@ -47,7 +49,7 @@
     bind-key -n C-PageDown next-window
     bind-key -n C-PageUp previous-window
     bind-key -n C-N new-window -c '#{pane_current_path}'
-    #bind-key -n C-S-T new-window -c '#{pane_current_path}'
+    bind-key -n C-T new-window -c '#{pane_current_path}'
 
     bind-key -n C-S-Left select-pane -L
     bind-key -n C-S-Right select-pane -R
@@ -94,6 +96,9 @@
         copy-mode -M \; \
         send-keys -X select-line \; \
         send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
+
+    set -g set-titles on
+    set -g set-titles-string "#(whoami)@#H - #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';
