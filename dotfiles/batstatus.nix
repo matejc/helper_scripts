@@ -17,6 +17,6 @@ in
         else
             ''
                 #!${pkgs.stdenv.shell}
-                ${pkgs.coreutils}/bin/printf "%.1f\n" $(${pkgs.bc}/bin/bc -l <<< "(${now}) / (${full}) * 100")
+                ${pkgs.coreutils}/bin/printf "%.0f\n" $(${pkgs.bc}/bin/bc -l <<< "(${now}) / (${full}) * 100")
             '');
 }

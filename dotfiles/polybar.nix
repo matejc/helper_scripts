@@ -1,5 +1,5 @@
 { variables, config, pkgs, lib }:
-{
+[{
   target = "${variables.homeDir}/.config/polybar/config";
   source = pkgs.writeText "polybar.config" ''
   [colors]
@@ -40,7 +40,8 @@
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = filesystem xbacklight volume xkeyboard memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries} temperature date
+  modules-right = filesystem xbacklight volume xkeyboard memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus temperature date
+  ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
   tray-padding = 2
@@ -71,7 +72,7 @@
   interval = 25
 
   ${lib.concatImapStringsSep "\n" (index: mount: ''
-  mount-${toString index} = ${mount}
+  mount-${toString (index - 1)} = ${mount}
   '') variables.mounts}
 
   label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
@@ -308,6 +309,14 @@
   ramp-4-foreground = #ff0000
   ramp-foreground = ''${colors.foreground-alt}
 
+  [module/batstatus]
+  type = custom/script
+  interval = 5
+  format = <label>
+  format-underline = #ffb52a
+  exec = ${variables.homeDir}/bin/polybar-batstatus
+  label = " %output%"
+
   [settings]
   screenchange-reload = true
   ;compositing-background = xor
@@ -319,4 +328,30 @@
   margin-top = 5
   margin-bottom = 5
   '';
-}
+} {
+  target = "${variables.homeDir}/bin/polybar-batstatus";
+  source = pkgs.writeScript "polybar-batstatus.sh" ''
+  #!${pkgs.stdenv.shell}
+  bat=$(batstatus)
+  if [ -n "$bat" ]
+  then
+    bat_prefix="%{F#00ff00}%{F-}"
+
+    if [[ $bat -lt 20 ]]; then
+      bat_prefix="%{F#ff0000}%{F-}"
+
+    elif [[ $bat -lt 40 ]]; then
+      bat_prefix="%{F#ffa500}%{F-}"
+
+    elif [[ $bat -lt 60 ]]; then
+      bat_prefix="%{F#ffa500}%{F-}"
+
+    elif [[ $bat -lt 80 ]]; then
+      bat_prefix="%{F#ffa500}%{F-}"
+    fi
+    echo "$bat_prefix $bat%"
+    unset bat
+    unset bat_prefix
+  fi
+  '';
+}]
