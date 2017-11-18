@@ -98,7 +98,7 @@
         send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
 
     set -g set-titles on
-    set -g set-titles-string "#(whoami)@#H - #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
+    set -g set-titles-string "#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';

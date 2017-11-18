@@ -32,7 +32,7 @@
   workspace_layout default
 
   # > normal | 1pixel | none
-  new_window normal
+  new_window none
 
   # Use Mouse+$mod to drag floating windows to their wanted position
   floating_modifier $mod
@@ -75,7 +75,7 @@
   # font -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso10646-1
   #font pango:DejaVu Sans Mono 9
   #font pango:Bitstream Vera Sans Mono Roman 9
-  font ${variables.font}
+  font pango:${variables.font}
 
 
   #}}}
@@ -91,28 +91,28 @@
   set $w9 9
   set $w10 10
 
-  #workspace "$w1" output $mon_ext
-  #workspace "$w2" output $mon_ext
-  #workspace "$w3" output $mon_ext
-  #workspace "$w4" output $mon_ext
-  #workspace "$w5" output $mon_lap
-  #workspace "$w6" output $mon_lap
-  #workspace "$w7" output $mon_lap
-  #workspace "$w8" output $mon_lap
-  #workspace "$w9" output $mon_ext
-  #workspace "$w10" output $mon_ext
+  workspace "$w1" output $mon_lap
+  workspace "$w2" output $mon_lap
+  workspace "$w3" output $mon_lap
+  workspace "$w4" output $mon_lap
+  workspace "$w5" output $mon_lap
+  workspace "$w6" output $mon_lap
+  workspace "$w7" output $mon_lap
+  workspace "$w8" output $mon_lap
+  workspace "$w9" output $mon_ext
+  workspace "$w10" output $mon_ext1
 
   # switch to workspace
-  #bindsym $mod+1 workspace $w1
-  #bindsym $mod+2 workspace $w2
-  #bindsym $mod+3 workspace $w3
-  #bindsym $mod+4 workspace $w4
-  #bindsym $mod+5 workspace $w5
-  #bindsym $mod+6 workspace $w6
-  #bindsym $mod+7 workspace $w7
-  #bindsym $mod+8 workspace $w8
-  #bindsym $mod+9 workspace $w9
-  #bindsym $mod+0 workspace $w10
+  bindsym $mod+1 workspace $w1
+  bindsym $mod+2 workspace $w2
+  bindsym $mod+3 workspace $w3
+  bindsym $mod+4 workspace $w4
+  bindsym $mod+5 workspace $w5
+  bindsym $mod+6 workspace $w6
+  bindsym $mod+7 workspace $w7
+  bindsym $mod+8 workspace $w8
+  bindsym $mod+9 workspace $w9
+  bindsym $mod+0 workspace $w10
 
   # move focused container to workspace
   bindsym $mod+Shift+exclam move workspace $w1
@@ -149,6 +149,9 @@
   bindsym $mod+Down focus down
   bindsym $mod+Up focus up
   bindsym $mod+Right focus right
+
+  bindsym Ctrl+Mod1+Down focus down
+  bindsym Ctrl+Mod1+Up focus up
 
   # focus the parent container
   #bindsym $mod+a focus parent
@@ -244,8 +247,8 @@
   #}}}
   #{{{   Other
 
-  bindsym $mod+t border normal
-  bindsym $mod+y border 1pixel
+  bindsym $mod+t border normal 1
+  bindsym $mod+y border pixel 1
   bindsym $mod+u border none
 
   #}}}
@@ -333,46 +336,38 @@
   # matejc's key bindings
   #bindsym Ctrl+Shift+Left focus output left
   #bindsym Ctrl+Right focus output right
-  bindsym Ctrl+Mod1+Left exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Right exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Shift+Left exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Shift+Right exec WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
-  bindcode 179 exec /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
-  bindcode 121 exec ${variables.homeDir}/bin/volume $snd_card toggle
-  bindcode 195 exec ${variables.homeDir}/bin/volume $snd_card toggle
-  bindcode 122 exec ${variables.homeDir}/bin/volume $snd_card decrease
-  bindcode 196 exec ${variables.homeDir}/bin/volume $snd_card decrease
-  bindsym Ctrl+Mod1+Shift+Down exec ${variables.homeDir}/bin/volume $snd_card decrease
-  bindcode 123 exec ${variables.homeDir}/bin/bin/volume $snd_card increase
-  bindcode 197 exec ${variables.homeDir}/bin/bin/volume $snd_card increase
-  bindsym Ctrl+Mod1+Shift+Up exec ${variables.homeDir}/bin/volume $snd_card increase
-  bindcode 233 exec ${variables.homeDir}/bin/setxbacklight inc
-  bindcode 232 exec ${variables.homeDir}/bin/setxbacklight dec
-  #bindsym $mod+0 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 1.0
-  #bindsym $mod+9 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.9
-  #bindsym $mod+8 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.8
-  #bindsym $mod+7 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.7
-  #bindsym $mod+6 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.6
-  #bindsym $mod+5 exec /run/current-system/sw/bin/xrandr --output LVDS1 --brightness 0.5
-  #bindsym Ctrl+Mod1+space exec ~/workarea/helper_scripts/bin/dmenu-run.py
-  bindsym Ctrl+Mod1+space exec /run/current-system/sw/bin/rofi -show run
-  bindsym Ctrl+Mod1+s exec zsh -l /run/current-system/sw/bin/sublime
-  bindsym Ctrl+Mod1+2 exec xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
-  bindsym Ctrl+Mod1+1 exec xrandr --output VGA1 --off --output LVDS1 --auto
-  #bindsym Ctrl+Mod1+c exec /home/matejc/workarea/connman_dmenu/connman_dmenu
-  bindsym Ctrl+Mod1+l exec ${variables.homeDir}/bin/lockscreen
-  bindsym Ctrl+Mod1+h exec /run/current-system/sw/bin/thunar
-  #bindsym Ctrl+Mod1+z exec /run/current-system/sw/bin/zed
-  bindsym Ctrl+Mod1+t exec /run/current-system/sw/bin/xfce4-terminal
-  bindcode 152 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
-  bindsym F12 exec /run/current-system/sw/bin/xfce4-terminal --drop-down
+  #bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg workspace $WSNUM
+  #bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg workspace $WSNUM
+  bindsym Ctrl+Mod1+Left workspace prev
+  bindsym Ctrl+Mod1+Right workspace next
+  bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
+  bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
+  bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
+
+  bindcode 121 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master toggle
+  bindcode 122 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master 5%- unmute
+  bindcode 123 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master 5%+ unmute
+  bindcode 198 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Capture toggle
+
+  bindcode 233 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight inc
+  bindcode 232 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight dec
+  bindsym Ctrl+Mod1+space exec --no-startup-id /run/current-system/sw/bin/rofi -show run
+  bindsym Ctrl+Mod1+0 exec --no-startup-id ${variables.homeDir}/bin/monitor
+  bindsym Ctrl+Mod1+s exec --no-startup-id zsh -l /run/current-system/sw/bin/sublime
+  bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
+  bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
+  bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.homeDir}/bin/lockscreen
+  bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
+  bindsym Ctrl+Mod1+t exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal
+  bindcode 152 exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal --drop-down
+  bindsym F12 exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal --drop-down
   #bindsym F1 [title="flow"] move workspace current
-  bindsym F2 exec /run/current-system/sw/bin/rofi
+  bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
-  bindsym --release Print exec /run/current-system/sw/bin/xfce4-screenshooter --region --save /home/matejc/Pictures
+  bindsym --release Print exec --no-startup-id /run/current-system/sw/bin/xfce4-screenshooter --region --save /home/matejc/Pictures
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
-  bindsym Ctrl+Mod1+w exec /run/current-system/sw/bin/rofi -show window
-  bindsym F1 exec /run/current-system/sw/bin/rofi -show window
+  bindsym Ctrl+Mod1+w exec --no-startup-id /run/current-system/sw/bin/rofi -show window
+  bindsym F1 exec --no-startup-id /run/current-system/sw/bin/rofi -show window
   bindsym Mod1+F4 kill
   bindsym Mod1+Tab focus right
   bindsym $mod+p move workspace to output left
@@ -396,55 +391,15 @@
   #client.unfocused        #333333 #93a1a1 #fdf6e3 #292d2e
 
   #                          border       backgr.       text   indicator
-  client.focused              $mgray       $mgray        $white $lgrey $gray
-  client.unfocused            $dark        $dark         $grey  $lgrey $gray
-  client.focused_inactive     $dark        $dark         $mgrey $lgrey $gray
-  client.urgent               $dark        $blue         $mgrey $lgrey $gray
+  client.focused              $mgrey       $mgrey        $dark $lgrey $grey
+  client.unfocused            $dark        $dark         $grey  $lgrey $grey
+  client.focused_inactive     $dark        $dark         $mgrey $lgrey $grey
+  client.urgent               $dark        $blue         $mgrey $lgrey $grey
 
-
-
-  #}}}
-  #{{{ i3bar
-  # Start i3bar to display a workspace bar (plus the system information i3status
-  # finds out, if available)
-  bar {
-      status_command i3status
-      position bottom
-      #tray_output $mon_ext
-      #tray_output $mon_lap
-  #{{{ i3bar colors
-      colors {
-  #        background #0e0e0e
-  #        statusline #c0c0c0
-  #        focused_workspace #ffffff #0e3e9e
-  #        inactive_workspace #a0a0a0 #0e0e0e
-  #        urgent_workspace #000033 #ff4500
-  #        active_workspace #696969 #0e0e0e
-
-          # solarized
-  #        background #073642
-  #        statusline #eee8d5
-  #        focused_workspace #cb4b16 #cb4b16 #eee8d5
-  #        active_workspace #cb4b16 #cb4b16 #eee8d5
-  #        inactive_workspace #b58900 #b58900 #eee8d5
-
-            background          $dark
-            statusline          $white
-            separator           $dblue
-                        #      border      background   text
-            focused_workspace   $dblue       $dark        $white
-            active_workspace    $dark       $dark        $mgrey
-            inactive_workspace  $dark       $dark        $mgrey
-            urgent_workspace    $dark       $blue        $white
-
-
-
-      }
-  #}}}
-  }
   #}}}
   #{{{ Autostart
 
+  exec_always --no-startup-id ${variables.restartScript}
   exec --no-startup-id ${variables.startScript}
   #exec --no-startup-id "~/bin/autolock"
   #exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output $mon_lap --primary --auto --output $mon_ext --off --output $mon_ext1 --off"

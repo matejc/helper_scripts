@@ -41,11 +41,12 @@ let
         timeout = "2";
       };
     };
+    polybar.bars = [ "my" ];
   };
 
   dotFilePaths = [
     ./i3config.nix
-    ./i3status.nix
+    # ./i3status.nix
     ./gitconfig.nix
     ./gitignore.nix
     ./autolock.nix
@@ -77,21 +78,36 @@ let
     ./tray.nix
     ./zsh.nix
     ./xfce4-terminal.nix
+    ./monitor.nix
+    ./polybar.nix
   ];
+
+  restartScript = pkgs.writeScript "restart-script.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    pkill polybar
+    export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
+
+    ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
+
+    ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
+  '';
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
     xinput_custom_script.sh
 
     ${variables.homeDir}/bin/temp-init
+    ${variables.homeDir}/bin/autolock &
 
-    # ${pkgs.i3minator}/bin/i3minator start chat
-    # ${pkgs.i3minator}/bin/i3minator start console
-    # ${pkgs.i3minator}/bin/i3minator start browser
+    ${pkgs.i3minator}/bin/i3minator start chat
+    ${pkgs.i3minator}/bin/i3minator start chat2
+    ${pkgs.i3minator}/bin/i3minator start console
+    ${pkgs.i3minator}/bin/i3minator start editor
+    ${pkgs.i3minator}/bin/i3minator start browser
 
-    # ${variables.homeDir}/bin/autolock &
-    ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart
-    # ${pkgs.dunst}/bin/dunst &
+    ${pkgs.dunst}/bin/dunst &
+
     echo "DONE"
   '';
 
@@ -99,21 +115,10 @@ let
     mkdir -p ${variables.homeDir}/.nixpkgs
     ln -fs ${variables.nixpkgsConfig} ${variables.homeDir}/.nixpkgs/config.nix
 
-    mkdir -p ${variables.homeDir}/.themes
-    ln -fs /run/current-system/sw/share/themes/* ${variables.homeDir}/.themes/
-
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
-
-    if [ -f "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee" ]; then
-      ${pkgs.gnused}/bin/sed -i -e's|@run(".*yapf"|@run("${pkgs.python3Packages.yapf}/bin/yapf"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee"
-      ${pkgs.gnused}/bin/sed -i -e's|@run(".*isort"|@run("${pkgs.python3Packages.isort}/bin/isort"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/yapf.coffee"
-    fi
-    if [ -f "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee" ]; then
-      ${pkgs.gnused}/bin/sed -i -e's|@run(".*autopep8"|@run("${pkgs.python3Packages.autopep8}/bin/autopep8"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee"
-      ${pkgs.gnused}/bin/sed -i -e's|@run(".*isort"|@run("${pkgs.python3Packages.isort}/bin/isort"|' "${variables.homeDir}/.atom/packages/atom-beautify/src/beautifiers/autopep8.coffee"
-    fi
+    ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
   '';
 in {
   inherit variables dotFilePaths activationScript;
