@@ -225,6 +225,10 @@
   [module/volume]
   type = internal/volume
 
+  master-soundcard = default
+  speaker-soundcard = default
+  headphone-soundcard = default
+
   master-mixer = Master
 
   format-volume = <label-volume> <bar-volume>
