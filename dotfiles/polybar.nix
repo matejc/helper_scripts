@@ -10,7 +10,7 @@
   primary = #ffb52a
   secondary = #e60053
   alert = #bd2c40
-  underline = #0a21a5
+  underline = #0a81f5
 
   [bar/my]
   monitor = ${variables.monitorPrimary}
