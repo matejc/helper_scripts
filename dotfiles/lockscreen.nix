@@ -7,10 +7,10 @@
     if [ $? -ne 0 ]
     then
       revert() {
-        xset dpms 0 0 0
+        ${pkgs.xorg.xset}/bin/xset dpms 0 0 0
       }
       trap revert HUP INT TERM
-      xset +dpems dpms 5 5 5
+      ${pkgs.xorg.xset}/bin/xset +dpms dpms 5 5 5
       sleep 1
       /run/wrappers/bin/slock
       revert
