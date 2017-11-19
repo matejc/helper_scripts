@@ -10,6 +10,7 @@
   primary = #ffb52a
   secondary = #e60053
   alert = #bd2c40
+  underline = #0a21a5
 
   [bar/my]
   monitor = ${variables.monitorPrimary}
@@ -60,12 +61,12 @@
   blacklist-1 = scroll lock
 
   format-prefix-foreground = ''${colors.foreground-alt}
-  format-prefix-underline = ''${colors.secondary}
+  format-prefix-underline = ''${colors.underline}
 
   label-indicator-padding = 2
   label-indicator-margin = 1
   label-indicator-background = ''${colors.secondary}
-  label-indicator-underline = ''${colors.secondary}
+  label-indicator-underline = ''${colors.underline}
 
   [module/filesystem]
   type = internal/fs
@@ -159,7 +160,7 @@
   interval = 2
   format-prefix = " "
   format-prefix-foreground = ''${colors.foreground-alt}
-  format-underline = #f90000
+  format-underline = ''${colors.underline}
   label = %percentage%%
 
   [module/memory]
@@ -167,7 +168,7 @@
   interval = 2
   format-prefix = " "
   format-prefix-foreground = ''${colors.foreground-alt}
-  format-underline = #2bdfac
+  format-underline = ''${colors.underline}
   label = %percentage_used%%
 
   ${lib.concatImapStringsSep "\n" (index: interface: ''
@@ -177,7 +178,7 @@
   interval = 3.0
 
   format-connected = <ramp-signal> <label-connected>
-  format-connected-underline = #1b926c
+  format-connected-underline = ''${colors.underline}
   label-connected = %essid%
 
   format-disconnected = <label-disconnected>
@@ -199,7 +200,7 @@
   interface = ${interface}
   interval = 3.0
 
-  format-connected-underline = #55aa55
+  format-connected-underline = ''${colors.underline}
   label-connected = %local_ip%
 
   format-disconnected =
@@ -217,7 +218,7 @@
 
   time = %H:%M
 
-  format-underline = #0a6cf5
+  format-underline = ''${colors.underline}
 
   label = %time% %date%
 
@@ -258,14 +259,14 @@
   full-at = 96
 
   format-charging = <animation-charging> <label-charging>
-  format-charging-underline = #ffb52a
+  format-charging-underline = ''${colors.underline}
 
   format-discharging = <ramp-capacity> <label-discharging>
-  format-discharging-underline = ''${self.format-charging-underline}
+  format-discharging-underline = ''${colors.underline}
 
   format-full-prefix = "  "
   format-full-prefix-foreground = #00ff00
-  format-full-underline = ''${self.format-charging-underline}
+  format-full-underline = ''${colors.underline}
 
   ramp-capacity-0 = " "
   ramp-capacity-1 = " "
@@ -289,7 +290,7 @@
   warn-temperature = 70
 
   format = <ramp> <label>
-  format-underline = #f50a4d
+  format-underline = ''${colors.underline}
   format-warn = <ramp> <label-warn>
   format-warn-underline = ''${self.format-underline}
 
@@ -302,9 +303,9 @@
   ramp-2 = 
   ramp-3 = 
   ramp-4 = 
-  ramp-0-foreground = #00ff00
+  ramp-0-foreground = #0000ff
   ramp-1-foreground = #00ff00
-  ramp-2-foreground = #ffa500
+  ramp-2-foreground = #ffee00
   ramp-3-foreground = #ffa500
   ramp-4-foreground = #ff0000
   ramp-foreground = ''${colors.foreground-alt}
@@ -313,7 +314,7 @@
   type = custom/script
   interval = 5
   format = <label>
-  format-underline = #ffb52a
+  format-underline = ''${colors.underline}
   exec = ${variables.homeDir}/bin/polybar-batstatus
   label = " %output%"
 
