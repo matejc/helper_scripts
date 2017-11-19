@@ -85,12 +85,17 @@ let
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    pkill polybar
     export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
 
+    ${pkgs.procps}/bin/pkill polybar
     ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
+    ${pkgs.procps}/bin/pkill dunst
+    ${pkgs.dunst}/bin/dunst &
+
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
+
+    echo "DONE"
   '';
 
   startScript = pkgs.writeScript "start-script.sh" ''
