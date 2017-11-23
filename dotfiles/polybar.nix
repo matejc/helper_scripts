@@ -354,7 +354,7 @@
     elif [[ $bat -lt 80 ]]; then
       bat_prefix="%{F#ffa500}%{F-}"
     fi
-    ${pkgs.acpi}/bin/acpi -a | grep "on-line" &>/dev/null
+    ${pkgs.acpi}/bin/acpi -a 2>/dev/null | grep "on-line" &>/dev/null
     if [ $? -eq 0 ]
     then
       echo "%{F#00ff00}%{F-} $bat_prefix $bat%"

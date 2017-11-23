@@ -59,5 +59,9 @@
     export EDITOR="${variables.editor}"
     export PATH="$HOME/bin:$PATH"
     export TERM="xterm-256color"
+    if [ -n "$TMUX" ]
+    then
+      export TERM="screen-256color"
+    fi
   '';
 }]
