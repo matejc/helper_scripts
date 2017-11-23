@@ -320,7 +320,7 @@
   format = <label>
   format-underline = ''${colors.underline}
   exec = ${variables.homeDir}/bin/polybar-batstatus
-  label = " %output%"
+  label = "%output%"
 
   [settings]
   screenchange-reload = true
@@ -354,7 +354,13 @@
     elif [[ $bat -lt 80 ]]; then
       bat_prefix="%{F#ffa500}%{F-}"
     fi
-    echo "$bat_prefix $bat%"
+    ${pkgs.acpi}/bin/acpi -a | grep "on-line" &>/dev/null
+    if [ $? -eq 0 ]
+    then
+      echo "%{F#00ff00}%{F-} $bat_prefix $bat%"
+    else
+      echo " $bat_prefix $bat%"
+    fi
     unset bat
     unset bat_prefix
   fi

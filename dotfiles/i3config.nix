@@ -150,9 +150,6 @@
   bindsym $mod+Up focus up
   bindsym $mod+Right focus right
 
-  bindsym Ctrl+Mod1+Down focus down
-  bindsym Ctrl+Mod1+Up focus up
-
   # focus the parent container
   #bindsym $mod+a focus parent
 
@@ -358,9 +355,11 @@
   bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.homeDir}/bin/lockscreen
   bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
-  bindsym Ctrl+Mod1+t exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal
-  bindcode 152 exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal --drop-down
-  bindsym F12 exec --no-startup-id /run/current-system/sw/bin/xfce4-terminal --drop-down
+  bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
+
+  bindcode 152 exec --no-startup-id ${variables.dropDownTerminal}
+  bindsym F12 exec --no-startup-id ${variables.dropDownTerminal}
+
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'

@@ -1,7 +1,7 @@
 { variables, config, pkgs, lib }:
 [{
   target = "${variables.homeDir}/.zshrc";
-  source = builtins.toFile "zshrc" ''
+  source = pkgs.writeText "zshrc" ''
     function preexec() {
       printf "\033]0;%s\a" "$1"
       timer=''${timer:-$SECONDS}
@@ -54,5 +54,10 @@
       fi
       export RPROMPT
     }
+
+    export BROWSER="${variables.browser}"
+    export EDITOR="${variables.editor}"
+    export PATH="$HOME/bin:$PATH"
+    export TERM="xterm-256color"
   '';
 }]

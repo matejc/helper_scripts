@@ -1,13 +1,13 @@
 { pkgs }:
 let
-  variables = {
+  variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/matejc";
     monitorPrimary = "eDP1";
-    monitorTwo = "VGA1";
-    monitorThree = "DP1";
+    monitorTwo = "DP2";
+    monitorThree = "DP2";
     soundCard = "0";
     ethernetInterfaces = [ "enp0s25" "tun0" ];
     wirelessInterfaces = [ "wlp3s0" ];
@@ -17,27 +17,41 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
-    editor = "${pkgs.ne}/bin/ne";
-    font = "pango:Cantarell 12";
-    wallpaper = "${variables.homeDir}/Pictures/27058-Overflowed.jpg";
-    lockImage = "${variables.homeDir}/Pictures/27058-Overflowed_blur.png";
+    editor = "${pkgs.nano}/bin/nano";
+    font = "Cantarell 12";
+    wallpaper = "${variables.homeDir}/Pictures/pexels-photo-207985.jpeg";
+    lockImage = "${variables.homeDir}/Pictures/pexels-photo-414331_1_1_blur.jpg";
     inherit startScript;
+    inherit restartScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
+    terminal = "${pkgs.alacritty}/bin/alacritty";
+    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+    browser = "${pkgs.firefox-beta-bin}/bin/firefox";
     i3minator = {
       chat = {
         workspace = "1";
-        command = "${pkgs.franz}/bin/Franz";
+        command = "${pkgs.rambox}/bin/rambox";
         timeout = "3";
+      };
+      chat2 = {
+        workspace = "1";
+        command = "pidgin";
+        timeout = "1";
       };
       console = {
         workspace = "2";
-        command = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
-        timeout = "0.5";
+        command = terminal;
+        timeout = "1";
+      };
+      editor = {
+        workspace = "3";
+        command = "sublime3";
+        timeout = "2";
       };
       browser = {
         workspace = "4";
-        command = "/run/current-system/sw/bin/chromium";
+        command = browser;
         timeout = "2";
       };
     };
@@ -73,7 +87,7 @@ let
     ./yaml2nix.nix
     ./mysql-utils.nix
     ./kanban.nix
-    ./atom.nix
+    # ./atom.nix
     ./jstools.nix
     ./tray.nix
     ./zsh.nix
@@ -101,17 +115,15 @@ let
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
     xinput_custom_script.sh
-
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/autolock &
+    ${pkgs.sparkleshare}/bin/sparkleshare &
 
     ${pkgs.i3minator}/bin/i3minator start chat
     ${pkgs.i3minator}/bin/i3minator start chat2
     ${pkgs.i3minator}/bin/i3minator start console
     ${pkgs.i3minator}/bin/i3minator start editor
     ${pkgs.i3minator}/bin/i3minator start browser
-
-    ${pkgs.dunst}/bin/dunst &
 
     echo "DONE"
   '';
