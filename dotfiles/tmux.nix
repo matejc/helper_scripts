@@ -135,8 +135,8 @@
     set -g status-right "#[fg=colour32,bg=\"#fdf6e3\"]#[fg=colour245,bg=\"#fdf6e3\",bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     # Window status
-    set -g window-status-format " #I:#P:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "
-    set -g window-status-current-format "#[fg=colour32,bg=\"#fdf6e3\",nobold] #I:#P:#[fg=colour208,bg=\"#fdf6e3\",nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=\"#fdf6e3\",nobold]"
+    set -g window-status-format " #{pane_current_command}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "
+    set -g window-status-current-format "#[fg=colour32,bg=\"#fdf6e3\",nobold] #{pane_current_command}:#[fg=colour208,bg=\"#fdf6e3\",nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=\"#fdf6e3\",nobold]"
 
     # Current window status
     set -g window-status-current-bg "#fdf6e3"
