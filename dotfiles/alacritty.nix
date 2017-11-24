@@ -281,8 +281,10 @@ key_bindings:
   - { key: Down,     mods: Alt,     chars: "\x1b[1;3B"                   }
   - { key: Down,                    chars: "\x1b[B",   mode: ~AppCursor  }
   - { key: Down,                    chars: "\x1bOB",   mode: AppCursor   }
-  - { key: F1,                      chars: "\x1bOP"                      }
-  - { key: F2,                      chars: "\x1bOQ"                      }
+  # - { key: F1,                      chars: "\x1bOP"                      }
+  - { key: PageUp,   mods: Control|Shift, chars: "\x1bOP"                      }
+  # - { key: F2,                      chars: "\x1bOQ"                      }
+  - { key: PageDown, mods: Control|Shift, chars: "\x1bOQ"                      }
   - { key: F3,                      chars: "\x1bOR"                      }
   - { key: F4,                      chars: "\x1bOS"                      }
   - { key: F5,                      chars: "\x1b[15~"                    }

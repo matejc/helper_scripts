@@ -48,6 +48,9 @@
 
     bind-key -n C-PageDown next-window
     bind-key -n C-PageUp previous-window
+    bind-key -n F1 swap-window -t -1
+    bind-key -n F2 swap-window -t +1
+
     bind-key -n C-N new-window -c '#{pane_current_path}'
     bind-key -n C-T new-window -c '#{pane_current_path}'
 
@@ -98,7 +101,7 @@
         send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
 
     set -g set-titles on
-    set -g set-titles-string "#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
+    set -g set-titles-string "#{pane_current_command}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';
