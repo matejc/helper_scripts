@@ -58,5 +58,7 @@
   my.py
   *.swp
   .idea
+
+  .envrc
   '';
 }

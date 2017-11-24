@@ -52,16 +52,22 @@
           unset bat_color
         fi
       fi
+
+      if [ -n "$DIRENV_DIR" ]
+      then
+        RPROMPT="%F{blue}[env:$(basename ''${DIRENV_DIR:1})]%{$reset_color%} ''${RPROMPT}"
+      fi
       export RPROMPT
     }
 
     export BROWSER="${variables.browser}"
     export EDITOR="${variables.editor}"
-    export PATH="$HOME/bin:$PATH"
+    export PATH="$HOME/bin:${pkgs.direnv}/bin:$PATH"
     export TERM="xterm-256color"
     if [ -n "$TMUX" ]
     then
       export TERM="screen-256color"
     fi
+    eval "$(direnv hook zsh)"
   '';
 }]
