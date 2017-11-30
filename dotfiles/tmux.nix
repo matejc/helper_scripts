@@ -101,7 +101,7 @@
         send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
 
     set -g set-titles on
-    set -g set-titles-string "#{pane_current_command}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
+    set -g set-titles-string "#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-1 | rev): #(ps --no-headers -t #{pane_tty} -o args -O-c)"
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';
@@ -138,8 +138,8 @@
     set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
     # Window status
-    set -g window-status-format " #{pane_current_command}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) "
-    set -g window-status-current-format "#[fg=\"#66D9EF\",bg=\"#272822\",nobold] #{pane_current_command}:#[fg=colour208,bg=\"#272822\",nobold]#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev) #[fg=black,bg=\"#272822\",nobold]"
+    set -g window-status-format " #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#{pane_current_command} "
+    set -g window-status-current-format "#[fg=\"#66D9EF\",bg=\"#272822\",nobold] #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#[fg=colour208,bg=\"#272822\",nobold]#{pane_current_command} #[fg=black,bg=\"#272822\",nobold]"
 
     # Current window status
     set -g window-status-current-bg "#272822"
