@@ -53,10 +53,6 @@
         fi
       fi
 
-      if [ -n "$DIRENV_DIR" ]
-      then
-        RPROMPT="%F{blue}[env:$(basename ''${DIRENV_DIR:1})]%{$reset_color%} ''${RPROMPT}"
-      fi
       export RPROMPT
     }
 
@@ -68,6 +64,19 @@
     then
       export TERM="screen-256color"
     fi
-    eval "$(direnv hook zsh)"
+
+
+    # eval "$(direnv hook zsh)"
+    _direnv_hook() {
+      eval "$(direnv export zsh 2>/dev/null)";
+      if [ -n "$DIRENV_DIR" ] && [ -n "$DIRENV_WATCHES" ]
+      then
+        RPROMPT="%F{blue}[env:$(basename ''${DIRENV_DIR:1})]%{$reset_color%} ''${RPROMPT}"
+      fi
+    }
+    typeset -ag precmd_functions;
+    if [[ -z ''${precmd_functions[(r)_direnv_hook]} ]]; then
+      precmd_functions+=_direnv_hook;
+    fi
   '';
 }]

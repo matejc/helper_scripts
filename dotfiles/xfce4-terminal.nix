@@ -38,12 +38,10 @@ MiscDefaultWorkingDir=
 MiscRewrapOnResize=TRUE
 MiscUseShiftArrowsToScroll=FALSE
 MiscSlimTabs=TRUE
-ColorPalette=#073642;#dc322f;#859900;#b58900;#268bd2;#d33682;#2aa198;#073642;#002b36;#cb4b16;#93a1a1;#839496;#657b83;#6c71c4;#586e75;#002b36
-ColorForeground=#657b83
-ColorBackground=#fdf6e3
-ColorCursor=
-ColorBold=#586e75
-ColorBoldUseDefault=FALSE
-TabActivityColor=#dc322f
+TabActivityColor=#a6a6e2e22e2e
+ColorCursor=#f8f8f8f8f2f2
+ColorForeground=#f8f8f8f8f2f2
+ColorBackground=#272728282222
+ColorPalette=#272728282222;#f9f926267272;#a6a6e2e22e2e;#f4f4bfbf7575;#6666d9d9efef;#aeae8181ffff;#a1a1efefe4e4;#f8f8f8f8f2f2;#757571715e5e;#f9f926267272;#a6a6e2e22e2e;#f4f4bfbf7575;#6666d9d9efef;#aeae8181ffff;#a1a1efefe4e4;#f9f9f8f8f5f5
   '';
 }

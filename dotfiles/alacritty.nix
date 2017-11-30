@@ -103,35 +103,40 @@ render_timer: false
 # and cursor.background colors, otherwise invert the colors of the cursor.
 custom_cursor_colors: false
 
-# Colors (Solarized Light)
+# Base16 Monokai 256 - alacritty color config
+# Wimer Hazenberg (http://www.monokai.nl)
 colors:
   # Default colors
   primary:
-    background: '0xfdf6e3'
-    foreground: '0x586e75'
+    background: '0x272822'
+    foreground: '0xf8f8f2'
+
+  # Colors the cursor will use if `custom_cursor_colors` is true
+  cursor:
+    text: '0x272822'
+    cursor: '0xf8f8f2'
 
   # Normal colors
   normal:
-    black:   '0x073642'
-    red:     '0xdc322f'
-    green:   '0x859900'
-    yellow:  '0xb58900'
-    blue:    '0x268bd2'
-    magenta: '0xd33682'
-    cyan:    '0x2aa198'
-    white:   '0xeee8d5'
+    black:   '0x272822'
+    red:     '0xf92672'
+    green:   '0xa6e22e'
+    yellow:  '0xf4bf75'
+    blue:    '0x66d9ef'
+    magenta: '0xae81ff'
+    cyan:    '0xa1efe4'
+    white:   '0xf8f8f2'
 
   # Bright colors
   bright:
-    black:   '0x002b36'
-    red:     '0xcb4b16'
-    green:   '0x586e75'
-    yellow:  '0x657b83'
-    blue:    '0x839496'
-    magenta: '0x6c71c4'
-    cyan:    '0x93a1a1'
-    white:   '0xfdf6e3'
-
+    black:   '0x75715e'
+    red:     '0xf92672'
+    green:   '0xa6e22e'
+    yellow:  '0xf4bf75'
+    blue:    '0x66d9ef'
+    magenta: '0xae81ff'
+    cyan:    '0xa1efe4'
+    white:   '0xf8f8f2'
 # Visual Bell
 #
 # Any time the BEL code is received, Alacritty "rings" the visual bell. Once

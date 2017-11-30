@@ -94,6 +94,7 @@ let
     ./xfce4-terminal.nix
     ./monitor.nix
     ./polybar.nix
+    ./i3_workspace.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''

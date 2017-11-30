@@ -16,13 +16,13 @@
   set $snd_card ${variables.soundCard}
 
   # colors
-  set $dark     #262a33
-  set $grey     #666a73
-  set $dblue    #2264a2
-  set $blue     #5294e2
-  set $lgrey    #3e424d
-  set $white    #ffffff
-  set $mgrey    #b9c2cd
+  # set $dark     #262a33
+  # set $grey     #666a73
+  # set $dblue    #2264a2
+  # set $blue     #5294e2
+  # set $lgrey    #3e424d
+  # set $white    #ffffff
+  # set $mgrey    #b9c2cd
 
 
   # > horizontal | vertical | auto
@@ -44,9 +44,35 @@
 
     # only one
     bindsym 1 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --off --output $mon_lap --auto; mode "default"
-    bindsym 2 exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --right-of $mon_lap; mode "default"
-    bindsym 3 exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --right-of $mon_lap; mode "default"
+    bindsym 2 exec --no-startup-id xrandr --output $mon_ext --auto --output $mon_ext1 --off --output $mon_lap --off; mode "default"
+    bindsym 3 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --auto --output $mon_lap --off; mode "default"
 
+    bindsym p mode "monitor_primary";
+    bindsym s mode "monitor_secondary";
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+  }
+
+  mode "monitor_primary" {
+    # left and right
+    bindsym l exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --left-of $mon_lap ; mode "default"
+    bindsym r exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --right-of $mon_lap ; mode "default"
+
+    # up and down
+    bindsym u exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --above $mon_lap ; mode "default"
+    bindsym d exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --below $mon_lap ; mode "default"
+
+    # clone
+    bindsym c exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --same-as $mon_lap ; mode "default"
+
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+  }
+
+  mode "monitor_secondary" {
     # left and right
     bindsym l exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --left-of $mon_lap ; mode "default"
     bindsym r exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --right-of $mon_lap ; mode "default"
@@ -56,10 +82,7 @@
     bindsym d exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --below $mon_lap ; mode "default"
 
     # clone
-    bindsym c exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --same-as $mon_lap ; mode "default"
-
-    # presentation
-    bindsym p exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --left-of $mon_lap ; mode "default"
+    bindsym c exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --same-as $mon_lap ; mode "default"
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
@@ -333,10 +356,12 @@
   # matejc's key bindings
   #bindsym Ctrl+Shift+Left focus output left
   #bindsym Ctrl+Right focus output right
-  #bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg workspace $WSNUM
-  #bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Left workspace prev
-  bindsym Ctrl+Mod1+Right workspace next
+
+  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev_on_output) && i3-msg workspace $WSNUM
+  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next_on_output) && i3-msg workspace $WSNUM
+  #bindsym Ctrl+Mod1+Left workspace prev_on_output
+  #bindsym Ctrl+Mod1+Right workspace next_on_output
+
   bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
   bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
   bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
@@ -390,10 +415,29 @@
   #client.unfocused        #333333 #93a1a1 #fdf6e3 #292d2e
 
   #                          border       backgr.       text   indicator
-  client.focused              $mgrey       $mgrey        $dark $lgrey $grey
-  client.unfocused            $dark        $dark         $grey  $lgrey $grey
-  client.focused_inactive     $dark        $dark         $mgrey $lgrey $grey
-  client.urgent               $dark        $blue         $mgrey $lgrey $grey
+  #client.focused              $dark        $dark         $lgray $lgrey $grey
+  #client.unfocused            $lgray       $lgray        $mgray $lgrey $grey
+  #client.focused_inactive     $lgray       $lgray        $mgrey $lgrey $grey
+  #client.urgent               $blue        $blue         $mgrey $lgrey $grey
+
+  # colors
+  set $black             #272822
+  set $white             #FFFFFF
+  set $pink              #F92672
+  set $blue              #66D9EF
+  set $green             #A6E22E
+  set $orange            #FD971F
+  set $yellow            #E6DB74
+  set $purple            #AE81FF
+
+  # class                 border  bg.    text    indicator child_border
+  client.focused          $black  $black $green  $blue   $blue
+  client.focused_inactive $black  $black $blue   $black  $black
+  client.unfocused        $black  $black $white  $black  $black
+  client.urgent           $pink   $pink  $white  $pink   $pink
+
+  client.background #ff0000
+
 
   #}}}
   #{{{ Autostart
