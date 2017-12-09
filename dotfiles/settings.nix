@@ -27,32 +27,39 @@ let
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = "${pkgs.alacritty}/bin/alacritty";
     dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
-    browser = "${pkgs.firefox-beta-bin}/bin/firefox";
+    browser = programs.google-chrome;
+    programs = {
+        google-chrome = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
+        firefox = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        l = "${pkgs.exa}/bin/exa -gal --git";
+        s = "${pkgs.sublime3}/bin/sublime3 --add";
+        n = "${pkgs.nano}/bin/nano -wc";
+    };
     i3minator = {
       chat = {
         workspace = "1";
         command = "${pkgs.rambox}/bin/rambox";
-        timeout = "3";
+        timeout = "0.1";
       };
       chat2 = {
         workspace = "1";
         command = "pidgin";
-        timeout = "1";
+        timeout = "0.1";
       };
       console = {
         workspace = "2";
         command = terminal;
-        timeout = "1";
+        timeout = "0.1";
       };
       editor = {
         workspace = "3";
         command = "sublime3";
-        timeout = "2";
+        timeout = "0.1";
       };
       browser = {
         workspace = "4";
         command = browser;
-        timeout = "2";
+        timeout = "0.1";
       };
     };
     polybar.bars = [ "my" ];
@@ -95,6 +102,7 @@ let
     ./monitor.nix
     ./polybar.nix
     ./i3_workspace.nix
+    ./programs.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''

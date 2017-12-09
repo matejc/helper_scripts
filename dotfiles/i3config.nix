@@ -29,7 +29,7 @@
   default_orientation horizontal
 
   # > default | stacking | tabbed
-  workspace_layout default
+  workspace_layout tabbed
 
   # > normal | 1pixel | none
   new_window none
@@ -160,6 +160,20 @@
   #}}}
   #{{{ Windows
   #{{{   Change focus
+
+  for_window [class="^rambox$"] move container to workspace $w1
+  for_window [class="^Pidgin$"] move container to workspace $w1
+
+  for_window [class="^Alacritty$"] move container to workspace $w2
+
+  for_window [class="^jetbrains-idea$"] move container to workspace $w3
+  for_window [class="^Sublime_text$"] move container to workspace $w3
+
+  for_window [class="^Firefox$"] move container to workspace $w4
+  for_window [class="^Firefox Developer Edition$"] move container to workspace $w4
+  for_window [class="^Chromium.*"] move container to workspace $w4
+  for_window [class="^Google-chrome.*"] move container to workspace $w4
+  for_window [class="^keepassxc$"] move container to workspace $w4
 
   # change focus
   #bindsym $mod+h focus left

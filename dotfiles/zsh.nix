@@ -78,5 +78,7 @@
     if [[ -z ''${precmd_functions[(r)_direnv_hook]} ]]; then
       precmd_functions+=_direnv_hook;
     fi
+
+    unalias l
   '';
 }]
