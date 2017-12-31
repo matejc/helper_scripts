@@ -11,8 +11,8 @@
   # monitors
   # LVDS1
   set $mon_lap ${variables.monitorPrimary}
-  set $mon_ext ${variables.monitorTwo}
-  set $mon_ext1 ${variables.monitorThree}
+  set $mon_ext ${variables.monitorOne}
+  set $mon_ext1 ${variables.monitorTwo}
   set $snd_card ${variables.soundCard}
 
   # colors
@@ -47,15 +47,15 @@
     bindsym 2 exec --no-startup-id xrandr --output $mon_ext --auto --output $mon_ext1 --off --output $mon_lap --off; mode "default"
     bindsym 3 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --auto --output $mon_lap --off; mode "default"
 
-    bindsym p mode "monitor_primary";
-    bindsym s mode "monitor_secondary";
+    bindsym p mode "monitor_one";
+    bindsym s mode "monitor_two";
 
     # back to normal: Enter or Escape
     bindsym Return mode "default"
     bindsym Escape mode "default"
   }
 
-  mode "monitor_primary" {
+  mode "monitor_one" {
     # left and right
     bindsym l exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --left-of $mon_lap ; mode "default"
     bindsym r exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext --auto --right-of $mon_lap ; mode "default"
@@ -72,7 +72,7 @@
     bindsym Escape mode "default"
   }
 
-  mode "monitor_secondary" {
+  mode "monitor_two" {
     # left and right
     bindsym l exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --left-of $mon_lap ; mode "default"
     bindsym r exec --no-startup-id xrandr --output $mon_lap --auto --output $mon_ext1 --auto --right-of $mon_lap ; mode "default"
@@ -114,15 +114,15 @@
   set $w9 9
   set $w10 10
 
-  workspace "$w1" output $mon_lap
-  workspace "$w2" output $mon_lap
-  workspace "$w3" output $mon_lap
-  workspace "$w4" output $mon_lap
-  workspace "$w5" output $mon_lap
-  workspace "$w6" output $mon_lap
-  workspace "$w7" output $mon_lap
-  workspace "$w8" output $mon_lap
-  workspace "$w9" output $mon_ext
+  # workspace "$w1" output $mon_lap
+  # workspace "$w2" output $mon_lap
+  # workspace "$w3" output $mon_lap
+  # workspace "$w4" output $mon_lap
+  # workspace "$w5" output $mon_lap
+  # workspace "$w6" output $mon_lap
+  # workspace "$w7" output $mon_lap
+  # workspace "$w8" output $mon_lap
+  # workspace "$w9" output $mon_ext
   workspace "$w10" output $mon_ext1
 
   # switch to workspace
@@ -162,9 +162,10 @@
   #{{{   Change focus
 
   for_window [class="^rambox$"] move container to workspace $w1
+  for_window [class="^Franz$"] move container to workspace $w1
   for_window [class="^Pidgin$"] move container to workspace $w1
 
-  for_window [class="^Alacritty$"] move container to workspace $w2
+  # for_window [class="^Alacritty$"] move container to workspace $w2
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
   for_window [class="^Sublime_text$"] move container to workspace $w3
@@ -333,7 +334,7 @@
   #{{{   Assigns
 
   #assign [class="Opera"] $w3
-  assign [class="chromium-browser"] $w3
+  #assign [class="chromium-browser"] $w3
   #assign [class="Firefox"] $w3
   #assign [class="Nightly"] $w3
   #assign [class="Gvim"] $w2
@@ -390,8 +391,8 @@
   bindsym Ctrl+Mod1+space exec --no-startup-id /run/current-system/sw/bin/rofi -show run
   bindsym Ctrl+Mod1+0 exec --no-startup-id ${variables.homeDir}/bin/monitor
   bindsym Ctrl+Mod1+s exec --no-startup-id zsh -l /run/current-system/sw/bin/sublime
-  bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
-  bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
+  #bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
+  #bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.homeDir}/bin/lockscreen
   bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}

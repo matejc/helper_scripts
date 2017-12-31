@@ -3,17 +3,18 @@
   target = "${variables.homeDir}/.config/polybar/config";
   source = pkgs.writeText "polybar.config" ''
   [colors]
-  background = #e0202020
-  background-alt = #444
+  background = #e0272822
+  background-alt = #454932
   foreground = #dfdfdf
-  foreground-alt = #555
-  primary = #ffb52a
-  secondary = #e60053
-  alert = #bd2c40
+  foreground-alt = #555942
+  primary = #FD971F
+  secondary = #AE81FF
+  alert = #A6E22E
   underline = #0a81f5
 
   [bar/my]
   monitor = ${variables.monitorPrimary}
+  monitor-fallback = ${variables.monitorOne}
   width = 100%
   height = 27
   radius = 0.0
@@ -92,6 +93,7 @@
   label-occupied-padding = 2
 
   label-urgent = %index%!
+  label-urgent-foreground = ''${colors.foreground-alt}
   label-urgent-background = ''${colors.alert}
   label-urgent-padding = 2
 
@@ -130,6 +132,7 @@
 
   ; urgent = Workspace with urgency hint set
   label-urgent = %index%
+  label-urgent-foreground = ''${module/bspwm.label-urgent-foreground}
   label-urgent-background = ''${module/bspwm.label-urgent-background}
   label-urgent-padding = ''${module/bspwm.label-urgent-padding}
 
@@ -345,13 +348,13 @@
     if [[ $bat -lt 20 ]]; then
       bat_prefix="%{F#ff0000}%{F-}"
 
-    elif [[ $bat -lt 40 ]]; then
+    elif [[ $bat -lt 50 ]]; then
       bat_prefix="%{F#ffa500}%{F-}"
 
-    elif [[ $bat -lt 60 ]]; then
+    elif [[ $bat -lt 70 ]]; then
       bat_prefix="%{F#ffa500}%{F-}"
 
-    elif [[ $bat -lt 80 ]]; then
+    elif [[ $bat -lt 90 ]]; then
       bat_prefix="%{F#ffa500}%{F-}"
     fi
     ${pkgs.acpi}/bin/acpi -a 2>/dev/null | grep "on-line" &>/dev/null

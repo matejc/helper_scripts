@@ -108,6 +108,8 @@ let
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
+    xinput_custom_script.sh
+
     export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
 
     ${pkgs.procps}/bin/pkill polybar
@@ -116,6 +118,8 @@ let
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
 
+    ${pkgs.xorg.xrandr}/bin/xrandr --output ${variables.monitorOne} --off --output ${variables.monitorTwo} --off --output ${variables.monitorPrimary} --auto
+
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
     echo "DONE"
@@ -123,16 +127,11 @@ let
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
-    xinput_custom_script.sh
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/autolock &
     ${pkgs.sparkleshare}/bin/sparkleshare &
 
-    ${pkgs.i3minator}/bin/i3minator start chat
-    ${pkgs.i3minator}/bin/i3minator start chat2
-    ${pkgs.i3minator}/bin/i3minator start console
-    ${pkgs.i3minator}/bin/i3minator start editor
-    ${pkgs.i3minator}/bin/i3minator start browser
+    ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
 
     echo "DONE"
   '';

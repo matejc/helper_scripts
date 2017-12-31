@@ -18,7 +18,7 @@ function package() {
         cwd="`pwd`"
         export GOPATH="$cwd/Godeps/_workspace"
         go get -v -d $1
-        # go build -v $1
+        go build -v $1
         cd $cwd/Godeps/_workspace/*/$1
         go2nix save -o "$cwd/default.nix" -d "$cwd/deps.nix"
         echo Done

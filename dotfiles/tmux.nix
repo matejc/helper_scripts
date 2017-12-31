@@ -74,34 +74,14 @@
 
     set-option -s set-clipboard off
     # For vi copy mode bindings
-    bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
+    bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection clipboard -i"
     # For emacs copy mode bindings
-    bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection primary -i"
-
-    # Double LMB Select & Copy (Word)
-    bind-key -T copy-mode-vi DoubleClick1Pane \
-        select-pane \; \
-        send-keys -X select-word \; \
-        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
-    bind-key -n DoubleClick1Pane \
-        select-pane \; \
-        copy-mode -M \; \
-        send-keys -X select-word \; \
-        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
-
-    # Triple LMB Select & Copy (Line)
-    bind-key -T copy-mode-vi TripleClick1Pane \
-        select-pane \; \
-        send-keys -X select-line \; \
-        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
-    bind-key -n TripleClick1Pane \
-        select-pane \; \
-        copy-mode -M \; \
-        send-keys -X select-line \; \
-        send-keys -X copy-pipe "${pkgs.xclip}/bin/xclip -in -sel primary"
+    bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection clipboard -i"
 
     set -g set-titles on
     set -g set-titles-string "#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-1 | rev): #(ps --no-headers -t #{pane_tty} -o args -O-c)"
+
+    set-option -g renumber-windows on
 
     source-file "${variables.homeDir}/.tmuxtheme"
   '';

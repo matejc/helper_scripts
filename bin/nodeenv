@@ -55,7 +55,7 @@ f() {
 }
 
 d() {
-    node --harmony --debug=5858 "$@"
+    node --harmony --inspect=5858 "$@"
 }
 
 nopublish() {
