@@ -27,10 +27,10 @@ let
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = "${pkgs.alacritty}/bin/alacritty";
     dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
-    browser = programs.google-chrome;
+    browser = "chromium";
     programs = {
-        google-chrome = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
-        firefox = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        chromium = "${pkgs.chromium}/bin/chromium";
+        firefox-devedition = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         s = "${pkgs.sublime3}/bin/sublime3 --add";
         n = "${pkgs.nano}/bin/nano -wc";
@@ -38,18 +38,13 @@ let
     i3minator = {
       chat = {
         workspace = "1";
-        command = "${pkgs.rambox}/bin/rambox";
-        timeout = "0.1";
-      };
-      chat2 = {
-        workspace = "1";
-        command = "pidgin";
+        command = "${pkgs.franz}/bin/franz";
         timeout = "0.1";
       };
       console = {
         workspace = "2";
         command = terminal;
-        timeout = "0.1";
+        timeout = "0.3";
       };
       editor = {
         workspace = "3";

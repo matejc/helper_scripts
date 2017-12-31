@@ -37,6 +37,10 @@
   # Use Mouse+$mod to drag floating windows to their wanted position
   floating_modifier $mod
 
+  # default is 'smart' - stole focus on window activation if on same workspace
+  # 'urgent' will not stole focus, just marked the window urgent
+  focus_on_window_activation urgent
+
   #}}}
   #{{{ Modes
   #{{{   Monitor mode
