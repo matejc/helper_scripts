@@ -239,34 +239,6 @@ vimrcConfig = {
     let g:syntastic_javascript_jshint_exec = '/home/matejc/.npm-packages/bin/jshint'
     let g:syntastic_jshint_exec = '/home/matejc/.npm-packages/bin/jshint'
 
-    function! SessionId()
-      return system("echo " . getcwd() . " | ${pkgs.coreutils}/bin/sha1sum - | ${pkgs.gawk}/bin/awk '{printf $1}'")
-    endfunction
-
-    function! MakeSession()
-      let b:sessiondir = $HOME . "/.vim/sessions/" . SessionId()
-      if (filewritable(b:sessiondir) != 2)
-        exe 'silent !mkdir -p ' b:sessiondir
-        redraw!
-      endif
-      let b:filename = b:sessiondir . '/session.vim'
-      exe "mksession! " . b:filename
-    endfunction
-
-    function! LoadSession()
-      let b:sessiondir = $HOME . "/.vim/sessions/" . SessionId()
-      let b:sessionfile = b:sessiondir . "/session.vim"
-      if (filereadable(b:sessionfile))
-        exe 'source ' b:sessionfile
-      else
-        echo "No session loaded."
-      endif
-    endfunction
-
-    " Adding automatons for when entering or leaving Vim
-    au VimEnter * nested :call LoadSession()
-    au VimLeave * :call MakeSession()
-
     au FileType javascript setl sw=2 sts=2 et
 
     " indent: mixed indent within a line

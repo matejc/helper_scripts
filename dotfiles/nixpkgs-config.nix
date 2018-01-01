@@ -438,16 +438,21 @@
         git
         # jdk strace gcc.cc.lib
 
-        ((import <nixpkgs/pkgs/development/mobile/androidenv> {
+        /*((import <nixpkgs/pkgs/development/mobile/androidenv> {
+          inherit pkgs;
+          pkgs_i686 = pkgs.pkgsi686Linux;
+        }))*/
+
+        androidPlatformTools
+
+        /*((import <nixpkgs/pkgs/development/mobile/androidenv> {
           inherit pkgs;
           pkgs_i686 = pkgs.pkgsi686Linux;
         }).androidsdk {
-          /*platformVersions = [ "24" ];*/
           platformVersions = [ ];
-          /*abiVersions = [ "x86" "x86_64"];*/
           abiVersions = [ ];
           useGoogleAPIs = false;
-        })
+        })*/
       ];
     };
 

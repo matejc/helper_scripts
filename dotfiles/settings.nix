@@ -25,10 +25,11 @@ let
     inherit restartScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
-    terminal = "${pkgs.alacritty}/bin/alacritty";
-    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+    terminal = programs.terminal;
+    dropDownTerminal = "${homeDir}/bin/i3wm-dropdown";
     browser = "chromium";
     programs = {
+        terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
         chromium = "${pkgs.chromium}/bin/chromium";
         firefox-devedition = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";

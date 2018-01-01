@@ -13,12 +13,12 @@ export JAVA_HOME="$nixprofile"
 
 export ANDROID_HOME="$nixprofile/libexec"
 
-export GRADLE_USER_HOME=/home/matejc/tmp/gradle
-
-export KEYSTORE_PATH=/home/matejc/.android/debug.keystore
-
-export KEY_ALIAS=androiddebugkey
-export KEYSTORE_PASSWORD=android
-export KEY_PASSWORD=android
+# export GRADLE_USER_HOME=/home/matejc/tmp/gradle
+#
+# export KEYSTORE_PATH=/home/matejc/.android/debug.keystore
+#
+# export KEY_ALIAS=androiddebugkey
+# export KEYSTORE_PASSWORD=android
+# export KEY_PASSWORD=android
 
 "$@"

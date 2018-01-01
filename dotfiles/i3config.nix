@@ -1,5 +1,5 @@
 { variables, config, pkgs, lib }:
-{
+[{
   target = "${variables.homeDir}/.i3/config";
   source = pkgs.writeText "i3config" ''
   # Please see http://i3wm.org/docs/userguide.html for a complete reference!
@@ -463,14 +463,22 @@
 
   exec_always --no-startup-id ${variables.restartScript}
   exec --no-startup-id ${variables.startScript}
-  #exec --no-startup-id "~/bin/autolock"
-  #exec --no-startup-id /bin/sh -c "sleep 1; /run/current-system/sw/bin/xrandr --output $mon_lap --primary --auto --output $mon_ext --off --output $mon_ext1 --off"
-  #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill /home/matejc/Pictures/simplave_by_voytecghost-d518thv.jpg; /run/current-system/sw/bin/i3-msg restart"
-  #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/feh --bg-fill ${variables.wallpaper}; /run/current-system/sw/bin/i3-msg restart"
-  #exec --no-startup-id /bin/sh -c "/run/current-system/sw/bin/dunst" &
-  # exec --no-startup-id cmst --minimized
-  # exec --no-startup-id ${pkgs.xfce.xfce4_power_manager}/bin/xfce4-power-manager
 
   # }}}
+
+  for_window [title="^ScratchTerm"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, sticky enable, focus
   '';
-}
+} {
+  target = "${variables.homeDir}/bin/i3wm-dropdown";
+  source = pkgs.writeScript "i3wm-dropdown.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    ${pkgs.xdotool}/bin/xdotool search --name '^ScratchTerm.*' &>/dev/null
+    if [ $? -gt 0 ]
+    then
+      TMUX_SESSION_NAME='ScratchTerm' ${variables.terminal}
+    else
+      ${pkgs.i3}/bin/i3-msg '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
+    fi
+  '';
+}]
