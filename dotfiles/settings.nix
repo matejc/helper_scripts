@@ -100,6 +100,7 @@ let
     ./i3_workspace.nix
     ./programs.nix
     ./any2mp3.nix
+    ./sublime.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
