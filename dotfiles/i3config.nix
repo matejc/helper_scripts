@@ -466,7 +466,7 @@
 
   # }}}
 
-  for_window [title="^ScratchTerm"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, sticky enable, focus
+  for_window [title="^ScratchTerm"] mark I3WM_SCRATCHPAD, exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   '';
 } {
   target = "${variables.homeDir}/bin/i3wm-dropdown";
@@ -480,5 +480,19 @@
     else
       ${pkgs.i3}/bin/i3-msg '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
     fi
+  '';
+} {
+  target = "${variables.homeDir}/bin/window-size";
+  source = pkgs.writeScript "window-size.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    IFS=" " read width height <<< "$(${pkgs.xdotool}/bin/xdotool getdisplaygeometry)"
+
+    case "$1" in
+      width) echo "$width * $2/100" | bc
+      ;;
+      height) echo "$height * $2/100" | bc
+      ;;
+    esac
   '';
 }]
