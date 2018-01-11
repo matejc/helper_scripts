@@ -10,7 +10,7 @@
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
       paths = [ pkgs.bashInteractive pkgs.docker pkgs.which
-        pkgs.python27Packages.docker_compose ];
+        pkgs.docker_compose ];
     };
 
     py3env = pkgs.buildEnv {
@@ -28,6 +28,7 @@
         gnused gawk diffutils gnugrep
         rofi  # for lpp.sh
         libxml2.dev libxslt.dev zlib
+        pypi2nix
       ];
     };
 

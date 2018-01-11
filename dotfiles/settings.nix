@@ -87,7 +87,7 @@ let
     ./volume.nix
     ./fish.nix
     ./dunst.nix
-    ./yaml2nix.nix
+    # ./yaml2nix.nix
     ./mysql-utils.nix
     ./kanban.nix
     # ./atom.nix
