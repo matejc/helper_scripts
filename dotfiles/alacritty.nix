@@ -356,5 +356,6 @@ key_bindings:
   - { key: Down,        mods: Control|Shift, chars: "\x1b[1;6B"                }
   - { key: Right,        mods: Control|Shift, chars: "\x1b[1;6C"                }
   - { key: Left,        mods: Control|Shift, chars: "\x1b[1;6D"                }
+  - { key: Z,        mods: Control, chars: "\x1f", mode: AppCursor      }
   '';
 }

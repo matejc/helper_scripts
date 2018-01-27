@@ -53,6 +53,11 @@
         fi
       fi
 
+      if [ -n "$TELEPRESENCE_POD" ]
+      then
+        RPROMPT="%F{red}[telepresence]%{$reset_color%} ''${RPROMPT}"
+      fi
+
       export RPROMPT
     }
 

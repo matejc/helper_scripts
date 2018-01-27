@@ -489,9 +489,9 @@
     IFS=" " read width height <<< "$(${pkgs.xdotool}/bin/xdotool getdisplaygeometry)"
 
     case "$1" in
-      width) echo "$width * $2/100" | bc
+      width) echo "$width * $2/100" | ${pkgs.bc}/bin/bc
       ;;
-      height) echo "$height * $2/100" | bc
+      height) echo "$height * $2/100" | ${pkgs.bc}/bin/bc
       ;;
     esac
   '';

@@ -79,7 +79,7 @@
     bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection clipboard -i"
 
     set -g set-titles on
-    set -g set-titles-string "#{session_name}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-1 | rev): #(ps --no-headers -t #{pane_tty} -o args -O-c)"
+    set -g set-titles-string "#{session_name}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev): #{pane_current_command}"
 
     set-option -g renumber-windows on
     setw -g aggressive-resize on
