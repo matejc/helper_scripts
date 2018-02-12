@@ -6,8 +6,8 @@ let
     user = "matejc";
     homeDir = "/home/matejc";
     monitorPrimary = "eDP1";
+    monitorOne = "DP1";
     monitorTwo = "DP2";
-    monitorThree = "DP2";
     soundCard = "0";
     ethernetInterfaces = [ "enp0s25" "tun0" ];
     wirelessInterfaces = [ "wlp3s0" ];
@@ -90,7 +90,7 @@ let
     # ./yaml2nix.nix
     ./mysql-utils.nix
     ./kanban.nix
-    # ./atom.nix
+    ./atom.nix
     ./jstools.nix
     ./tray.nix
     ./zsh.nix

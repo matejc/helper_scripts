@@ -173,6 +173,7 @@
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
   for_window [class="^Sublime_text$"] move container to workspace $w3
+  for_window [class="^Atom$"] move container to workspace $w3
 
   for_window [class="^Firefox$"] move container to workspace $w4
   for_window [class="^Firefox Developer Edition$"] move container to workspace $w4

@@ -21,10 +21,10 @@ let
       if [[ -L "${d.target}" ]]; then
         rm "${d.target}"
       elif [[ -f "${d.target}" ]]; then
-        mv "${d.target}" "${d.target}.backup.`date --iso-8601=seconds`"
+        mv -v "${d.target}" "${d.target}.backup.`date --iso-8601=seconds`"
       fi
       mkdir -p "`dirname "${d.target}"`" && \
-        ln -s "${d.source}" "${d.target}"
+        ln -vs "${d.source}" "${d.target}"
     '') dotAttrs}
 
     ${activationScript}
