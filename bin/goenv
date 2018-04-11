@@ -2,7 +2,7 @@
 
 nixprofile=$NIX_USER_PROFILE_DIR/goenv
 
-export PATH="$nixprofile/bin"
+export PATH="$nixprofile/bin:$PATH"
 export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
 export PS1="goenv $PS1"
 
@@ -17,7 +17,7 @@ function package() {
         set -xe
         cwd="`pwd`"
         export GOPATH="$cwd/Godeps/_workspace"
-        go get -v -d $1
+        # go get -v -d $1
         go build -v $1
         cd $cwd/Godeps/_workspace/*/$1
         go2nix save -o "$cwd/default.nix" -d "$cwd/deps.nix"

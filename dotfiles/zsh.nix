@@ -85,5 +85,19 @@
     fi
 
     unalias l
+
+    # ctrl+del
+    bindkey '^[[3;5~' kill-word
+    # alt+del
+    bindkey '^[[3;3~' kill-word
+
+    # alt+backspace
+    bindkey '^[^?' backward-kill-word
+
+    # alt+z
+    bindkey '^[z' undo
+
+    # alt+r
+    bindkey '^[r' redo
   '';
 }]

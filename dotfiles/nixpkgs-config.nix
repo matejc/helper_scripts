@@ -351,19 +351,11 @@
     goenv = pkgs.buildEnv {
       name = "goenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which coreutils gnused gnugrep bashInteractive
-        utillinux
-        gnutar bzip2
+        stdenv.cc
         go
         go2nix
-        findutils
-        gawk
-
-        git
-        nix-prefetch-scripts
-        pkgconfig
+        dep
         /*oniguruma*/
-
       ];
       ignoreCollisions = true;
     };
@@ -433,27 +425,24 @@
 
     androidenv = pkgs.buildEnv {
       name = "androidenv";
-      paths = with pkgs; [
-        stdenv
-        bash
-        git
+      paths = [
         # jdk strace gcc.cc.lib
 
-        /*((import <nixpkgs/pkgs/development/mobile/androidenv> {
+        /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
           inherit pkgs;
           pkgs_i686 = pkgs.pkgsi686Linux;
-        }))*/
+        })) */
 
-        androidPlatformTools
+        pkgs.androidenv.platformTools
 
-        /*((import <nixpkgs/pkgs/development/mobile/androidenv> {
+        /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
           inherit pkgs;
           pkgs_i686 = pkgs.pkgsi686Linux;
         }).androidsdk {
           platformVersions = [ ];
           abiVersions = [ ];
           useGoogleAPIs = false;
-        })*/
+        }) */
       ];
     };
 
