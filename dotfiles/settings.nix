@@ -101,6 +101,8 @@ let
     ./programs.nix
     ./any2mp3.nix
     ./sublime.nix
+    ./vlc.nix
+    ./xonsh.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
@@ -127,7 +129,7 @@ let
     #!${pkgs.stdenv.shell}
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/autolock &
-    ${pkgs.sparkleshare}/bin/sparkleshare &
+    ${pkgs.dropbox}/bin/dropbox &
 
     ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
 
@@ -142,6 +144,8 @@ let
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
     ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
+
+    rm -rf ${variables.homeDir}/.local/share/xonsh/xonsh_script_cache
   '';
 in {
   inherit variables dotFilePaths activationScript;
