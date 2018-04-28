@@ -402,13 +402,14 @@
   bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
 
+  bindcode 150 exec --no-startup-id ${variables.dropDownTerminal}
   bindcode 152 exec --no-startup-id ${variables.dropDownTerminal}
   bindsym F12 exec --no-startup-id ${variables.dropDownTerminal}
 
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
-  bindsym --release Print exec --no-startup-id /run/current-system/sw/bin/xfce4-screenshooter --region --save /home/matejc/Pictures
+  bindsym --release Print exec --no-startup-id ${pkgs.xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ${variables.homeDir}/Pictures
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
   bindsym Ctrl+Mod1+w exec --no-startup-id /run/current-system/sw/bin/rofi -show window
   bindsym F1 exec --no-startup-id /run/current-system/sw/bin/rofi -show window
@@ -453,7 +454,7 @@
   # class                 border  bg.    text    indicator child_border
   client.focused          $black  $black $green  $blue   $blue
   client.focused_inactive $black  $black $blue   $black  $black
-  client.unfocused        $black  $black $white  $black  $black
+  client.unfocused        #1E1F1C #1E1F1C $white  $black  $black
   client.urgent           $pink   $pink  $white  $pink   $pink
 
   client.background #ff0000
@@ -467,6 +468,7 @@
 
   # }}}
 
+  for_window [class=".*"] title_format " <b>%title</b>"
   for_window [title="^ScratchTerm"] mark I3WM_SCRATCHPAD, exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   '';
 } {

@@ -58,6 +58,11 @@
         RPROMPT="%F{red}[telepresence]%{$reset_color%} ''${RPROMPT}"
       fi
 
+      if [ -n "$container" ]
+      then
+        RPROMPT="%F{cyan}[$container]%{$reset_color%} ''${RPROMPT}"
+      fi
+
       export RPROMPT
     }
 
@@ -99,5 +104,7 @@
 
     # alt+r
     bindkey '^[r' redo
+
+    export PERL5LIB="${pkgs.git}/share/perl5:$PERL5LIB"
   '';
 }]

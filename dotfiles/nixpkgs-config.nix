@@ -287,10 +287,10 @@
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs-8_x
-        (yarn.override { nodejs = nodejs-8_x; })
-        (npm2nix.override { nodejs = nodejs-8_x; })
-        ((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
+        nodejs-9_x
+        #(yarn.override { nodejs = nodejs-8_x; })
+        (npm2nix.override { nodejs = nodejs-9_x; })
+        #((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
         python
         utillinux
 
