@@ -24,7 +24,7 @@ in {
 
     # docs http://python-prompt-toolkit.readthedocs.io/en/master/pages/reference.html
 
-    $PATH += ["/home/matejc/bin", "/run/wrappers/bin", "/home/matejc/.nix-profile/bin", "/nix/var/nix/profiles/default/bin", "/run/current-system/sw/bin", "/etc/profiles/per-user/matejc/bin"]
+    $PATH += ["${variables.homeDir}/bin", "/run/wrappers/bin", "${variables.homeDir}/.nix-profile/bin", "/nix/var/nix/profiles/default/bin", "/run/current-system/sw/bin", "/etc/profiles/per-user/${variables.user}/bin"]
 
     history_search_state = {
       'text': None,
