@@ -39,7 +39,7 @@
 
   # default is 'smart' - stole focus on window activation if on same workspace
   # 'urgent' will not stole focus, just marked the window urgent
-  focus_on_window_activation urgent
+  #focus_on_window_activation urgent
 
   #}}}
   #{{{ Modes
@@ -103,7 +103,6 @@
   #font pango:DejaVu Sans Mono 9
   #font pango:Bitstream Vera Sans Mono Roman 9
   font pango:${variables.font}
-
 
   #}}}
   #{{{ Workspaces
@@ -301,10 +300,10 @@
   #dmenu_run -l 7 -p ">>>" -fn "7x14"
 
   # start a terminal
-  bindsym $mod+Return exec i3-sensible-terminal
+  # bindsym $mod+Return exec i3-sensible-terminal
 
   # start gvim
-  bindsym $mod+Shift+Return exec zed
+  # bindsym $mod+Shift+Return exec zed
 
   # ipython
   #bindsym $mod+Shift+i [instance="ipython"] scratchpad show
@@ -377,13 +376,13 @@
   #bindsym Ctrl+Shift+Left focus output left
   #bindsym Ctrl+Right focus output right
 
-  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev_on_output) && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next_on_output) && i3-msg workspace $WSNUM
+  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev_on_output) && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next_on_output) && ${variables.i3-msg} workspace $WSNUM
   #bindsym Ctrl+Mod1+Left workspace prev_on_output
   #bindsym Ctrl+Mod1+Right workspace next_on_output
 
-  bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
-  bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && i3-msg move workspace $WSNUM && i3-msg workspace $WSNUM
+  bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
   bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
 
   bindcode 121 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master toggle
@@ -398,7 +397,7 @@
   bindsym Ctrl+Mod1+s exec --no-startup-id zsh -l /run/current-system/sw/bin/sublime
   #bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
   #bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
-  bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.homeDir}/bin/lockscreen
+  bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
   bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
 
@@ -443,6 +442,8 @@
 
   # colors
   set $black             #272822
+  set $dark              #1E1F1C
+  set $gray              #939393
   set $white             #FFFFFF
   set $pink              #F92672
   set $blue              #66D9EF
@@ -454,11 +455,34 @@
   # class                 border  bg.    text    indicator child_border
   client.focused          $black  $black $green  $blue   $blue
   client.focused_inactive $black  $black $blue   $black  $black
-  client.unfocused        #1E1F1C #1E1F1C $white  $black  $black
+  client.unfocused        $dark   $dark  $gray   $black  $black
   client.urgent           $pink   $pink  $white  $pink   $pink
 
   client.background #ff0000
 
+  bar {
+    # position top
+    # strip_workspace_numbers yes
+    #tray_output none
+    font pango:${variables.font}
+    separator_symbol "•••"
+    #height 28
+
+    status_command i3status
+
+#   statusbar colors       border      background   text
+    colors {
+      background          #272822DD
+      statusline          $white
+      separator           $gray
+      focused_workspace   $blue        $black       $blue
+      active_workspace    $black       $black       $yellow
+      inactive_workspace  $dark        $dark        $white
+      urgent_workspace    $pink        $pink        $white
+    }
+  }
+
+  output "*" background ${variables.wallpaper} fill
 
   #}}}
   #{{{ Autostart
@@ -469,7 +493,9 @@
   # }}}
 
   for_window [class=".*"] title_format " <b>%title</b>"
-  for_window [title="^ScratchTerm"] mark I3WM_SCRATCHPAD, exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
+  #for_window [title="^ScratchTerm.*"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 85) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
+  for_window [title="^ScratchTerm.*"] border pixel 1
+  for_window [con_id="__focused__"] client.focused  $green  $black $green  $green   $blue
   '';
 } {
   target = "${variables.homeDir}/bin/i3wm-dropdown";
@@ -481,8 +507,29 @@
     then
       TMUX_SESSION_NAME='ScratchTerm' ${variables.terminal}
     else
-      ${pkgs.i3}/bin/i3-msg '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
+      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
     fi
+  '';
+} {
+  target = "${variables.homeDir}/bin/termite-dropdown";
+  source = pkgs.writeScript "termite-dropdown.sh" ''
+    #!${pkgs.stdenv.shell}
+    set -x
+    ${pkgs.procps}/bin/ps a | ${pkgs.gnugrep}/bin/grep -v grep | ${pkgs.gnugrep}/bin/grep 'termite --title=ScratchTerm'
+    if [ $? -gt 0 ]
+    then
+      ${pkgs.termite}/bin/termite --title=ScratchTerm "$@"
+    else
+      ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
+    fi
+  '';
+}  {
+  target = "${variables.homeDir}/bin/xfce-terminal-dropdown";
+  source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
+    #!${pkgs.stdenv.shell}
+    ${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down --title=ScratchTerm "$@" &
+    sleep 0.1
+    ${variables.i3-msg} "[title="^ScratchTerm.*"] resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
   '';
 } {
   target = "${variables.homeDir}/bin/window-size";

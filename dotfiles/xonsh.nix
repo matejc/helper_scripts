@@ -70,12 +70,17 @@ in {
 
       return postString + " [" + battery() + "/" + temperature() + "]"
 
-    def title(cmd = "{current_job}"):
+    def title(cmd = "{current_job: {}}"):
       line = "{short_cwd}"
+      prefix = ""
+      try:
+        prefix = $TMUX_SESSION_NAME + " "
+      except:
+        pass
       if cmd is not None:
-        return line + " " + cmd
+        return prefix + line + cmd
       else:
-        return line
+        return prefix + line
 
     @events.on_precommand
     def preexec(cmd):
@@ -144,7 +149,7 @@ in {
     $BASH_COMPLETIONS = "${bash_completion}"
     $CASE_SENSITIVE_COMPLETIONS = False
     $VC_BRANCH_TIMEOUT = 0.5
-    $PERL5LIB = "${pkgs.git}/share/perl5" + ":" + $PERL5LIB
+    $PERL5LIB = "${pkgs.git}/share/perl5"
     $XONSH_SHOW_TRACEBACK = True
     $COMPLETIONS_DISPLAY = "single"
   '';

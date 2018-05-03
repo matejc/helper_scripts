@@ -5,7 +5,8 @@
   general {
           output_format = "i3bar"
           colors = true
-          interval = 5
+          interval = 3
+          separator = "•••"
   }
 
   ${lib.concatMapStringsSep "\n" (i: ''order += "disk ${i}"'') variables.mounts}
@@ -21,16 +22,16 @@
 
   ${lib.concatMapStringsSep "\n" (i: ''
     wireless ${i} {
-            format_up = "${i}: %quality at %essid, %bitrate, %ip"
-            format_down = "${i}: down"
+            format_up = "${i}:%quality at %essid, %ip(%bitrate)"
+            format_down = "${i}:down"
     }
   '') variables.wirelessInterfaces}
 
   ${lib.concatMapStringsSep "\n" (i: ''
     ethernet ${i} {
             # if you use %speed, i3status requires the cap_net_admin capability
-            format_up = "${i}: %ip (%speed)"
-            format_down = "${i}: down"
+            format_up = "${i}:%ip(%speed)"
+            format_down = "${i}:down"
     }
   '') variables.ethernetInterfaces}
 
@@ -52,7 +53,7 @@
 
   ${lib.concatImapStringsSep "\n" (pos: i: ''
   cpu_temperature ${toString pos} {
-        format = "%degrees °C"
+        format = "%degrees°C"
         path = "${i}"
   }
   '') variables.temperatureFiles}
@@ -64,7 +65,7 @@
   '') variables.mounts}
 
   volume master {
-          format = "♪: %volume"
+          format = "♪:%volume"
           device = "default"
           mixer = "Master"
           mixer_idx = ${variables.soundCard}

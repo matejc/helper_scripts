@@ -36,7 +36,7 @@
 
         return workspaces[next_index]
 
-    output = subprocess.check_output(["i3-msg", "-t", "get_workspaces"])
+    output = subprocess.check_output(["${variables.i3-msg}", "-t", "get_workspaces"])
 
     workspaces = json.loads(output)
 
