@@ -465,7 +465,7 @@
     # strip_workspace_numbers yes
     #tray_output none
     font pango:${variables.font}
-    separator_symbol "•••"
+    separator_symbol "••"
     #height 28
 
     status_command i3status
@@ -493,9 +493,10 @@
   # }}}
 
   for_window [class=".*"] title_format " <b>%title</b>"
-  #for_window [title="^ScratchTerm.*"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 85) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   for_window [title="^ScratchTerm.*"] border pixel 1
-  for_window [con_id="__focused__"] client.focused  $green  $black $green  $green   $blue
+
+  #for_window [title="^ScratchTerm.*"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 85) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
+  #for_window [con_id="__focused__"] client.focused  $green  $black $green  $green   $blue
   '';
 } {
   target = "${variables.homeDir}/bin/i3wm-dropdown";
@@ -527,9 +528,16 @@
   target = "${variables.homeDir}/bin/xfce-terminal-dropdown";
   source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
-    ${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down --title=ScratchTerm "$@" &
-    sleep 0.1
-    ${variables.i3-msg} "[title="^ScratchTerm.*"] resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
+    set -x
+    ${pkgs.procps}/bin/ps a | ${pkgs.gnugrep}/bin/grep -v grep | ${pkgs.gnugrep}/bin/grep 'xfce4-terminal --title=ScratchTerm'
+    if [ $? -gt 0 ]
+    then
+      ${pkgs.xfce.terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
+      sleep 1
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
+    else
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] scratchpad show"
+    fi
   '';
 } {
   target = "${variables.homeDir}/bin/window-size";

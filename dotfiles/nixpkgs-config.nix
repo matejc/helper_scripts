@@ -18,17 +18,8 @@
       paths = with pkgs; [
         python3
         python3Packages.virtualenv
-        gcc libffi libffi.dev
-        python3Packages.yapf
-        python3Packages.pep8
-        python3Packages.gevent
-        coreutils
-        which
-        nix nix-prefetch-scripts
-        gnused gawk diffutils gnugrep
-        rofi  # for lpp.sh
-        libxml2.dev libxslt.dev zlib
-        pypi2nix
+        python3Packages.pydbus
+        python3Packages.pygobject3
       ];
     };
 
