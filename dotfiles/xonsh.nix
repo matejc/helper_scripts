@@ -152,5 +152,6 @@ in {
     $PERL5LIB = "${pkgs.git}/share/perl5"
     $XONSH_SHOW_TRACEBACK = True
     $COMPLETIONS_DISPLAY = "single"
+    $AUTO_CD = True
   '';
 }
