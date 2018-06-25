@@ -7,37 +7,38 @@
     export ACCEPT="ACCEPT"
     export CHROMECAST_IP="$1" # Adjust to the Chromecast IP in your local network
 
-    # https://forum.manjaro.org/t/chromecast-not-found-on-network/50413
-
     # 1. chrome://flags/#load-media-router-component-extension >> enabled
-    # 2. sudo -E $0 all
+    #    or run: chromium --load-media-router-component-extension
+    # 2. sudo -E $0
     # 3. search for chromecast inside chromium
-    # 4. reinstate all rules (Ctrl+C for the 2. step)
+    # 4. remove rules (Ctrl+C for the 2. step)
     # 5. use chromecast
     # 6. repeat steps from 2. to 5. when you restart chromium
 
     set -e
 
     add_rules() {
-        iptables -A INPUT -s ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (inbound)" -j ''${ACCEPT}
-        iptables -A OUTPUT -d ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (outbound)" -j ''${ACCEPT}
-        iptables -A OUTPUT -d ''${CHROMECAST_IP}/32 -p tcp -m multiport --dports 8008:8009 -m comment --comment "Allow Chromecast TCP data (outbound)" -j ''${ACCEPT}
-        iptables -A OUTPUT -d 239.255.255.250/32 -p udp --dport 1900 -m comment --comment "Allow Chromecast SSDP" -j ''${ACCEPT}
+        #iptables -I INPUT -s ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (inbound)" -j ''${ACCEPT}
+        #iptables -I OUTPUT -d ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (outbound)" -j ''${ACCEPT}
 
-        iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ''${ACCEPT}
-        iptables -A INPUT -p udp -m udp --dport 32768:61000 -j ''${ACCEPT}
+        #iptables -I OUTPUT -d ''${CHROMECAST_IP}/32 -p tcp -m multiport --dports 8008:8009 -m comment --comment "Allow Chromecast TCP data (outbound)" -j ''${ACCEPT}
+        #iptables -I OUTPUT -d 239.255.255.250/32 -p udp --dport 1900 -m comment --comment "Allow Chromecast SSDP" -j ''${ACCEPT}
+
+        #iptables -I OUTPUT -d 224.0.0.0/24 -p udp --dport 5353 -m comment --comment "Allow Chromecast mDNS" -j ''${ACCEPT}
+        iptables -I INPUT -d 224.0.0.0/24 -p udp --dport 5353 -m comment --comment "Allow Chromecast mDNS" -j ''${ACCEPT}
 
         echo "added"
     }
 
     remove_rules() {
-        iptables -D INPUT -s ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (inbound)" -j ''${ACCEPT}
-        iptables -D OUTPUT -d ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (outbound)" -j ''${ACCEPT}
-        iptables -D OUTPUT -d ''${CHROMECAST_IP}/32 -p tcp -m multiport --dports 8008:8009 -m comment --comment "Allow Chromecast TCP data (outbound)" -j ''${ACCEPT}
-        iptables -D OUTPUT -d 239.255.255.250/32 -p udp --dport 1900 -m comment --comment "Allow Chromecast SSDP" -j ''${ACCEPT}
+        #iptables -D INPUT -s ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (inbound)" -j ''${ACCEPT}
+        #iptables -D OUTPUT -d ''${CHROMECAST_IP}/32 -p udp -m multiport --sports 32768:61000 -m multiport --dports 32768:61000 -m comment --comment "Allow Chromecast UDP data (outbound)" -j ''${ACCEPT}
 
-        iptables -D INPUT -m state --state ESTABLISHED,RELATED -j ''${ACCEPT}
-        iptables -D INPUT -p udp -m udp --dport 32768:61000 -j ''${ACCEPT}
+        #iptables -D OUTPUT -d ''${CHROMECAST_IP}/32 -p tcp -m multiport --dports 8008:8009 -m comment --comment "Allow Chromecast TCP data (outbound)" -j ''${ACCEPT}
+        #iptables -D OUTPUT -d 239.255.255.250/32 -p udp --dport 1900 -m comment --comment "Allow Chromecast SSDP" -j ''${ACCEPT}
+
+        #iptables -D OUTPUT -d 224.0.0.0/24 -p udp --dport 5353 -m comment --comment "Allow Chromecast mDNS" -j ''${ACCEPT}
+        iptables -D INPUT -d 224.0.0.0/24 -p udp --dport 5353 -m comment --comment "Allow Chromecast mDNS" -j ''${ACCEPT}
 
         echo "removed"
     }
