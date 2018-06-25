@@ -1,13 +1,13 @@
 { variables, config, pkgs, lib }:
-{
+[{
   target = "${variables.homeDir}/bin/yaml2nix";
   source = pkgs.writeScript "yaml2nix" ''
     #!${pkgs.stdenv.shell}
 
     fixAttrNames() {
-      cat $1 | ${pkgs.perl.out}/bin/perl -ne 's/(?!\ )([A-Za-z0-9\-\/\.]+)(?=\ =\ )/"$1"/g; print;'
+      cat $1 | ${pkgs.perl.out}/bin/perl -ne 's/(?!\ )([A-Za-z0-9\-\/]+[\.\/]+[A-Za-z0-9\-\/]+)(?=\ =\ )/"$1"/g; print;'
     }
-    yaml2nix() {
+    yamlDir2nix() {
       dir="$1"
       tmpfile1=$(mktemp /tmp/yaml2nix.XXXXXX)
       echo "[" > $tmpfile1
@@ -30,8 +30,34 @@
       rm $tmpfile3
     }
 
+    yamlFile2nix() {
+      file="$1"
+      echo "builtins.fromJSON '''$(${pkgs.remarshal}/bin/remarshal -if yaml -of json -i $file)'''" | ${pkgs.nix}/bin/nix-instantiate --eval --strict -E - | ${pkgs.perl.out}/bin/perl -ne 's/(?!\ )([A-Za-z0-9\-\/]+[\.\/]+[A-Za-z0-9\-\/]+)(?=\ =\ )/"$1"/g; print;'
+    }
+
     set -e
 
-    yaml2nix "$1"
+    if [ -d "$1" ]
+    then
+      yamlDir2nix "$1"
+    else
+      yamlFile2nix "$1"
+    fi
+
   '';
-}
+} {
+  target = "${variables.homeDir}/bin/nix-beautify";
+  source = pkgs.stdenv.mkDerivation {
+    name = "nix-beautify";
+    src = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/nixcloud/nix-beautify/14f2751c22b092fd60b2442eaf207931b989a542/nix-beautify.js";
+      sha256 = "019qi5fhd7h8argdz5f45w5za7ka091cca5a2l1hi1bhv8zmxh81";
+    };
+    unpackPhase = "true";
+    installPhase = ''
+      echo "#!${pkgs.nodejs}/bin/node" > $out
+      cat $src >> $out
+      chmod +x $out
+    '';
+  };
+}]

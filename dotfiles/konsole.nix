@@ -23,7 +23,7 @@
   target = "${variables.homeDir}/.config/yakuakerc";
   source = pkgs.writeText "yakuakerc" ''
   [Animation]
-  Frames=10
+  Frames=0
 
   [Appearance]
   BackgroundColorOpacity=80
@@ -84,6 +84,9 @@
 
   [Interaction Options]
   CopyTextAsHTML=false
+
+  [Scrolling]
+  HistorySize=20000
 
   [Terminal Features]
   BlinkingCursorEnabled=true

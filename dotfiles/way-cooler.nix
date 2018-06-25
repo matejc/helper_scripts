@@ -173,12 +173,31 @@ in {
         end
     end
 
+    -- my_register_key({"XF86Search"}, beje, true, false)
     my_register_key({"XF86Explorer"}, util.program.spawn_once("${variables.dropDownTerminal}"), true, false)
     my_register_key({"F12"}, util.program.spawn_once("${variables.dropDownTerminal}"), true, false)
 
-    way_cooler.rules = {
-      { rule = { name = "ScratchTerm" }, properties = { floating = true } }
-    }
+
+    local seen={}
+
+    function dump(t,i)
+    	seen[t]=true
+    	local s={}
+    	local n=0
+    	for k in pairs(t) do
+    		n=n+1 s[n]=k
+    	end
+    	table.sort(s)
+    	for k,v in ipairs(s) do
+    		print(i.."."..v..' = '..tostring(t[v]))
+    		if type(t[v])=="table" and not seen[t[v]] then
+    			dump(t[v], i.."."..v)
+    		end
+    	end
+    end
+
+    dump(_G,"_G")
+
     -- Register the mod key to also be the mod key for mouse commands
     way_cooler.register_mouse_modifier(mod)
 
