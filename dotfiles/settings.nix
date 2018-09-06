@@ -7,74 +7,88 @@ let
     homeDir = "/home/matejc";
     monitorPrimary = "eDP1";
     monitorOne = "DP1";
-    monitorTwo = "DP2";
+    monitorTwo = "HDMI1";
     soundCard = "0";
     ethernetInterfaces = [ "enp0s25" "tun0" ];
     wirelessInterfaces = [ "wlp3s0" ];
     mounts = [ "/" "/home" ];
     temperatureFiles = [ "${variables.homeDir}/.temp1_input" ];
-    batteries = [ "0" "1" ];
+    batteries = [ ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
-    font = "Cantarell 12";
-    wallpaper = "${variables.homeDir}/Pictures/pexels-photo-207985.jpeg";
-    lockImage = "${variables.homeDir}/Pictures/pexels-photo-414331_1_1_blur.jpg";
+    font = "Hack 11";
+    terminalFont = "Hack 11";
+    wallpaper = "${variables.homeDir}/Pictures/pexels-photo.jpg";
+    lockImage = "${variables.homeDir}/Pictures/water-plant-green-fine-layers_blur.jpg";
     inherit startScript;
     inherit restartScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${homeDir}/bin/i3wm-dropdown";
+    #dropDownTerminal = "${homeDir}/bin/xfce-terminal-dropdown";
+    dropDownTerminal = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+    # msgCommand = "${pkgs.i3}/bin/i3-msg";
+    i3-msg = "/run/current-system/sw/bin/i3-msg";
+    lockscreen = "${homeDir}/bin/lockscreen";
     browser = "chromium";
     programs = {
-        terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
+        # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
+        # terminal = "${pkgs.termite}/bin/termite";
+        terminal = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal";
         chromium = "${pkgs.chromium}/bin/chromium";
         firefox-devedition = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
-        s = "${pkgs.sublime3}/bin/sublime3 --add";
-        n = "${pkgs.nano}/bin/nano -wc";
+        s = "${pkgs.sublime3}/bin/sublime3";
+        n = "${pkgs.ne}/bin/ne";
+        yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
     };
-    i3minator = {
-      chat = {
-        workspace = "1";
-        command = "${pkgs.franz}/bin/franz";
-        timeout = "0.1";
-      };
-      console = {
-        workspace = "2";
-        command = terminal;
-        timeout = "0.3";
-      };
-      editor = {
-        workspace = "3";
-        command = "sublime3";
-        timeout = "0.1";
-      };
-      browser = {
-        workspace = "4";
-        command = browser;
-        timeout = "0.1";
-      };
-    };
+    # i3minator = {
+    #   chat = {
+    #     workspace = "1";
+    #     command = "${pkgs.franz}/bin/franz";
+    #     timeout = "0.1";
+    #   };
+    #   console = {
+    #     workspace = "2";
+    #     command = terminal;
+    #     timeout = "0.3";
+    #   };
+    #   editor = {
+    #     workspace = "3";
+    #     command = "sublime3";
+    #     timeout = "0.1";
+    #   };
+    #   browser = {
+    #     workspace = "4";
+    #     command = browser;
+    #     timeout = "0.1";
+    #   };
+    #   browser2 = {
+    #     workspace = "4";
+    #     command = programs.mykeepassxc;
+    #     timeout = "0.1";
+    #   };
+    # };
     polybar.bars = [ "my" ];
   };
 
   dotFilePaths = [
     ./i3config.nix
-    # ./i3status.nix
+    ./i3status.nix
     ./gitconfig.nix
     ./gitignore.nix
     ./autolock.nix
     ./i3lock-wrapper.nix
     ./lockscreen.nix
+    #./swaylockscreen.nix
     ./thissession.nix
     # ./atom_ctags.nix
     # ./atom_ctags-symbols.nix
     ./oath.nix
     ./i3minators.nix
-    ./git-annex-helpers.nix
+    # ./git-annex-helpers.nix
     ./blackscreen.nix
     ./httpserver.nix
     ./wcontrol.nix
@@ -87,7 +101,7 @@ let
     ./volume.nix
     ./fish.nix
     ./dunst.nix
-    # ./yaml2nix.nix
+    ./yaml2nix.nix
     ./mysql-utils.nix
     ./kanban.nix
     ./atom.nix
@@ -103,17 +117,21 @@ let
     ./sublime.nix
     ./vlc.nix
     ./xonsh.nix
+    ./konsole.nix
+    ./connman.nix
+    ./sshproxy.nix
+    ./chrome_cast_allow.nix
+    ./castnow.nix
+    ./sync.nix
+    ./mkchromecast.nix
+    ./freecad.nix
+    ./bcrypt.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
     xinput_custom_script.sh
-
-    export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
-
-    ${pkgs.procps}/bin/pkill polybar
-    ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
@@ -122,19 +140,29 @@ let
 
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
+    export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
+    ${pkgs.procps}/bin/pkill polybar
+    ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
+
     echo "DONE"
   '';
+    # export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
+    # ${pkgs.procps}/bin/pkill polybar
+    # ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
     ${variables.homeDir}/bin/temp-init
-    ${variables.homeDir}/bin/autolock &
-    ${pkgs.dropbox}/bin/dropbox &
-
-    ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
+    ${variables.homeDir}/bin/mykeepassxc &
+    ${pkgs.signal-desktop}/bin/signal-desktop &
+    ${pkgs.tdesktop}/bin/telegram-desktop &
+    ${pkgs.slack}/bin/slack &
+    ${pkgs.rambox}/bin/rambox &
 
     echo "DONE"
   '';
+    # ${variables.homeDir}/bin/autolock &
+    # ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
 
   activationScript = ''
     mkdir -p ${variables.homeDir}/.nixpkgs
