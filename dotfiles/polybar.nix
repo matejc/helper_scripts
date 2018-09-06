@@ -13,8 +13,8 @@
   underline = #0a81f5
 
   [bar/my]
-  #monitor = ${variables.monitorPrimary}
-  #monitor-fallback = ${variables.monitorOne}
+  #monitor =
+  #monitor-fallback =
   width = 100%
   height = 27
   radius = 0.0

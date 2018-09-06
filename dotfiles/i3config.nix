@@ -10,9 +10,6 @@
 
   # monitors
   # LVDS1
-  set $mon_lap ${variables.monitorPrimary}
-  set $mon_ext ${variables.monitorOne}
-  set $mon_ext1 ${variables.monitorTwo}
   set $snd_card ${variables.soundCard}
 
   # colors
@@ -47,9 +44,9 @@
   mode "monitor_select" {
 
     # only one
-    bindsym 1 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --off --output $mon_lap --auto; mode "default"
-    bindsym 2 exec --no-startup-id xrandr --output $mon_ext --auto --output $mon_ext1 --off --output $mon_lap --off; mode "default"
-    bindsym 3 exec --no-startup-id xrandr --output $mon_ext --off --output $mon_ext1 --auto --output $mon_lap --off; mode "default"
+    ${lib.concatImapStringsSep "\n" (index: v: ''
+    bindsym ${toString index} exec --no-startup-id xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if index == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}; mode "default"
+    '') variables.monitors}
 
     bindsym p mode "monitor_one";
     bindsym s mode "monitor_two";

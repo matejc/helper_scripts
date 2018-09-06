@@ -1,13 +1,15 @@
-{ pkgs }:
+{ pkgs, lib ? pkgs.lib }:
 let
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/matejc";
-    monitorPrimary = "eDP1";
-    monitorOne = "DP1";
-    monitorTwo = "HDMI1";
+    monitors = [
+      { name = "eDP1"; mode = "1920x1080";}
+      { name = "DP1"; mode = "1920x1080";}
+      { name = "HDMI1"; mode = "1920x1080";}
+    ];
     soundCard = "0";
     ethernetInterfaces = [ "enp0s25" "tun0" ];
     wirelessInterfaces = [ "wlp3s0" ];
@@ -136,13 +138,12 @@ let
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
 
-    ${pkgs.xorg.xrandr}/bin/xrandr --output ${variables.monitorOne} --off --output ${variables.monitorTwo} --off --output ${variables.monitorPrimary} --auto
-
-    ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
-
     export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
     ${pkgs.procps}/bin/pkill polybar
     ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
+
+    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+    ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
     echo "DONE"
   '';
@@ -158,6 +159,8 @@ let
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.slack}/bin/slack &
     ${pkgs.rambox}/bin/rambox &
+
+    ${variables.homeDir}/bin/autolock &
 
     echo "DONE"
   '';
