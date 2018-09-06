@@ -106,5 +106,7 @@
     bindkey '^[r' redo
 
     export PERL5LIB="${pkgs.git}/share/perl5:$PERL5LIB"
+
+    setopt histignorespace
   '';
 }]

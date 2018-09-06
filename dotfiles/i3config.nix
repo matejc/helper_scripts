@@ -460,29 +460,27 @@
 
   client.background #ff0000
 
-  bar {
-    # position top
-    # strip_workspace_numbers yes
-    #tray_output none
-    font pango:${variables.font}
-    separator_symbol "••"
-    #height 28
+#  bar {
+#    # position top
+#    # strip_workspace_numbers yes
+#    #tray_output none
+#    font pango:${variables.font}
+#    separator_symbol "••"
+#    #height 28
 
-    status_command i3status
+#    status_command i3status
 
 #   statusbar colors       border      background   text
-    colors {
-      background          #272822DD
-      statusline          $white
-      separator           $gray
-      focused_workspace   $blue        $black       $blue
-      active_workspace    $black       $black       $yellow
-      inactive_workspace  $dark        $dark        $white
-      urgent_workspace    $pink        $pink        $white
-    }
-  }
-
-  output "*" background ${variables.wallpaper} fill
+#    colors {
+#      background          #272822DD
+#      statusline          $white
+#      separator           $gray
+#      focused_workspace   $blue        $black       $blue
+#      active_workspace    $black       $black       $yellow
+#      inactive_workspace  $dark        $dark        $white
+#      urgent_workspace    $pink        $pink        $white
+#    }
+#  }
 
   #}}}
   #{{{ Autostart
@@ -495,7 +493,7 @@
   for_window [class=".*"] title_format " <b>%title</b>"
   for_window [title="^ScratchTerm.*"] border pixel 1
 
-  #for_window [title="^ScratchTerm.*"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 85) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
+  for_window [con_mark="I3WM_SCRATCHPAD"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   #for_window [con_id="__focused__"] client.focused  $green  $black $green  $green   $blue
   '';
 } {
@@ -529,14 +527,14 @@
   source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    ${pkgs.procps}/bin/ps a | ${pkgs.gnugrep}/bin/grep -v grep | ${pkgs.gnugrep}/bin/grep 'xfce4-terminal --title=ScratchTerm'
-    if [ $? -gt 0 ]
+    ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] focus, scratchpad show' | ${pkgs.gnugrep}/bin/grep 'false'
+    if [[ "$?" = "0" ]]
     then
       ${pkgs.xfce.terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
-      sleep 1
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
+      sleep 0.1
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] mark I3WM_SCRATCHPAD, resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
     else
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] scratchpad show"
+      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
     fi
   '';
 } {

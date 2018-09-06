@@ -20,6 +20,24 @@
         python3Packages.virtualenv
         python3Packages.pydbus
         python3Packages.pygobject3
+        python3Packages.tkinter
+        pypi2nix
+        gcc
+      ];
+    };
+
+    atomenv = pkgs.buildEnv {
+      name = "atomenv";
+      paths = with pkgs; [
+        python3
+        python3Packages.pylama
+        python3Packages.pep8
+        python3Packages.pep257
+        python3Packages.mccabe
+        python3Packages.pyflakes
+
+        python3Packages.pycodestyle
+        python3Packages.isort
       ];
     };
 
@@ -123,10 +141,9 @@
         #mercurial
         openssh
         openssl
-        pcre
         pkgconfig
         #postgresql
-        python27Full
+        (python27Full.withPackages (ps: with ps; [ urllib3 ]))
 #        python27Packages.ipython
         python27Packages.pyyaml
 #        python27Packages.readline
@@ -185,9 +202,11 @@
         python27Packages.jinja2 python27Packages.markupsafe python27Packages.itsdangerous
         strace python27Packages.opencv*/
 
-        pypi2nix gcc.cc libarchive gcc.cc.lib python27Packages.libarchive
+        pypi2nix gcc.cc gcc.cc.lib
 
         libpulseaudio libusb1
+
+        (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python27Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -210,15 +229,16 @@
         stdenv busybox
         git
         ruby
-        rubygems
         #rubyLibs.nix
         nix
 
-        bundler bundix gnumake stdenv.cc
+        bundler bundix
+        jekyll
+        gnumake stdenv.cc pkgconfig
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
-        nodejs which python2 pythonPackages.pygments
+        /* nodejs which python2 pythonPackages.pygments */
       ];
       ignoreCollisions = true;
     };
@@ -444,6 +464,57 @@
         bash
         git
         jdk strace gcc.cc.lib maven coreutils
+      ];
+    };
+
+    restyenv = let
+      openidc_src = pkgs.fetchurl {
+        url = "https://github.com/zmartzone/lua-resty-openidc/archive/15a6110626bc355047e98ac48fcc9953eef034c3.tar.gz";
+        name = "openidc.tar.gz";
+        sha256 = "1v2ljjdv19bf1b0651hdbhm1q7hqp58smzjbd2avn84akf5gcv2b";
+      };
+
+      http_src = pkgs.fetchurl {
+        url = "https://github.com/pintsized/lua-resty-http/archive/fe5c10a47cf40440845c140a5d29cd0e0cd0208f.tar.gz";
+        name = "http.tar.gz";
+        sha256 = "1zvahgyigs24cypnrxr6cmf5r7j9372c8a46j1fk6pri1c90z2s6";
+      };
+
+      session_src = pkgs.fetchurl {
+        url = "https://github.com/bungle/lua-resty-session/archive/4429a06ffac1724a056fafa954c0394d437b261f.tar.gz";
+        name = "session.tar.gz";
+        sha256 = "0a9avrr3hyj8ibpm5c6ifrmnhfw727hm2v46rd0ldw237cljixgl";
+      };
+
+      jwt_src = pkgs.fetchurl {
+        url = "https://github.com/cdbattags/lua-resty-jwt/archive/f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98.tar.gz";
+        name = "jwt.tar.gz";
+        sha256 = "09z425namy84888a8ca5lsmyp4c3xkdg0i8yx682bg8c2mimkxgx";
+      };
+
+      hmac_src = pkgs.fetchurl {
+        url = "https://github.com/jkeys089/lua-resty-hmac/archive/989f601acbe74dee71c1a48f3e140a427f2d03ae.tar.gz";
+        name = "hmac.tar.gz";
+        sha256 = "164ad4i4vxa8cmrm6vw2vdlsq4idg75cbl59imwg764s4l9ii79n";
+      };
+
+      openidc = pkgs.stdenv.mkDerivation {
+        name = "openidc";
+        srcs = [openidc_src http_src session_src jwt_src hmac_src];
+        sourceRoot = ".";
+        installPhase = ''
+          mkdir -p $out/lib/{openidc,http,session,jwt,hmac}/
+          cp -r lua-resty-openidc-*/lib/resty $out/lib/openidc/
+          cp -r lua-resty-http-*/lib/resty $out/lib/http/
+          cp -r lua-resty-session-*/lib/resty $out/lib/session/
+          cp -r lua-resty-jwt-*/lib/resty $out/lib/jwt/
+          cp -r lua-resty-hmac-*/lib/resty $out/lib/hmac/
+        '';
+      };
+    in pkgs.buildEnv {
+      name = "restyenv";
+      paths = [
+        openidc
       ];
     };
 

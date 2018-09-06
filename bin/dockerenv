@@ -4,7 +4,7 @@
 # NIX_USER_PROFILE_DIR=/nix/var/nix/profiles/per-user/matej
 nixprofile=$NIX_USER_PROFILE_DIR/dockerenv
 
-export PATH="$nixprofile/bin"
+export PATH="$nixprofile/bin:$PATH"
 export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
 export PYTHONPATH="$nixprofile/lib/python2.7/site-packages"
 export PS1="dockerenv $PS1"
