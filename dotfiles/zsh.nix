@@ -69,7 +69,14 @@
     export BROWSER="${variables.browser}"
     export EDITOR="${variables.editor}"
     export PATH="$HOME/bin:${pkgs.direnv}/bin:$PATH"
-    export TERM="xterm-256color"
+
+    if [[ $TERM == xterm-termite ]]; then
+      . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
+      __vte_osc7
+    fi
+    ${lib.optionalString (variables.term != null) ''
+      export TERM="${variables.term}"
+    ''}
     if [ -n "$TMUX" ]
     then
       export TERM="screen-256color"

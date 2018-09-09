@@ -6,12 +6,12 @@ let
     user = "matejc";
     homeDir = "/home/matejc";
     monitors = [
-      { name = "eDP1"; mode = "1920x1080";}
-      { name = "DP1"; mode = "1920x1080";}
-      { name = "HDMI1"; mode = "1920x1080";}
+      { name = "eDP1"; mode = "1920x1080"; }
+      { name = "DP1"; mode = "1920x1080"; }
+      { name = "HDMI1"; mode = "1920x1080"; }
     ];
     soundCard = "0";
-    ethernetInterfaces = [ "enp0s25" "tun0" ];
+    ethernetInterfaces = [ "enp0s25" ];
     wirelessInterfaces = [ "wlp3s0" ];
     mounts = [ "/" "/home" ];
     temperatureFiles = [ "${variables.homeDir}/.temp1_input" ];
@@ -20,8 +20,8 @@ let
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
-    font = "Hack 11";
-    terminalFont = "Hack 11";
+    font = "Source Code Pro Semibold 11";
+    terminalFont = "Source Code Pro Semibold 11";
     wallpaper = "${variables.homeDir}/Pictures/pexels-photo.jpg";
     lockImage = "${variables.homeDir}/Pictures/water-plant-green-fine-layers_blur.jpg";
     inherit startScript;
@@ -29,18 +29,19 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    #dropDownTerminal = "${homeDir}/bin/xfce-terminal-dropdown";
-    dropDownTerminal = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
-    # msgCommand = "${pkgs.i3}/bin/i3-msg";
+    dropDownTerminal = "${homeDir}/bin/scratchterm ${pkgs.termite}/bin/termite";
+    /* dropDownTerminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down"; */
     i3-msg = "/run/current-system/sw/bin/i3-msg";
+    i3BarEnable = false;
     lockscreen = "${homeDir}/bin/lockscreen";
+    term = null;
     browser = "chromium";
     programs = {
         # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
-        # terminal = "${pkgs.termite}/bin/termite";
-        terminal = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal";
+        /* terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal"; */
+        terminal = "${pkgs.termite}/bin/termite";
         chromium = "${pkgs.chromium}/bin/chromium";
-        firefox-devedition = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         s = "${pkgs.sublime3}/bin/sublime3";
         n = "${pkgs.ne}/bin/ne";
@@ -128,6 +129,8 @@ let
     ./mkchromecast.nix
     ./freecad.nix
     ./bcrypt.nix
+    ./termite.nix
+    /* ./way-cooler.nix */
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
@@ -138,27 +141,27 @@ let
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
 
-    export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
+    export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
     ${pkgs.procps}/bin/pkill polybar
     ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
-    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
     echo "DONE"
   '';
-    # export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
-    # ${pkgs.procps}/bin/pkill polybar
-    # ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
+
+    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/mykeepassxc &
     ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.slack}/bin/slack &
     ${pkgs.rambox}/bin/rambox &
+    ${variables.browser} &
 
     ${variables.homeDir}/bin/autolock &
 

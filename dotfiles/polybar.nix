@@ -226,13 +226,9 @@
   label = %time% %date%
 
   [module/volume]
-  type = internal/volume
+  type = internal/pulseaudio
 
-  master-soundcard = default
-  speaker-soundcard = default
-  headphone-soundcard = default
-
-  master-mixer = Master
+  use-ui-max = false
 
   format-volume = <label-volume> <bar-volume>
   label-volume = 
@@ -293,7 +289,7 @@
 
   [module/temperature]
   type = internal/temperature
-  thermal-zone = 0
+  hwmon-path = ${variables.homeDir}/.temp1_input
   warn-temperature = 70
 
   format = <ramp> <label>
@@ -301,8 +297,8 @@
   format-warn = <ramp> <label-warn>
   format-warn-underline = ''${self.format-underline}
 
-  label = %temperature%
-  label-warn = %temperature%
+  label = %temperature-c%
+  label-warn = %temperature-c%
   label-warn-foreground = ''${colors.secondary}
 
   ramp-0 = 

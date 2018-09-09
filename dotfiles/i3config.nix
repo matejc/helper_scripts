@@ -164,8 +164,12 @@
   for_window [class="^rambox$"] move container to workspace $w1
   for_window [class="^Franz$"] move container to workspace $w1
   for_window [class="^Pidgin$"] move container to workspace $w1
+  for_window [class="^TelegramDesktop$"] move container to workspace $w1
+  for_window [class="^Signal$"] move container to workspace $w1
+  for_window [class="^Slack$"] move container to workspace $w1
 
   # for_window [class="^Alacritty$"] move container to workspace $w2
+  for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
   for_window [class="^Sublime_text$"] move container to workspace $w3
@@ -378,9 +382,9 @@
   #bindsym Ctrl+Mod1+Left workspace prev_on_output
   #bindsym Ctrl+Mod1+Right workspace next_on_output
 
-  bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py left) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
-  bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(~/workarea/helper_scripts/bin/i3_workspace.py right) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
-  bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
+  bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
+  #bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
 
   bindcode 121 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master toggle
   bindcode 122 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master 5%- unmute
@@ -398,14 +402,14 @@
   bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
 
-  bindcode 150 exec --no-startup-id ${variables.dropDownTerminal}
-  bindcode 152 exec --no-startup-id ${variables.dropDownTerminal}
-  bindsym F12 exec --no-startup-id ${variables.dropDownTerminal}
+  bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
+  bindcode 152 exec --no-startup-id "${variables.dropDownTerminal}"
+  bindsym F12 exec --no-startup-id "${variables.dropDownTerminal}"
 
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
-  bindsym --release Print exec --no-startup-id ${pkgs.xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ${variables.homeDir}/Pictures
+  bindsym --release Print exec --no-startup-id /run/current-system/sw/bin/xfce4-screenshooter --region --save ${variables.homeDir}/Pictures
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
   bindsym Ctrl+Mod1+w exec --no-startup-id /run/current-system/sw/bin/rofi -show window
   bindsym F1 exec --no-startup-id /run/current-system/sw/bin/rofi -show window
@@ -457,27 +461,25 @@
 
   client.background #ff0000
 
-#  bar {
-#    # position top
-#    # strip_workspace_numbers yes
-#    #tray_output none
-#    font pango:${variables.font}
-#    separator_symbol "••"
-#    #height 28
+  ${lib.optionalString variables.i3BarEnable ''
+  bar {
+    font pango:${variables.font}
+    separator_symbol " • "
+    #height 28
+    status_command i3status
 
-#    status_command i3status
-
-#   statusbar colors       border      background   text
-#    colors {
-#      background          #272822DD
-#      statusline          $white
-#      separator           $gray
-#      focused_workspace   $blue        $black       $blue
-#      active_workspace    $black       $black       $yellow
-#      inactive_workspace  $dark        $dark        $white
-#      urgent_workspace    $pink        $pink        $white
-#    }
-#  }
+    #  statusbar colors       border      background   text
+    colors {
+      background          #272822DD
+      statusline          $white
+      separator           $gray
+      focused_workspace   $blue        $black       $blue
+      active_workspace    $black       $black       $yellow
+      inactive_workspace  $dark        $dark        $white
+      urgent_workspace    $pink        $pink        $white
+    }
+  }
+  ''}
 
   #}}}
   #{{{ Autostart
@@ -488,10 +490,9 @@
   # }}}
 
   for_window [class=".*"] title_format " <b>%title</b>"
-  for_window [title="^ScratchTerm.*"] border pixel 1
 
-  for_window [con_mark="I3WM_SCRATCHPAD"] exec "${pkgs.i3}/bin/i3-msg resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
-  #for_window [con_id="__focused__"] client.focused  $green  $black $green  $green   $blue
+  #for_window [title="^ScratchTerm.*"] border pixel 1
+  #for_window [con_mark="I3WM_SCRATCHPAD"] exec "${variables.i3-msg} resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   '';
 } {
   target = "${variables.homeDir}/bin/i3wm-dropdown";
@@ -519,7 +520,23 @@
       ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
     fi
   '';
-}  {
+} {
+  target = "${variables.homeDir}/bin/scratchterm";
+  source = pkgs.writeScript "scratchterm.sh" ''
+    #!${pkgs.stdenv.shell}
+    set -x
+    if [[ "$(${variables.homeDir}/bin/i3_query name ScratchTerm)" = "null" ]]
+    then
+      "$1" --title=ScratchTerm "''${@:2}" &
+      sleep 0.2
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] move scratchpad, border pixel 1, sticky enable"
+      sleep 0.1
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] $(${variables.homeDir}/bin/i3-window-center 95 90)"
+    else
+      ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
+    fi
+  '';
+} {
   target = "${variables.homeDir}/bin/xfce-terminal-dropdown";
   source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
@@ -547,5 +564,20 @@
       height) echo "$height * $2/100" | ${pkgs.bc}/bin/bc
       ;;
     esac
+  '';
+} {
+  target = "${variables.homeDir}/bin/i3-window-center";
+  source = pkgs.writeScript "i3-window-center.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    wp="$1"
+    hp="$2"
+
+    IFS=" " read width height <<< "$(${pkgs.xdotool}/bin/xdotool getdisplaygeometry)"
+
+    w="$(($width * $wp/100))"
+    h="$(($height * $hp/100))"
+
+    echo "resize set $w px $h px, move position $(( ($width - $w) / 2 )) px $(( ($height - $h) / 2 )) px"
   '';
 }]
