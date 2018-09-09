@@ -123,7 +123,7 @@
   # workspace "$w7" output $mon_lap
   # workspace "$w8" output $mon_lap
   # workspace "$w9" output $mon_ext
-  workspace "$w10" output $mon_ext1
+  # workspace "$w10" output $mon_ext1
 
   # switch to workspace
   bindsym $mod+1 workspace $w1
@@ -490,6 +490,7 @@
   # }}}
 
   for_window [class=".*"] title_format " <b>%title</b>"
+  for_window [class=".*" con_id="__focused__"] border pixel 1
 
   #for_window [title="^ScratchTerm.*"] border pixel 1
   #for_window [con_mark="I3WM_SCRATCHPAD"] exec "${variables.i3-msg} resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
