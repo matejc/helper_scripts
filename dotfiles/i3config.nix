@@ -419,6 +419,8 @@
   bindsym $mod+n move workspace to output right
   bindsym $mod+k kill
 
+  bindsym Ctrl+Mod1+u exec --no-startup-id "${variables.homeDir}/bin/mysync"
+
   # }}}
   #}}}
   #{{{ Colors
