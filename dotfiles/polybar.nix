@@ -36,7 +36,7 @@
   module-margin-left = 1
   module-margin-right = 2
 
-  font-0 = "Hack:style=bold:size=10"
+  font-0 = "Source Code Pro:style=semibold:size=10"
   font-1 = "DejaVuSansMono:style=bold:size=10"
   font-2 = "FontAwesome:size=10"
 

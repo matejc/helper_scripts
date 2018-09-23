@@ -249,9 +249,5 @@
   show-barcode=none,none,Show Barcode...
   show-on-mouse-pos=none,none,Open Klipper at Mouse Position
   stop current activity=Meta+S,Meta+S,Stop Current Activity
-
-  [yakuake]
-  _k_friendly_name=Yakuake
-  toggle-window-state=F12\tBrowser,F12,Open/Retract Yakuake
   '';
 }]

@@ -5,7 +5,7 @@
 [options]
 allow_bold = true
 audible_bell = false
-clickable_url = true
+clickable_url = false
 dynamic_title = true
 font = ${variables.terminalFont}
 fullscreen = true
@@ -24,10 +24,10 @@ hyperlinks = false
 browser = ${variables.browser}
 
 # "system", "on" or "off"
-cursor_blink = on
+cursor_blink = off
 
 # "block", "underline" or "ibeam"
-cursor_shape = ibeam
+cursor_shape = block
 
 # Hide links that are no longer valid in url select overlay mode
 filter_unmatched_urls = true
@@ -47,7 +47,7 @@ scrollbar = off
 
 foreground      = #f8f8f2
 foreground_bold = #f5f4f1
-cursor          = #f5f4f1
+#cursor          = #f5f4f1
 background      = rgba(39,40,34,0.9)
 
 # 16 color space

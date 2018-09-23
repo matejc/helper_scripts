@@ -38,8 +38,9 @@ let
     browser = "chromium";
     programs = {
         # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
-        /* terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal"; */
-        terminal = "${pkgs.termite}/bin/termite";
+        terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal";
+        dropdown-terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+        /* terminal = "${pkgs.termite}/bin/termite"; */
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
@@ -153,7 +154,7 @@ let
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+    # ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
 
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/mykeepassxc &
@@ -163,7 +164,7 @@ let
     ${pkgs.rambox}/bin/rambox &
     ${variables.browser} &
 
-    ${variables.homeDir}/bin/autolock &
+    # ${variables.homeDir}/bin/autolock &
 
     echo "DONE"
   '';
