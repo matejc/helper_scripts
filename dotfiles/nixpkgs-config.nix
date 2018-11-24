@@ -5,6 +5,7 @@
     myNeovim = pkgs.neovim.override {
       configure = {
         customRC = ''
+          let mapleader=","
           syntax enable
           set termguicolors
           colorscheme monokai_pro
@@ -19,6 +20,8 @@
           set mouse=a
 
           set colorcolumn=80
+
+          autocmd FileType markdown set spell spelllang=en_us
 
           set statusline+=%#warningmsg#
           set statusline+=%{SyntasticStatuslineFlag()}
@@ -59,7 +62,7 @@
           let g:NERDDefaultAlign = 'left'
 
           " Allow commenting and inverting empty lines (useful when commenting a region)
-          let g:NERDCommentEmptyLines = 1
+          let g:NERDCommentEmptyLines = 0
 
           " Enable trimming of trailing whitespace when uncommenting
           let g:NERDTrimTrailingWhitespace = 1
@@ -73,41 +76,42 @@
           set cursorline
 
           if has("persistent_undo")
-              set undodir=~/.undodir/
-              set undofile
+            set undodir=~/.undodir/
+            set undofile
           endif
 
           set ai
+          set smartindent
           set copyindent
 
           " Override w motion
           function! MyWMotion()
-              " Save the initial position
-              let initialLine=line('.')
+            " Save the initial position
+            let initialLine=line('.')
 
-              " Execute the builtin word motion and get the new position
-              normal! w
-              let newLine=line('.')
+            " Execute the builtin word motion and get the new position
+            normal! w
+            let newLine=line('.')
 
-              " If the line as changed go back to the previous line
-              if initialLine != newLine
-                  normal k$
-              endif
+            " If the line as changed go back to the previous line
+            if initialLine != newLine
+                normal k$
+            endif
           endfunction
 
           " Override b motion
           function! MyBMotion()
-              " Save the initial position
-              let initialLine=line('.')
+            " Save the initial position
+            let initialLine=line('.')
 
-              " Execute the builtin word motion and get the new position
-              normal! b
-              let newLine=line('.')
+            " Execute the builtin word motion and get the new position
+            normal! b
+            let newLine=line('.')
 
-              " If the line as changed go back to the previous line
-              if initialLine != newLine
-                  normal j^
-              endif
+            " If the line as changed go back to the previous line
+            if initialLine != newLine
+              normal j^
+            endif
           endfunction
 
           nnoremap <silent> w :call MyWMotion()<CR>
@@ -148,6 +152,9 @@
 
           vmap <Tab> >gv
           vmap <S-Tab> <gv
+          imap <S-Tab> <esc>v<i
+          nmap <Tab> v><esc>
+          nmap <S-Tab> v<<esc>
 
           nnoremap <S-Up> :m-2<CR>
           nnoremap <S-Down> :m+<CR>
@@ -156,12 +163,19 @@
 
           imap <C-b> <esc>mzgg=G`zi
           map <C-b> mzgg=G`z
+
+          autocmd FileType javascript map <buffer> <C-b> :call JsBeautify()<cr>
+          autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
+
+          map <A-c> <leader>c<space><cr>
+          imap <A-c> <esc><leader>c<space><cr>i
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
           start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
           gitgutter ctrlp vim-airline vim-airline-themes The_NERD_Commenter
-          vim-better-whitespace vim-expand-region undotree multiple-cursors ];
+          vim-better-whitespace vim-expand-region undotree multiple-cursors
+          vim-jsbeautify ];
           opt = [ ];
         };
       };
