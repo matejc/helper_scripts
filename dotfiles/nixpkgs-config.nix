@@ -2,15 +2,179 @@
   packageOverrides = pkgs:
   rec {
 
-    mypidgin =
-      (pkgs.pidgin.override {
-        plugins = with pkgs; [ purple-matrix pidginotr telegram-purple purple-facebook ];
-      });
+    myNeovim = pkgs.neovim.override {
+      configure = {
+        customRC = ''
+          syntax enable
+          set termguicolors
+          colorscheme monokai_pro
+
+          filetype plugin on
+          if has ("autocmd")
+            " File type detection. Indent based on filetype. Recommended.
+            filetype plugin indent on
+          endif
+
+          set number
+          set mouse=a
+
+          set colorcolumn=80
+
+          set statusline+=%#warningmsg#
+          set statusline+=%{SyntasticStatuslineFlag()}
+          set statusline+=%*
+          let g:syntastic_always_populate_loc_list = 1
+          let g:syntastic_auto_loc_list = 1
+          let g:syntastic_loc_list_height = 5
+          let g:syntastic_check_on_open = 1
+          let g:syntastic_check_on_wq = 0
+          let g:syntastic_javascript_checkers = [ 'eslint' ]
+          let g:syntastic_python_checkers = ['pylint']
+
+          autocmd StdinReadPre * let s:std_in=1
+          autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+
+          autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+          let g:NERDTreeDirArrowExpandable = '▸'
+          let g:NERDTreeDirArrowCollapsible = '▾'
+
+          map <C-\> :NERDTreeToggle<CR>
+
+          autocmd BufWritePost * GitGutter
+
+          let g:ctrlp_cmd = 'CtrlPMixed'
+
+          let g:airline#extensions#tabline#enabled = 1
+          let g:airline_powerline_fonts = 1
+          let g:airline_theme='base16_monokai'
+
+          " Add spaces after comment delimiters by default
+          let g:NERDSpaceDelims = 1
+
+          " Use compact syntax for prettified multi-line comments
+          let g:NERDCompactSexyComs = 1
+
+          " Align line-wise comment delimiters flush left instead of following code indentation
+          let g:NERDDefaultAlign = 'left'
+
+          " Allow commenting and inverting empty lines (useful when commenting a region)
+          let g:NERDCommentEmptyLines = 1
+
+          " Enable trimming of trailing whitespace when uncommenting
+          let g:NERDTrimTrailingWhitespace = 1
+
+          " Enable NERDCommenterToggle to check all selected lines is commented or not
+          let g:NERDToggleCheckAllLines = 1
+
+          let g:better_whitespace_enabled=1
+          let g:strip_whitespace_on_save=1
+
+          set cursorline
+
+          if has("persistent_undo")
+              set undodir=~/.undodir/
+              set undofile
+          endif
+
+          set ai
+          set copyindent
+
+          " Override w motion
+          function! MyWMotion()
+              " Save the initial position
+              let initialLine=line('.')
+
+              " Execute the builtin word motion and get the new position
+              normal! w
+              let newLine=line('.')
+
+              " If the line as changed go back to the previous line
+              if initialLine != newLine
+                  normal k$
+              endif
+          endfunction
+
+          " Override b motion
+          function! MyBMotion()
+              " Save the initial position
+              let initialLine=line('.')
+
+              " Execute the builtin word motion and get the new position
+              normal! b
+              let newLine=line('.')
+
+              " If the line as changed go back to the previous line
+              if initialLine != newLine
+                  normal j^
+              endif
+          endfunction
+
+          nnoremap <silent> w :call MyWMotion()<CR>
+          nnoremap <silent> b :call MyBMotion()<CR>
+
+          nmap <PageUp> 10<up>
+          imap <PageUp> <esc>10<up>i
+          nmap <PageDown> 10<down>
+          imap <PageDown> <esc>10<down>i
+
+          nmap <C-s> :w<Return>
+          imap <C-s> <esc>:w<Return>i
+
+          map <C-z> u
+          map! <C-z> <esc>u
+          map <C-y> <C-R>
+          map! <C-y> <esc><C-R>
+          map <C-k> dd
+          imap <C-k> <esc>ddi
+
+          map <C-q> <ESC>:qall<Return>
+          map! <C-q> <ESC>:qall<Return>
+
+          map <C-w> <ESC>:bd<Return>
+          map! <C-w> <ESC>:bd<Return>
+
+          map <C-d> Yp
+          imap <C-d> <esc>Ypi
+
+          map <C-u> <esc>:UndotreeToggle<CR>
+
+          map <S-PageUp> :bprev<Return>
+          map! <S-PageUp> <esc>:bprev<Return>
+          map <S-PageDown> :bnext<Return>
+          map! <S-PageDown> <esc>:bnext<Return>
+
+          imap <C-p> <esc>:CtrlPMixed<Return>
+
+          vmap <Tab> >gv
+          vmap <S-Tab> <gv
+
+          nnoremap <S-Up> :m-2<CR>
+          nnoremap <S-Down> :m+<CR>
+          inoremap <S-Up> <Esc>:m-2<CR>i
+          inoremap <S-Down> <Esc>:m+<CR>i
+
+          imap <C-b> <esc>mzgg=G`zi
+          map <C-b> mzgg=G`z
+        '';
+        packages.myVimPackage = with pkgs.vimPlugins; {
+          # see examples below how to use custom packages
+          start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
+          gitgutter ctrlp vim-airline vim-airline-themes The_NERD_Commenter
+          vim-better-whitespace vim-expand-region undotree multiple-cursors ];
+          opt = [ ];
+        };
+      };
+    };
+
+    mypidgin = (pkgs.pidgin.override {
+      plugins = with pkgs; [ purple-matrix pidginotr telegram-purple purple-facebook ];
+    });
 
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
       paths = [ pkgs.bashInteractive pkgs.docker pkgs.which
-        pkgs.docker_compose ];
+      pkgs.docker_compose ];
     };
 
     py3env = pkgs.buildEnv {
@@ -77,7 +241,6 @@
         openssl
         python27Full
         python27Packages.ipython
-#        python27Packages.site
         subversionClient
         stdenv
       ];
@@ -144,10 +307,7 @@
         pkgconfig
         #postgresql
         (python27Full.withPackages (ps: with ps; [ urllib3 ]))
-#        python27Packages.ipython
         python27Packages.pyyaml
-#        python27Packages.readline
-#        python27Packages.sqlite3
         python27Packages.virtualenv
         subversionClient
         # stdenv
@@ -155,15 +315,9 @@
         zlib
         #w3m
         # poppler
-#        rubyLibs.docsplit
-#        python27Packages.ipdb
-#        docutils
-#        python27Packages.pygments
         # vimprobable2
-#        python27Packages.cssselect
         gettext
         # python27Packages.libarchive
-#        python27.modules.curses
         # rsync
         python27Packages.setuptools
         # nano
@@ -174,7 +328,6 @@
 
         #nodePackages.jshint
 
-#        python27Packages.jinja2
         #vimHugeX
         # lessc  # searx
         # libffi  # searx
@@ -235,6 +388,8 @@
         bundler bundix
         jekyll
         gnumake stdenv.cc pkgconfig
+
+        libxslt.dev
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
@@ -440,19 +595,19 @@
         # jdk strace gcc.cc.lib
 
         /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
-          inherit pkgs;
-          pkgs_i686 = pkgs.pkgsi686Linux;
+        inherit pkgs;
+        pkgs_i686 = pkgs.pkgsi686Linux;
         })) */
 
         pkgs.androidenv.platformTools
 
         /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
-          inherit pkgs;
-          pkgs_i686 = pkgs.pkgsi686Linux;
+        inherit pkgs;
+        pkgs_i686 = pkgs.pkgsi686Linux;
         }).androidsdk {
-          platformVersions = [ ];
-          abiVersions = [ ];
-          useGoogleAPIs = false;
+        platformVersions = [ ];
+        abiVersions = [ ];
+        useGoogleAPIs = false;
         }) */
       ];
     };
@@ -519,14 +674,13 @@
     };
 
   };
-#  st.conf = builtins.readFile ./.st.conf;
   allowUnfree = true;
   mpv.vaapiSupport = true;
   nixui.dataDir = "/home/matejc/.nixui";
   nixui.NIX_PATH = "nixpkgs=/home/matejc/workarea/nixpkgs:nixos=/home/matejc/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";
   nixmy = {
-      NIX_MY_PKGS = "/home/matejc/workarea/nixpkgs";
-      NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
-      NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
+    NIX_MY_PKGS = "/home/matejc/workarea/nixpkgs";
+    NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
+    NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
   };
 }

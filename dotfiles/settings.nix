@@ -44,8 +44,10 @@ let
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
+        c = "${pkgs.vscode}/bin/code";
+        v = "nvim";
         s = "${pkgs.sublime3}/bin/sublime3";
-        n = "${pkgs.ne}/bin/ne";
+        n = "nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
     };
     # i3minator = {
