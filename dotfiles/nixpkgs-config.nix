@@ -105,7 +105,9 @@
           map! <C-w> <ESC>:bd<Return>
 
           map <A-d> Yp
+          map <C-d> Yp
           imap <A-d> <esc>Ypi
+          imap <C-d> <esc>Ypi
 
           map <C-u> <esc>:UndotreeToggle<CR>
 
@@ -142,8 +144,10 @@
 
           imap <A-Right> <esc>wi
           nmap <A-Right> w
+          vmap <A-Right> w
           imap <A-Left> <esc>bi
           nmap <A-Left> b
+          vmap <A-Left> b
 
           nmap <A-BS> dB
           imap <A-BS> <esc>dBi
