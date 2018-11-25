@@ -151,6 +151,7 @@
           imap <A-Delete> <esc>dwi
 
           imap <CR> <CR>
+          nmap <CR> o
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
