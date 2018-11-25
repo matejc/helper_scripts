@@ -12,7 +12,6 @@
 
           filetype plugin on
           if has ("autocmd")
-            " File type detection. Indent based on filetype. Recommended.
             filetype plugin indent on
           endif
 
@@ -36,8 +35,6 @@
 
           autocmd StdinReadPre * let s:std_in=1
           autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-
-          autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
@@ -84,38 +81,7 @@
           set smartindent
           set copyindent
 
-          " Override w motion
-          function! MyWMotion()
-            " Save the initial position
-            let initialLine=line('.')
-
-            " Execute the builtin word motion and get the new position
-            normal! w
-            let newLine=line('.')
-
-            " If the line as changed go back to the previous line
-            if initialLine != newLine
-                normal k$
-            endif
-          endfunction
-
-          " Override b motion
-          function! MyBMotion()
-            " Save the initial position
-            let initialLine=line('.')
-
-            " Execute the builtin word motion and get the new position
-            normal! b
-            let newLine=line('.')
-
-            " If the line as changed go back to the previous line
-            if initialLine != newLine
-              normal j^
-            endif
-          endfunction
-
-          nnoremap <silent> w :call MyWMotion()<CR>
-          nnoremap <silent> b :call MyBMotion()<CR>
+          let loaded_matchit = 1
 
           nmap <PageUp> 10<up>
           imap <PageUp> <esc>10<up>i
@@ -123,14 +89,14 @@
           imap <PageDown> <esc>10<down>i
 
           nmap <C-s> :w<Return>
-          imap <C-s> <esc>:w<Return>i
+          imap <C-s> <esc>:w<Return>li
 
           map <C-z> u
           map! <C-z> <esc>u
           map <C-y> <C-R>
           map! <C-y> <esc><C-R>
-          map <C-k> dd
-          imap <C-k> <esc>ddi
+          map <A-k> dd
+          imap <A-k> <esc>ddi
 
           map <C-q> <ESC>:qall<Return>
           map! <C-q> <ESC>:qall<Return>
@@ -138,8 +104,8 @@
           map <C-w> <ESC>:bd<Return>
           map! <C-w> <ESC>:bd<Return>
 
-          map <C-d> Yp
-          imap <C-d> <esc>Ypi
+          map <A-d> Yp
+          imap <A-d> <esc>Ypi
 
           map <C-u> <esc>:UndotreeToggle<CR>
 
@@ -156,19 +122,35 @@
           nmap <Tab> v><esc>
           nmap <S-Tab> v<<esc>
 
-          nnoremap <S-Up> :m-2<CR>
-          nnoremap <S-Down> :m+<CR>
-          inoremap <S-Up> <Esc>:m-2<CR>i
-          inoremap <S-Down> <Esc>:m+<CR>i
+          nmap <S-Up> :m-2<CR>
+          imap <S-Up> <Esc>:m-2<CR>i
+          nmap <S-Down> :m+<CR>
+          imap <S-Down> <Esc>:m+<CR>i
 
-          imap <C-b> <esc>mzgg=G`zi
-          map <C-b> mzgg=G`z
+          imap <A-b> <esc>mzgg=G`zi
+          map <A-b> mzgg=G`z
 
           autocmd FileType javascript map <buffer> <C-b> :call JsBeautify()<cr>
           autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
 
           map <A-c> <leader>c<space><cr>
           imap <A-c> <esc><leader>c<space><cr>i
+
+          nmap <A-m> %
+          imap <A-m> <esc>%i
+          vmap <A-m> %
+
+          imap <A-Right> <esc>wi
+          nmap <A-Right> w
+          imap <A-Left> <esc>bi
+          nmap <A-Left> b
+
+          nmap <A-BS> dB
+          imap <A-BS> <esc>dBi
+          nmap <A-Delete> dw
+          imap <A-Delete> <esc>dwi
+
+          imap <CR> <CR>
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
