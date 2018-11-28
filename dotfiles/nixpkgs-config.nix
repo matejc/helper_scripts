@@ -10,6 +10,8 @@
           set termguicolors
           colorscheme monokai_pro
 
+          set shell=sh
+
           filetype plugin on
           if has ("autocmd")
             filetype plugin indent on
@@ -26,15 +28,12 @@
           set statusline+=%{SyntasticStatuslineFlag()}
           set statusline+=%*
           let g:syntastic_always_populate_loc_list = 1
-          let g:syntastic_auto_loc_list = 1
+          let g:syntastic_auto_loc_list = 0
           let g:syntastic_loc_list_height = 5
-          let g:syntastic_check_on_open = 1
+          let g:syntastic_check_on_open = 0
           let g:syntastic_check_on_wq = 0
           let g:syntastic_javascript_checkers = [ 'eslint' ]
           let g:syntastic_python_checkers = ['pylint']
-
-          autocmd StdinReadPre * let s:std_in=1
-          autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
@@ -80,6 +79,7 @@
           set ai
           set smartindent
           set copyindent
+          set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
           let loaded_matchit = 1
 
@@ -88,8 +88,8 @@
           nmap <PageDown> 10<down>
           imap <PageDown> <esc>10<down>i
 
-          nmap <C-s> :w<Return>
-          imap <C-s> <esc>:w<Return>li
+          nmap <C-s> :w<CR>:SyntasticCheck<CR>
+          imap <C-s> <esc>:w<CR>:SyntasticCheck<CR><esc>li
 
           map <C-z> u
           map! <C-z> <esc>u
@@ -97,6 +97,8 @@
           map! <C-y> <esc><C-R>
           map <A-k> dd
           imap <A-k> <esc>ddi
+          map <C-k> dd
+          imap <C-k> <esc>ddi
 
           map <C-q> <ESC>:qall<Return>
           map! <C-q> <ESC>:qall<Return>
@@ -142,17 +144,24 @@
           imap <A-m> <esc>%i
           vmap <A-m> %
 
-          imap <A-Right> <esc>wi
-          nmap <A-Right> w
-          vmap <A-Right> w
-          imap <A-Left> <esc>bi
-          nmap <A-Left> b
-          vmap <A-Left> b
+          imap <A-Right> <S-Right>
+          nmap <A-Right> <S-Right>
+          vmap <A-Right> <S-Right>
+          imap <A-Left> <S-Left>
+          nmap <A-Left> <S-Left>
+          vmap <A-Left> <S-Left>
 
-          nmap <A-BS> dB
-          imap <A-BS> <esc>dBi
-          nmap <A-Delete> dw
-          imap <A-Delete> <esc>dwi
+          imap <C-Right> <S-Right>
+          nmap <C-Right> <S-Right>
+          vmap <C-Right> <S-Right>
+          imap <C-Left> <S-Left>
+          nmap <C-Left> <S-Left>
+          vmap <C-Left> <S-Left>
+
+          nmap <A-BS> ld<S-Left>
+          imap <A-BS> <esc>ld<S-Left>i
+          nmap <A-Delete> d<S-Right>
+          imap <A-Delete> <esc>d<S-Right>i
 
           imap <CR> <CR>
           nmap <CR> o
@@ -162,7 +171,7 @@
           start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
           gitgutter ctrlp vim-airline vim-airline-themes The_NERD_Commenter
           vim-better-whitespace vim-expand-region undotree multiple-cursors
-          vim-jsbeautify ];
+          vim-jsbeautify nerdtree-git-plugin ];
           opt = [ ];
         };
       };
