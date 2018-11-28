@@ -17,10 +17,23 @@
             filetype plugin indent on
           endif
 
+          set clipboard=unnamedplus
+
           set number
           set mouse=a
 
           set colorcolumn=80
+
+          function TrimEndLines()
+            let save_cursor = getpos(".")
+            :silent! %s#\($\n\s*\)\+\%$##
+            call setpos('.', save_cursor)
+          endfunction
+
+          if &binary == 0
+            au BufWritePre <buffer> call TrimEndLines()
+          endif
+          set fixendofline
 
           autocmd FileType markdown set spell spelllang=en_us
 
@@ -38,6 +51,8 @@
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
 
+          autocmd StdinReadPre * let s:std_in=1
+          autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
           map <C-\> :NERDTreeToggle<CR>
 
           autocmd BufWritePost * GitGutter
@@ -82,6 +97,8 @@
           set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
           let loaded_matchit = 1
+
+          let g:deoplete#enable_at_startup = 1
 
           nmap <PageUp> 10<up>
           imap <PageUp> <esc>10<up>i
@@ -171,7 +188,8 @@
           start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
           gitgutter ctrlp vim-airline vim-airline-themes The_NERD_Commenter
           vim-better-whitespace vim-expand-region undotree multiple-cursors
-          vim-jsbeautify nerdtree-git-plugin ];
+          vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
+          deoplete-ternjs deoplete-go ];
           opt = [ ];
         };
       };
