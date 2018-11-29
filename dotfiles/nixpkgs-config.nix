@@ -55,8 +55,6 @@
           autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
           map <C-\> :NERDTreeToggle<CR>
 
-          autocmd BufWritePost * GitGutter
-
           let g:ctrlp_cmd = 'CtrlPMixed'
 
           let g:airline#extensions#tabline#enabled = 1
@@ -182,14 +180,16 @@
 
           imap <CR> <CR>
           nmap <CR> o
+
+          nmap <C-g> :Gitv<cr>
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
           start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
-          gitgutter ctrlp vim-airline vim-airline-themes The_NERD_Commenter
+          ctrlp vim-airline vim-airline-themes The_NERD_Commenter
           vim-better-whitespace vim-expand-region undotree multiple-cursors
           vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
-          deoplete-ternjs deoplete-go ];
+          deoplete-ternjs deoplete-go vim-signify fugitive gitv ];
           opt = [ ];
         };
       };
