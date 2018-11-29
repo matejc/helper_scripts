@@ -37,17 +37,6 @@
 
           autocmd FileType markdown set spell spelllang=en_us
 
-          set statusline+=%#warningmsg#
-          set statusline+=%{SyntasticStatuslineFlag()}
-          set statusline+=%*
-          let g:syntastic_always_populate_loc_list = 1
-          let g:syntastic_auto_loc_list = 0
-          let g:syntastic_loc_list_height = 5
-          let g:syntastic_check_on_open = 0
-          let g:syntastic_check_on_wq = 0
-          let g:syntastic_javascript_checkers = [ 'eslint' ]
-          let g:syntastic_python_checkers = ['pylint']
-
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
 
@@ -103,17 +92,21 @@
           nmap <PageDown> 10<down>
           imap <PageDown> <esc>10<down>i
 
-          nmap <C-s> :w<CR>:SyntasticCheck<CR>
-          imap <C-s> <esc>:w<CR>:SyntasticCheck<CR><esc>li
+          nmap <C-s> :w<CR>
+          imap <C-s> <esc>:w<cr>li
 
           map <C-z> u
           map! <C-z> <esc>u
           map <C-y> <C-R>
           map! <C-y> <esc><C-R>
-          map <A-k> dd
-          imap <A-k> <esc>ddi
-          map <C-k> dd
-          imap <C-k> <esc>ddi
+
+          nmap <C-k> "_dd
+          imap <C-k> <esc>"_ddi
+          vmap <C-k> "_d
+
+          nmap <C-x> dd
+          imap <C-x> <esc>ddi
+          vmap <C-x> d
 
           map <C-q> <ESC>:qall<Return>
           map! <C-q> <ESC>:qall<Return>
@@ -152,8 +145,8 @@
           autocmd FileType javascript map <buffer> <C-b> :call JsBeautify()<cr>
           autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
 
-          map <A-c> <leader>c<space><cr>
-          imap <A-c> <esc><leader>c<space><cr>i
+          nmap <A-/> <leader>c<space>j
+          imap <A-/> <esc><leader>c<space>ji
 
           nmap <A-m> %
           imap <A-m> <esc>%i
@@ -185,7 +178,7 @@
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
-          start = [ vim-monokai-pro syntastic vim-nix The_NERD_tree surround
+          start = [ vim-monokai-pro ale vim-nix The_NERD_tree surround
           ctrlp vim-airline vim-airline-themes The_NERD_Commenter
           vim-better-whitespace vim-expand-region undotree multiple-cursors
           vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
