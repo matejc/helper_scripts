@@ -175,6 +175,7 @@
           nmap <CR> o
 
           nmap <C-g> :Gitv<cr>
+          nmap <C-f> :Grepper<cr>
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           # see examples below how to use custom packages
@@ -182,7 +183,7 @@
           ctrlp vim-airline vim-airline-themes The_NERD_Commenter
           vim-better-whitespace vim-expand-region undotree multiple-cursors
           vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
-          deoplete-ternjs deoplete-go vim-signify fugitive gitv ];
+          deoplete-ternjs deoplete-go vim-signify fugitive gitv vim-grepper ];
           opt = [ ];
         };
       };
