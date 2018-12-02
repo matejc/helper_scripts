@@ -87,6 +87,30 @@
 
           let g:deoplete#enable_at_startup = 1
 
+          let g:EasyGrepMode=0
+          let g:EasyGrepCommand=1
+          let g:EasyGrepRecursive=1
+          let g:EasyGrepSearchCurrentBufferDir=1
+          let g:EasyGrepIgnoreCase=0
+          let g:EasyGrepHidden=0
+          let g:EasyGrepBinary=0
+          let g:EasyGrepFilesToExclude='*.swp,*~'
+          let g:EasyGrepAllOptionsInExplorer=1
+          let g:EasyGrepWindow=0
+          let g:EasyGrepReplaceWindowMode=0
+          let g:EasyGrepOpenWindowOnMatch=1
+          let g:EasyGrepEveryMatch=0
+          let g:EasyGrepJumpToMatch=1
+          let g:EasyGrepInvertWholeWord=0
+          let g:EasyGrepPatternType='regex'
+          let g:EasyGrepFileAssociationsInExplorer=0
+          let g:EasyGrepExtraWarnings=0
+          let g:EasyGrepOptionPrefix='<leader>vy'
+          let g:EasyGrepReplaceAllPerFile=0
+          autocmd VimEnter * silent! GrepProgram grep
+
+          set virtualedit=all
+
           nmap <PageUp> 10<up>
           imap <PageUp> <esc>10<up>i
           nmap <PageDown> 10<down>
@@ -121,10 +145,10 @@
 
           map <C-u> <esc>:UndotreeToggle<CR>
 
-          map <S-PageUp> :bprev<Return>
-          map! <S-PageUp> <esc>:bprev<Return>
-          map <S-PageDown> :bnext<Return>
-          map! <S-PageDown> <esc>:bnext<Return>
+          nmap <S-PageUp> :bprev<Return>
+          imap <S-PageUp> <esc>:bprev<Return>
+          nmap <S-PageDown> :bnext<Return>
+          imap <S-PageDown> <esc>:bnext<Return>
 
           imap <C-p> <esc>:CtrlPMixed<Return>
 
@@ -139,10 +163,10 @@
           nmap <S-Down> :m+<CR>
           imap <S-Down> <Esc>:m+<CR>i
 
-          imap <A-b> <esc>mzgg=G`zi
-          map <A-b> mzgg=G`z
+          imap <C-b> <esc>mzgg=G`zi
+          nmap <C-b> mzgg=G`z
 
-          autocmd FileType javascript map <buffer> <C-b> :call JsBeautify()<cr>
+          autocmd FileType javascript nmap <buffer> <C-b> :call JsBeautify()<cr>
           autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
 
           nmap <A-/> <leader>c<space>j
@@ -166,24 +190,29 @@
           nmap <C-Left> <S-Left>
           vmap <C-Left> <S-Left>
 
-          nmap <A-BS> ld<S-Left>
-          imap <A-BS> <esc>ld<S-Left>i
-          nmap <A-Delete> d<S-Right>
-          imap <A-Delete> <esc>d<S-Right>i
+          nmap <A-BS> 1l"_d<S-Left>
+          imap <A-BS> <esc>1l"_d<S-Left>i
+          nmap <A-Delete> "_d<S-Right>
+          imap <A-Delete> <esc>"_d<S-Right>i
 
           imap <CR> <CR>
           nmap <CR> o
 
-          nmap <C-g> :Gitv<cr>
-          nmap <C-f> :Grepper<cr>
+          nmap <C-g> :GV<cr>
+          nmap <C-f> :Grep<space>
+
+          nmap <C-a> gg0vG$
+          imap <C-a> <esc>gg0vG$
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
-          # see examples below how to use custom packages
-          start = [ vim-monokai-pro ale vim-nix The_NERD_tree surround
-          ctrlp vim-airline vim-airline-themes The_NERD_Commenter
-          vim-better-whitespace vim-expand-region undotree multiple-cursors
-          vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
-          deoplete-ternjs deoplete-go vim-signify fugitive gitv vim-grepper ];
+          start = [
+            vim-monokai-pro ale vim-nix The_NERD_tree
+            ctrlp vim-airline vim-airline-themes The_NERD_Commenter
+            vim-better-whitespace vim-expand-region undotree
+            vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
+            deoplete-ternjs deoplete-go vim-signify fugitive
+            vim-visual-multi gv-vim yajs-vim vim-easygrep
+          ];
           opt = [ ];
         };
       };
