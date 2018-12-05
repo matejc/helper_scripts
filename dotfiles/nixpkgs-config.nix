@@ -1,4 +1,6 @@
-{
+let
+  nodeGlobalBinPath = "${builtins.getEnv "HOME"}/.npm-packages/bin";
+in {
   packageOverrides = pkgs:
   rec {
 
@@ -86,6 +88,7 @@
           let loaded_matchit = 1
 
           let g:deoplete#enable_at_startup = 1
+          let g:deoplete#sources#ternjs#tern_bin = '${nodeGlobalBinPath}/tern'
 
           let g:EasyGrepMode=0
           let g:EasyGrepCommand=1
@@ -112,9 +115,9 @@
           set virtualedit=all
 
           nmap <PageUp> 10<up>
-          imap <PageUp> <esc>10<up>i
+          imap <PageUp> <esc>10<up>li
           nmap <PageDown> 10<down>
-          imap <PageDown> <esc>10<down>i
+          imap <PageDown> <esc>10<down>li
 
           nmap <C-s> :w<CR>
           imap <C-s> <esc>:w<cr>li
@@ -158,10 +161,12 @@
           nmap <Tab> v><esc>
           nmap <S-Tab> v<<esc>
 
-          nmap <S-Up> :m-2<CR>
-          imap <S-Up> <Esc>:m-2<CR>i
-          nmap <S-Down> :m+<CR>
-          imap <S-Down> <Esc>:m+<CR>i
+          nmap <S-Down> :m .+1<CR>==
+          nmap <S-Up> :m .-2<CR>==
+          imap <S-Down> <Esc>:m .+1<CR>==gi
+          imap <S-Up> <Esc>:m .-2<CR>==gi
+          vmap <S-Down> :m '>+1<CR>gv=gv
+          vmap <S-Up> :m '<-2<CR>gv=gv
 
           imap <C-b> <esc>mzgg=G`zi
           nmap <C-b> mzgg=G`z
@@ -211,7 +216,8 @@
             vim-better-whitespace vim-expand-region undotree
             vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
             deoplete-ternjs deoplete-go vim-signify fugitive
-            vim-visual-multi gv-vim yajs-vim vim-easygrep
+            vim-visual-multi gv-vim vim-easygrep
+            vim-javascript neomake typescript-vim nvim-typescript
           ];
           opt = [ ];
         };
