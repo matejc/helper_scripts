@@ -58,8 +58,8 @@ d() {
     node --harmony --inspect=5858 "$@"
 }
 
-nopublish() {
-    node_modules/.bin/np --no-publish "$@"
+release() {
+    np --no-yarn --no-publish --any-branch "$@"
 }
 
 "$@"

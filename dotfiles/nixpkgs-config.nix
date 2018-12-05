@@ -82,7 +82,7 @@ in {
 
           set ai
           set smartindent
-          set copyindent
+          set nocopyindent
           set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
           let loaded_matchit = 1
@@ -97,7 +97,7 @@ in {
           let g:EasyGrepIgnoreCase=0
           let g:EasyGrepHidden=0
           let g:EasyGrepBinary=0
-          let g:EasyGrepFilesToExclude='*.swp,*~'
+          let g:EasyGrepFilesToExclude='*.swp,*~,node_modules'
           let g:EasyGrepAllOptionsInExplorer=1
           let g:EasyGrepWindow=0
           let g:EasyGrepReplaceWindowMode=0
@@ -114,13 +114,22 @@ in {
 
           set virtualedit=all
 
+          " SuperTab like snippets behavior.
+          " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+          imap <expr><TAB>
+            \ pumvisible() ? "\<C-n>" :
+            \ neosnippet#expandable_or_jumpable() ?
+            \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+          smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+            \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
           nmap <PageUp> 10<up>
           imap <PageUp> <esc>10<up>li
           nmap <PageDown> 10<down>
           imap <PageDown> <esc>10<down>li
 
           nmap <C-s> :w<CR>
-          imap <C-s> <esc>:w<cr>li
+          imap <C-s> <esc>:w<cr>l:call deoplete#smart_close_popup()<cr>i
 
           map <C-z> u
           map! <C-z> <esc>u
@@ -175,6 +184,7 @@ in {
           autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
 
           nmap <A-/> <leader>c<space>j
+          vmap <A-/> <leader>c<space>
           imap <A-/> <esc><leader>c<space>ji
 
           nmap <A-m> %
@@ -208,6 +218,9 @@ in {
 
           nmap <C-a> gg0vG$
           imap <C-a> <esc>gg0vG$
+
+          nmap <C-v> v
+          imap <C-v> <esc>v
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
@@ -218,6 +231,8 @@ in {
             deoplete-ternjs deoplete-go vim-signify fugitive
             vim-visual-multi gv-vim vim-easygrep
             vim-javascript neomake typescript-vim nvim-typescript
+            neosnippet neosnippet-snippets
+            # sickill/vim-pasta
           ];
           opt = [ ];
         };

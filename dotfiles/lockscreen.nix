@@ -1,5 +1,5 @@
 { variables, config, pkgs, lib }:
-{
+[{
   target = "${variables.homeDir}/bin/lockscreen";
   source = pkgs.writeScript "lockscreen" ''
     #!${pkgs.stdenv.shell}
@@ -16,4 +16,13 @@
       revert
     fi
   '';
-}
+} {
+  target = "${variables.homeDir}/bin/lockall";
+  source = pkgs.writeScript "lockall" ''
+    #!${pkgs.stdenv.shell}
+
+    export PATH="${lib.makeBinPath [ pkgs.gnugrep pkgs.gawk pkgs.findutils pkgs.systemd ]}"
+
+    loginctl list-sessions | grep '^\ ' | awk '{print $1}' | xargs -i loginctl lock-session '{}'
+  '';
+}]
