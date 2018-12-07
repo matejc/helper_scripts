@@ -60,5 +60,6 @@
   .idea
 
   .envrc
+  .tern-port
   '';
 }

@@ -25,6 +25,7 @@ in {
           set mouse=a
 
           set colorcolumn=80
+          set scrolloff=5
 
           function TrimEndLines()
             let save_cursor = getpos(".")
@@ -47,6 +48,11 @@ in {
           map <C-\> :NERDTreeToggle<CR>
 
           let g:ctrlp_cmd = 'CtrlPMixed'
+          let g:ctrlp_custom_ignore = {
+            \ 'dir':  '\v[\/](\.git|\.hg|\.svn|node_modules)$',
+            \ 'file': '\v\.(exe|so|dll)$',
+            \ 'link': 'result',
+            \ }
 
           let g:airline#extensions#tabline#enabled = 1
           let g:airline_powerline_fonts = 1
@@ -214,7 +220,9 @@ in {
           nmap <CR> o
 
           nmap <C-g> :GV<cr>
+          imap <C-g> <esc>:GV<cr>
           nmap <C-f> :Grep<space>
+          imap <C-f> <esc>:Grep<space>
 
           nmap <C-a> gg0vG$
           imap <C-a> <esc>gg0vG$
