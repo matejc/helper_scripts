@@ -118,7 +118,7 @@ in {
           let g:EasyGrepReplaceAllPerFile=0
           autocmd VimEnter * silent! GrepProgram grep
 
-          set virtualedit=all
+          set virtualedit=onemore
 
           " SuperTab like snippets behavior.
           " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
@@ -211,10 +211,10 @@ in {
           nmap <C-Left> <S-Left>
           vmap <C-Left> <S-Left>
 
-          nmap <A-BS> 1l"_d<S-Left>
-          imap <A-BS> <esc>1l"_d<S-Left>i
-          nmap <A-Delete> "_d<S-Right>
-          imap <A-Delete> <esc>"_d<S-Right>i
+          nmap <A-BS> "_db
+          imap <A-BS> <esc>"_dbi
+          nmap <A-Delete> "_dw
+          imap <A-Delete> <esc>"_dwi
 
           imap <CR> <CR>
           nmap <CR> o
@@ -239,8 +239,7 @@ in {
             deoplete-ternjs deoplete-go vim-signify fugitive
             vim-visual-multi gv-vim vim-easygrep
             vim-javascript neomake typescript-vim nvim-typescript
-            neosnippet neosnippet-snippets
-            # sickill/vim-pasta
+            neosnippet neosnippet-snippets vim-pasta
           ];
           opt = [ ];
         };
