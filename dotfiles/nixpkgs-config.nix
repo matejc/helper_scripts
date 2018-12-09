@@ -45,7 +45,8 @@ in {
 
           autocmd StdinReadPre * let s:std_in=1
           autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-          map <C-\> :NERDTreeToggle<CR>
+          nmap <C-\> :NERDTreeToggle<CR>
+          imap <C-\> <esc>:NERDTreeToggle<CR>
 
           let g:ctrlp_cmd = 'CtrlPMixed'
           let g:ctrlp_custom_ignore = {
@@ -96,29 +97,28 @@ in {
           let g:deoplete#enable_at_startup = 1
           let g:deoplete#sources#ternjs#tern_bin = '${nodeGlobalBinPath}/tern'
 
-          let g:EasyGrepMode=0
-          let g:EasyGrepCommand=1
-          let g:EasyGrepRecursive=1
-          let g:EasyGrepSearchCurrentBufferDir=1
-          let g:EasyGrepIgnoreCase=0
-          let g:EasyGrepHidden=0
-          let g:EasyGrepBinary=0
-          let g:EasyGrepFilesToExclude='*.swp,*~,node_modules'
-          let g:EasyGrepAllOptionsInExplorer=1
-          let g:EasyGrepWindow=0
-          let g:EasyGrepReplaceWindowMode=0
-          let g:EasyGrepOpenWindowOnMatch=1
-          let g:EasyGrepEveryMatch=0
-          let g:EasyGrepJumpToMatch=1
-          let g:EasyGrepInvertWholeWord=0
-          let g:EasyGrepPatternType='regex'
-          let g:EasyGrepFileAssociationsInExplorer=0
-          let g:EasyGrepExtraWarnings=0
-          let g:EasyGrepOptionPrefix='<leader>vy'
-          let g:EasyGrepReplaceAllPerFile=0
-          autocmd VimEnter * silent! GrepProgram grep
-
           set virtualedit=onemore
+
+          let g:ctrlsf_ackprg='${pkgs.ag}/bin/ag'
+          let g:ctrlsf_search_mode = 'async'
+          "let g:ctrlsf_default_view_mode = 'compact'
+          let g:ctrlsf_auto_focus = {
+            \ "at": "start"
+            \ }
+          let g:ctrlsf_auto_close = {
+            \ "normal" : 0,
+            \ "compact": 0
+            \}
+          func! CtrlSFIfOpen()
+              if ctrlsf#win#FindMainWindow() != -1
+                  call ctrlsf#Quit()
+              else
+                  call inputsave()
+                  let text = input('Search: ')
+                  call inputrestore()
+                  call ctrlsf#Search(text)
+              endif
+          endf
 
           " SuperTab like snippets behavior.
           " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
@@ -211,8 +211,8 @@ in {
           nmap <C-Left> <S-Left>
           vmap <C-Left> <S-Left>
 
-          nmap <A-BS> "_db
-          imap <A-BS> <esc>"_dbi
+          nmap <A-BS> "_dvb
+          imap <A-BS> <esc>"_dvbi
           nmap <A-Delete> "_dw
           imap <A-Delete> <esc>"_dwi
 
@@ -221,14 +221,14 @@ in {
 
           nmap <C-g> :GV<cr>
           imap <C-g> <esc>:GV<cr>
-          nmap <C-f> :Grep<space>
-          imap <C-f> <esc>:Grep<space>
 
           nmap <C-a> gg0vG$
           imap <C-a> <esc>gg0vG$
 
           nmap <C-v> v
           imap <C-v> <esc>v
+
+          map <C-f> <esc>:call CtrlSFIfOpen()<cr>
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
@@ -237,9 +237,9 @@ in {
             vim-better-whitespace vim-expand-region undotree
             vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
             deoplete-ternjs deoplete-go vim-signify fugitive
-            vim-visual-multi gv-vim vim-easygrep
+            vim-visual-multi gv-vim
             vim-javascript neomake typescript-vim nvim-typescript
-            neosnippet neosnippet-snippets vim-pasta
+            neosnippet neosnippet-snippets vim-pasta auto-pairs ctrlsf-vim
           ];
           opt = [ ];
         };
