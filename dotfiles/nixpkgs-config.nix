@@ -10,6 +10,7 @@ in {
           let mapleader=","
           syntax enable
           set termguicolors
+          set title
           colorscheme monokai_pro
 
           set shell=sh
@@ -43,8 +44,6 @@ in {
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
 
-          autocmd StdinReadPre * let s:std_in=1
-          autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
           nmap <C-\> :NERDTreeToggle<CR>
           imap <C-\> <esc>:NERDTreeToggle<CR>
 
@@ -146,6 +145,10 @@ in {
           imap <C-k> <esc>"_ddi
           vmap <C-k> "_d
 
+          nmap <S-x> dd
+          imap <S-x> <esc>ddi
+          vmap <S-x> d
+
           nmap <C-x> dd
           imap <C-x> <esc>ddi
           vmap <C-x> d
@@ -156,10 +159,12 @@ in {
           map <C-w> <ESC>:bd<Return>
           map! <C-w> <ESC>:bd<Return>
 
-          map <A-d> Yp
-          map <C-d> Yp
-          imap <A-d> <esc>Ypi
-          imap <C-d> <esc>Ypi
+          nmap <A-d> yyp
+          nmap <C-d> yyp
+          vmap <A-d> yp
+          vmap <C-d> yp
+          imap <A-d> <esc>yypi
+          imap <C-d> <esc>yypi
 
           map <C-u> <esc>:UndotreeToggle<CR>
 
@@ -176,12 +181,12 @@ in {
           nmap <Tab> v><esc>
           nmap <S-Tab> v<<esc>
 
-          nmap <S-Down> :m .+1<CR>==
-          nmap <S-Up> :m .-2<CR>==
-          imap <S-Down> <Esc>:m .+1<CR>==gi
-          imap <S-Up> <Esc>:m .-2<CR>==gi
-          vmap <S-Down> :m '>+1<CR>gv=gv
-          vmap <S-Up> :m '<-2<CR>gv=gv
+          nmap <C-Down> :m .+1<CR>==
+          nmap <C-Up> :m .-2<CR>==
+          imap <C-Down> <Esc>:m .+1<CR>==gi
+          imap <C-Up> <Esc>:m .-2<CR>==gi
+          vmap <C-Down> :m '>+1<CR>gv=gv
+          vmap <C-Up> :m '<-2<CR>gv=gv
 
           imap <C-b> <esc>mzgg=G`zi
           nmap <C-b> mzgg=G`z
@@ -229,6 +234,21 @@ in {
           imap <C-v> <esc>v
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
+
+          imap <S-v> <esc>pi
+          nmap <S-v> p
+          vmap <S-v> p
+
+          vmap <S-c> y
+
+          nmap <S-Down> vj
+          nmap <S-Up> vk
+
+          imap <S-Down> <esc>vj
+          imap <S-Up> <esc>vk
+
+          vmap <S-Down> j
+          vmap <S-Up> k
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
@@ -236,10 +256,11 @@ in {
             ctrlp vim-airline vim-airline-themes The_NERD_Commenter
             vim-better-whitespace vim-expand-region undotree
             vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
-            deoplete-ternjs deoplete-go vim-signify fugitive
+            deoplete-ternjs deoplete-go vim-gitgutter fugitive
             vim-visual-multi gv-vim
-            vim-javascript neomake typescript-vim nvim-typescript
+            yajs-vim es-next-syntax-vim neomake typescript-vim nvim-typescript
             neosnippet neosnippet-snippets vim-pasta auto-pairs ctrlsf-vim
+            # othree/es.next.syntax.vim
           ];
           opt = [ ];
         };
