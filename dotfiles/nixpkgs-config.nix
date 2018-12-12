@@ -11,6 +11,7 @@ in {
           syntax enable
           set termguicolors
           set title
+          set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
           colorscheme monokai_pro
 
           set shell=sh
@@ -119,6 +120,21 @@ in {
               endif
           endf
 
+          let g:VM_default_mappings = 0
+          let g:VM_maps = {}
+          let g:VM_maps['Find Under']                  = '<C-n>'
+          let g:VM_maps['Find Subword Under']          = '<C-n>'
+          let g:VM_maps["Select All"]                  = '<leader>A'
+          let g:VM_maps["Start Regex Search"]          = 'g/'
+          let g:VM_maps["Add Cursor Down"]             = '<A-Down>'
+          let g:VM_maps["Add Cursor Up"]               = '<A-Up>'
+          let g:VM_maps["Add Cursor At Pos"]           = 'g<space>'
+          let g:VM_maps["Visual Regex"]                = 'g/'
+          let g:VM_maps["Visual All"]                  = '<leader>A'
+          let g:VM_maps["Visual Add"]                  = '<A-a>'
+          let g:VM_maps["Visual Find"]                 = '<A-f>'
+          let g:VM_maps["Visual Cursors"]              = '<A-c>'
+
           " SuperTab like snippets behavior.
           " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
           imap <expr><TAB>
@@ -202,19 +218,15 @@ in {
           imap <A-m> <esc>%i
           vmap <A-m> %
 
-          imap <A-Right> <S-Right>
-          nmap <A-Right> <S-Right>
-          vmap <A-Right> <S-Right>
-          imap <A-Left> <S-Left>
-          nmap <A-Left> <S-Left>
-          vmap <A-Left> <S-Left>
+          nmap <A-Right> w
+          vmap <A-Right> w
+          nmap <A-Left> b
+          vmap <A-Left> b
 
-          imap <C-Right> <S-Right>
-          nmap <C-Right> <S-Right>
-          vmap <C-Right> <S-Right>
-          imap <C-Left> <S-Left>
-          nmap <C-Left> <S-Left>
-          vmap <C-Left> <S-Left>
+          nmap <C-Right> w
+          vmap <C-Right> w
+          nmap <C-Left> b
+          vmap <C-Left> b
 
           nmap <A-BS> "_dvb
           imap <A-BS> <esc>"_dvbi
@@ -230,25 +242,33 @@ in {
           nmap <C-a> gg0vG$
           imap <C-a> <esc>gg0vG$
 
-          nmap <C-v> v
-          imap <C-v> <esc>v
+          nmap <A-v> v
+          imap <A-v> <esc>v
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-          imap <S-v> <esc>pi
-          nmap <S-v> p
-          vmap <S-v> p
+          imap <C-v> <esc>pi
+          nmap <C-v> p
+          vmap <C-v> p
 
-          vmap <S-c> y
+          imap <C-c> <esc>yy
+          nmap <C-c> yy
+          vmap <C-c> y
 
           nmap <S-Down> vj
           nmap <S-Up> vk
+          nmap <S-Left> vh
+          nmap <S-Right> vl
 
           imap <S-Down> <esc>vj
           imap <S-Up> <esc>vk
+          imap <S-Left> <esc>vh
+          imap <S-Right> <esc>vl
 
           vmap <S-Down> j
           vmap <S-Up> k
+          vmap <S-Left> h
+          vmap <S-Right> l
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
