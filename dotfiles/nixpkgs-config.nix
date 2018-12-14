@@ -116,7 +116,9 @@ in {
                   call inputsave()
                   let text = input('Search: ')
                   call inputrestore()
-                  call ctrlsf#Search(text)
+                  if !empty(text)
+                      call ctrlsf#Search(text)
+                  endif
               endif
           endf
 
@@ -161,10 +163,6 @@ in {
           imap <C-k> <esc>"_ddi
           vmap <C-k> "_d
 
-          nmap <S-x> dd
-          imap <S-x> <esc>ddi
-          vmap <S-x> d
-
           nmap <C-x> dd
           imap <C-x> <esc>ddi
           vmap <C-x> d
@@ -188,6 +186,11 @@ in {
           imap <S-PageUp> <esc>:bprev<Return>
           nmap <S-PageDown> :bnext<Return>
           imap <S-PageDown> <esc>:bnext<Return>
+
+          nmap <C-PageUp> :bprev<Return>
+          imap <C-PageUp> <esc>:bprev<Return>
+          nmap <C-PageDown> :bnext<Return>
+          imap <C-PageDown> <esc>:bnext<Return>
 
           imap <C-p> <esc>:CtrlPMixed<Return>
 
@@ -269,6 +272,9 @@ in {
           vmap <S-Up> k
           vmap <S-Left> h
           vmap <S-Right> l
+
+          nmap <C-Enter> o
+          imap <C-Enter> <C-o>o
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
