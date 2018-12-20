@@ -11,7 +11,10 @@ in {
           syntax enable
           set termguicolors
           set title
-          set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
+          function! ProjectName()
+            return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
+          endfunction
+          set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
           colorscheme monokai_pro
 
           set shell=sh
@@ -42,6 +45,8 @@ in {
 
           autocmd FileType markdown set spell spelllang=en_us
 
+          let NERDTreeIgnore=['node_modules']
+          let NERDTreeShowHidden=1
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
 
@@ -151,6 +156,20 @@ in {
           nmap <PageDown> 10<down>
           imap <PageDown> <esc>10<down>li
 
+          vmap <PageUp> 10<up>
+          vmap <PageDown> 10<down>
+          vmap <S-PageUp> 10<up>
+          vmap <S-PageDown> 10<down>
+          imap <S-PageUp> <esc>v10<up>
+          imap <S-PageDown> <esc>lv10<down>
+          nmap <S-PageUp> v10<up>
+          nmap <S-PageDown> v10<down>
+
+          nmap <C-S-Right> vw
+          nmap <C-S-Left> hvb
+          imap <C-S-Right> <esc>vw
+          imap <C-S-Left> <esc>hvb
+
           nmap <C-s> :w<CR>
           imap <C-s> <esc>:w<cr>l:call deoplete#smart_close_popup()<cr>i
 
@@ -182,10 +201,10 @@ in {
 
           map <C-u> <esc>:UndotreeToggle<CR>
 
-          nmap <S-PageUp> :bprev<Return>
-          imap <S-PageUp> <esc>:bprev<Return>
-          nmap <S-PageDown> :bnext<Return>
-          imap <S-PageDown> <esc>:bnext<Return>
+          nmap <A-PageUp> :bprev<Return>
+          imap <A-PageUp> <esc>:bprev<Return>
+          nmap <A-PageDown> :bnext<Return>
+          imap <A-PageDown> <esc>:bnext<Return>
 
           nmap <C-PageUp> :bprev<Return>
           imap <C-PageUp> <esc>:bprev<Return>
@@ -221,11 +240,6 @@ in {
           imap <A-m> <esc>%i
           vmap <A-m> %
 
-          nmap <A-Right> w
-          vmap <A-Right> w
-          nmap <A-Left> b
-          vmap <A-Left> b
-
           nmap <C-Right> w
           vmap <C-Right> w
           nmap <C-Left> b
@@ -250,9 +264,9 @@ in {
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-          imap <C-v> <esc>pi
-          nmap <C-v> p
-          vmap <C-v> p
+          imap <C-v> <esc>p=`]i
+          nmap <C-v> p=`]
+          vmap <C-v> p=`]
 
           imap <C-c> <esc>yy
           nmap <C-c> yy
@@ -275,6 +289,13 @@ in {
 
           nmap <C-Enter> o
           imap <C-Enter> <C-o>o
+
+          nmap <C-o> :edit<space>
+
+          nmap <A-Right> :wincmd l<cr>
+          nmap <A-Left> :wincmd h<cr>
+          nmap <C-=> :vsplit<cr>
+          nmap <C--> :hide<cr>
         '';
         packages.myVimPackage = with pkgs.vimPlugins; {
           start = [
