@@ -247,8 +247,8 @@ in {
 
           nmap <A-BS> "_dvb
           imap <A-BS> <esc>"_dvbi
-          nmap <A-Delete> "_dw
-          imap <A-Delete> <esc>"_dwi
+          nmap <A-Delete> "_daw
+          imap <A-Delete> <C-o>"_daw
 
           imap <CR> <CR>
           nmap <CR> o
@@ -264,9 +264,9 @@ in {
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-          imap <C-v> <esc>p=`]i
-          nmap <C-v> p=`]
-          vmap <C-v> p=`]
+          imap <C-v> <esc>lPli
+          nmap <C-v> Pl
+          vmap <C-v> Pl
 
           imap <C-c> <esc>yy
           nmap <C-c> yy
@@ -304,10 +304,9 @@ in {
             vim-better-whitespace vim-expand-region undotree
             vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
             deoplete-ternjs deoplete-go vim-gitgutter fugitive
-            vim-visual-multi gv-vim
+            vim-visual-multi gv-vim vim-pasta
             yajs-vim es-next-syntax-vim neomake typescript-vim nvim-typescript
-            neosnippet neosnippet-snippets vim-pasta auto-pairs ctrlsf-vim
-            # othree/es.next.syntax.vim
+            neosnippet neosnippet-snippets auto-pairs ctrlsf-vim
           ];
           opt = [ ];
         };
@@ -600,9 +599,10 @@ in {
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs-9_x
-        #(yarn.override { nodejs = nodejs-8_x; })
-        (npm2nix.override { nodejs = nodejs-9_x; })
+        nodejs
+        yarn
+        xorg.libX11.dev
+        # (npm2nix.override { nodejs = nodejs-9_x; })
         #((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
         python
         utillinux
@@ -624,8 +624,6 @@ in {
         sqlite
 
         # electron libnotify
-
-        # nwjs_0_21
       ];
       ignoreCollisions = true;
     };
