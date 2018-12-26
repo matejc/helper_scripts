@@ -334,6 +334,7 @@ in {
         python3Packages.tkinter
         pypi2nix
         gcc
+        binutils libxslt.dev libxml2.dev zlib
       ];
     };
 
@@ -600,10 +601,11 @@ in {
       name = "nodeenv";
       paths = with pkgs; [
         stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
-        nodejs
-        yarn
         xorg.libX11.dev
         # (npm2nix.override { nodejs = nodejs-9_x; })
+        nodejs-10_x
+        #(yarn.override { nodejs = nodejs-8_x; })
+        #(npm2nix.override { nodejs = nodejs-9_x; })
         #((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
         python
         utillinux
@@ -622,7 +624,9 @@ in {
 
         (with nodePackages; [ grunt-cli bower ])
 
-        sqlite
+        sqlite sqlite.dev
+
+        binutils
 
         # electron libnotify
       ];
@@ -663,7 +667,6 @@ in {
     goenv = pkgs.buildEnv {
       name = "goenv";
       paths = with pkgs; [
-        stdenv.cc
         go
         go2nix
         dep

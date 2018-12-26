@@ -6,7 +6,6 @@
       "always_show_minimap_viewport": true,
       "auto_complete": true,
       "bold_folder_labels": true,
-      "color_scheme": "Packages/User/SublimeLinter/Monokai (SL).tmTheme",
       "convert_tabspaces_on_save": false,
       "create_window_at_startup": false,
       "enable_hover_diff_popup": true,

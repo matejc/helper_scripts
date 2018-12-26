@@ -21,7 +21,7 @@
 
       if [ -n "$TELEPRESENCE_POD" ]
       then
-        RPROMPT="%F{red}[telepresence]%{$reset_color%} ''${RPROMPT}"
+        RPROMPT="%F{red}[t:$(grep -Po '(?<=PS1\=\"@)[^|]+(?=|$PS1\")' <<< $PROMPT_COMMAND)]%{$reset_color%} ''${RPROMPT}"
       fi
 
       if [ -n "$container" ]
