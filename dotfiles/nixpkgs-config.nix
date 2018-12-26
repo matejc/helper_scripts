@@ -59,6 +59,7 @@ in {
             \ 'file': '\v\.(exe|so|dll)$',
             \ 'link': 'result',
             \ }
+          let g:ctrlp_show_hidden = 1
 
           let g:airline#extensions#tabline#enabled = 1
           let g:airline_powerline_fonts = 1
@@ -264,11 +265,11 @@ in {
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-          imap <C-v> <esc>lPli
-          nmap <C-v> Pl
-          vmap <C-v> Pl
+          imap <C-v> <esc>P`]
+          nmap <C-v> P`]
+          vmap <C-v> P`]
 
-          imap <C-c> <esc>yy
+          imap <C-c> <C-o>yy
           nmap <C-c> yy
           vmap <C-c> y
 
