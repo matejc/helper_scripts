@@ -47,7 +47,7 @@ let
         c = "${pkgs.vscode}/bin/code";
         v = "nvim";
         s = "${pkgs.sublime3}/bin/sublime3";
-        n = "nvim";
+        q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
     };
     # i3minator = {
@@ -134,6 +134,7 @@ let
     ./bcrypt.nix
     ./termite.nix
     /* ./way-cooler.nix */
+    ./vim.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''

@@ -15,7 +15,11 @@ in {
             return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
           endfunction
           set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
-          colorscheme monokai_pro
+          " colorscheme monokai_pro
+          colorscheme gruvbox
+          set background=dark
+
+          set guifont=Source\ Code\ Pro\ for\ Powerline:h12
 
           set shell=sh
 
@@ -50,8 +54,8 @@ in {
           let g:NERDTreeDirArrowExpandable = '▸'
           let g:NERDTreeDirArrowCollapsible = '▾'
 
-          nmap <C-\> :NERDTreeToggle<CR>
-          imap <C-\> <esc>:NERDTreeToggle<CR>
+          nmap <C-\> :call NERDTreeIfOpen()<cr>
+          imap <C-\> <esc>:call NERDTreeIfOpen()<cr>
 
           let g:ctrlp_cmd = 'CtrlPMixed'
           let g:ctrlp_custom_ignore = {
@@ -63,7 +67,8 @@ in {
 
           let g:airline#extensions#tabline#enabled = 1
           let g:airline_powerline_fonts = 1
-          let g:airline_theme='base16_monokai'
+          " let g:airline_theme='base16_monokai'
+          let g:airline_theme='wombat'
 
           " Add spaces after comment delimiters by default
           let g:NERDSpaceDelims = 1
@@ -116,16 +121,24 @@ in {
             \ "compact": 0
             \}
           func! CtrlSFIfOpen()
-              if ctrlsf#win#FindMainWindow() != -1
-                  call ctrlsf#Quit()
-              else
-                  call inputsave()
-                  let text = input('Search: ')
-                  call inputrestore()
-                  if !empty(text)
-                      call ctrlsf#Search(text)
-                  endif
+            if ctrlsf#win#FindMainWindow() != -1
+              call ctrlsf#Quit()
+            else
+              call inputsave()
+              let text = input('Search: ')
+              call inputrestore()
+              if !empty(text)
+                call ctrlsf#Search(text)
               endif
+            endif
+          endf
+
+          func! NERDTreeIfOpen()
+            if exists("b:NERDTree") && b:NERDTree.isTabTree()
+              :NERDTreeClose
+            else
+              :NERDTreeFind
+            endif
           endf
 
           let g:VM_default_mappings = 0
@@ -265,7 +278,7 @@ in {
 
           map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-          imap <C-v> <esc>P`]
+          imap <C-v> <esc>lP`]li
           nmap <C-v> P`]
           vmap <C-v> P`]
 
@@ -305,7 +318,7 @@ in {
             vim-better-whitespace vim-expand-region undotree
             vim-jsbeautify nerdtree-git-plugin deoplete-nvim deoplete-jedi
             deoplete-ternjs deoplete-go vim-gitgutter fugitive
-            vim-visual-multi gv-vim vim-pasta
+            vim-visual-multi gv-vim vim-pasta gruvbox
             yajs-vim es-next-syntax-vim neomake typescript-vim nvim-typescript
             neosnippet neosnippet-snippets auto-pairs ctrlsf-vim
           ];
