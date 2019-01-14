@@ -68,8 +68,11 @@
       { "keys": ["ctrl+delete"], "command": "run_macro_file", "args": {"file": "Packages/User/delete_subword_forward.sublime-macro"} },
       { "keys": ["ctrl+t"], "command": "recent_active_files" },
       { "keys": ["ctrl+n"], "command": "new_file" },
-      { "keys": ["ctrl+d"], "command": "duplicate_line" },
-      { "keys": ["ctrl+k"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Delete Line.sublime-macro"} }
+      { "keys": ["ctrl+k"], "command": "run_macro_file", "args": {"file": "res://Packages/Default/Delete Line.sublime-macro"} },
+      { "keys": ["pageup"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "up" } },
+      { "keys": ["pagedown"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "down" } },
+      { "keys": ["shift+pageup"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "up_select" } },
+      { "keys": ["shift+pagedown"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "down_select" } }
   ]
   '';
 } {
