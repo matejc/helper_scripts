@@ -1,7 +1,7 @@
 {config, lib, stdenv
 , python, cmake, vim, vimUtils, ruby
 , which, fetchgit, llvmPackages, rustPlatform
-, xkb_switch, fzf, skim
+, fzf, skim
 , python3, boost, icu, ncurses
 , ycmd, rake
 , pythonPackages, python3Packages
