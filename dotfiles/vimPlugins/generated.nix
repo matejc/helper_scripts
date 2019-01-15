@@ -3,12 +3,12 @@
 
 {
   ale = buildVimPluginFrom2Nix {
-    name = "ale-2019-01-04";
+    name = "ale-2019-01-08";
     src = fetchFromGitHub {
       owner = "w0rp";
       repo = "ale";
-      rev = "3b96ab43fb7adede47705bd3b6efcaddb315a68d";
-      sha256 = "0151y8sivzrf26zyra2qw4y3a6qq5c9mh5axx77j4fpp5npjkw8g";
+      rev = "f23811770a8104346b7e9ccc6e586da828c8f41d";
+      sha256 = "07njkd4nm8rc64mzhn1qvm8m8fm1771m46yp86xx0l49cxvrn336";
     };
   };
 
@@ -73,12 +73,22 @@
   };
 
   vim-visual-multi = buildVimPluginFrom2Nix {
-    name = "vim-visual-multi-2018-10-07";
+    name = "vim-visual-multi-2019-01-05";
     src = fetchFromGitHub {
       owner = "mg979";
       repo = "vim-visual-multi";
-      rev = "8ae2d579f023f191d0e1f168d5782ea95d205895";
-      sha256 = "0nzyx2gsgif07pnxik3mjb2nmda4vbm2slrnf1raxcq0p3drfi0q";
+      rev = "5fbb505e3368722a31230885bac6e3344ba4174d";
+      sha256 = "1d091yisjslh69l2qq3bxwn43g3sr4xafdvcyys25zvf2b0xlwah";
+    };
+  };
+
+  vinarise-vim = buildVimPluginFrom2Nix {
+    name = "vinarise-vim-2017-10-16";
+    src = fetchFromGitHub {
+      owner = "Shougo";
+      repo = "vinarise.vim";
+      rev = "1350c9335d96568f26accd98ca5fe433f79a1131";
+      sha256 = "11djlgy6rmg540p8hkgw2vw9861p72sjrcdpai6a8pb6hx7jxyki";
     };
   };
 

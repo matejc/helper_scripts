@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-nixprofile=$NIX_USER_PROFILE_DIR/androidenv
+nixprofile=$NIX_USER_PROFILE_DIR/aenv
 
 export PATH="$nixprofile/bin:$PATH"
 export LD_LIBRARY_PATH="$nixprofile/lib"

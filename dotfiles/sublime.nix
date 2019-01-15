@@ -72,7 +72,10 @@
       { "keys": ["pageup"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "up" } },
       { "keys": ["pagedown"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "down" } },
       { "keys": ["shift+pageup"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "up_select" } },
-      { "keys": ["shift+pagedown"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "down_select" } }
+      { "keys": ["shift+pagedown"], "command": "line_jumper", "args": { "number_of_lines": 10, "cmd": "down_select" } },
+      { "keys": ["ctrl+q"], "command": "close_window" },
+      { "keys": ["ctrl+shift+d"], "command": "duplicate_lines" },
+      { "keys": ["ctrl+d"], "command": "select_exact_match" }
   ]
   '';
 } {

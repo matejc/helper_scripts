@@ -46,7 +46,7 @@ let
         l = "${pkgs.exa}/bin/exa -gal --git";
         c = "${pkgs.vscode}/bin/code";
         v = "nvim";
-        s = "${pkgs.sublime3}/bin/sublime3";
+        s = "${pkgs.sublime3}/bin/sublime3 --new-window";
         q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
     };

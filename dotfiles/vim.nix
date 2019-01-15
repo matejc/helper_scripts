@@ -38,14 +38,18 @@ let
         set scrolloff=5
 
         function TrimEndLines()
-          let save_cursor = getpos(".")
-          :silent! %s#\($\n\s*\)\+\%$##
-          call setpos('.', save_cursor)
+          if !IsBinary()
+            let save_cursor = getpos(".")
+            :silent! %s#\($\n\s*\)\+\%$##
+            call setpos('.', save_cursor)
+          endif
         endfunction
 
-        if &binary == 0
-          au BufWritePre <buffer> call TrimEndLines()
-        endif
+        fun! IsBinary()
+            return system('${pkgs.file}/bin/file -ib ' . shellescape(expand('%:p'))) !~# '^text/plain'
+        endfun
+
+        au BufWritePre * call TrimEndLines()
         set fixendofline
 
         autocmd FileType markdown set spell spelllang=en_us
@@ -113,7 +117,7 @@ let
 
         let g:ctrlsf_ackprg='${pkgs.ag}/bin/ag'
         let g:ctrlsf_search_mode = 'async'
-        "let g:ctrlsf_default_view_mode = 'compact'
+        let g:ctrlsf_default_view_mode = 'compact'
         let g:ctrlsf_auto_focus = {
           \ "at": "start"
           \ }
@@ -156,6 +160,8 @@ let
         let g:VM_maps["Visual Add"]                  = '<A-a>'
         let g:VM_maps["Visual Find"]                 = '<A-f>'
         let g:VM_maps["Visual Cursors"]              = '<A-c>'
+
+        let g:vinarise_enable_auto_detect=1
 
         " SuperTab like snippets behavior.
         " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
@@ -311,6 +317,8 @@ let
         nmap <A-Left> :wincmd h<cr>
         nmap <C-=> :vsplit<cr>
         nmap <C--> :hide<cr>
+
+        nmap <C-b> :Vinarise<space>
       '';
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
@@ -322,6 +330,7 @@ let
           vim-visual-multi gv-vim vim-pasta gruvbox
           yajs-vim es-next-syntax-vim neomake typescript-vim nvim-typescript
           neosnippet neosnippet-snippets auto-pairs ctrlsf-vim
+          vinarise-vim
         ];
         opt = [ ];
       };

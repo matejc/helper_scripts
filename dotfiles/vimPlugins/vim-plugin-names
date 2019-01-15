@@ -7,3 +7,4 @@ othree/yajs.vim
 othree/es.next.syntax.vim
 mhartington/nvim-typescript
 dyng/ctrlsf.vim
+Shougo/vinarise.vim
