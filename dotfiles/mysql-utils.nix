@@ -15,7 +15,7 @@
 
     MYSQL="${pkgs.mysql}/bin/mysql"
 
-    Q1="CREATE DATABASE IF NOT EXISTS $2 CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+    Q1="CREATE DATABASE IF NOT EXISTS $2 CHARACTER SET utf8 COLLATE utf8_general_ci;"
     Q2="GRANT USAGE ON *.* TO $3 IDENTIFIED BY '$4';"
     Q3="GRANT ALL PRIVILEGES ON $2.* TO $3;"
     SQL="$Q1$Q2$Q3"
@@ -38,14 +38,14 @@
 
     MYSQL="${pkgs.mysql}/bin/mysql"
 
-    Q1="ALTER DATABASE $2 CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+    Q1="ALTER DATABASE $2 CHARACTER SET utf8 COLLATE utf8_general_ci;"
     SQL="$Q1"
 
     echo -n Password:
     read -s PASSWORD
     echo
 
-    SQLSATTEMENTS=`$MYSQL -h$1 -uroot -p"$PASSWORD" --database=$2 -B -N -e "SHOW TABLES" | ${pkgs.gawk}/bin/awk '{print "SET foreign_key_checks = 0; ALTER TABLE", $1, "CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci; SET foreign_key_checks = 1; "}'`
+    SQLSATTEMENTS=`$MYSQL -h$1 -uroot -p"$PASSWORD" --database=$2 -B -N -e "SHOW TABLES" | ${pkgs.gawk}/bin/awk '{print "SET foreign_key_checks = 0; ALTER TABLE", $1, "CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci; SET foreign_key_checks = 1; "}'`
 
     echo $SQLSATTEMENTS
 

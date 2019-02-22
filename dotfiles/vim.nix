@@ -1,6 +1,6 @@
 { variables, config, pkgs, lib }:
 let
-  nodeGlobalBinPath = "${builtins.getEnv "HOME"}/.npm-packages/bin";
+  nodeGlobalBinPath = "${variables.homeDir}/.npm-packages/bin";
   vimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
     llvmPackages = pkgs.llvmPackages_6;
   });
@@ -301,7 +301,7 @@ let
         imap <S-Down> <esc>vj
         imap <S-Up> <esc>vk
         imap <S-Left> <esc>vh
-        imap <S-Right> <esc>vl
+        imap <S-Right> <esc>lv
 
         vmap <S-Down> j
         vmap <S-Up> k

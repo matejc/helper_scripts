@@ -28,7 +28,8 @@
       "hot_exit": false,
       "ignored_packages":
       [
-          "Vintage"
+          "Vintage",
+          "InactivePanes"
       ],
       "path_search_order":
       [

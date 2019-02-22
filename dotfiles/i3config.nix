@@ -1,6 +1,6 @@
 { variables, config, pkgs, lib }:
 [{
-  target = "${variables.homeDir}/.i3/config";
+  target = "${variables.homeDir}/.config/i3/config";
   source = pkgs.writeText "i3config" ''
   # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
@@ -409,7 +409,7 @@
   #bindsym F1 [title="flow"] move workspace current
   bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
-  bindsym --release Print exec --no-startup-id /run/current-system/sw/bin/xfce4-screenshooter --region --save ${variables.homeDir}/Pictures
+  bindsym --release Print exec --no-startup-id ${variables.programs.screenshooter}
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
   bindsym Ctrl+Mod1+w exec --no-startup-id /run/current-system/sw/bin/rofi -show window
   bindsym F1 exec --no-startup-id /run/current-system/sw/bin/rofi -show window

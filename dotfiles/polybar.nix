@@ -42,7 +42,7 @@
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = filesystem xbacklight volume xkeyboard memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus temperature date
+  modules-right = filesystem xbacklight volume xkeyboard memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles} date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
@@ -287,9 +287,10 @@
   animation-charging-framerate = 750
   '') variables.batteries}
 
-  [module/temperature]
+  ${lib.concatImapStringsSep "\n" (index: tempFile: ''
+  [module/temperature${toString index}]
   type = internal/temperature
-  hwmon-path = ${variables.homeDir}/.temp1_input
+  hwmon-path = ${tempFile}
   warn-temperature = 70
 
   format = <ramp> <label>
@@ -312,6 +313,7 @@
   ramp-3-foreground = #ffa500
   ramp-4-foreground = #ff0000
   ramp-foreground = ''${colors.foreground-alt}
+  '') variables.temperatureFiles}
 
   [module/batstatus]
   type = custom/script

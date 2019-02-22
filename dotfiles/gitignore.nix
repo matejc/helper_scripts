@@ -61,5 +61,7 @@
 
   .envrc
   .tern-port
+
+  /.gtm/
   '';
 }

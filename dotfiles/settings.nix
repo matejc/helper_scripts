@@ -21,7 +21,7 @@ let
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
     font = "Source Code Pro Semibold 11";
-    terminalFont = "Source Code Pro Semibold 11";
+    terminalFont = "Source Code Pro for Powerline Semibold 11";
     wallpaper = "${variables.homeDir}/Pictures/pexels-photo.jpg";
     lockImage = "${variables.homeDir}/Pictures/water-plant-green-fine-layers_blur.jpg";
     inherit startScript;
@@ -29,21 +29,25 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${homeDir}/bin/scratchterm ${pkgs.termite}/bin/termite";
+    dropDownTerminal = programs.dropdown-terminal;
+    # dropDownTerminal = "${homeDir}/bin/scratchterm ${pkgs.termite}/bin/termite";
     /* dropDownTerminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down"; */
     i3-msg = "/run/current-system/sw/bin/i3-msg";
     i3BarEnable = false;
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = "chromium";
+    browser = programs.chromium;
     programs = {
         # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
+        screenshooter = "${pkgs.xfce4-13.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
+        nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal";
         dropdown-terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         /* terminal = "${pkgs.termite}/bin/termite"; */
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
+        a = "${pkgs.atom}/bin/atom";
         c = "${pkgs.vscode}/bin/code";
         v = "nvim";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
@@ -99,7 +103,7 @@ let
     ./httpserver.nix
     ./wcontrol.nix
     ./batstatus.nix
-    ./alacritty.nix
+    /* ./alacritty.nix */
     ./tmux.nix
     ./temp.nix
     ./brightness.nix
@@ -116,8 +120,6 @@ let
     ./zsh.nix
     ./xfce4-terminal.nix
     ./monitor.nix
-    ./polybar.nix
-    ./i3_workspace.nix
     ./programs.nix
     ./any2mp3.nix
     ./sublime.nix
@@ -129,12 +131,16 @@ let
     ./chrome_cast_allow.nix
     ./castnow.nix
     ./sync.nix
-    ./mkchromecast.nix
+    # ./mkchromecast.nix
     ./freecad.nix
     ./bcrypt.nix
     ./termite.nix
     /* ./way-cooler.nix */
     ./vim.nix
+    ./konsole.nix
+    ./pandoc.nix
+    ./polybar.nix
+    ./i3_workspace.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
@@ -157,7 +163,7 @@ let
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    # ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
 
     ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/mykeepassxc &
@@ -167,7 +173,7 @@ let
     ${pkgs.rambox}/bin/rambox &
     ${variables.browser} &
 
-    # ${variables.homeDir}/bin/autolock &
+    ${variables.homeDir}/bin/autolock &
 
     echo "DONE"
   '';

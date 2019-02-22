@@ -17,5 +17,6 @@
     [alias]
         lol = log --graph --decorate --pretty=oneline --abbrev-commit --branches --remotes --tags
         l = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s\n%Cgreen(%cr) %C(bold blue)<%an>%Creset\n' --abbrev-commit --branches --remotes --tags
+        car = !git checkout $1 && git rebase $2 && git checkout - && echo
   '';
 }
