@@ -14,7 +14,7 @@ let
     ethernetInterfaces = [ "enp0s25" ];
     wirelessInterfaces = [ "wlp3s0" ];
     mounts = [ "/" "/home" ];
-    temperatureFiles = [ "${variables.homeDir}/.temp1_input" ];
+    temperatureFiles = [ "/sys/devices/virtual/thermal/thermal_zone2/temp" ];
     batteries = [ ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
@@ -138,7 +138,6 @@ let
     /* ./way-cooler.nix */
     ./vim.nix
     ./konsole.nix
-    ./pandoc.nix
     ./polybar.nix
     ./i3_workspace.nix
   ];
@@ -171,6 +170,7 @@ let
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.slack}/bin/slack &
     ${pkgs.rambox}/bin/rambox &
+    ${variables.homeDir}/bin/nm-applet &
     ${variables.browser} &
 
     ${variables.homeDir}/bin/autolock &

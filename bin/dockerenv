@@ -9,7 +9,7 @@ export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
 export PYTHONPATH="$nixprofile/lib/python2.7/site-packages"
 export PS1="dockerenv $PS1"
 
-#export DOCKER_HOST="tcp://127.0.0.1:9990"
+#export DOCKER_HOST="unix:///run/user/1000/docker.sock"
 
 docker_rm_all() {
     docker rm $(docker ps -a -q)
@@ -17,7 +17,5 @@ docker_rm_all() {
 docker_rmi_stale() {
     docker rmi $(docker images -q -f dangling=true)
 }
-
-
 
 "$@"
