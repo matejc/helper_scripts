@@ -41,6 +41,8 @@ let
         # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
         screenshooter = "${pkgs.xfce4-13.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
+        cmst = "${pkgs.cmst}/bin/cmst --minimized";
+        launcher = "${pkgs.rofi}/bin/rofi -show combi";
         terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal";
         dropdown-terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         /* terminal = "${pkgs.termite}/bin/termite"; */
@@ -130,7 +132,6 @@ let
     ./sshproxy.nix
     ./chrome_cast_allow.nix
     ./castnow.nix
-    ./sync.nix
     # ./mkchromecast.nix
     ./freecad.nix
     ./bcrypt.nix
@@ -140,6 +141,8 @@ let
     ./konsole.nix
     ./polybar.nix
     ./i3_workspace.nix
+    ./rofi.nix
+    ./mount.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
@@ -164,13 +167,12 @@ let
 
     ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
 
-    ${variables.homeDir}/bin/temp-init
     ${variables.homeDir}/bin/mykeepassxc &
     ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.slack}/bin/slack &
     ${pkgs.rambox}/bin/rambox &
-    ${variables.homeDir}/bin/nm-applet &
+    ${variables.programs.cmst} &
     ${variables.browser} &
 
     ${variables.homeDir}/bin/autolock &

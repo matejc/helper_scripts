@@ -313,8 +313,6 @@
 
         libpcap
 
-        (with nodePackages; [ grunt-cli bower ])
-
         sqlite sqlite.dev
 
         binutils

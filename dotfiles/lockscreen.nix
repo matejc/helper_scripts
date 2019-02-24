@@ -3,7 +3,7 @@
   target = "${variables.homeDir}/bin/lockscreen";
   source = pkgs.writeScript "lockscreen" ''
     #!${pkgs.stdenv.shell}
-    ${pkgs.procps}/bin/pgrep slock
+    ${pkgs.procps}/bin/pgrep i3lock-fancy
     if [ $? -ne 0 ]
     then
       revert() {
@@ -12,7 +12,7 @@
       trap revert HUP INT TERM
       ${pkgs.xorg.xset}/bin/xset +dpms dpms 5 5 5
       sleep 1
-      /run/wrappers/bin/slock
+      /run/wrappers/bin/i3lock-fancy --greyscale --pixelate -t ""
       revert
     fi
   '';

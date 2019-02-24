@@ -393,9 +393,11 @@
 
   bindcode 233 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight inc
   bindcode 232 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight dec
-  bindsym Ctrl+Mod1+space exec --no-startup-id /run/current-system/sw/bin/rofi -show run
-  bindsym Ctrl+Mod1+0 exec --no-startup-id ${variables.homeDir}/bin/monitor
-  bindsym Ctrl+Mod1+s exec --no-startup-id zsh -l /run/current-system/sw/bin/sublime
+  bindsym Ctrl+Mod1+space exec --no-startup-id "${variables.programs.launcher}"
+  bindsym Ctrl+Mod1+b exec --no-startup-id "${variables.homeDir}/bin/bluetooth-connect"
+  bindsym Ctrl+Mod1+a exec --no-startup-id "${pkgs.pavucontrol}/bin/pavucontrol"
+  bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
+  bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
   #bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
   #bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
@@ -407,12 +409,9 @@
   bindsym F12 exec --no-startup-id "${variables.dropDownTerminal}"
 
   #bindsym F1 [title="flow"] move workspace current
-  bindsym F2 exec --no-startup-id /run/current-system/sw/bin/rofi
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
   bindsym --release Print exec --no-startup-id ${variables.programs.screenshooter}
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
-  bindsym Ctrl+Mod1+w exec --no-startup-id /run/current-system/sw/bin/rofi -show window
-  bindsym F1 exec --no-startup-id /run/current-system/sw/bin/rofi -show window
   bindsym Mod1+F4 kill
   bindsym Mod1+Tab focus right
   bindsym $mod+p move workspace to output left
