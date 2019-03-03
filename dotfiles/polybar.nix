@@ -24,7 +24,7 @@
   background = ''${colors.background}
   foreground = ''${colors.foreground}
 
-  line-size = 3
+  line-size = 2
   line-color = #f00
 
   border-size = 0
@@ -38,11 +38,11 @@
 
   font-0 = "Source Code Pro:style=semibold:size=10"
   font-1 = "DejaVuSansMono:style=bold:size=10"
-  font-2 = "FontAwesome:size=10"
+  font-2 = "Font Awesome 5 Free Solid:size=10"
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = filesystem xbacklight volume xkeyboard memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles} date
+  modules-right = filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  xbacklight volume date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
@@ -77,7 +77,8 @@
   mount-${toString (index - 1)} = ${mount}
   '') variables.mounts}
 
-  label-mounted = %{F#0a81f5}%mountpoint%%{F-}: %percentage_used%%
+  label-mounted = %{F#0a81f5}%mountpoint%%{F-} %percentage_used%%
+  label-mounted-underline = ''${colors.underline}
   label-unmounted = %mountpoint% not mounted
   label-unmounted-foreground = ''${colors.foreground-alt}
 
@@ -148,7 +149,7 @@
   bar-indicator-font = 2
   bar-fill = ─
   bar-fill-font = 2
-  bar-fill-foreground = #9f78e1
+  bar-fill-foreground = #cccc00
   bar-empty = ─
   bar-empty-font = 2
   bar-empty-foreground = ''${colors.foreground-alt}
@@ -169,7 +170,7 @@
   [module/memory]
   type = internal/memory
   interval = 2
-  format-prefix = " "
+  format-prefix = " "
   format-prefix-foreground = ''${colors.foreground-alt}
   format-underline = ''${colors.underline}
   label = %percentage_used%%
