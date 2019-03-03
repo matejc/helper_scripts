@@ -10,31 +10,54 @@
     import os
 
     def usage():
-        return "Usage: {0} {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
+        return "Usage: {0} [--skip] {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         print usage()
         exit(1)
 
-    direction = sys.argv[1].lower()
-    if direction not in ('prev', 'next', 'prev_on_output', 'next_on_output'):
-        print usage()
-        exit(1)
+    direction = 'next'
+    skip = False
 
-    def find_by(workspaces, index, step = 0, output = None):
+    for i in range(1, len(sys.argv)):
+        option = sys.argv[i].lower()
+        if option in ('prev', 'next', 'prev_on_output', 'next_on_output'):
+            direction = option
+        elif option == '--skip':
+            skip = True
+        else:
+            print usage()
+            exit(1)
+
+    def find_by(workspaces, current, step, output = None, skip = True):
         if output != None:
             workspaces = filter(lambda w: w[u'output'] == output, workspaces)
 
-        next_index = index + step
-        min = 0
-        max = len(workspaces) - 1
+        existing = map(lambda w: w[u'num'], workspaces)
 
-        if next_index < min:
-            next_index = min
-        elif next_index > max:
-            next_index = max
+        next = current + step
+        first = 1
+        last = max(existing)
 
-        return workspaces[next_index]
+        if skip:
+            r = []
+            if step > 0:
+                r = range(first, last+1)
+            elif step < 0:
+                r = range(next-1, first-1, -1)
+            for i in r:
+                if next in existing:
+                    break
+                next += step
+
+        if current == last and step > 0:
+            next = last + step
+        elif next < first:
+            next = first
+        elif next > last:
+            next = last
+
+        return next
 
     output = subprocess.check_output(["${variables.i3-msg}", "-t", "get_workspaces"])
 
@@ -44,17 +67,18 @@
         workspace = workspaces[index]
 
         if workspace[u'focused'] == True:
+            current = workspace[u'num']
 
             if direction == 'prev':
-                print find_by(workspaces, index, -1)[u'num']
+                print find_by(workspaces, current, -1, skip=skip)
             elif direction == 'next':
-                print find_by(workspaces, index, 1)[u'num']
+                print find_by(workspaces, current, 1, skip=skip)
             elif direction == 'prev_on_output':
-                print find_by(workspaces, index, -1, workspace[u'output'])[u'num']
+                print find_by(workspaces, current, -1, workspace[u'output'], skip)
             elif direction == 'next_on_output':
-                print find_by(workspaces, index, 1, workspace[u'output'])[u'num']
+                print find_by(workspaces, current, 1, workspace[u'output'], skip)
             else:
-                print workspace[u'num']
+                print current
 
             break
 
@@ -98,7 +122,7 @@
                     return r
 
 
-    output = subprocess.check_output(["i3-msg", "-t", "get_tree"])
+    output = subprocess.check_output(["${variables.i3-msg}", "-t", "get_tree"])
     tree = json.loads(output)
 
     print json.dumps(search_rec(tree, sys.argv[1], sys.argv[2]))

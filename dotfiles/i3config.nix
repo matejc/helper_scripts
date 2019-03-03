@@ -377,14 +377,11 @@
   #bindsym Ctrl+Shift+Left focus output left
   #bindsym Ctrl+Right focus output right
 
-  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev_on_output) && ${variables.i3-msg} workspace $WSNUM
-  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next_on_output) && ${variables.i3-msg} workspace $WSNUM
-  #bindsym Ctrl+Mod1+Left workspace prev_on_output
-  #bindsym Ctrl+Mod1+Right workspace next_on_output
+  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip prev_on_output) && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip next_on_output) && ${variables.i3-msg} workspace $WSNUM
 
   bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
   bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
-  #bindcode 179 exec --no-startup-id /run/current-system/sw/bin/vlc /home/matejc/Dropbox/matej/workarea/radios/favorites.m3u8
 
   bindcode 121 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master toggle
   bindcode 122 exec --no-startup-id ${pkgs.alsaUtils}/bin/amixer -q set Master 5%- unmute
@@ -398,10 +395,8 @@
   bindsym Ctrl+Mod1+a exec --no-startup-id "${pkgs.pavucontrol}/bin/pavucontrol"
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
   bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
-  #bindsym Ctrl+Mod1+2 exec --no-startup-id xrandr --output LVDS1 --primary --auto --output VGA1 --auto --right-of LVDS1
-  #bindsym Ctrl+Mod1+1 exec --no-startup-id xrandr --output VGA1 --off --output LVDS1 --auto
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
-  bindsym Ctrl+Mod1+h exec --no-startup-id /run/current-system/sw/bin/thunar
+  bindsym Ctrl+Mod1+h exec --no-startup-id ${pkgs.xfce4-13.thunar}/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
 
   bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
@@ -514,10 +509,13 @@
   source = pkgs.writeScript "termite-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    ${pkgs.procps}/bin/ps a | ${pkgs.gnugrep}/bin/grep -v grep | ${pkgs.gnugrep}/bin/grep 'termite --title=ScratchTerm'
-    if [ $? -gt 0 ]
+    if [[ "$(${variables.homeDir}/bin/i3_query name ScratchTerm)" = "null" ]]
     then
       ${pkgs.termite}/bin/termite --title=ScratchTerm "$@"
+      sleep 0.2
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] move scratchpad, border pixel 1, sticky enable"
+      sleep 0.1
+      ${variables.i3-msg} "[title="^ScratchTerm.*"] $(${variables.homeDir}/bin/sway-window-center 95 90)"
     else
       ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
     fi
@@ -576,6 +574,22 @@
     hp="$2"
 
     IFS=" " read width height <<< "$(${pkgs.xdotool}/bin/xdotool getdisplaygeometry)"
+
+    w="$(($width * $wp/100))"
+    h="$(($height * $hp/100))"
+
+    echo "resize set $w px $h px, move position $(( ($width - $w) / 2 )) px $(( ($height - $h) / 2 )) px"
+  '';
+} {
+  target = "${variables.homeDir}/bin/sway-window-center";
+  source = pkgs.writeScript "sway-window-center.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    wp="$1"
+    hp="$2"
+
+    width="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[0].rect.width')"
+    height="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[0].rect.height')"
 
     w="$(($width * $wp/100))"
     h="$(($height * $hp/100))"
