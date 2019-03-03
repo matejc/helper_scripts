@@ -155,7 +155,7 @@
   bindsym $mod+minus workspace prev
   bindsym $mod+equal workspace next
 
-  bindsym $mod+m mode "monitor_select"
+  #bindsym $mod+m mode "monitor_select"
 
   #}}}
   #{{{ Windows
@@ -377,8 +377,8 @@
   #bindsym Ctrl+Shift+Left focus output left
   #bindsym Ctrl+Right focus output right
 
-  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip prev_on_output) && ${variables.i3-msg} workspace $WSNUM
-  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip next_on_output) && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip prev) && ${variables.i3-msg} workspace $WSNUM
+  bindsym Ctrl+Mod1+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace --skip next) && ${variables.i3-msg} workspace $WSNUM
 
   bindsym Ctrl+Mod1+Shift+Left exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace prev) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
   bindsym Ctrl+Mod1+Shift+Right exec --no-startup-id WSNUM=$(${variables.homeDir}/bin/i3_workspace next) && ${variables.i3-msg} move workspace $WSNUM && ${variables.i3-msg} workspace $WSNUM
@@ -398,6 +398,7 @@
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
   bindsym Ctrl+Mod1+h exec --no-startup-id ${pkgs.xfce4-13.thunar}/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
+  bindsym $mod+m exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
 
   bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
   bindcode 152 exec --no-startup-id "${variables.dropDownTerminal}"

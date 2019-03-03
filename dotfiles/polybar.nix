@@ -8,7 +8,7 @@
   foreground = #dfdfdf
   foreground-alt = #555942
   primary = #FD971F
-  secondary = #AE81FF
+  secondary = #5900ff
   alert = #A6E22E
   underline = #0a81f5
 
@@ -42,7 +42,7 @@
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  xbacklight volume date
+  modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  xbacklight volume date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
