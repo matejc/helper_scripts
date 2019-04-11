@@ -337,7 +337,234 @@ let
     };
   };
 
-in {
-  target = "${variables.homeDir}/bin/nvim";
+  cocNeovim = pkgs.neovim.override {
+    configure = {
+      customRC = ''
+        call plug#begin('${variables.homeDir}/.local/share/nvim/plugged')
+        Plug 'neoclide/coc.nvim', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-json', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-tsserver', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-html', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-css', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-yaml', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-python', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-highlight', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-emmet', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-snippets', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-pairs', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-lists', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-vimtex', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-yank', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-prettier', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-eslint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-tslint-plugin', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-stylelint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        call plug#end()
+
+        let mapleader=","
+        syntax enable
+        set termguicolors
+        set title
+        function! ProjectName()
+          return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
+        endfunction
+        set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
+        " colorscheme monokai_pro
+        colorscheme gruvbox
+        set background=dark
+
+        set guifont=Source\ Code\ Pro:h12
+
+        set shell=sh
+
+        filetype plugin on
+        if has ("autocmd")
+          filetype plugin indent on
+        endif
+
+        set clipboard=unnamedplus
+
+        set number
+        set mouse=a
+
+        set colorcolumn=80
+        set scrolloff=5
+
+        set fixendofline
+
+        autocmd FileType markdown set spell spelllang=en_us
+
+        set cursorline
+
+        if has("persistent_undo")
+          set undodir=~/.undodir/
+          set undofile
+        endif
+
+        set ai
+        set smartindent
+        set nocopyindent
+        set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+
+        set virtualedit=onemore
+
+        nmap <PageUp> 10<up>
+        imap <PageUp> <esc>10<up>li
+        nmap <PageDown> 10<down>
+        imap <PageDown> <esc>10<down>li
+
+        vmap <PageUp> 10<up>
+        vmap <PageDown> 10<down>
+        vmap <S-PageUp> 10<up>
+        vmap <S-PageDown> 10<down>
+        imap <S-PageUp> <esc>v10<up>
+        imap <S-PageDown> <esc>lv10<down>
+        nmap <S-PageUp> v10<up>
+        nmap <S-PageDown> v10<down>
+
+        nmap <C-S-Right> vw
+        nmap <C-S-Left> hvb
+        imap <C-S-Right> <esc>vw
+        imap <C-S-Left> <esc>hvb
+
+        nmap <C-s> :w<CR>
+        imap <C-s> <esc>:w<cr>i
+
+        map <C-z> u
+        map! <C-z> <esc>u
+        map <C-y> <C-R>
+        map! <C-y> <esc><C-R>
+
+        nmap <C-k> "_dd
+        imap <C-k> <esc>"_ddi
+        vmap <C-k> "_d
+
+        nmap <C-x> dd
+        imap <C-x> <esc>ddi
+        vmap <C-x> d
+
+        map <C-q> <ESC>:qall<Return>
+        map! <C-q> <ESC>:qall<Return>
+
+        map <C-w> <ESC>:bd<Return>
+        map! <C-w> <ESC>:bd<Return>
+
+        nmap <A-d> yyp
+        nmap <C-d> yyp
+        vmap <A-d> yp
+        vmap <C-d> yp
+        imap <A-d> <esc>yypi
+        imap <C-d> <esc>yypi
+
+        nmap <A-PageUp> :bprev<Return>
+        imap <A-PageUp> <esc>:bprev<Return>
+        nmap <A-PageDown> :bnext<Return>
+        imap <A-PageDown> <esc>:bnext<Return>
+
+        nmap <C-PageUp> :bprev<Return>
+        imap <C-PageUp> <esc>:bprev<Return>
+        nmap <C-PageDown> :bnext<Return>
+        imap <C-PageDown> <esc>:bnext<Return>
+
+        vmap <Tab> >gv
+        vmap <S-Tab> <gv
+        imap <S-Tab> <esc>v<i
+        nmap <Tab> v><esc>
+        nmap <S-Tab> v<<esc>
+
+        nmap <C-Down> :m .+1<CR>==
+        nmap <C-Up> :m .-2<CR>==
+        imap <C-Down> <Esc>:m .+1<CR>==gi
+        imap <C-Up> <Esc>:m .-2<CR>==gi
+        vmap <C-Down> :m '>+1<CR>gv=gv
+        vmap <C-Up> :m '<-2<CR>gv=gv
+
+        imap <C-b> <esc>mzgg=G`zi
+        nmap <C-b> mzgg=G`z
+
+        nmap <A-/> <leader>c<space>j
+        vmap <A-/> <leader>c<space>
+        imap <A-/> <esc><leader>c<space>ji
+
+        nmap <A-m> %
+        imap <A-m> <esc>%i
+        vmap <A-m> %
+
+        nmap <C-Right> w
+        vmap <C-Right> w
+        nmap <C-Left> b
+        vmap <C-Left> b
+
+        nmap <A-BS> "_dvb
+        imap <A-BS> <esc>"_dvbi
+        nmap <A-Delete> "_daw
+        imap <A-Delete> <C-o>"_daw
+
+        imap <CR> <CR>
+        nmap <CR> o
+
+        nmap <C-g> :GV<cr>
+        imap <C-g> <esc>:GV<cr>
+
+        nmap <C-a> gg0vG$
+        imap <C-a> <esc>gg0vG$
+
+        nmap <A-v> v
+        imap <A-v> <esc>v
+
+        imap <C-v> <esc>lP`]li
+        nmap <C-v> P`]
+        vmap <C-v> P`]
+
+        imap <C-c> <C-o>yy
+        nmap <C-c> yy
+        vmap <C-c> y
+
+        nmap <S-Down> vj
+        nmap <S-Up> vk
+        nmap <S-Left> vh
+        nmap <S-Right> vl
+
+        imap <S-Down> <esc>vj
+        imap <S-Up> <esc>vk
+        imap <S-Left> <esc>vh
+        imap <S-Right> <esc>lv
+
+        vmap <S-Down> j
+        vmap <S-Up> k
+        vmap <S-Left> h
+        vmap <S-Right> l
+
+        nmap <C-Enter> o
+        imap <C-Enter> <C-o>o
+
+        nmap <C-o> :edit<space>
+
+        nmap <A-Right> :wincmd l<cr>
+        nmap <A-Left> :wincmd h<cr>
+        nmap <C-=> :vsplit<cr>
+        nmap <C--> :hide<cr>
+
+
+        set verbosefile=~/.vim.log
+        set verbose=9
+      '';
+      packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
+        start = [
+          vim-plug gruvbox vim-nix
+        ];
+        opt = [ ];
+      };
+    };
+  };
+
+in [{
+  target = "${variables.homeDir}/bin/nvim-my";
   source = "${myNeovim}/bin/nvim";
-}
+}{
+  target = "${variables.homeDir}/bin/nvim-coc";
+  source = "${cocNeovim}/bin/nvim";
+} {
+  target = "${variables.homeDir}/.config/nvim/autoload/plug.vim";
+  source = "${pkgs.vimPlugins.vim-plug}/share/vim-plugins/vim-plug/plug.vim";
+}]
