@@ -47,7 +47,8 @@
       "color_scheme": "Packages/Monokai++/themes/Monokai++.tmTheme",
       "theme": "Adaptive.sublime-theme",
       "translate_tabs_to_spaces": true,
-      "trim_trailing_white_space_on_save": true
+      "trim_trailing_white_space_on_save": true,
+      "update_check": false
   }
   '';
 } {

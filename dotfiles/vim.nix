@@ -1,9 +1,441 @@
 { variables, config, pkgs, lib }:
+
 let
   nodeGlobalBinPath = "${variables.homeDir}/.npm-packages/bin";
   vimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
     llvmPackages = pkgs.llvmPackages_6;
   });
+
+  cocNeovim = pkgs.neovim.override {
+    configure = {
+      customRC = ''
+        call plug#begin('${variables.homeDir}/.local/share/nvim/plugged')
+        Plug 'neoclide/coc.nvim', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-json', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-tsserver', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-html', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-css', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-yaml', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-python', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-highlight', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-emmet', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-snippets', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-pairs', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-lists', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-vimtex', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-yank', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-prettier', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-eslint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-tslint-plugin', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'neoclide/coc-stylelint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
+        Plug 'akiyosi/gonvim-fuzzy'
+        Plug 'Shougo/dein.vim'
+        call plug#end()
+
+        let mapleader=","
+        syntax enable
+        set termguicolors
+        set title
+        function! ProjectName()
+          return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
+        endfunction
+        set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
+        " colorscheme monokai_pro
+        colorscheme gruvbox
+        set background=dark
+
+        set guifont=Source\ Code\ Pro:h12
+
+        set shell=sh
+
+        filetype plugin on
+        if has ("autocmd")
+          filetype plugin indent on
+        endif
+
+        set clipboard=unnamedplus
+
+        set number
+        set mouse=a
+
+        set colorcolumn=80
+        set scrolloff=5
+
+        set fixendofline
+
+        autocmd FileType markdown set spell spelllang=en_us
+
+        set cursorline
+
+        if has("persistent_undo")
+          set undodir=~/.undodir/
+          set undofile
+        endif
+
+        set ai
+        "set smartindent
+        set nocopyindent
+        set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+
+        set virtualedit=onemore
+
+        let g:gonvim_fuzzy_ag_cmd="${pkgs.ag}/bin/ag --nogroup --column --nocolor"
+
+        nmap <PageUp> 10<up>
+        imap <PageUp> <esc>10<up>li
+        nmap <PageDown> 10<down>
+        imap <PageDown> <esc>10<down>li
+
+        vmap <PageUp> 10<up>
+        vmap <PageDown> 10<down>
+        vmap <S-PageUp> 10<up>
+        vmap <S-PageDown> 10<down>
+        imap <S-PageUp> <esc>v10<up>
+        imap <S-PageDown> <esc>lv10<down>
+        nmap <S-PageUp> v10<up>
+        nmap <S-PageDown> v10<down>
+
+        nmap <C-S-Right> vw
+        nmap <C-S-Left> hvb
+        imap <C-S-Right> <esc>vw
+        imap <C-S-Left> <esc>hvb
+
+        nmap <C-s> :w<CR>
+        imap <C-s> <esc>:w<cr>i<right>
+
+        map <C-z> u
+        map! <C-z> <esc>u
+        map <C-y> <C-R>
+        map! <C-y> <esc><C-R>
+
+        nmap <C-k> "_dd
+        imap <C-k> <esc>"_ddi
+        vmap <C-k> "_d
+
+        nmap <C-x> dd
+        imap <C-x> <esc>ddi
+        vmap <C-x> d
+
+        map <C-q> <ESC>:qall<Return>
+        map! <C-q> <ESC>:qall<Return>
+
+        map <C-w> <ESC>:bd<Return>
+        map! <C-w> <ESC>:bd<Return>
+
+        nmap <A-d> yyp
+        nmap <C-d> yyp
+        vmap <A-d> yp
+        vmap <C-d> yp
+        imap <A-d> <esc>yypi
+        imap <C-d> <esc>yypi
+
+        nmap <A-PageUp> :bprev<Return>
+        imap <A-PageUp> <esc>:bprev<Return>
+        nmap <A-PageDown> :bnext<Return>
+        imap <A-PageDown> <esc>:bnext<Return>
+
+        nmap <C-PageUp> :bprev<Return>
+        imap <C-PageUp> <esc>:bprev<Return>
+        nmap <C-PageDown> :bnext<Return>
+        imap <C-PageDown> <esc>:bnext<Return>
+
+        vmap <Tab> >gv
+        vmap <S-Tab> <gv
+        imap <S-Tab> <esc>v<i
+        nmap <Tab> v><esc>
+        nmap <S-Tab> v<<esc>
+
+        nmap <C-Down> :m .+1<CR>==
+        nmap <C-Up> :m .-2<CR>==
+        imap <C-Down> <Esc>:m .+1<CR>==gi
+        imap <C-Up> <Esc>:m .-2<CR>==gi
+        vmap <C-Down> :m '>+1<CR>gv=gv
+        vmap <C-Up> :m '<-2<CR>gv=gv
+
+        imap <C-b> <esc>mzgg=G`zi
+        nmap <C-b> mzgg=G`z
+
+        nmap <A-/> <leader>c<space>j
+        vmap <A-/> <leader>c<space>
+        imap <A-/> <esc><leader>c<space>ji
+
+        nmap <A-m> %
+        imap <A-m> <esc>%i
+        vmap <A-m> %
+
+        nmap <C-Right> w
+        vmap <C-Right> w
+        nmap <C-Left> b
+        vmap <C-Left> b
+
+        nmap <A-BS> "_dvb
+        imap <A-BS> <esc>"_dvbi
+        nmap <A-Delete> "_daw
+        imap <A-Delete> <C-o>"_daw
+
+        imap <CR> <CR>
+
+        nmap <C-g> :GV<cr>
+        imap <C-g> <esc>:GV<cr>
+
+        nmap <C-a> gg0vG$
+        imap <C-a> <esc>gg0vG$
+
+        nmap <A-v> v
+        imap <A-v> <esc>v
+
+        imap <C-v> <esc>lP`]li
+        nmap <C-v> P`]
+        vmap <C-v> P`]
+
+        imap <C-c> <C-o>yy
+        nmap <C-c> yy
+        vmap <C-c> y
+
+        nmap <S-Down> vj
+        nmap <S-Up> vk
+        nmap <S-Left> vh
+        nmap <S-Right> vl
+
+        imap <S-Down> <esc>vj
+        imap <S-Up> <esc>vk
+        imap <S-Left> <esc>vh
+        imap <S-Right> <esc>lv
+
+        vmap <S-Down> j
+        vmap <S-Up> k
+        vmap <S-Left> h
+        vmap <S-Right> l
+
+        nmap <C-Enter> o
+        imap <C-Enter> <C-o>o
+
+        nmap <A-Right> :wincmd l<cr>
+        nmap <A-Left> :wincmd h<cr>
+        nmap <C-=> :vsplit<cr>
+        nmap <C--> :hide<cr>
+
+        nmap <C-p> :GonvimFuzzyBuffers<cr>
+        nmap <C-o> :GonvimFuzzyFiles<cr>
+        nmap <C-f> :GonvimFuzzyBLines<cr>
+        nmap <A-f> :call GonvimFuzzyAgOpen()<cr>
+
+        set noshowmode
+        set noruler
+        set laststatus=0
+        set noshowcmd
+
+        func! GonvimFuzzyAgOpen()
+          call inputsave()
+          let text = input('Search in CWD')
+          call inputrestore()
+          if !empty(text)
+            call gonvim_fuzzy#ag(text)
+          endif
+        endf
+
+        " if hidden is not set, TextEdit might fail.
+        set hidden
+
+        " Some server have issues with backup files, see #649
+        set nobackup
+        set nowritebackup
+
+        " Better display for messages
+        "set cmdheight=0
+
+        " Smaller updatetime for CursorHold & CursorHoldI
+        set updatetime=300
+
+        " don't give |ins-completion-menu| messages.
+        set shortmess+=c
+
+        " always show signcolumns
+        set signcolumn=yes
+
+        " Use tab for trigger completion with characters ahead and navigate.
+        " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+        inoremap <silent><expr> <TAB>
+              \ pumvisible() ? "\<C-n>" :
+              \ <SID>check_back_space() ? "\<TAB>" :
+              \ coc#refresh()
+        inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+        function! s:check_back_space() abort
+          let col = col('.') - 1
+          return !col || getline('.')[col - 1]  =~# '\s'
+        endfunction
+
+        " Use <c-space> for trigger completion.
+        inoremap <silent><expr> <c-space> coc#refresh()
+
+        " Use <cr> for confirm completion, `<C-g>u` means break undo chain at current position.
+        " Coc only does snippet and additional edit on confirm.
+        inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+        " Use `[c` and `]c` for navigate diagnostics
+        nmap <silent> [c <Plug>(coc-diagnostic-prev)
+        nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+        " Remap keys for gotos
+        nmap <silent> gd <Plug>(coc-definition)
+        nmap <silent> gy <Plug>(coc-type-definition)
+        nmap <silent> gi <Plug>(coc-implementation)
+        nmap <silent> gr <Plug>(coc-references)
+
+        " Use K for show documentation in preview window
+        nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+        function! s:show_documentation()
+          if &filetype == 'vim'
+            execute 'h '.expand('<cword>')
+          else
+            call CocAction('doHover')
+          endif
+        endfunction
+
+        " Highlight symbol under cursor on CursorHold
+        autocmd CursorHold * silent call CocActionAsync('highlight')
+
+        " Remap for rename current word
+        nmap <leader>rn <Plug>(coc-rename)
+
+        " Remap for format selected region
+        vmap <leader>f  <Plug>(coc-format-selected)
+        nmap <leader>f  <Plug>(coc-format-selected)
+
+        augroup mygroup
+          autocmd!
+          " Setup formatexpr specified filetype(s).
+          autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+          " Update signature help on jump placeholder
+          autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+        augroup end
+
+        " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+        vmap <leader>a  <Plug>(coc-codeaction-selected)
+        nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+        " Remap for do codeAction of current line
+        nmap <leader>ac  <Plug>(coc-codeaction)
+        " Fix autofix problem of current line
+        nmap <leader>qf  <Plug>(coc-fix-current)
+
+        " Use `:Format` for format current buffer
+        command! -nargs=0 Format :call CocAction('format')
+
+        " Use `:Fold` for fold current buffer
+        command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+
+        " Using CocList
+        " Show all diagnostics
+        nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+        " Manage extensions
+        nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+        " Show commands
+        nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+        " Find symbol of current document
+        nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+        " Search workspace symbols
+        nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+        " Do default action for next item.
+        nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+        " Do default action for previous item.
+        nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+        " Resume latest coc list
+        nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+      '';
+      packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
+        start = [
+          vim-plug gruvbox vim-nix # vim-airline vim-airline-themes
+        ];
+        opt = [ ];
+      };
+    };
+  };
+
+  gonvimToml = ''
+    [Editor]
+    # Editor minimum width (>= 800)
+    Width = 800
+    # Editor minimum height (>= 600)
+    Height = 600
+    # Editor font-family, font-size, linespace.
+    FontFamily = "Monospace"
+    FontSize = 14
+    Linespace = 0
+    # neovim extend feature
+    ExtCmdline = true
+    ExtWildmenu = true
+    ExtPopupmenu = true
+    ExtTabline  = true
+    # Gonvim copy the yank text to clipboad
+    Clipboard = true
+    # Editor cursor blink
+    CursorBlink = true
+    # Disable IME in Normal mode
+    DisableImeInNormal = false
+    # load vimscript after setting of g:gonvim_running=1
+    GinitVim = ''''
+        set guifont=Source\ Code\ Pro:h13
+    ''''
+    # start fullscreen
+    StartFullscreen = false
+
+    [Statusline]
+    Visible = true
+    # textLabel / icon / background / none
+    ModeIndicatorType = "textLabel"
+    # Color setting per vim-modes, if you want to change
+    NormalModeColor = "#3cabeb"
+    CommandModeColor = "#5285b8"
+    InsertModeColor = "#2abcb4"
+    ReplaceModeColor = "#ff8c0a"
+    VisualModeColor = "#9932cc"
+    TerminalModeColor = "#778899"
+    # Statusline component
+    # Left = [ "mode", "filepath", "filename" ]
+    # Right = [ "message", "git", "filetype", "fileformat", "fileencoding", "curpos", "lint" ]
+
+
+    [Tabline]
+    Visible = true
+
+    [Lint]
+    Visible = true
+
+    [ScrollBar]
+    Visible = false
+
+    [ActivityBar]
+    Visible = true
+    DropShadow = false
+
+    [MiniMap]
+    Visible = true
+
+    [SideBar]
+    Visible = false
+    DropShadow = false
+    Width = 300
+    AccentColor = "#5596ea"
+
+    [Workspace]
+    # name: directoryname
+    # full: /path/to/directoryname
+    # minimum: /p/t/directoryname
+    PathStyle = "minimum"
+    # Restore session-information that was ended without being saved
+    RestoreSession = false
+    # File open command in gonvim file explorer
+    FileExplorerOpenCmd = ":tabnew"
+
+
+    [Dein]
+    # toml file path for dein.vim
+    TomlFile = '/home/matejc/.config/nvim/dein.toml'
+  '';
 
   myNeovim = pkgs.neovim.override {
     configure = {
@@ -234,8 +666,8 @@ let
 
         imap <C-p> <esc>:CtrlPMixed<Return>
 
-        vmap <Tab> >gv
-        vmap <S-Tab> <gv
+        vmap <Tab> >v
+        vmap <S-Tab> <v
         imap <S-Tab> <esc>v<i
         nmap <Tab> v><esc>
         nmap <S-Tab> v<<esc>
@@ -336,235 +768,16 @@ let
       };
     };
   };
-
-  cocNeovim = pkgs.neovim.override {
-    configure = {
-      customRC = ''
-        call plug#begin('${variables.homeDir}/.local/share/nvim/plugged')
-        Plug 'neoclide/coc.nvim', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-json', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-tsserver', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-html', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-css', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-yaml', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-python', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-highlight', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-emmet', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-snippets', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-pairs', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-lists', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-vimtex', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-yank', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-prettier', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-eslint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-tslint-plugin', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        Plug 'neoclide/coc-stylelint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
-        call plug#end()
-
-        let mapleader=","
-        syntax enable
-        set termguicolors
-        set title
-        function! ProjectName()
-          return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
-        endfunction
-        set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
-        " colorscheme monokai_pro
-        colorscheme gruvbox
-        set background=dark
-
-        set guifont=Source\ Code\ Pro:h12
-
-        set shell=sh
-
-        filetype plugin on
-        if has ("autocmd")
-          filetype plugin indent on
-        endif
-
-        set clipboard=unnamedplus
-
-        set number
-        set mouse=a
-
-        set colorcolumn=80
-        set scrolloff=5
-
-        set fixendofline
-
-        autocmd FileType markdown set spell spelllang=en_us
-
-        set cursorline
-
-        if has("persistent_undo")
-          set undodir=~/.undodir/
-          set undofile
-        endif
-
-        set ai
-        set smartindent
-        set nocopyindent
-        set tabstop=4 shiftwidth=4 expandtab softtabstop=4
-
-        set virtualedit=onemore
-
-        nmap <PageUp> 10<up>
-        imap <PageUp> <esc>10<up>li
-        nmap <PageDown> 10<down>
-        imap <PageDown> <esc>10<down>li
-
-        vmap <PageUp> 10<up>
-        vmap <PageDown> 10<down>
-        vmap <S-PageUp> 10<up>
-        vmap <S-PageDown> 10<down>
-        imap <S-PageUp> <esc>v10<up>
-        imap <S-PageDown> <esc>lv10<down>
-        nmap <S-PageUp> v10<up>
-        nmap <S-PageDown> v10<down>
-
-        nmap <C-S-Right> vw
-        nmap <C-S-Left> hvb
-        imap <C-S-Right> <esc>vw
-        imap <C-S-Left> <esc>hvb
-
-        nmap <C-s> :w<CR>
-        imap <C-s> <esc>:w<cr>i
-
-        map <C-z> u
-        map! <C-z> <esc>u
-        map <C-y> <C-R>
-        map! <C-y> <esc><C-R>
-
-        nmap <C-k> "_dd
-        imap <C-k> <esc>"_ddi
-        vmap <C-k> "_d
-
-        nmap <C-x> dd
-        imap <C-x> <esc>ddi
-        vmap <C-x> d
-
-        map <C-q> <ESC>:qall<Return>
-        map! <C-q> <ESC>:qall<Return>
-
-        map <C-w> <ESC>:bd<Return>
-        map! <C-w> <ESC>:bd<Return>
-
-        nmap <A-d> yyp
-        nmap <C-d> yyp
-        vmap <A-d> yp
-        vmap <C-d> yp
-        imap <A-d> <esc>yypi
-        imap <C-d> <esc>yypi
-
-        nmap <A-PageUp> :bprev<Return>
-        imap <A-PageUp> <esc>:bprev<Return>
-        nmap <A-PageDown> :bnext<Return>
-        imap <A-PageDown> <esc>:bnext<Return>
-
-        nmap <C-PageUp> :bprev<Return>
-        imap <C-PageUp> <esc>:bprev<Return>
-        nmap <C-PageDown> :bnext<Return>
-        imap <C-PageDown> <esc>:bnext<Return>
-
-        vmap <Tab> >gv
-        vmap <S-Tab> <gv
-        imap <S-Tab> <esc>v<i
-        nmap <Tab> v><esc>
-        nmap <S-Tab> v<<esc>
-
-        nmap <C-Down> :m .+1<CR>==
-        nmap <C-Up> :m .-2<CR>==
-        imap <C-Down> <Esc>:m .+1<CR>==gi
-        imap <C-Up> <Esc>:m .-2<CR>==gi
-        vmap <C-Down> :m '>+1<CR>gv=gv
-        vmap <C-Up> :m '<-2<CR>gv=gv
-
-        imap <C-b> <esc>mzgg=G`zi
-        nmap <C-b> mzgg=G`z
-
-        nmap <A-/> <leader>c<space>j
-        vmap <A-/> <leader>c<space>
-        imap <A-/> <esc><leader>c<space>ji
-
-        nmap <A-m> %
-        imap <A-m> <esc>%i
-        vmap <A-m> %
-
-        nmap <C-Right> w
-        vmap <C-Right> w
-        nmap <C-Left> b
-        vmap <C-Left> b
-
-        nmap <A-BS> "_dvb
-        imap <A-BS> <esc>"_dvbi
-        nmap <A-Delete> "_daw
-        imap <A-Delete> <C-o>"_daw
-
-        imap <CR> <CR>
-        nmap <CR> o
-
-        nmap <C-g> :GV<cr>
-        imap <C-g> <esc>:GV<cr>
-
-        nmap <C-a> gg0vG$
-        imap <C-a> <esc>gg0vG$
-
-        nmap <A-v> v
-        imap <A-v> <esc>v
-
-        imap <C-v> <esc>lP`]li
-        nmap <C-v> P`]
-        vmap <C-v> P`]
-
-        imap <C-c> <C-o>yy
-        nmap <C-c> yy
-        vmap <C-c> y
-
-        nmap <S-Down> vj
-        nmap <S-Up> vk
-        nmap <S-Left> vh
-        nmap <S-Right> vl
-
-        imap <S-Down> <esc>vj
-        imap <S-Up> <esc>vk
-        imap <S-Left> <esc>vh
-        imap <S-Right> <esc>lv
-
-        vmap <S-Down> j
-        vmap <S-Up> k
-        vmap <S-Left> h
-        vmap <S-Right> l
-
-        nmap <C-Enter> o
-        imap <C-Enter> <C-o>o
-
-        nmap <C-o> :edit<space>
-
-        nmap <A-Right> :wincmd l<cr>
-        nmap <A-Left> :wincmd h<cr>
-        nmap <C-=> :vsplit<cr>
-        nmap <C--> :hide<cr>
-
-
-        set verbosefile=~/.vim.log
-        set verbose=9
-      '';
-      packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
-        start = [
-          vim-plug gruvbox vim-nix
-        ];
-        opt = [ ];
-      };
-    };
-  };
-
 in [{
   target = "${variables.homeDir}/bin/nvim-my";
   source = "${myNeovim}/bin/nvim";
 }{
-  target = "${variables.homeDir}/bin/nvim-coc";
+  target = "${variables.homeDir}/bin/nvim";
   source = "${cocNeovim}/bin/nvim";
 } {
   target = "${variables.homeDir}/.config/nvim/autoload/plug.vim";
   source = "${pkgs.vimPlugins.vim-plug}/share/vim-plugins/vim-plug/plug.vim";
+} {
+  target = "${variables.homeDir}/.gonvim/setting.toml";
+  source = "${builtins.toFile "gonvim-setting.toml" gonvimToml}";
 }]
