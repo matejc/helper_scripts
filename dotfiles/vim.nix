@@ -78,6 +78,11 @@ let
         set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
         set virtualedit=onemore
+        set updatetime=200
+
+        let g:better_whitespace_enabled=1
+        let g:strip_whitespace_on_save=1
+        let g:strip_whitespace_confirm=0
 
         let g:gonvim_fuzzy_ag_cmd="${pkgs.ag}/bin/ag --nogroup --column --nocolor"
 
@@ -220,6 +225,8 @@ let
         nmap <C-f> :GonvimFuzzyBLines<cr>
         nmap <A-f> :call GonvimFuzzyAgOpen()<cr>
 
+        map <C-u> <esc>:UndotreeToggle<CR>
+
         set noshowmode
         set noruler
         set laststatus=0
@@ -348,7 +355,7 @@ let
       '';
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
-          vim-plug gruvbox vim-nix # vim-airline vim-airline-themes
+          vim-plug gruvbox vim-nix vim-gitgutter undotree vim-better-whitespace
         ];
         opt = [ ];
       };

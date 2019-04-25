@@ -85,4 +85,11 @@
 
     xrandr $flags
   '';
+} {
+  target = "${variables.homeDir}/bin/keyboard-layout-change";
+  source = pkgs.writeScript "keyboard-layout-change.sh" ''
+    #!${pkgs.stdenv.shell}
+    export PATH="${pkgs.systemd}/bin:${pkgs.rofi}/bin:${pkgs.xorg.setxkbmap}/bin"
+    setxkbmap "$(rofi -dmenu -p "Select keyboard layout" < <(localectl list-x11-keymap-layouts))"
+  '';
 }]
