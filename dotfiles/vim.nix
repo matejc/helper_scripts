@@ -77,6 +77,7 @@ let
         set nocopyindent
         set tabstop=4 shiftwidth=4 expandtab softtabstop=4
 
+        set autoread
         set virtualedit=onemore
         set updatetime=200
 
