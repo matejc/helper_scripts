@@ -228,6 +228,12 @@ let
 
         map <C-u> <esc>:UndotreeToggle<CR>
 
+        imap <C-b> <esc>mzgg=G`zi
+        nmap <C-b> mzgg=G`z
+
+        autocmd FileType javascript nmap <buffer> <C-b> :call JsBeautify()<cr>
+        autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
+
         set noshowmode
         set noruler
         set laststatus=0
@@ -357,6 +363,7 @@ let
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
           vim-plug gruvbox vim-nix vim-gitgutter undotree vim-better-whitespace
+          vim-jsbeautify vim-surround vim-visual-multi
         ];
         opt = [ ];
       };
