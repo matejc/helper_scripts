@@ -30,6 +30,7 @@ let
         Plug 'neoclide/coc-stylelint', {'do': '${pkgs.yarn}/bin/yarn install --frozen-lockfile'}
         Plug 'akiyosi/gonvim-fuzzy'
         Plug 'Shougo/dein.vim'
+        Plug 'vim-scripts/sha1.vim'
         call plug#end()
 
         let mapleader=","
@@ -359,6 +360,18 @@ let
         nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
         " Resume latest coc list
         nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+        function! SessionPath()
+          return "${variables.homeDir}/.vim-sessions/Session-" . sha1#sha1( getcwd() ) . ".vim"
+        endfunction
+
+        autocmd VimLeave * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
+            \ call mkdir("${variables.homeDir}/.vim-sessions") |
+            \ endif |
+            \ execute "mksession! " . SessionPath()
+
+        autocmd VimEnter * nested if argc() == 0 && filereadable(SessionPath()) |
+            \ execute "source " . SessionPath()
       '';
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
