@@ -44,7 +44,6 @@
       "skip_current_file": "true",
       "sort_on_load_save": false,
       "spell_check": true,
-      "color_scheme": "Packages/Monokai++/themes/Monokai++.tmTheme",
       "theme": "Adaptive.sublime-theme",
       "translate_tabs_to_spaces": true,
       "trim_trailing_white_space_on_save": true,

@@ -1,5 +1,6 @@
 { pkgs, lib ? pkgs.lib }:
 let
+  xfce = pkgs.xfce4-14;
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
@@ -105,7 +106,7 @@ let
     ./httpserver.nix
     ./wcontrol.nix
     ./batstatus.nix
-    /* ./alacritty.nix */
+    ./alacritty.nix
     ./tmux.nix
     ./temp.nix
     ./brightness.nix
@@ -136,7 +137,7 @@ let
     ./freecad.nix
     ./bcrypt.nix
     ./termite.nix
-    /* ./way-cooler.nix */
+    ./way-cooler.nix
     ./vim.nix
     ./konsole.nix
     ./polybar.nix

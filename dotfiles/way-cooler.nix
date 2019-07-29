@@ -35,7 +35,7 @@ in {
       -- This is a hack to get X11 bars and non-Way Cooler supported bars working.
       --
       -- Make sure you set your bar program to spawn at startup!
-      x11_bar = "lemonbar",
+      -- x11_bar = "lemonbar",
     }
 
     -- Registering programs to run at startup
@@ -96,7 +96,7 @@ in {
 
     local keys = {
       -- Open dmenu
-      key({ "control", "alt" }, "space", util.program.spawn_once("rofi -show run")),
+      key({ "control", "alt" }, "space", util.program.spawn_once("${variables.programs.launcher}")),
 
       -- Open terminal
       key({ "control", "alt" }, "t", util.program.spawn_once("${variables.terminal}")),
@@ -176,27 +176,6 @@ in {
     -- my_register_key({"XF86Search"}, beje, true, false)
     my_register_key({"XF86Explorer"}, util.program.spawn_once("${variables.dropDownTerminal}"), true, false)
     my_register_key({"F12"}, util.program.spawn_once("${variables.dropDownTerminal}"), true, false)
-
-
-    local seen={}
-
-    function dump(t,i)
-    	seen[t]=true
-    	local s={}
-    	local n=0
-    	for k in pairs(t) do
-    		n=n+1 s[n]=k
-    	end
-    	table.sort(s)
-    	for k,v in ipairs(s) do
-    		print(i.."."..v..' = '..tostring(t[v]))
-    		if type(t[v])=="table" and not seen[t[v]] then
-    			dump(t[v], i.."."..v)
-    		end
-    	end
-    end
-
-    dump(_G,"_G")
 
     -- Register the mod key to also be the mod key for mouse commands
     way_cooler.register_mouse_modifier(mod)

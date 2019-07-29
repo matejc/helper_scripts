@@ -25,7 +25,7 @@
         python3Packages.tkinter
         pypi2nix
         gcc
-        binutils libxslt.dev libxml2.dev zlib
+        libxslt.dev libxml2.dev zlib
       ];
     };
 
@@ -254,21 +254,20 @@
     makeenv = pkgs.buildEnv {
       name = "makeenv";
       paths = with pkgs; [
-        stdenv gnumake coreutils strace
+        stdenv gnumake strace
+        stdenv.cc
         git
         pkgconfig
         autoconf
         intltool
         automake
-        bash
-        gnome3.gnome_common
         which
-        gnused
-        gnugrep
-        autoconf-archive
         gettext
-        gawk
-        perl perlPackages.XMLParser
+        perl
+
+        zlib.dev
+        zlib.out
+        pciutils
       ];
       ignoreCollisions = true;
     };
@@ -296,7 +295,7 @@
         # (npm2nix.override { nodejs = nodejs-9_x; })
         nodejs-10_x
         #(yarn.override { nodejs = nodejs-8_x; })
-        #(npm2nix.override { nodejs = nodejs-9_x; })
+        nodePackages.node2nix
         #((import /home/matejc/workarea/yarn2nix { inherit pkgs; nodejs = nodejs-8_x; }).yarn2nix)
         python
         utillinux
@@ -318,6 +317,8 @@
         binutils
 
         # electron libnotify
+
+        openjdk openapi-generator-cli python37Packages.yapf
       ];
       ignoreCollisions = true;
     };
@@ -359,6 +360,7 @@
         go
         go2nix
         dep
+        dep2nix
         /*oniguruma*/
       ];
       ignoreCollisions = true;
@@ -437,7 +439,7 @@
         pkgs_i686 = pkgs.pkgsi686Linux;
         })) */
 
-        pkgs.androidenv.platformTools
+        pkgs.adb-sync
 
         /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
         inherit pkgs;

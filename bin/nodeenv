@@ -25,7 +25,7 @@ export C_INCLUDE_PATH="$nixprofile/include:$C_INCLUDE_PATH"
 export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
 export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
 
-
+export PYTHON_POST_PROCESS_FILE="$nixprofile/bin/yapf"
 
 npm_global_install() {
     npm install -g --prefix="$NPM_PACKAGES" "$@"

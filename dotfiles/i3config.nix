@@ -1,4 +1,7 @@
 { variables, config, pkgs, lib }:
+let
+  xfce = pkgs.xfce4-14;
+in
 [{
   target = "${variables.homeDir}/.config/i3/config";
   source = pkgs.writeText "i3config" ''
@@ -172,6 +175,7 @@
   for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
+  for_window [class="^jetbrains-goland$"] move container to workspace $w3
   for_window [class="^Sublime_text$"] move container to workspace $w3
   for_window [class="^Atom$"] move container to workspace $w3
 
@@ -396,9 +400,9 @@
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
   bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
-  bindsym Ctrl+Mod1+h exec --no-startup-id ${pkgs.xfce4-13.thunar}/bin/thunar
+  bindsym Ctrl+Mod1+h exec --no-startup-id ${xfce.thunar}/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
-  bindsym $mod+m exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
+  bindsym Ctrl+Mod1+r exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
 
   bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
   bindcode 152 exec --no-startup-id "${variables.dropDownTerminal}"
@@ -545,7 +549,7 @@
     ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] focus, scratchpad show' | ${pkgs.gnugrep}/bin/grep 'false'
     if [[ "$?" = "0" ]]
     then
-      ${pkgs.xfce.terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
+      ${xfce.xfce4-terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
       sleep 0.1
       ${variables.i3-msg} "[title="^ScratchTerm.*"] mark I3WM_SCRATCHPAD, resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
     else

@@ -2,7 +2,7 @@
 
 nixprofile=$NIX_USER_PROFILE_DIR/makeenv
 
-export PATH="$nixprofile/bin"
+export PATH="$nixprofile/bin:$PATH"
 export LD_LIBRARY_PATH="$nixprofile/lib"
 export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
 export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl"

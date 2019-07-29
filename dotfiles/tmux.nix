@@ -103,18 +103,15 @@
     set -g status-interval 5
 
     # Basic status bar colors
-    set -g status-fg colour248
-    set -g status-bg "#272822"
+    set -g status-style fg=colour248,bg="#272822"
 
     # Left side of status bar
-    set -g status-left-bg "#272822"
-    set -g status-left-fg "#66D9EF"
+    set -g status-left-style bg="#272822",fg="#66D9EF"
     set -g status-left-length 40
     set -g status-left "#[fg=colour100,bg=\"#272822\",bold] #S #[fg=\"#66D9EF\",bg=\"#272822\",nobold]#[fg=\"#66D9EF\",bg=\"#272822\"] #(whoami) #[fg=colour235,bg=\"#272822\"]#[fg=colour235,bg=\"#272822\",nobold]"
 
     # Right side of status bar
-    set -g status-right-bg "#272822"
-    set -g status-right-fg "#66D9EF"
+    set -g status-right-style bg="#272822",fg="#66D9EF"
     set -g status-right-length 150
     set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
 
@@ -123,12 +120,10 @@
     set -g window-status-current-format "#[fg=\"#66D9EF\",bg=\"#272822\",nobold] #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#[fg=colour208,bg=\"#272822\",nobold]#{pane_current_command} #[fg=black,bg=\"#272822\",nobold]"
 
     # Current window status
-    set -g window-status-current-bg "#272822"
-    set -g window-status-current-fg "#A6E22E"
+    set -g window-status-current-style bg="#272822",fg="#A6E22E"
 
     # Window with activity status
-    set -g window-status-activity-bg "#F92672" # fg and bg are flipped here due to
-    set -g window-status-activity-fg "#272822" # a bug in tmux
+    set -g window-status-activity-style bg="#F92672",fg="#272822"
 
     # Window separator
     set -g window-status-separator ""
@@ -137,12 +132,10 @@
     set -g status-justify centre
 
     # Pane border
-    set -g pane-border-bg default
-    set -g pane-border-fg colour248
+    set -g pane-border-style bg=default,fg=colour248
 
     # Active pane border
-    set -g pane-active-border-bg default
-    set -g pane-active-border-fg colour34
+    set -g pane-active-border-style bg=default,fg=colour34
 
     # Pane number indicator
     set -g display-panes-colour "#272822"
@@ -153,16 +146,13 @@
     set -g clock-mode-style 24
 
     # Message
-    set -g message-bg colour100
-    set -g message-fg black
+    set -g message-style bg=colour100,fg=black
 
     # Command message
-    set -g message-command-bg "#272822"
-    set -g message-command-fg black
+    set -g message-command-style bg="#272822",fg=black
 
     # Mode
-    set -g mode-bg colour100
-    set -g mode-fg colour235
+    set -g mode-style bg=colour100,fg=colour235
   '';
 } {
   target = "${variables.homeDir}/bin/tmux-new-session";

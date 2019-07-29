@@ -225,7 +225,7 @@ let
         nmap <C-p> :GonvimFuzzyBuffers<cr>
         nmap <C-o> :GonvimFuzzyFiles<cr>
         nmap <C-f> :GonvimFuzzyBLines<cr>
-        nmap <A-f> :call GonvimFuzzyAgOpen()<cr>
+        nmap <C-A-f> :call GonvimFuzzyAgOpen()<cr>
 
         map <C-u> <esc>:UndotreeToggle<CR>
 
@@ -376,7 +376,7 @@ let
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
           vim-plug gruvbox vim-nix vim-gitgutter undotree vim-better-whitespace
-          vim-jsbeautify vim-surround vim-visual-multi
+          vim-jsbeautify vim-visual-multi
         ];
         opt = [ ];
       };
