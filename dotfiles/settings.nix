@@ -14,7 +14,7 @@ let
     soundCard = "0";
     ethernetInterfaces = [ "enp0s25" ];
     wirelessInterfaces = [ "wlp3s0" ];
-    mounts = [ "/" "/home" ];
+    mounts = [ "/" ];
     temperatureFiles = [ "/sys/devices/virtual/thermal/thermal_zone2/temp" ];
     batteries = [ ];
     binDir = "${variables.prefix}/bin";
@@ -22,9 +22,9 @@ let
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
     font = "Source Code Pro Semibold 11";
-    terminalFont = "Source Code Pro for Powerline Semibold 11";
-    wallpaper = "${variables.homeDir}/Pictures/pexels-photo.jpg";
-    lockImage = "${variables.homeDir}/Pictures/water-plant-green-fine-layers_blur.jpg";
+    terminalFont = "Source Code Pro Semibold 11";
+    wallpaper = "${variables.homeDir}/Pictures/water.jpg";
+    lockImage = "${variables.homeDir}/Pictures/water-blur.png";
     inherit startScript;
     inherit restartScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
@@ -39,21 +39,22 @@ let
     term = null;
     browser = programs.chromium;
     programs = {
-        # terminal = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
-        screenshooter = "${pkgs.xfce4-13.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
+        alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
+        screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
+        # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         launcher = "${pkgs.rofi}/bin/rofi -show combi";
-        terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal";
-        dropdown-terminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
+        dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+        # dropdown-terminal = "${homeDir}/bin/termite-dropdown";
         /* terminal = "${pkgs.termite}/bin/termite"; */
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         a = "${pkgs.atom}/bin/atom";
-        c = "${pkgs.vscode}/bin/code";
-        v = "nvim";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
+        v = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.gonvim}/bin/gonvim'';
         q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
     };
@@ -138,7 +139,7 @@ let
     ./bcrypt.nix
     ./termite.nix
     ./way-cooler.nix
-    ./vim.nix
+    ./coc.nvim.nix
     ./konsole.nix
     ./polybar.nix
     ./i3_workspace.nix
@@ -151,36 +152,33 @@ let
 
     xinput_custom_script.sh
 
-    ${pkgs.procps}/bin/pkill dunst
-    ${pkgs.dunst}/bin/dunst &
-
     export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
     ${pkgs.procps}/bin/pkill polybar
     ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
+
+    ${pkgs.procps}/bin/pkill dunst
+    ${pkgs.dunst}/bin/dunst &
 
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
     echo "DONE"
   '';
-
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
-
-    ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
 
     ${variables.homeDir}/bin/mykeepassxc &
     ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
-    ${pkgs.slack}/bin/slack &
     ${pkgs.rambox}/bin/rambox &
+    ${pkgs.spideroak}/bin/spideroak &
     ${variables.programs.cmst} &
     ${variables.browser} &
-
     ${variables.homeDir}/bin/autolock &
 
     echo "DONE"
   '';
-    # ${variables.homeDir}/bin/autolock &
+    #${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+
     # ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
 
   activationScript = ''
@@ -193,6 +191,8 @@ let
     ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
 
     rm -rf ${variables.homeDir}/.local/share/xonsh/xonsh_script_cache
+
+    ln -sf /var/lib/resilio-sync/Resilio\ Sync/ ${variables.homeDir}/.resilio
   '';
 in {
   inherit variables dotFilePaths activationScript;

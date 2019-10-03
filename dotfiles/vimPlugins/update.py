@@ -111,22 +111,28 @@ class Plugin:
         return copy
 
 
-GET_PLUGINS = """(with import <nixpkgs> {};
+GET_PLUGINS = f"""(with import <nixpkgs> {{}};
 let
+  inherit (vimUtils.override {{inherit vim;}}) buildVimPluginFrom2Nix;
+  generated = callPackage {ROOT}/generated.nix {{
+    inherit buildVimPluginFrom2Nix;
+  }};
   hasChecksum = value: lib.isAttrs value && lib.hasAttrByPath ["src" "outputHash"] value;
   getChecksum = name: value:
-    if hasChecksum value then {
+    if hasChecksum value then {{
       submodules = value.src.fetchSubmodules or false;
       sha256 = value.src.outputHash;
       rev = value.src.rev;
-    } else null;
-  checksums = lib.mapAttrs getChecksum vimPlugins;
+    }} else null;
+  checksums = lib.mapAttrs getChecksum generated;
 in lib.filterAttrs (n: v: v != null) checksums)"""
 
 
 class CleanEnvironment(object):
     def __enter__(self) -> None:
         self.old_environ = os.environ.copy()
+        # local_pkgs = str(ROOT.joinpath("../../.."))
+        # os.environ["NIX_PATH"] = f"localpkgs={local_pkgs}"
         self.empty_config = NamedTemporaryFile()
         self.empty_config.write(b"{}")
         self.empty_config.flush()
@@ -294,8 +300,10 @@ def generate_nix(plugins: List[Tuple[str, str, Plugin]]):
         f.write(header)
         f.write(
             """
-{ buildVimPluginFrom2Nix, fetchFromGitHub }:
+{ lib, buildVimPluginFrom2Nix, fetchFromGitHub, overrides ? (self: super: {}) }:
 
+let
+  packages = ( self:
 {"""
         )
         for owner, repo, plugin in sorted_plugins:
@@ -307,7 +315,8 @@ def generate_nix(plugins: List[Tuple[str, str, Plugin]]):
             f.write(
                 f"""
   {plugin.normalized_name} = buildVimPluginFrom2Nix {{
-    name = "{plugin.normalized_name}-{plugin.version}";
+    pname = "{plugin.normalized_name}";
+    version = "{plugin.version}";
     src = fetchFromGitHub {{
       owner = "{owner}";
       repo = "{repo}";
@@ -317,7 +326,10 @@ def generate_nix(plugins: List[Tuple[str, str, Plugin]]):
   }};
 """
             )
-        f.write("}")
+        f.write("""
+});
+in lib.fix' (lib.extends overrides packages)
+""")
     print("updated generated.nix")
 
 

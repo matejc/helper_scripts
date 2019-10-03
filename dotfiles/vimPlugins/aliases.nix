@@ -54,7 +54,6 @@ mapAliases {
   css_color_5056      = vim-css-color;
   CSApprox            = csapprox;
   csv                 = csv-vim;
-  ctrlp               = ctrlp-vim;
   cute-python         = vim-cute-python;
   denite              = denite-nvim;
   easy-align          = vim-easy-align;
