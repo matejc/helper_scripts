@@ -1,6 +1,7 @@
+{ name }:
 { config, pkgs, lib, ... }:
 let
-  settings = import ./settings.nix { inherit pkgs; };
+  settings = import (./. + "/settings-${name}.nix") { inherit pkgs; };
 
   variables = settings.variables;
   dotFilePaths = settings.dotFilePaths;
@@ -14,7 +15,7 @@ let
       target = nix.target;
     }) nixes;
   dotAttrs = lib.flatten (map dotFileFun dotFilePaths);
-  dotFilesScript = pkgs.writeScript "dot-files-script.sh" ''
+  dotFilesScript = pkgs.writeScript "dot-files-script-${name}.sh" ''
     #!${pkgs.stdenv.shell}
 
     ${lib.concatMapStringsSep "\n" (d: ''
@@ -30,7 +31,7 @@ let
     ${activationScript}
   '';
 in {
-  system.activationScripts.dotfiles = ''
+  system.activationScripts."dotfiles-${name}" = ''
     ${dotFilesScript} || true
   '';
 }

@@ -58,9 +58,10 @@ let
         q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-        minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey;}}/bin/minitube";
+        minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
         viber = "${pkgs.viber}/bin/viber";
     };
+    youTubeApiKey = "AIzaSyBxg89KksVhdWOA5_Srg2_5G6jS6b10mAk";
     # i3minator = {
     #   chat = {
     #     workspace = "1";
@@ -153,7 +154,7 @@ let
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    xinput_custom_script.sh
+    ${variables.homeDir}/bin/xinput_custom_script.sh
 
     export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
     ${pkgs.procps}/bin/pkill polybar
@@ -166,6 +167,7 @@ let
 
     echo "DONE"
   '';
+
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
 
@@ -181,9 +183,8 @@ let
 
     echo "DONE"
   '';
-    #${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
-
-    # ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
+  # ${pkgs.xorg.xrandr}/bin/xrandr ${lib.concatImapStringsSep " " (i: v: "--output ${v.name} ${if 1 == i then (if v ? mode then "--mode ${v.mode}" else "--auto") else "--off"}") variables.monitors}
+  # ${pkgs.lib.concatMapStringsSep "\n" (item: ''${pkgs.i3minator}/bin/i3minator start ${item}'') (builtins.attrNames variables.i3minator)}
 
   activationScript = ''
     mkdir -p ${variables.homeDir}/.nixpkgs
@@ -193,10 +194,6 @@ let
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
     ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
-
-    rm -rf ${variables.homeDir}/.local/share/xonsh/xonsh_script_cache
-
-    ln -sf /var/lib/resilio-sync/Resilio\ Sync/ ${variables.homeDir}/.resilio
   '';
 in {
   inherit variables dotFilePaths activationScript;

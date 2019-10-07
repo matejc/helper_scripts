@@ -205,36 +205,39 @@ let
     autocmd FileType javascript nmap <buffer> <C-b> :call JsBeautify()<cr>
     autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
 
-    nno <PageUp> 10<up>
-    nno <PageDown> 10<down>
-    vno <PageUp> 10<up>
-    vno <PageDown> 10<down>
-    vno <S-PageUp> 10<up>
-    vno <S-PageDown> 10<down>
-    nno <S-PageUp> v10<up>
-    nno <S-PageDown> v10<down>
-    nno <S-Down> vj
-    nno <S-Up> vk
-    nno <S-Left> vh
-    nno <S-Right> vl
-    vno <S-Down> j
-    vno <S-Up> k
-    vno <S-Left> h
-    vno <S-Right> l
-    nno <C-S-Right> vw
-    nno <C-S-Left> hvb
+    nmap <PageUp> 10<up>
+    nmap <PageDown> 10<down>
+    vmap <PageUp> 10<up>
+    vmap <PageDown> 10<down>
+    vmap <S-PageUp> 10<up>
+    vmap <S-PageDown> 10<down>
+    nmap <S-PageUp> v10<up>
+    nmap <S-PageDown> v10<down>
+    nmap <S-Down> vj
+    nmap <S-Up> vk
+    nmap <S-Left> vh
+    nmap <S-Right> vl
+    vmap <S-Down> j
+    vmap <S-Up> k
+    vmap <S-Left> h
+    vmap <S-Right> l
+    nmap <C-S-Right> vw
+    nmap <C-S-Left> hvb
 
     nmap <C-k> "_dd
     imap <C-k> <esc>"_ddi
     vmap <C-k> "_d
 
+    nmap <C-a> gg0vG$
+    imap <C-a> <esc>gg0vG$
+
     imap <C-c> <C-o>yy
     nmap <C-c> yy
     vmap <C-c> y
 
-    nnoremap <c-v> p
-    inoremap <c-v> <esc>p
-    vnoremap <c-v> <esc>p
+    nmap <c-v> p
+    imap <c-v> <esc>p
+    vmap <c-v> <esc>p
 
     nmap <C-d> yyp
     vmap <C-d> yp
@@ -319,6 +322,21 @@ let
     let g:airline_theme='wombat'
 
     map <C-o> <esc>:Explore<cr>
+
+    let g:VM_mouse_mappings = 1
+    let g:VM_maps = {}
+    let g:VM_maps['Find Under']                  = '<C-n>'
+    let g:VM_maps['Find Subword Under']          = '<C-n>'
+    let g:VM_maps["Select All"]                  = '<leader>A'
+    let g:VM_maps["Start Regex Search"]          = 'g/'
+    let g:VM_maps["Add Cursor Down"]             = '<A-Down>'
+    let g:VM_maps["Add Cursor Up"]               = '<A-Up>'
+    let g:VM_maps["Add Cursor At Pos"]           = 'g<space>'
+    let g:VM_maps["Visual Regex"]                = 'g/'
+    let g:VM_maps["Visual All"]                  = '<leader>A'
+    let g:VM_maps["Visual Add"]                  = '<A-a>'
+    let g:VM_maps["Visual Find"]                 = '<A-f>'
+    let g:VM_maps["Visual Cursors"]              = '<A-c>'
   '';
 
 
