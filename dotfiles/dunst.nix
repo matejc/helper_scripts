@@ -3,7 +3,7 @@
   target = "${variables.homeDir}/.config/dunst/dunstrc";
   source = pkgs.writeText "dunstrc" ''
     [global]
-    font = ${variables.font}
+    font = Source Code Pro 10
 
     # Allow a small subset of html markup:
     #   <b>bold</b>

@@ -57,6 +57,9 @@ let
         v = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.gonvim}/bin/gonvim'';
         q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
+        mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+        minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey;}}/bin/minitube";
+        viber = "${pkgs.viber}/bin/viber";
     };
     # i3minator = {
     #   chat = {
@@ -174,6 +177,7 @@ let
     ${variables.programs.cmst} &
     ${variables.browser} &
     ${variables.homeDir}/bin/autolock &
+    ${variables.programs.viber} &
 
     echo "DONE"
   '';

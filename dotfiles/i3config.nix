@@ -170,6 +170,7 @@ in
   for_window [class="^TelegramDesktop$"] move container to workspace $w1
   for_window [class="^Signal$"] move container to workspace $w1
   for_window [class="^Slack$"] move container to workspace $w1
+  for_window [class="^ViberPC$"] move container to workspace $w1
 
   # for_window [class="^Alacritty$"] move container to workspace $w2
   for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
