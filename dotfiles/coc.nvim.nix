@@ -169,6 +169,7 @@ let
 
     let g:better_whitespace_enabled=1
     let g:strip_whitespace_on_save=1
+    let g:strip_whitespace_confirm=0
 
     if has("persistent_undo")
       set undodir=~/.undodir/
@@ -185,6 +186,7 @@ let
     nno <silent> <c-m> :messages<cr>
     nno <silent> <c-w> :bd<cr>
     map <c-q> <esc>:qall
+    map <c-x> <esc>:qall
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
@@ -337,6 +339,9 @@ let
     let g:VM_maps["Visual Add"]                  = '<A-a>'
     let g:VM_maps["Visual Find"]                 = '<A-f>'
     let g:VM_maps["Visual Cursors"]              = '<A-c>'
+
+    set autoread
+    au FocusGained,BufEnter * :checktime
   '';
 
 
@@ -357,6 +362,7 @@ let
           ctrlp
           vim-airline vim-airline-themes
           vim-nix
+          robotframework-vim
 
           coc-nvim
           coc-neco

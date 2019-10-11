@@ -24,8 +24,9 @@
         python3Packages.pygobject3
         python3Packages.tkinter
         pypi2nix
-        gcc
         libxslt.dev libxml2.dev zlib
+
+        chromedriver
       ];
     };
 

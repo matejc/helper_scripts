@@ -180,6 +180,7 @@ in
   for_window [class="^Sublime_text$"] move container to workspace $w3
   for_window [class="^Atom$"] move container to workspace $w3
   for_window [class="^.nvim-qt-wrapped$"] move container to workspace $w3
+  for_window [class="^VSCodium$"] move container to workspace $w3
 
   for_window [class="^Firefox$"] move container to workspace $w4
   for_window [class="^Firefox Developer Edition$"] move container to workspace $w4
@@ -408,6 +409,7 @@ in
 
   bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
   bindcode 152 exec --no-startup-id "${variables.dropDownTerminal}"
+  bindcode 164 exec --no-startup-id "${variables.dropDownTerminal}"
   bindsym F12 exec --no-startup-id "${variables.dropDownTerminal}"
 
   #bindsym F1 [title="flow"] move workspace current

@@ -42,7 +42,7 @@
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  xbacklight volume date
+  modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  backlight-acpi volume date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
