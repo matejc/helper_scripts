@@ -342,6 +342,10 @@ let
 
     set autoread
     au FocusGained,BufEnter * :checktime
+
+    nmap <c-_> <leader>c<space>
+    imap <c-_> <esc><leader>c<space>
+    vmap <c-_> <leader>c<space>
   '';
 
 
@@ -363,6 +367,7 @@ let
           vim-airline vim-airline-themes
           vim-nix
           robotframework-vim
+          nerdcommenter
 
           coc-nvim
           coc-neco

@@ -97,7 +97,7 @@ let
     ./i3status.nix
     ./gitconfig.nix
     ./gitignore.nix
-    ./autolock.nix
+    # ./autolock.nix
     ./i3lock-wrapper.nix
     ./lockscreen.nix
     #./swaylockscreen.nix
@@ -178,7 +178,6 @@ let
     ${pkgs.spideroak}/bin/spideroak &
     ${variables.programs.cmst} &
     ${variables.browser} &
-    ${variables.homeDir}/bin/autolock &
     ${variables.programs.viber} &
 
     echo "DONE"
