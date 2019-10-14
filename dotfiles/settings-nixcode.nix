@@ -34,14 +34,15 @@ let
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = programs.chromium;
+    rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
-        alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
         screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         launcher = "${pkgs.rofi}/bin/rofi -show combi";
-        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
+        terminal = "${pkgs.alacritty}/bin/alacritty";
+        #terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
         dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
@@ -113,6 +114,8 @@ let
     ./polybar.nix
     ./i3_workspace.nix
     ./rofi.nix
+    ./rofi-themes.nix
+    ./xresources.nix
     ./mount.nix
   ];
 
@@ -127,6 +130,8 @@ let
     ${pkgs.dunst}/bin/dunst &
 
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
+
+    ${pkgs.xorg.xrdb}/bin/xrdb -load ${variables.homeDir}/.Xresources
 
     echo "DONE"
   '';

@@ -23,8 +23,8 @@ let
     editor = "${pkgs.nano}/bin/nano";
     font = "Source Code Pro Semibold 11";
     terminalFont = "Source Code Pro Semibold 11";
-    wallpaper = "${variables.homeDir}/Pictures/water.jpg";
-    lockImage = "${variables.homeDir}/Pictures/water-blur.png";
+    wallpaper = "${variables.homeDir}/Pictures/blade-of-grass.jpg";
+    lockImage = "${variables.homeDir}/Pictures/blade-of-grass-blur.png";
     inherit startScript;
     inherit restartScript;
     timeFormat = "%a %d %b %Y %H:%M:%S";
@@ -38,14 +38,16 @@ let
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = programs.chromium;
+    rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
-        alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
+        #alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
         screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         launcher = "${pkgs.rofi}/bin/rofi -show combi";
-        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
+        #terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
+        terminal = "${pkgs.alacritty}/bin/alacritty";
         dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         # dropdown-terminal = "${homeDir}/bin/termite-dropdown";
         /* terminal = "${pkgs.termite}/bin/termite"; */
@@ -148,6 +150,8 @@ let
     ./polybar.nix
     ./i3_workspace.nix
     ./rofi.nix
+    ./rofi-themes.nix
+    ./xresources.nix
     ./mount.nix
   ];
 
@@ -164,6 +168,8 @@ let
     ${pkgs.dunst}/bin/dunst &
 
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
+
+    ${pkgs.xorg.xrdb}/bin/xrdb -load ${variables.homeDir}/.Xresources
 
     echo "DONE"
   '';
