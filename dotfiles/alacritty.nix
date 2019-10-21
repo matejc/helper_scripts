@@ -125,7 +125,7 @@ font:
     family: Source Code Pro
 
     # The `style` can be specified to pick a specific face.
-    style: Regular
+    style: Semibold
 
   # Bold font face
   bold:
