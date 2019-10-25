@@ -62,6 +62,8 @@ let
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
         minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
         viber = "${pkgs.viber}/bin/viber";
+        riot = "${pkgs.riot-desktop}/bin/riot-desktop";
+        myweechat = "${pkgs.alacritty}/bin/alacritty --class=WeeChat -t WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
     };
     youTubeApiKey = "AIzaSyBxg89KksVhdWOA5_Srg2_5G6jS6b10mAk";
     # i3minator = {
@@ -177,7 +179,7 @@ let
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    ${variables.homeDir}/bin/mykeepassxc &
+    ${variables.programs.mykeepassxc} &
     ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.rambox}/bin/rambox &
@@ -185,6 +187,8 @@ let
     ${variables.programs.cmst} &
     ${variables.browser} &
     ${variables.programs.viber} &
+    ${variables.programs.riot} &
+    ${variables.programs.myweechat} &
 
     echo "DONE"
   '';
