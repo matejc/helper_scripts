@@ -54,6 +54,8 @@ let
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         slack = "${pkgs.slack}/bin/slack";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+        minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
+        myweechat = "${pkgs.alacritty}/bin/alacritty --class=WeeChat -t WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
     };
     polybar.bars = [ "my" ];
   };
@@ -143,6 +145,7 @@ let
     ${variables.browser} &
     ${variables.homeDir}/bin/autolock &
     ${variables.programs.slack} &
+    ${variables.programs.myweechat} &
     { sleep 2; ${variables.programs.cmst}; } &
 
     echo "DONE"

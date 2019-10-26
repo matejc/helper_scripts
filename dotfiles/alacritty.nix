@@ -606,6 +606,8 @@ key_bindings:
   - { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
   - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
   - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
+
+  - { key: T, mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$(${pkgs.xcwd}/bin/xcwd)\""] } }
   '';
 }
 
