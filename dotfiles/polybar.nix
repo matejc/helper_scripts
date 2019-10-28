@@ -42,7 +42,7 @@
 
   modules-left = i3
   modules-center = xwindow
-  modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  backlight-acpi volume date
+  modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  backlight-acpi microphone volume date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
   tray-position = right
@@ -231,12 +231,13 @@
 
   use-ui-max = false
 
-  format-volume = <label-volume> <bar-volume>
-  label-volume = 
-  label-volume-foreground = ''${root.foreground}
+  format-volume = <ramp-volume> <bar-volume>
+  ramp-volume-0 = 
+  ramp-volume-1 = 
+  ramp-volume-2 = 
 
-  format-muted-foreground = ''${colors.foreground-alt}
-  label-muted = 
+  format-muted-foreground = ''${colors.foreground}
+  label-muted = 
 
   bar-volume-width = 10
   bar-volume-foreground-0 = #55aa55
@@ -334,6 +335,22 @@
   [global/wm]
   margin-top = 5
   margin-bottom = 5
+
+  [module/external-ip]
+  type = custom/script
+  exec = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com
+  click-left = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com
+  click-right = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.xclip}/bin/xclip -i -selection clipboard
+  interval = 30
+  format-underline = ''${colors.underline}
+  format-prefix = " "
+
+
+  [module/microphone]
+  type = custom/script
+  exec = ${variables.homeDir}/bin/polybar-micstatus
+  click-left = ${pkgs.alsaUtils}/bin/amixer sset Capture toggle
+  tail = true
   '';
 } {
   target = "${variables.homeDir}/bin/polybar-batstatus";
@@ -366,5 +383,32 @@
     unset bat
     unset bat_prefix
   fi
+  '';
+} {
+  target = "${variables.homeDir}/bin/polybar-micstatus";
+  source = pkgs.writeScript "microphone.sh" ''
+  #!${pkgs.stdenv.shell}
+
+  export PATH="${pkgs.pulseaudio}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin"
+
+  get_status_icon() {
+      `pactl list | sed -n '/^Source/,/^$/p' | grep Mute | grep yes > /dev/null`
+
+      if [ $? -eq 0 ]; then
+          # echo "%{F#be5046}  %{F-}"
+          echo ""
+      else
+          echo ""
+      fi
+  }
+
+  get_status_icon
+
+  while read line; do
+      # source #2 is the microphone
+      if [ "$line" == "Event 'change' on source #2" ]; then
+          get_status_icon
+      fi
+  done < <(pactl subscribe)
   '';
 }]
