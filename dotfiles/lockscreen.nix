@@ -10,6 +10,7 @@
     then
       revert() {
         ${pkgs.xorg.xset}/bin/xset dpms 0 0 0
+        ${pkgs.xorg.xset}/bin/xset -display $DISPLAY dpms force on
       }
       trap revert HUP INT TERM
       ${pkgs.xorg.xset}/bin/xset +dpms dpms 2 2 2

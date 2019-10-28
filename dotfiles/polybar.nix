@@ -340,7 +340,7 @@
   type = custom/script
   exec = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com
   click-left = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com
-  click-right = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.xclip}/bin/xclip -i -selection clipboard
+  click-right = ${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.xclip}/bin/xclip -i -selection clipboard
   interval = 30
   format-underline = ''${colors.underline}
   format-prefix = " "
@@ -392,23 +392,27 @@
   export PATH="${pkgs.pulseaudio}/bin:${pkgs.gnugrep}/bin:${pkgs.gnused}/bin"
 
   get_status_icon() {
-      `pactl list | sed -n '/^Source/,/^$/p' | grep Mute | grep yes > /dev/null`
+    `pactl list | sed -n '/^Source/,/^$/p' | grep Mute | grep yes > /dev/null`
 
-      if [ $? -eq 0 ]; then
-          # echo "%{F#be5046}  %{F-}"
-          echo ""
-      else
-          echo ""
-      fi
+    if [ $? -eq 0 ]; then
+      # echo "%{F#be5046}  %{F-}"
+      echo ""
+    else
+      echo ""
+    fi
   }
 
   get_status_icon
 
-  while read line; do
-      # source #2 is the microphone
-      if [ "$line" == "Event 'change' on source #2" ]; then
-          get_status_icon
-      fi
+  event_pattern="^Event 'change' on source #[02]$"
+
+  while read line
+  do
+    # source #2 is the microphone
+    if [[ $line =~ $event_pattern ]]
+    then
+      get_status_icon
+    fi
   done < <(pactl subscribe)
   '';
 }]

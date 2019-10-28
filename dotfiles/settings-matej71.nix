@@ -54,9 +54,8 @@ let
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
-        a = "${pkgs.atom}/bin/atom";
+        c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        v = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.gonvim}/bin/gonvim'';
         q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
