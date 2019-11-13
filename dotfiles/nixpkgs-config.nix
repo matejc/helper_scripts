@@ -524,4 +524,5 @@
     NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
     NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
   };
+  android_sdk.accept_license = true;
 }

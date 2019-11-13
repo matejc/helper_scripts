@@ -40,8 +40,8 @@
   font-1 = "DejaVuSansMono:style=bold:size=10"
   font-2 = "Font Awesome 5 Free Solid:size=10"
 
-  modules-left = i3
-  modules-center = xwindow
+  modules-left = i3 xwindow
+  #modules-center = xwindow
   modules-right = xkeyboard filesystem memory cpu ${pkgs.lib.concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${pkgs.lib.concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip batstatus ${pkgs.lib.concatImapStringsSep " " (i: v: ''temperature${toString i}'') variables.temperatureFiles}  backlight-acpi microphone volume date
   ; ${pkgs.lib.concatImapStringsSep " " (i: v: ''battery${toString i}'') variables.batteries}
 
@@ -51,7 +51,7 @@
 
   [module/xwindow]
   type = internal/xwindow
-  label = %title:0:50:...%
+  label = %title:0:40:...%
 
   [module/xkeyboard]
   type = internal/xkeyboard
