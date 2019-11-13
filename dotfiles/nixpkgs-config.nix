@@ -536,7 +536,6 @@
     };
   };
 
-  android_sdk.accept_license = true;
   allowUnfree = true;
   mpv.vaapiSupport = true;
   nixui.dataDir = "/home/matejc/.nixui";
