@@ -20,8 +20,8 @@
     fi
   '';
 } {
-  target = "${variables.homeDir}/bin/lockall";
-  source = pkgs.writeScript "lockall" ''
+  target = "/bin/lockscreen-all";
+  source = pkgs.writeScript "lockscreen-all" ''
     #!${pkgs.stdenv.shell}
 
     export PATH="${lib.makeBinPath [ pkgs.gnugrep pkgs.gawk pkgs.findutils pkgs.systemd ]}"

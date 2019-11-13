@@ -172,7 +172,8 @@ in
   for_window [class="^Slack$"] move container to workspace $w1
   for_window [class="^ViberPC$"] move container to workspace $w1
   for_window [class="^Riot$"] move container to workspace $w1
-  for_window [class="^WeeChat$"] move container to workspace $w1
+  for_window [instance="^WeeChat$"] move container to workspace $w1
+  for_window [title="^WeeChat$"] move container to workspace $w1
 
   # for_window [class="^Alacritty$"] move container to workspace $w2
   for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
@@ -423,6 +424,10 @@ in
   bindsym $mod+p move workspace to output left
   bindsym $mod+n move workspace to output right
   bindsym $mod+k kill
+  bindsym Ctrl+$mod+Shift+Left move container to output left
+  bindsym Ctrl+$mod+Shift+Right move container to output right
+  bindsym Ctrl+$mod+Shift+Up move container to output up
+  bindsym Ctrl+$mod+Shift+Down move container to output down
 
   bindsym Ctrl+Mod1+u exec --no-startup-id "${variables.homeDir}/bin/mysync"
 

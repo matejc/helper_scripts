@@ -186,18 +186,20 @@ let
     nno <silent> <c-m> :messages<cr>
     nno <silent> <c-w> :bd<cr>
     map <c-q> <esc>:qall
-    map <c-x> <esc>:qall
+    map <c-x> <esc>:wall<cr>:qall<cr>
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
     nno <silent> <c-PageDown> :bnext<cr>
     nno <silent> <cr> o
     nno <silent> <c-cr> o
+    imap <silent> <c-cr> <esc>o
 
     nno <a-u> u
     ino <a-u> <esc>u
     nno <a-r> <C-R>
     ino <a-r> <esc><C-R>
+    imap <c-z> <esc>ui
 
     map <C-u> <esc>:UndotreeToggle<CR>
 

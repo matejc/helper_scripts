@@ -514,7 +514,29 @@
       ];
     };
 
+    monoenv = pkgs.buildEnv {
+      name = "monoenv";
+      paths = with pkgs; [
+        mono msbuild dotnet-sdk
+        lsb-release
+        openssl_1_0_2.out openssl_1_0_2.dev
+        gnome3.gtk gnome3.gtk.dev
+        hicolor-icon-theme
+        gsettings_desktop_schemas
+        #androidenv.androidPkgs_9_0.androidsdk
+
+        ((import <nixpkgs/pkgs/development/mobile/androidenv> {
+          config = { android_sdk.accept_license = true; };
+        }).composeAndroidPackages {
+          platformVersions = [ "24" ];
+          abiVersions = [ "armeabi-v7a" ];
+        }).androidsdk
+      ];
+      ignoreCollisions = true;
+    };
   };
+
+  android_sdk.accept_license = true;
   allowUnfree = true;
   mpv.vaapiSupport = true;
   nixui.dataDir = "/home/matejc/.nixui";

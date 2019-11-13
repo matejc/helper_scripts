@@ -2,18 +2,18 @@
 {
   target = "${variables.homeDir}/bin/monitor";
   source = pkgs.writeScript "monitor" ''
-    #!/usr/bin/env python3
+    #!${pkgs.python3Packages.python}/bin/python
     import subprocess
     import re
 
-    mouselocation = subprocess.check_output(['xdotool', 'getmouselocation']).decode('utf-8')
+    mouselocation = subprocess.check_output(['${pkgs.xdotool}/bin/xdotool', 'getmouselocation']).decode('utf-8')
     mouse = {
         'x': int(mouselocation.split(' ')[0].split(':')[1]),
         'y': int(mouselocation.split(' ')[1].split(':')[1])
     }
 
     results = []
-    for line in subprocess.check_output('xrandr').decode('utf-8').split('\n'):
+    for line in subprocess.check_output('${pkgs.xorg.xrandr}/bin/xrandr').decode('utf-8').split('\n'):
         words = line.split(' ')
         if len(words) < 2:
             continue
@@ -55,6 +55,6 @@
 
     entry = results[(monitor + 1) % len(results)]
 
-    subprocess.Popen(['xdotool', 'mousemove', str((entry['width']/2)+entry['x']), str((entry['height']/2)+entry['y'])])
+    subprocess.Popen(['${pkgs.xdotool}/bin/xdotool', 'mousemove', str((entry['width']/2)+entry['x']), str((entry['height']/2)+entry['y'])])
   '';
 }
