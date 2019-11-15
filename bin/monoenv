@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+nixprofile=$NIX_USER_PROFILE_DIR/monoenv
+
+export PATH="`pwd`/bin:$nixprofile/bin:$PATH"
+export LD_LIBRARY_PATH="$nixprofile/lib"
+export NIX_LDFLAGS="-L$nixprofile/lib -L$nixprofile/lib/pkgconfig"
+export NIX_CFLAGS_COMPILE="-I$nixprofile/include -I$nixprofile/include/sasl -I$nixprofile/include/libxml2"
+export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
+export PS1="mono $PS1"
+
+#export GSETTINGS_SCHEMAS_PATH="$nixprofile/share/gsettings-schemas/gsettings-desktop-schemas-3.34.0"
+#export XDG_DATA_DIRS="$nixprofile/share"
+
+export INCLUDE="$nixprofile/include:$INCLUDE"
+export LIB="$nixprofile/lib:$LIB"
+export C_INCLUDE_PATH="$nixprofile/include:$C_INCLUDE_PATH"
+export LD_RUN_PATH="$nixprofile/lib:$LD_RUN_PATH"
+export LIBRARY_PATH="$nixprofile/lib:$LIBRARY_PATH"
+export CFLAGS=$NIX_CFLAGS_COMPILE
+export LDFLAGS=$NIX_LDFLAGS
+
+mkdir -vp $HOME/.local/share
+ln -svf $(realpath $nixprofile/share/gsettings-schemas/gtk+3-*/glib-2.0) $HOME/.local/share/
+
+realpath $HOME/Unity/Hub/Editor/*/Editor | xargs -i mkdir -vp '{}/Data/PlaybackEngines/AndroidPlayer/SDK'
+realpath $HOME/Unity/Hub/Editor/*/Editor | xargs -i ln -svf $nixprofile/libexec/android-sdk/* '{}/Data/PlaybackEngines/AndroidPlayer/SDK/'
+
+realpath $HOME/Unity/Hub/Editor/*/Editor | xargs -i ln -svf /run/wrappers/bin/__chromium-suid-sandbox '{}/chrome-sandbox'
+
+"$@"

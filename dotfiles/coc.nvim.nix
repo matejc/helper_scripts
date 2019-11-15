@@ -200,6 +200,7 @@ let
     nno <a-r> <C-R>
     ino <a-r> <esc><C-R>
     imap <c-z> <esc>ui
+    nmap <c-z> u
 
     map <C-u> <esc>:UndotreeToggle<CR>
 
@@ -211,6 +212,8 @@ let
 
     nmap <PageUp> 10<up>
     nmap <PageDown> 10<down>
+    imap <PageUp> <esc>10<up>i
+    imap <PageDown> <esc>10<down>i
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
     vmap <S-PageUp> 10<up>
@@ -243,9 +246,9 @@ let
     imap <c-v> <esc>p
     vmap <c-v> <esc>p
 
-    nmap <C-d> yyp
-    vmap <C-d> yp
-    imap <C-d> <esc>yypi
+    nmap <C-S-Down> :copy .<cr>
+    vmap <C-S-Down> :copy '><cr>
+    imap <C-S-Down> <esc>:copy .<cr>i
 
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
@@ -348,6 +351,51 @@ let
     nmap <c-_> <leader>c<space>
     imap <c-_> <esc><leader>c<space>
     vmap <c-_> <leader>c<space>
+
+
+    " Override w motion
+    function! MyWMotion()
+        " Save the initial position
+        let initialLine=line('.')
+
+        " Execute the builtin word motion and get the new position
+        normal! w
+        let newLine=line('.')
+
+        " If the line as changed go back to the previous line
+        if initialLine != newLine
+            normal k$l
+        endif
+    endfunction
+
+    " Override b motion
+    function! MyBMotion()
+        " Save the initial position
+        let initialLine=line('.')
+
+        " Execute the builtin word motion and get the new position
+        normal! b
+        let newLine=line('.')
+
+        " If the line as changed go back to the previous line
+        if initialLine != newLine
+            normal j
+
+            let newCol=virtcol('.')
+            if newCol != 1
+                normal 0
+            else
+                normal ^
+            endif
+        endif
+
+    endfunction
+
+    nmap <silent> <c-right> :call MyWMotion()<CR>
+    nmap <silent> <c-left> :call MyBMotion()<CR>
+
+    imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
+    imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
   '';
 
 
@@ -442,4 +490,18 @@ let
 in [{
   target = "${variables.homeDir}/bin/nvim";
   source = "${neovim}/bin/nvim";
+} {
+  target = "${variables.homeDir}/bin/nvim-qt";
+  source = pkgs.writeScript "open-nvim" ''
+    #!${pkgs.stdenv.shell}
+    function open_nvim_qt {
+      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
+    }
+    if [ -z "$@" ]
+    then
+      open_nvim_qt $(${pkgs.git}/bin/git ls-files -m --exclude-standard)
+    else
+      open_nvim_qt "$@"
+    fi
+  '';
 }]

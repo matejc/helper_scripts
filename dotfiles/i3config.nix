@@ -24,7 +24,6 @@ in
   # set $white    #ffffff
   # set $mgrey    #b9c2cd
 
-
   # > horizontal | vertical | auto
   default_orientation horizontal
 
@@ -32,7 +31,7 @@ in
   workspace_layout tabbed
 
   # > normal | 1pixel | none
-  new_window none
+  default_border none
 
   # Use Mouse+$mod to drag floating windows to their wanted position
   floating_modifier $mod

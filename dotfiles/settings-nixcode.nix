@@ -34,13 +34,13 @@ let
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = programs.chromium;
-    rofi.theme = "${homeDir}/.config/rofi/themes/material";
+    rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
         screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi";
+        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi window#drun#run";
         #terminal = "${pkgs.alacritty}/bin/alacritty";
         terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
         dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
@@ -50,7 +50,7 @@ let
         a = "${pkgs.atom}/bin/atom";
         code = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
+        q = "${variables.homeDir}/bin/nvim-qt";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         slack = "${pkgs.slack}/bin/slack";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
@@ -135,6 +135,8 @@ let
     ${pkgs.feh}/bin/feh --bg-fill ${variables.wallpaper}
 
     ${pkgs.xorg.xrdb}/bin/xrdb -load ${variables.homeDir}/.Xresources
+
+    systemctl --user restart compton &
 
     echo "DONE"
   '';
