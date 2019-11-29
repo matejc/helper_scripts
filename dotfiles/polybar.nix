@@ -319,7 +319,7 @@
 
   [module/batstatus]
   type = custom/script
-  interval = 5
+  tail = true
   format = <label>
   format-underline = ''${colors.underline}
   exec = ${variables.homeDir}/bin/polybar-batstatus
@@ -345,7 +345,6 @@
   format-underline = ''${colors.underline}
   format-prefix = " "
 
-
   [module/microphone]
   type = custom/script
   exec = ${variables.homeDir}/bin/polybar-micstatus
@@ -356,33 +355,39 @@
   target = "${variables.homeDir}/bin/polybar-batstatus";
   source = pkgs.writeScript "polybar-batstatus.sh" ''
   #!${pkgs.stdenv.shell}
-  bat=$(batstatus)
-  if [ -n "$bat" ]
-  then
-    bat_prefix="%{F#00ff00}%{F-}"
+  PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.findutils}/bin"
+  while [ true ]
+  do
+    bat="$(upower -e | grep -i 'ups\|bat' | xargs -i upower -i '{}' | grep 'percentage:' | grep -oP '[0-9]+' | grep -v '^$' | awk '{ total += $1; count++ } END { print total/count }' | xargs -i ${pkgs.coreutils}/bin/printf "%.0f\n" '{}')"
 
-    if [[ $bat -lt 20 ]]; then
-      bat_prefix="%{F#ff0000}%{F-}"
-
-    elif [[ $bat -lt 50 ]]; then
-      bat_prefix="%{F#ffa500}%{F-}"
-
-    elif [[ $bat -lt 70 ]]; then
-      bat_prefix="%{F#ffa500}%{F-}"
-
-    elif [[ $bat -lt 90 ]]; then
-      bat_prefix="%{F#ffa500}%{F-}"
-    fi
-    ${pkgs.acpi}/bin/acpi -a 2>/dev/null | grep "on-line" &>/dev/null
-    if [ $? -eq 0 ]
+    if [ -n "$bat" ]
     then
-      echo "%{F#00ff00}%{F-} $bat_prefix $bat%"
-    else
-      echo " $bat_prefix $bat%"
+      bat_prefix="%{F#00ff00}%{F-}"
+
+      if [[ $bat -lt 20 ]]; then
+        bat_prefix="%{F#ff0000}%{F-}"
+
+      elif [[ $bat -lt 50 ]]; then
+        bat_prefix="%{F#ffa500}%{F-}"
+
+      elif [[ $bat -lt 70 ]]; then
+        bat_prefix="%{F#ffa500}%{F-}"
+
+      elif [[ $bat -lt 90 ]]; then
+        bat_prefix="%{F#ffa500}%{F-}"
+      fi
+      ${pkgs.acpi}/bin/acpi -a 2>/dev/null | grep "on-line" &>/dev/null
+      if [ $? -eq 0 ]
+      then
+        echo "%{F#00ff00}%{F-} $bat_prefix $bat%"
+      else
+        echo " $bat_prefix $bat%"
+      fi
+      unset bat
+      unset bat_prefix
     fi
-    unset bat
-    unset bat_prefix
-  fi
+    sleep 3
+  done
   '';
 } {
   target = "${variables.homeDir}/bin/polybar-micstatus";
