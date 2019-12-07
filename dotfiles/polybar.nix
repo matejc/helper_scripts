@@ -355,7 +355,7 @@
   target = "${variables.homeDir}/bin/polybar-batstatus";
   source = pkgs.writeScript "polybar-batstatus.sh" ''
   #!${pkgs.stdenv.shell}
-  PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.findutils}/bin"
+  PATH="${pkgs.upower}/bin:${pkgs.gnugrep}/bin:${pkgs.gawk}/bin:${pkgs.findutils}/bin:${pkgs.coreutils}/bin"
   while [ true ]
   do
     bat="$(upower -e | grep -i 'ups\|bat' | xargs -i upower -i '{}' | grep 'percentage:' | grep -oP '[0-9]+' | grep -v '^$' | awk '{ total += $1; count++ } END { print total/count }' | xargs -i ${pkgs.coreutils}/bin/printf "%.0f\n" '{}')"

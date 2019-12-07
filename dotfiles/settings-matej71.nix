@@ -38,16 +38,16 @@ let
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = programs.chromium;
-    rofi.theme = "${homeDir}/.config/rofi/themes/material";
+    rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
         #alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
         screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi";
-        #terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.alacritty}/bin/alacritty";
+        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi window#drun#run";
+        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
+        #terminal = "${pkgs.alacritty}/bin/alacritty";
         dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         # dropdown-terminal = "${homeDir}/bin/termite-dropdown";
         /* terminal = "${pkgs.termite}/bin/termite"; */
@@ -61,8 +61,10 @@ let
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
         minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
         viber = "${pkgs.viber}/bin/viber";
+        spideroak = "${pkgs.spideroak}/bin/spideroak";
+        nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
         riot = "${pkgs.riot-desktop}/bin/riot-desktop";
-        myweechat = "${pkgs.alacritty}/bin/alacritty --class=WeeChat -t WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
+        myweechat = "${xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
     };
     youTubeApiKey = "AIzaSyBxg89KksVhdWOA5_Srg2_5G6jS6b10mAk";
     # i3minator = {
@@ -172,6 +174,8 @@ let
 
     ${pkgs.xorg.xrdb}/bin/xrdb -load ${variables.homeDir}/.Xresources
 
+    systemctl --user restart compton &
+
     echo "DONE"
   '';
 
@@ -182,12 +186,12 @@ let
     ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
     ${pkgs.rambox}/bin/rambox &
-    ${pkgs.spideroak}/bin/spideroak &
-    ${variables.programs.cmst} &
+    ${variables.programs.spideroak} &
+    ${variables.programs.nextcloud-client} &
     ${variables.browser} &
-    ${variables.programs.viber} &
     ${variables.programs.riot} &
     ${variables.programs.myweechat} &
+    { sleep 2; ${variables.programs.cmst}; } &
 
     echo "DONE"
   '';
