@@ -396,6 +396,13 @@ let
 
     imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
     imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
+
+    let g:OmniSharp_server_stdio = 1
+    let g:OmniSharp_server_path = '${pkgs.omnisharp-roslyn}/bin/omnisharp'
+
+    let g:ale_linters = {
+    \ 'cs': ['OmniSharp']
+    \}
   '';
 
 
@@ -434,6 +441,9 @@ let
           coc-git
           coc-yank
           coc-tabnine
+
+          omnisharp-vim
+          ale
         ];
         opt = [ ];
       };

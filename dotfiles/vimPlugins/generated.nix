@@ -6,12 +6,24 @@ let
 {
   ctrlsf-vim = buildVimPluginFrom2Nix {
     pname = "ctrlsf-vim";
-    version = "2019-08-03";
+    version = "2019-11-11";
     src = fetchFromGitHub {
       owner = "dyng";
       repo = "ctrlsf.vim";
-      rev = "ad92b586452bdce4bc7ca4340acf86f2d14aef80";
-      sha256 = "18zv56303cnn59xl1x7h4pgyjsi6pw9hzvhz4svj72cg0mnhzbnq";
+      rev = "6d86914c1e015fceb1d6c52ae1757c4bdc181312";
+      sha256 = "08g2l5g98m67ar36vgh4d4qsgq158a6cq5in7as2zj814i5m7il1";
+    };
+  };
+
+  omnisharp-vim = buildVimPluginFrom2Nix {
+    pname = "omnisharp-vim";
+    version = "2019-12-14";
+    src = fetchFromGitHub {
+      owner = "OmniSharp";
+      repo = "omnisharp-vim";
+      rev = "33b320df0e9fac3433203de3b1df2af6979b0da3";
+      sha256 = "0wkpy2byiqkix76yr7jjbppasa759jvppiapyh1w99zj9rqylkmm";
+      fetchSubmodules = true;
     };
   };
 

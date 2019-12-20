@@ -24,4 +24,14 @@
 , gnome3
 }:
 
-self: super: {}
+self: super: {
+
+
+  omnisharp-vim = super.omnisharp-vim.overrideAttrs (old: {
+    preFixup = ''
+      substituteInPlace $out/share/vim-plugins/omnisharp-vim/autoload/OmniSharp/stdio.vim \
+        --replace "expand('<sfile>:p:h:h:h') . '/log/stdio.log'" "\$HOME . '/.omnisharp-vim/stdio.log'"
+    '';
+  });
+
+}
