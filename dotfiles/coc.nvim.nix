@@ -1,7 +1,6 @@
 { variables, config, pkgs, lib }:
 
 let
-  nodeGlobalBinPath = "${variables.homeDir}/.npm-packages/bin";
   vimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
     llvmPackages = pkgs.llvmPackages_6;
   });
@@ -136,7 +135,7 @@ let
     " Resume latest coc list
     nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
-    set guifont=Source\ Code\ Pro:h11
+    set guifont = "${variables.font}"
     set termguicolors
     set cursorline
     set number
@@ -186,7 +185,6 @@ let
     nno <silent> <c-m> :messages<cr>
     nno <silent> <c-w> :bd<cr>
     map <c-q> <esc>:qall
-    map <c-x> <esc>:wall<cr>:qall<cr>
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
@@ -234,6 +232,10 @@ let
     nmap <C-k> "_dd
     imap <C-k> <esc>"_ddi
     vmap <C-k> "_d
+
+    nmap <C-x> dd
+    imap <C-x> <esc>ddi
+    vmap <C-x> d
 
     nmap <C-a> gg0vG$
     imap <C-a> <esc>gg0vG$
