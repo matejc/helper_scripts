@@ -405,6 +405,14 @@ let
     let g:ale_linters = {
     \ 'cs': ['OmniSharp']
     \}
+
+    augroup omnisharp_commands
+      autocmd!
+
+      " The following commands are contextual, based on the cursor position.
+      autocmd FileType cs nmap <buffer> <c-[> :OmniSharpGotoDefinition<CR>
+      autocmd FileType cs nmap <buffer> <c-]> :OmniSharpDocumentation<CR>
+    augroup END
   '';
 
 
