@@ -50,7 +50,6 @@ let
         a = "${pkgs.atom}/bin/atom";
         code = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        q = "${variables.homeDir}/bin/nvim-qt";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         slack = "${pkgs.slack}/bin/slack";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
@@ -111,7 +110,7 @@ let
     ./bcrypt.nix
     ./termite.nix
     ./way-cooler.nix
-    ./coc.nvim.nix
+    ./nvim.nix
     ./konsole.nix
     ./polybar.nix
     ./i3_workspace.nix

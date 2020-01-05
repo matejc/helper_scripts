@@ -56,11 +56,9 @@ let
         l = "${pkgs.exa}/bin/exa -gal --git";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        q = "${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
         minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
-        viber = "${pkgs.viber}/bin/viber";
         spideroak = "${pkgs.spideroak}/bin/spideroak";
         nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
         riot = "${pkgs.riot-desktop}/bin/riot-desktop";
@@ -148,7 +146,7 @@ let
     ./bcrypt.nix
     ./termite.nix
     ./way-cooler.nix
-    ./coc.nvim.nix
+    ./nvim.nix
     ./konsole.nix
     ./polybar.nix
     ./i3_workspace.nix
@@ -156,6 +154,7 @@ let
     ./rofi-themes.nix
     ./xresources.nix
     ./mount.nix
+    ./scan.nix
   ];
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
