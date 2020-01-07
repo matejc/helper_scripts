@@ -188,7 +188,7 @@ in
   for_window [class="^Firefox Developer Edition$"] move container to workspace $w4
   for_window [class="^Chromium.*"] move container to workspace $w4
   for_window [class="^Google-chrome.*"] move container to workspace $w4
-  for_window [class="^keepassxc$"] move container to workspace $w4
+  for_window [class="^KeePassXC$"] move container to workspace $w4
 
   # change focus
   #bindsym $mod+h focus left
