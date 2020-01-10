@@ -30,8 +30,8 @@ let
     set cursorline
     set number
 
-    colorscheme gruvbox
-    set background=dark
+    colorscheme solarized8_high
+    set background=light
 
     set title
     function! ProjectName()
@@ -214,7 +214,7 @@ let
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
     " let g:airline_theme='base16_monokai'
-    let g:airline_theme='wombat'
+    let g:airline_theme='solarized'
 
     map <C-o> <esc>:Explore<cr>
 
@@ -300,6 +300,17 @@ let
     "   autocmd FileType cs nmap <buffer> <c-[> :OmniSharpGotoDefinition<CR>
     "   autocmd FileType cs nmap <buffer> <c-]> :OmniSharpDocumentation<CR>
     " augroup END
+
+    let g:lsp_virtual_text_enabled = 0
+    let g:lsp_diagnostics_echo_cursor = 1
+    let g:lsp_highlights_enabled = 0
+    let g:lsp_textprop_enabled = 0
+    let g:lsp_signs_error = {'text': '✗'}
+    let g:lsp_signs_warning = {'text': '‼'}
+    let g:lsp_signs_information = {'text': 'ℹ'}
+    let g:lsp_signs_hint = {'text': '⇒'}
+    let g:lsp_highlight_references_enabled = 1
+    highlight lspReference ctermfg=white guifg=white ctermbg=gray guibg=gray
   '';
 
 
@@ -309,7 +320,7 @@ let
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
           vim-plug
-          gruvbox
+          awesome-vim-colorschemes
           vim-gitgutter
           undotree
           vim-better-whitespace

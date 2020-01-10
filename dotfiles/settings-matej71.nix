@@ -22,6 +22,7 @@ let
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
     font = "Source Code Pro Semibold 11";
+    alternativeFont = "Source Code Pro:h11";
     terminalFont = "Source Code Pro Semibold 11";
     wallpaper = "${variables.homeDir}/Pictures/blade-of-grass.jpg";
     lockImage = "${variables.homeDir}/Pictures/blade-of-grass-blur.png";
