@@ -1,3 +1,8 @@
 dyng/ctrlsf.vim
+mattn/vim-lsp-settings
 OmniSharp/omnisharp-vim
+prabirshrestha/asyncomplete-lsp.vim
+prabirshrestha/asyncomplete.vim
+prabirshrestha/async.vim
+prabirshrestha/vim-lsp
 sickill/vim-pasta

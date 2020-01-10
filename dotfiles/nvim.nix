@@ -25,7 +25,7 @@ let
     " always show signcolumns
     set signcolumn=yes
 
-    set guifont = "${variables.font}"
+    set guifont=${lib.escape [" "] variables.alternativeFont}
     set termguicolors
     set cursorline
     set number
@@ -289,19 +289,17 @@ let
     let g:OmniSharp_server_path = '${pkgs.omnisharp-roslyn}/bin/omnisharp'
 
     let g:ale_linters = {
-    \ 'cs': ['OmniSharp']
+    \ 'cs': ['OmniSharp'],
+    \ 'javascript': ['eslint'],
+    \ 'python': ['pylint'],
     \}
 
-    augroup omnisharp_commands
-      autocmd!
-
+    " augroup omnisharp_commands
+    "   autocmd!
       " The following commands are contextual, based on the cursor position.
-      autocmd FileType cs nmap <buffer> <c-[> :OmniSharpGotoDefinition<CR>
-      autocmd FileType cs nmap <buffer> <c-]> :OmniSharpDocumentation<CR>
-    augroup END
-
-    let g:deoplete#enable_at_startup = 1
-    let g:ale_completion_enabled = 0
+    "   autocmd FileType cs nmap <buffer> <c-[> :OmniSharpGotoDefinition<CR>
+    "   autocmd FileType cs nmap <buffer> <c-]> :OmniSharpDocumentation<CR>
+    " augroup END
   '';
 
 
@@ -327,8 +325,12 @@ let
 
           omnisharp-vim
           ale
-          deoplete-nvim
-          deoplete-jedi
+
+          async-vim
+          asyncomplete-vim
+          asyncomplete-lsp-vim
+          vim-lsp
+          vim-lsp-settings
         ];
         opt = [ ];
       };
@@ -343,7 +345,7 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.pylint ]}:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.omnisharp-roslyn ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
     if [ -z "$@" ]
