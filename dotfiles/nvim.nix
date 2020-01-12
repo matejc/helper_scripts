@@ -309,6 +309,14 @@ let
     highlight LspInformationText guifg=gray
 
     setlocal spell spelllang=en_us
+    highlight clear SpellBad
+    highlight SpellBad gui=undercurl
+    highlight clear SpellCap
+    highlight SpellCap gui=undercurl
+    highlight clear SpellRare
+    highlight SpellRare gui=undercurl
+    highlight clear SpellLocal
+    highlight SpellLocal gui=undercurl
   '';
 
 
