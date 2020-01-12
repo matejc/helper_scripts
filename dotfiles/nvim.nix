@@ -206,6 +206,7 @@ let
       \ 'link': 'result',
       \ }
     let g:ctrlp_show_hidden = 1
+    let g:ctrlp_user_command = ['.git', 'cd %s && ${pkgs.git}/bin/git ls-files . -co --exclude-standard', '${pkgs.findutils}/bin/find %s -type f']
 
     imap <C-p> <esc>:CtrlPMixed<Return>
 
@@ -294,23 +295,20 @@ let
     \ 'python': ['pylint'],
     \}
 
-    " augroup omnisharp_commands
-    "   autocmd!
-      " The following commands are contextual, based on the cursor position.
-    "   autocmd FileType cs nmap <buffer> <c-[> :OmniSharpGotoDefinition<CR>
-    "   autocmd FileType cs nmap <buffer> <c-]> :OmniSharpDocumentation<CR>
-    " augroup END
-
-    let g:lsp_virtual_text_enabled = 0
-    let g:lsp_diagnostics_echo_cursor = 1
+    let g:lsp_virtual_text_enabled = 1
+    let g:lsp_diagnostics_echo_cursor = 0
     let g:lsp_highlights_enabled = 0
-    let g:lsp_textprop_enabled = 0
+    let g:lsp_textprop_enabled = 1
     let g:lsp_signs_error = {'text': '✗'}
     let g:lsp_signs_warning = {'text': '‼'}
     let g:lsp_signs_information = {'text': 'ℹ'}
     let g:lsp_signs_hint = {'text': '⇒'}
     let g:lsp_highlight_references_enabled = 1
-    highlight lspReference ctermfg=white guifg=white ctermbg=gray guibg=gray
+    highlight lspReference ctermfg=black guifg=black ctermbg=lightgray guibg=lightgray
+    highlight LspHintText guifg=lightgray
+    highlight LspInformationText guifg=gray
+
+    setlocal spell spelllang=en_us
   '';
 
 
@@ -349,6 +347,24 @@ let
   };
 
 in [{
+  target = "${variables.homeDir}/bin/nvim-lsp-install";
+  source = pkgs.writeScript "nvim-lsp-install" ''
+    #!${pkgs.stdenv.shell}
+
+    export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
+
+    npm_global_install() {
+      ${pkgs.nodejs}/bin/npm install -g --prefix="$NPM_PACKAGES" "$@"
+    }
+
+    npm_global_install \
+      bash-language-server \
+      dockerfile-language-server-nodejs \
+      typescript \
+      typescript-language-server \
+      yaml-language-server
+  '';
+} {
   target = "${variables.homeDir}/bin/nvim";
   source = "${neovim}/bin/nvim";
 } {
@@ -356,7 +372,7 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.omnisharp-roslyn ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.omnisharp-roslyn pkgs.nodejs ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
     if [ -z "$@" ]
