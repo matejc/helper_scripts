@@ -5,6 +5,17 @@ let
     llvmPackages = pkgs.llvmPackages_6;
   });
 
+  omnisharp-roslyn = pkgs.omnisharp-roslyn.overrideDerivation (old: rec {
+    name = "omnisharp-roslyn-1.34.9";
+    src = pkgs.fetchurl {
+      url = "https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.34.9/omnisharp-mono.tar.gz";
+      sha256 = "1b5jzc7dj9hhddrr73hhpq95h8vabkd6xac1bwq05lb24m0jsrp9";
+    };
+    installPhase = old.installPhase + ''
+      ln -s $out/bin/omnisharp $out/bin/omnisharp-lsp
+    '';
+  });
+
   customRC = ''
     " if hidden is not set, TextEdit might fail.
     set hidden
@@ -14,7 +25,7 @@ let
     set nowritebackup
 
     " Better display for messages
-    set cmdheight=1
+    " set cmdheight=1
 
     " You will have bad experience for diagnostic messages when it's default 4000.
     set updatetime=300
@@ -213,8 +224,7 @@ let
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
 
     let g:airline#extensions#tabline#enabled = 1
-    let g:airline_powerline_fonts = 1
-    " let g:airline_theme='base16_monokai'
+    let g:airline_powerline_fonts = 0
     let g:airline_theme='solarized'
 
     map <C-o> <esc>:Explore<cr>
@@ -240,7 +250,6 @@ let
     nmap <c-_> <leader>c<space>
     imap <c-_> <esc><leader>c<space>
     vmap <c-_> <leader>c<space>
-
 
     " Override w motion
     function! MyWMotion()
@@ -286,46 +295,69 @@ let
     imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
     imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
 
-    let g:OmniSharp_server_stdio = 1
-    let g:OmniSharp_server_path = '${pkgs.omnisharp-roslyn}/bin/omnisharp'
 
-    let g:ale_linters = {
-    \ 'cs': ['OmniSharp'],
-    \ 'javascript': ['eslint'],
-    \ 'python': ['pylint'],
-    \}
+    au VimEnter * GuiPopupmenu 0
 
-    let g:lsp_virtual_text_enabled = 1
-    let g:lsp_diagnostics_echo_cursor = 0
-    let g:lsp_highlights_enabled = 0
-    let g:lsp_textprop_enabled = 1
-    let g:lsp_signs_error = {'text': '✗'}
-    let g:lsp_signs_warning = {'text': '‼'}
-    let g:lsp_signs_information = {'text': 'ℹ'}
-    let g:lsp_signs_hint = {'text': '⇒'}
-    let g:lsp_highlight_references_enabled = 1
-    highlight lspReference ctermfg=black guifg=black ctermbg=lightgray guibg=lightgray
-    highlight LspHintText guifg=lightgray
-    highlight LspInformationText guifg=gray
+lua << EOF
+package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
+require'nvim_lsp'.pyls.setup{}
+EOF
 
-    setlocal spell spelllang=en_us
-    highlight clear SpellBad
-    highlight SpellBad gui=undercurl
-    highlight clear SpellCap
-    highlight SpellCap gui=undercurl
-    highlight clear SpellRare
-    highlight SpellRare gui=undercurl
-    highlight clear SpellLocal
-    highlight SpellLocal gui=undercurl
+    let g:ale_completion_enabled = 0
+
+    "autocmd BufEnter * call ncm2#enable_for_buffer()
+    "set completeopt=noinsert,menuone,noselect
+
+    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+    " found' messages
+    set shortmess+=c
+
+    " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
+    inoremap <c-c> <ESC>
+
+    " When the <Enter> key is pressed while the popup menu is visible, it only
+    " hides the menu. Use this mapping to close the menu and also start a new
+    " line.
+    "inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
+
+    " Use <TAB> to select the popup menu:
+    "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+    autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
+
+    function! CleverTab()
+      if pumvisible()
+        return "\<C-N>"
+      endif
+      if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+        return "\<Tab>"
+      elseif exists('&omnifunc') && &omnifunc != ""
+        return "\<C-X>\<C-O>"
+      else
+        return "\<C-N>"
+      endif
+    endfunction
+    inoremap <expr> <silent> <Tab> CleverTab()
   '';
 
+  neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
+    name = "neovim-unwrapped-0.5.0";
+    version = "0.5.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "neovim";
+      repo = "neovim";
+      rev = "92316849863bb2661ee5b4bb284f56163fed27ad";
+      sha256 = "0l232jl10dkpldmax8w324bsbpbczy8r3zb8gnz33q4khs1wcayj";
+    };
+    buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
+  });
 
-  neovim = pkgs.neovim.override {
+  neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
-          vim-plug
           awesome-vim-colorschemes
           vim-gitgutter
           undotree
@@ -337,19 +369,10 @@ let
           ctrlp
           vim-airline vim-airline-themes
           vim-nix
-          robotframework-vim
           nerdcommenter
-
-          omnisharp-vim
           ale
-
-          async-vim
-          asyncomplete-vim
-          asyncomplete-lsp-vim
-          vim-lsp
-          vim-lsp-settings
         ];
-        opt = [ ];
+        opt = [ nvim-lsp ];
       };
     };
   };
@@ -362,6 +385,7 @@ in [{
     export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
 
     npm_global_install() {
+      mkdir -p $NPM_PACKAGES
       ${pkgs.nodejs}/bin/npm install -g --prefix="$NPM_PACKAGES" "$@"
     }
 
@@ -380,8 +404,9 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.omnisharp-roslyn pkgs.nodejs ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
-      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server omnisharp-roslyn pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
+      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${neovim}/bin/nvim "$@"
     }
     if [ -z "$@" ]
     then

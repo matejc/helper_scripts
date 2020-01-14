@@ -15,6 +15,28 @@ let
     };
   };
 
+  asyncomplete-buffer-vim = buildVimPluginFrom2Nix {
+    pname = "asyncomplete-buffer-vim";
+    version = "2019-11-20";
+    src = fetchFromGitHub {
+      owner = "prabirshrestha";
+      repo = "asyncomplete-buffer.vim";
+      rev = "b88179d74be97de5b2515693bcac5d31c4c207e9";
+      sha256 = "1qja8blp6bwn8zj6pcypnkdh60417qv176hf62cxyl3grk1kci2x";
+    };
+  };
+
+  asyncomplete-file-vim = buildVimPluginFrom2Nix {
+    pname = "asyncomplete-file-vim";
+    version = "2019-12-26";
+    src = fetchFromGitHub {
+      owner = "prabirshrestha";
+      repo = "asyncomplete-file.vim";
+      rev = "8764e24f7043b695f318be96439d9adec6a27236";
+      sha256 = "1y8l0w04h54rgc1pjwywzqxa1v3wf1w3j6nqna4sd1zy3nwcyphp";
+    };
+  };
+
   asyncomplete-lsp-vim = buildVimPluginFrom2Nix {
     pname = "asyncomplete-lsp-vim";
     version = "2019-11-20";
@@ -23,6 +45,28 @@ let
       repo = "asyncomplete-lsp.vim";
       rev = "9e7b2492578dca86ed12b6352cb56d9fc8ac9a6e";
       sha256 = "1wbc3znsw7b2x3d2w4wy84bhzggwzsww896x26zl079kpr0szq38";
+    };
+  };
+
+  asyncomplete-omni-vim = buildVimPluginFrom2Nix {
+    pname = "asyncomplete-omni-vim";
+    version = "2018-04-04";
+    src = fetchFromGitHub {
+      owner = "prabirshrestha";
+      repo = "asyncomplete-omni.vim";
+      rev = "f707e07f0c367c672ac24012b362b48ea3fd1611";
+      sha256 = "14kk15dqdjylj8x9m79ajrsqprf4yzcrv2k71y7lq8j6h4ybdcgr";
+    };
+  };
+
+  asyncomplete-tags-vim = buildVimPluginFrom2Nix {
+    pname = "asyncomplete-tags-vim";
+    version = "2019-10-07";
+    src = fetchFromGitHub {
+      owner = "prabirshrestha";
+      repo = "asyncomplete-tags.vim";
+      rev = "eef50f9630db9a772204af13baa997c176ab1a4e";
+      sha256 = "1dhl1ycnbdvsp0fb26mnxd9kwrds96fixxr9vxm6bzqnlmpvs188";
     };
   };
 
@@ -48,37 +92,59 @@ let
     };
   };
 
+  nvim-lsp = buildVimPluginFrom2Nix {
+    pname = "nvim-lsp";
+    version = "2020-01-05";
+    src = fetchFromGitHub {
+      owner = "neovim";
+      repo = "nvim-lsp";
+      rev = "7a15a52c0a7d735625ac73dc4d8efe70c5e99707";
+      sha256 = "1wpp54gvb90qhgnxmp3fvfc3dbkdxk3q712c7wyd9alpbk4608fk";
+    };
+  };
+
   omnisharp-vim = buildVimPluginFrom2Nix {
     pname = "omnisharp-vim";
-    version = "2019-12-14";
+    version = "2020-01-11";
     src = fetchFromGitHub {
       owner = "OmniSharp";
       repo = "omnisharp-vim";
-      rev = "33b320df0e9fac3433203de3b1df2af6979b0da3";
-      sha256 = "0wkpy2byiqkix76yr7jjbppasa759jvppiapyh1w99zj9rqylkmm";
+      rev = "d9c403d44169f162f0a724e54e37045ded4f5565";
+      sha256 = "0xlc2ljbyyl05qsazq9ncp0k5qpk4x8fpxpxw99zl15zi4kcmydr";
       fetchSubmodules = true;
+    };
+  };
+
+  vim-hug-neovim-rpc = buildVimPluginFrom2Nix {
+    pname = "vim-hug-neovim-rpc";
+    version = "2019-11-20";
+    src = fetchFromGitHub {
+      owner = "roxma";
+      repo = "vim-hug-neovim-rpc";
+      rev = "701ecbb0a1f904c0b44c6beaafef35e1de998a94";
+      sha256 = "0x7736cbganwr6fhqagaqcdn56mc5lgxcz01vbbrv6vainf4mnkp";
     };
   };
 
   vim-lsp = buildVimPluginFrom2Nix {
     pname = "vim-lsp";
-    version = "2020-01-09";
+    version = "2020-01-12";
     src = fetchFromGitHub {
       owner = "prabirshrestha";
       repo = "vim-lsp";
-      rev = "70234feca47ce355482d1734b66a78de92edd0d1";
-      sha256 = "118cn05jzp3ww1bkp5651zs8lirka6qjrfmsjib1amp9lk7c1vjc";
+      rev = "64d514d14f339f2e516af6f7b4417e441f7f62fa";
+      sha256 = "0hnyvf5n3fy6dhz6d625r08ipdiq1hlvqvsic3k7m5hapw0kzjjw";
     };
   };
 
   vim-lsp-settings = buildVimPluginFrom2Nix {
     pname = "vim-lsp-settings";
-    version = "2020-01-10";
+    version = "2020-01-14";
     src = fetchFromGitHub {
       owner = "mattn";
       repo = "vim-lsp-settings";
-      rev = "4699c55a9814b6b9c4cbb63570b79f39864da1c0";
-      sha256 = "1lr6sxnavp01q3bz02agvdpm4rnn2zfsq7dg0zik59ryvq5hkw6m";
+      rev = "609bbac849fe18c09fa08c8b26851ac14e0802e9";
+      sha256 = "086477s7dmd2psqabay4rnmfg69gwpijjksc292i3rlsqy11i5xv";
     };
   };
 
