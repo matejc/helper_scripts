@@ -11,9 +11,6 @@ let
       url = "https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.34.9/omnisharp-mono.tar.gz";
       sha256 = "1b5jzc7dj9hhddrr73hhpq95h8vabkd6xac1bwq05lb24m0jsrp9";
     };
-    installPhase = old.installPhase + ''
-      ln -s $out/bin/omnisharp $out/bin/omnisharp-lsp
-    '';
   });
 
   customRC = ''
@@ -300,13 +297,27 @@ let
 
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
+
 require'nvim_lsp'.pyls.setup{}
+
+local nvim_lsp = require'nvim_lsp'
+local configs = require'nvim_lsp/skeleton'
+-- Check if it's already defined for when I reload this file.
+if not nvim_lsp.omnisharp then
+  configs.omnisharp = {
+    default_config = {
+      cmd = {'${omnisharp-roslyn}/bin/omnisharp', '-lsp'};
+      filetypes = {'cs'};
+      root_dir = function(fname)
+        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      log_level = vim.lsp.protocol.MessageType.Warning;
+      settings = {};
+    };
+  }
+end
+nvim_lsp.omnisharp.setup{}
 EOF
-
-    let g:ale_completion_enabled = 0
-
-    "autocmd BufEnter * call ncm2#enable_for_buffer()
-    "set completeopt=noinsert,menuone,noselect
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages
@@ -318,13 +329,27 @@ EOF
     " When the <Enter> key is pressed while the popup menu is visible, it only
     " hides the menu. Use this mapping to close the menu and also start a new
     " line.
-    "inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
+    inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
 
     " Use <TAB> to select the popup menu:
     "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-    "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
+
+    autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
+    autocmd BufEnter * call asyncomplete#enable_for_buffer()
+    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+      \ 'name': 'omni',
+      \ 'whitelist': ['*'],
+      \ 'blacklist': [ ],
+      \ 'completor': function('asyncomplete#sources#omni#completor')
+      \  }))
+
+    let g:ale_completion_enabled = 0
+    let g:ale_linters = {
+      \   'cs': [],
+      \}
 
     function! CleverTab()
       if pumvisible()
@@ -371,6 +396,8 @@ EOF
           vim-nix
           nerdcommenter
           ale
+          asyncomplete-vim
+          asyncomplete-omni-vim
         ];
         opt = [ nvim-lsp ];
       };

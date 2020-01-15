@@ -1,14 +1,9 @@
 dyng/ctrlsf.vim
-mattn/vim-lsp-settings
 neovim/nvim-lsp
-OmniSharp/omnisharp-vim
 prabirshrestha/asyncomplete-buffer.vim
 prabirshrestha/asyncomplete-file.vim
-prabirshrestha/asyncomplete-lsp.vim
-prabirshrestha/asyncomplete-omni.vim
 prabirshrestha/asyncomplete-tags.vim
 prabirshrestha/asyncomplete.vim
 prabirshrestha/async.vim
-prabirshrestha/vim-lsp
-roxma/vim-hug-neovim-rpc
 sickill/vim-pasta
+yami-beta/asyncomplete-omni.vim
