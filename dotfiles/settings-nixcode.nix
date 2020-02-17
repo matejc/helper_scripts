@@ -30,9 +30,10 @@ let
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
     dropDownTerminal = programs.dropdown-terminal;
-    i3-msg = "/run/current-system/sw/bin/i3-msg";
-    i3BarEnable = false;
-    lockscreen = "${homeDir}/bin/lockscreen";
+    i3-msg = "/run/current-system/sw/bin/swaymsg";
+    i3BarEnable = true;
+    swayEnable = true;
+    lockscreen = "${homeDir}/bin/wl-lockscreen";
     term = null;
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
@@ -67,8 +68,8 @@ let
     ./gitignore.nix
     ./autolock.nix
     ./i3lock-wrapper.nix
-    ./lockscreen.nix
-    #./swaylockscreen.nix
+    #./lockscreen.nix
+    ./swaylockscreen.nix
     ./thissession.nix
     # ./atom_ctags.nix
     # ./atom_ctags-symbols.nix
@@ -113,7 +114,7 @@ let
     ./way-cooler.nix
     ./nvim.nix
     ./konsole.nix
-    ./polybar.nix
+    #./polybar.nix
     ./i3_workspace.nix
     ./rofi.nix
     ./rofi-themes.nix
@@ -121,12 +122,12 @@ let
     ./mount.nix
   ];
 
+#  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
+#  ${pkgs.procps}/bin/pkill polybar
+#  ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
+
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
-
-    export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
-    ${pkgs.procps}/bin/pkill polybar
-    ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
@@ -135,7 +136,7 @@ let
 
     ${pkgs.xorg.xrdb}/bin/xrdb -load ${variables.homeDir}/.Xresources
 
-    systemctl --user restart compton &
+    systemctl --user restart picom &
 
     echo "DONE"
   '';
@@ -162,8 +163,8 @@ let
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
-    ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
   '';
+    #ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
 in {
   inherit variables dotFilePaths activationScript;
 }

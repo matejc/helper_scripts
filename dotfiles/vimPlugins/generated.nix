@@ -92,6 +92,18 @@ let
     };
   };
 
+  omnisharp-vim = buildVimPluginFrom2Nix {
+    pname = "omnisharp-vim";
+    version = "2020-01-17";
+    src = fetchFromGitHub {
+      owner = "OmniSharp";
+      repo = "omnisharp-vim";
+      rev = "68c27b55465844c4f48b6c1fa068ec9e4dffb368";
+      sha256 = "1y7h14fd32qaq5lq7db34g7diw73fga7ydcin9p8v857dcgk8g9b";
+      fetchSubmodules = true;
+    };
+  };
+
   vim-pasta = buildVimPluginFrom2Nix {
     pname = "vim-pasta";
     version = "2018-09-08";

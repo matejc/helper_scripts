@@ -29,12 +29,22 @@
         RPROMPT="%F{cyan}[$container]%{$reset_color%} ''${RPROMPT}"
       fi
 
+      if [ -f "$KUBECONFIG" ] || [ -f "$HOME/.kube/config" ]
+      then
+        export KUBE_PS1_SYMBOL_ENABLE=false
+        export KUBE_PS1_NS_ENABLE=false
+        export KUBE_PS1_DIVIDER=""
+        export KUBE_PS1_PREFIX="%F{blue}k8s:%{$reset_color%}"
+        export KUBE_PS1_SUFFIX=""
+
+        RPROMPT="%{$reset_color%}$(kube_ps1)%{$reset_color%} ''${RPROMPT}"
+      fi
+
       export RPROMPT
     }
 
     export BROWSER="${variables.browser}"
     export EDITOR="${variables.editor}"
-    export PATH="$HOME/bin:${pkgs.direnv}/bin:$PATH"
 
     if [[ $TERM == xterm-termite ]]; then
       . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
@@ -48,13 +58,13 @@
       export TERM="screen-256color"
     fi
 
-
     # eval "$(direnv hook zsh)"
     _direnv_hook() {
-      eval "$(direnv export zsh 2>/dev/null)";
-      if [ -n "$DIRENV_DIR" ] && [ -n "$DIRENV_WATCHES" ]
+      eval "$(${pkgs.direnv}/bin/direnv export zsh 2>/dev/null)";
+      ${pkgs.direnv}/bin/direnv status | ${pkgs.gnugrep}/bin/grep -q "Found RC allowed true"
+      if [ "$?" = "0" ]
       then
-        RPROMPT="%F{blue}[env:$(basename ''${DIRENV_DIR:1})]%{$reset_color%} ''${RPROMPT}"
+        RPROMPT="%F{blue}env:%F{red}$(basename ''${DIRENV_DIR:1})%{$reset_color%} ''${RPROMPT}"
       fi
     }
     typeset -ag precmd_functions;
@@ -64,23 +74,23 @@
 
     unalias l
 
-    # ctrl+del
-    bindkey '^[[3;5~' kill-word
     # alt+del
     bindkey '^[[3;3~' kill-word
 
     # alt+backspace
     bindkey '^[^?' backward-kill-word
 
-    # alt+z
-    bindkey '^[z' undo
+    # alt+u
+    bindkey '^[u' undo
 
     # alt+r
     bindkey '^[r' redo
 
-    export PERL5LIB="${pkgs.git}/share/perl5:$PERL5LIB"
+    #export PERL5LIB="${pkgs.git}/share/perl5:$PERL5LIB"
 
     setopt histignorespace
+
+    source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
   '';
 } {
   target = "${variables.homeDir}/.zlogin";

@@ -300,6 +300,15 @@ in
   bindsym $mod+y border pixel 1
   bindsym $mod+u border none
 
+  ${lib.optionalString variables.swayEnable ''
+    output * bg ${variables.wallpaper} fill
+    exec swayidle -w \
+      timeout 300 '${variables.homeDir}/bin/wl-lockscreen' \
+      timeout 400 'swaymsg "output * dpms off"' \
+           resume 'swaymsg "output * dpms on"' \
+     before-sleep '${variables.homeDir}/bin/wl-lockscreen'
+  ''}
+
   #}}}
   #}}}
   #{{{ Applications

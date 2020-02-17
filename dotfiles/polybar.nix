@@ -409,11 +409,10 @@
 
   get_status_icon
 
-  event_pattern="^Event 'change' on source #[02]$"
+  event_pattern="^Event 'change' on source #[012]$"
 
   while read line
   do
-    # source #2 is the microphone
     if [[ $line =~ $event_pattern ]]
     then
       get_status_icon

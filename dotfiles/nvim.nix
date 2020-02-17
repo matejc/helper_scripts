@@ -13,6 +13,9 @@ let
     };
   });
 
+  all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
+  hie = (all-hies.selection { selector = p: { inherit (p) ghc865; }; });
+
   customRC = ''
     " if hidden is not set, TextEdit might fail.
     set hidden
@@ -298,9 +301,12 @@ let
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
 
-require'nvim_lsp'.pyls.setup{}
-
+vim.cmd('packadd nvim-lsp')
 local nvim_lsp = require'nvim_lsp'
+
+nvim_lsp.pyls.setup{}
+nvim_lsp.tsserver.setup{}
+
 local configs = require'nvim_lsp/skeleton'
 -- Check if it's already defined for when I reload this file.
 if not nvim_lsp.omnisharp then
@@ -317,7 +323,23 @@ if not nvim_lsp.omnisharp then
   }
 end
 nvim_lsp.omnisharp.setup{}
+if not nvim_lsp.hie then
+  configs.hie = {
+    default_config = {
+      cmd = {'${hie}/bin/hie-wrapper', '--lsp'};
+      filetypes = {'haskell'};
+      root_dir = function(fname)
+        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      log_level = vim.lsp.protocol.MessageType.Warning;
+      settings = {};
+    };
+  }
+end
+nvim_lsp.hie.setup{}
 EOF
+
+    autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages
@@ -332,38 +354,21 @@ EOF
     inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
 
     " Use <TAB> to select the popup menu:
-    "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
-
-    autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
-    autocmd BufEnter * call asyncomplete#enable_for_buffer()
-    au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-      \ 'name': 'omni',
-      \ 'whitelist': ['*'],
-      \ 'blacklist': [ ],
-      \ 'completor': function('asyncomplete#sources#omni#completor')
-      \  }))
 
     let g:ale_completion_enabled = 0
     let g:ale_linters = {
       \   'cs': [],
       \}
 
-    function! CleverTab()
-      if pumvisible()
-        return "\<C-N>"
-      endif
-      if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-        return "\<Tab>"
-      elseif exists('&omnifunc') && &omnifunc != ""
-        return "\<C-X>\<C-O>"
-      else
-        return "\<C-N>"
-      endif
-    endfunction
-    inoremap <expr> <silent> <Tab> CleverTab()
+    let g:OmniSharp_server_stdio = 1
+    let g:OmniSharp_server_path = '${pkgs.omnisharp-roslyn}/bin/omnisharp'
+
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+    let g:airline#extensions#tabline#enabled = 1
   '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -372,8 +377,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "92316849863bb2661ee5b4bb284f56163fed27ad";
-      sha256 = "0l232jl10dkpldmax8w324bsbpbczy8r3zb8gnz33q4khs1wcayj";
+      rev = "405f49a9b16c5668a033b8be959564abc5f852ba";
+      sha256 = "1yj1da2ql3s1r2scb0c8ynf7dyrp6722jzpyki4g9vyqb7a8wgmm";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
   });
@@ -396,8 +401,11 @@ EOF
           vim-nix
           nerdcommenter
           ale
-          asyncomplete-vim
-          asyncomplete-omni-vim
+          #asyncomplete-vim
+          #asyncomplete-omni-vim
+          youcompleteme
+          omnisharp-vim
+          ctrlp-py-matcher
         ];
         opt = [ nvim-lsp ];
       };
@@ -425,7 +433,10 @@ in [{
   '';
 } {
   target = "${variables.homeDir}/bin/nvim";
-  source = "${neovim}/bin/nvim";
+  source = pkgs.writeScript "nvim" ''
+    #!${pkgs.stdenv.shell}
+    ${neovim}/bin/nvim -V9/tmp/nvim.log "$@"
+  '';
 } {
   target = "${variables.homeDir}/bin/q";
   source = pkgs.writeScript "open-nvim" ''
@@ -433,7 +444,7 @@ in [{
     function open_nvim_qt {
       export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server omnisharp-roslyn pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
-      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${neovim}/bin/nvim "$@"
+      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
     if [ -z "$@" ]
     then

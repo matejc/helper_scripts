@@ -1,5 +1,6 @@
 dyng/ctrlsf.vim
 neovim/nvim-lsp
+OmniSharp/omnisharp-vim
 prabirshrestha/asyncomplete-buffer.vim
 prabirshrestha/asyncomplete-file.vim
 prabirshrestha/asyncomplete-tags.vim
