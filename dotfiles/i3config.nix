@@ -300,13 +300,25 @@ in
   bindsym $mod+y border pixel 1
   bindsym $mod+u border none
 
-  ${lib.optionalString variables.swayEnable ''
+  ${lib.optionalString variables.sway.enable ''
     output * bg ${variables.wallpaper} fill
     exec swayidle -w \
-      timeout 300 '${variables.homeDir}/bin/wl-lockscreen' \
+      timeout 300 '${variables.homeDir}/bin/lockscreen' \
       timeout 400 'swaymsg "output * dpms off"' \
            resume 'swaymsg "output * dpms on"' \
-     before-sleep '${variables.homeDir}/bin/wl-lockscreen'
+     before-sleep '${variables.homeDir}/bin/lockscreen'
+
+     seat * idle_inhibit keyboard pointer
+
+    ${lib.concatMapStringsSep "\n" (v: ''
+      input ${v} events disabled
+    '') variables.sway.disabledInputs}
+
+    exec ${pkgs.xss-lock}/bin/xss-lock --ignore-sleep ${variables.homeDir}/bin/lockscreen
+    exec ${pkgs.xorg.xset}/bin/xset s off
+
+    #for_window [class="stalonetray"] exec "${variables.i3-msg} move position 200 px 1060 px", sticky enable
+    #exec ${pkgs.stalonetray}/bin/stalonetray
   ''}
 
   #}}}
@@ -386,7 +398,7 @@ in
   bindsym $mod+Shift+C reload
 
   # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-  bindsym $mod+Shift+R restart
+  bindsym $mod+Shift+R ${if variables.sway.enable then "reload" else "restart"}
 
   # exit i3 (logs you out of your X session)
   bindsym $mod+Shift+E exit
@@ -425,7 +437,7 @@ in
 
   #bindsym F1 [title="flow"] move workspace current
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
-  bindsym --release Print exec --no-startup-id ${variables.programs.screenshooter}
+  bindsym --release Print exec --no-startup-id ${variables.homeDir}/bin/screenshooter
   #bindsym Ctrl+Mod1+w exec "/run/current-system/sw/bin/feh --bg-fill $(/run/current-system/sw/bin/python /home/matejc/Dropbox/matej/workarea/pys/randimage.py /home/matejc/Pictures/wallpapers/)"
   bindsym Mod1+F4 kill
   bindsym Mod1+Tab focus right
@@ -504,7 +516,10 @@ in
   #}}}
   #{{{ Autostart
 
-  exec_always --no-startup-id ${variables.restartScript}
+
+  ${lib.optionalString (!variables.sway.enable) ''
+    exec_always --no-startup-id ${variables.restartScript}
+  ''}
   exec --no-startup-id ${variables.startScript}
 
   # }}}
@@ -565,14 +580,18 @@ in
   source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] focus, scratchpad show' | ${pkgs.gnugrep}/bin/grep 'false'
-    if [[ "$?" = "0" ]]
+    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.name=="ScratchTerm").focused')
+    if [ -z "$RESULT" ]
     then
       ${xfce.xfce4-terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
       sleep 0.1
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] mark I3WM_SCRATCHPAD, resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px"
-    else
-      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
+      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
+    elif [[ "$RESULT" = "true" ]]
+    then
+      ${variables.i3-msg} '[title="^ScratchTerm.*"] move scratchpad'
+    elif [[ "$RESULT" = "false" ]]
+    then
+      ${variables.i3-msg} '[title="^ScratchTerm.*"] focus'
     fi
   '';
 } {

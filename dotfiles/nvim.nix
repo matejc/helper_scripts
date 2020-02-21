@@ -13,7 +13,7 @@ let
     };
   });
 
-  all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/master") {};
+  all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/d98bdbff3ebdab408a12a9b7890d4cf400180839") {};
   hie = (all-hies.selection { selector = p: { inherit (p) ghc865; }; });
 
   customRC = ''
@@ -80,6 +80,7 @@ let
     set smartindent
     set nocopyindent
     set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+    set nowrap
 
     set virtualedit=onemore
 
@@ -250,6 +251,10 @@ let
     nmap <c-_> <leader>c<space>
     imap <c-_> <esc><leader>c<space>
     vmap <c-_> <leader>c<space>
+
+    nmap <c-/> <leader>c<space>
+    imap <c-/> <esc><leader>c<space>
+    vmap <c-/> <leader>c<space>
 
     " Override w motion
     function! MyWMotion()

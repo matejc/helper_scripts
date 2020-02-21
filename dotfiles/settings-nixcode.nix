@@ -14,7 +14,7 @@ let
     wirelessInterfaces = [ "wlp0s20f3" ];
     mounts = [ "/" ];
     temperatureFiles = [ "/sys/devices/virtual/thermal/thermal_zone2/temp" ];
-    batteries = [ ];
+    batteries = [ "0" ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
@@ -29,23 +29,26 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = programs.dropdown-terminal;
+    dropDownTerminal = "${variables.homeDir}/bin/dropdown-terminal";
     i3-msg = "/run/current-system/sw/bin/swaymsg";
     i3BarEnable = true;
-    swayEnable = true;
-    lockscreen = "${homeDir}/bin/wl-lockscreen";
+    sway = {
+      enable = true;
+      disabledInputs = [ "2:14:ETPS/2_Elantech_Touchpad" ];
+    };
+    lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
-        screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
+        #screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
         # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi window#drun#run";
+        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi drun#run";
         #terminal = "${pkgs.alacritty}/bin/alacritty";
         terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
-        dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+        #dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
@@ -120,6 +123,8 @@ let
     ./rofi-themes.nix
     ./xresources.nix
     ./mount.nix
+    ./screenshooter.nix
+    ./xfce-terminal-dropdown.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
@@ -146,7 +151,6 @@ let
 
     ${variables.homeDir}/bin/mykeepassxc &
     ${variables.browser} &
-    ${variables.homeDir}/bin/autolock &
     ${variables.programs.slack} &
     ${variables.programs.myweechat} &
     { sleep 2; ${variables.programs.cmst}; } &
@@ -163,8 +167,8 @@ let
     mkdir -p ${variables.homeDir}/bin
     ln -fs ${variables.binDir}/* ${variables.homeDir}/bin/
     ln -fs ${variables.startScript} ${variables.homeDir}/bin/start-script.sh
+    ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
   '';
-    #ln -fs ${variables.restartScript} ${variables.homeDir}/bin/restart-script.sh
 in {
   inherit variables dotFilePaths activationScript;
 }
