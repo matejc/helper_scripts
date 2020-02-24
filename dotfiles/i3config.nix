@@ -1,7 +1,4 @@
 { variables, config, pkgs, lib }:
-let
-  xfce = pkgs.xfce4-14;
-in
 [{
   target = "${variables.homeDir}/.config/i3/config";
   source = pkgs.writeText "i3config" ''
@@ -426,7 +423,7 @@ in
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
   bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
-  bindsym Ctrl+Mod1+h exec --no-startup-id ${xfce.thunar}/bin/thunar
+  bindsym Ctrl+Mod1+h exec --no-startup-id ${pkgs.xfce.thunar}/bin/thunar
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
   bindsym Ctrl+Mod1+r exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
 
@@ -580,18 +577,18 @@ in
   source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.name=="ScratchTerm").focused')
+    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.marks[0]=="I3WM_SCRATCHPAD").focused')
     if [ -z "$RESULT" ]
     then
-      ${xfce.xfce4-terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
-      sleep 0.1
-      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
+      ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
+      sleep 0.2
+      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
     elif [[ "$RESULT" = "true" ]]
     then
-      ${variables.i3-msg} '[title="^ScratchTerm.*"] move scratchpad'
+      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] move scratchpad'
     elif [[ "$RESULT" = "false" ]]
     then
-      ${variables.i3-msg} '[title="^ScratchTerm.*"] focus'
+      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] focus'
     fi
   '';
 } {

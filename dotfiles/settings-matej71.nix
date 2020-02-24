@@ -16,7 +16,7 @@ let
     wirelessInterfaces = [ "wlp3s0" ];
     mounts = [ "/" ];
     temperatureFiles = [ "/sys/devices/virtual/thermal/thermal_zone2/temp" ];
-    batteries = [ ];
+    batteries = [ "0" "1" ];
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
@@ -31,41 +31,36 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = programs.dropdown-terminal;
-    # dropDownTerminal = "${homeDir}/bin/scratchterm ${pkgs.termite}/bin/termite";
+    dropDownTerminal = "${homeDir}/bin/xfce-terminal-dropdown";
     /* dropDownTerminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down"; */
-    i3-msg = "/run/current-system/sw/bin/i3-msg";
-    i3BarEnable = false;
+    i3-msg = "/run/current-system/sw/bin/swaymsg";
+    i3BarEnable = true;
+    sway = {
+      enable = true;
+      disabledInputs = [ "1267:769:ELAN_Touchscreen" "1739:0:Synaptics_TM3075-002" ];
+    };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.chromium;
+    browser = "chromium";
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
         #alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
-        screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
-        # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
-        nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
+        #nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi window#drun#run";
+        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi drun#run";
         terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
         #terminal = "${pkgs.alacritty}/bin/alacritty";
-        dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
-        # dropdown-terminal = "${homeDir}/bin/termite-dropdown";
-        /* terminal = "${pkgs.termite}/bin/termite"; */
-        chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
-        l = "${pkgs.exa}/bin/exa -gal --git";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
         yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-        minitube = "${pkgs.minitube.override { withAPIKey = variables.youTubeApiKey; }}/bin/minitube";
         spideroak = "${pkgs.spideroak}/bin/spideroak";
         nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
         riot = "${pkgs.riot-desktop}/bin/riot-desktop";
+        signal = "${pkgs.signal-desktop}/bin/signal-desktop";
         myweechat = "${xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
     };
-    youTubeApiKey = "AIzaSyBxg89KksVhdWOA5_Srg2_5G6jS6b10mAk";
     # i3minator = {
     #   chat = {
     #     workspace = "1";
@@ -103,8 +98,7 @@ let
     ./gitignore.nix
     # ./autolock.nix
     ./i3lock-wrapper.nix
-    ./lockscreen.nix
-    #./swaylockscreen.nix
+    ./swaylockscreen.nix
     ./thissession.nix
     # ./atom_ctags.nix
     # ./atom_ctags-symbols.nix
@@ -156,16 +150,18 @@ let
     ./xresources.nix
     ./mount.nix
     ./scan.nix
+    ./screenshooter.nix
+    ./xfce-terminal-dropdown.nix
   ];
+
+  #export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
+  #${pkgs.procps}/bin/pkill polybar
+  #${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
     ${variables.homeDir}/bin/xinput_custom_script.sh
-
-    export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
-    ${pkgs.procps}/bin/pkill polybar
-    ${pkgs.lib.concatMapStringsSep "\n" (bar: ''polybar ${bar} &'') variables.polybar.bars}
 
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
@@ -183,13 +179,10 @@ let
     #!${pkgs.stdenv.shell}
 
     ${variables.programs.mykeepassxc} &
-    ${pkgs.signal-desktop}/bin/signal-desktop &
     ${pkgs.tdesktop}/bin/telegram-desktop &
-    ${pkgs.rambox}/bin/rambox &
     ${variables.programs.spideroak} &
     ${variables.programs.nextcloud-client} &
     ${variables.browser} &
-    ${variables.programs.riot} &
     ${variables.programs.myweechat} &
     { sleep 2; ${variables.programs.cmst}; } &
 

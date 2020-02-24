@@ -317,7 +317,7 @@ local configs = require'nvim_lsp/skeleton'
 if not nvim_lsp.omnisharp then
   configs.omnisharp = {
     default_config = {
-      cmd = {'${omnisharp-roslyn}/bin/omnisharp', '-lsp'};
+      cmd = {'omnisharp', '-lsp'};
       filetypes = {'cs'};
       root_dir = function(fname)
         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
@@ -331,7 +331,7 @@ nvim_lsp.omnisharp.setup{}
 if not nvim_lsp.hie then
   configs.hie = {
     default_config = {
-      cmd = {'${hie}/bin/hie-wrapper', '--lsp'};
+      cmd = {'hie-wrapper', '--lsp'};
       filetypes = {'haskell'};
       root_dir = function(fname)
         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
@@ -370,7 +370,7 @@ EOF
       \}
 
     let g:OmniSharp_server_stdio = 1
-    let g:OmniSharp_server_path = '${pkgs.omnisharp-roslyn}/bin/omnisharp'
+    let g:OmniSharp_server_path = 'omnisharp'
 
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:airline#extensions#tabline#enabled = 1
@@ -382,8 +382,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "405f49a9b16c5668a033b8be959564abc5f852ba";
-      sha256 = "1yj1da2ql3s1r2scb0c8ynf7dyrp6722jzpyki4g9vyqb7a8wgmm";
+      rev = "ff1730373c6139db14b8f2f9b24d4ccd7fcfb01d";
+      sha256 = "02j5npq3clwyx0r8kiq8n9gr8mc275mdgm7fnfjivn9yvhakcf03";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
   });
@@ -447,13 +447,17 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server omnisharp-roslyn pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server /* omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
-    if [ -z "$@" ]
+    if [ -z "$1" ]
     then
       open_nvim_qt $(${pkgs.git}/bin/git ls-files -m --exclude-standard)
+    elif [ -d "$1" ]
+    then
+      cd "$1"
+      open_nvim_qt "''${@:2}"
     else
       open_nvim_qt "$@"
     fi

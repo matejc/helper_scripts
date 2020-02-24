@@ -91,6 +91,11 @@
     setopt histignorespace
 
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+    source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+    bindkey "$terminfo[kcuu1]" history-substring-search-up
+    bindkey "$terminfo[kcud1]" history-substring-search-down
+    export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
