@@ -36,7 +36,7 @@ let
     " always show signcolumns
     set signcolumn=yes
 
-    set guifont=${lib.escape [" "] variables.alternativeFont}
+    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
     set cursorline
     set number

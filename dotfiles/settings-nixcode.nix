@@ -1,6 +1,5 @@
 { pkgs, lib ? pkgs.lib }:
 let
-  xfce = pkgs.xfce4-14;
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
@@ -19,9 +18,11 @@ let
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
     editor = "${pkgs.nano}/bin/nano";
-    font = "Source Code Pro Semibold 11";
-    alternativeFont = "Source Code Pro:h11";
-    terminalFont = "Source Code Pro Semibold 11";
+    font = {
+      family = "Source Code Pro";
+      extra = "Semibold";
+      size = "11";
+    };
     wallpaper = "${variables.homeDir}/Pictures/arch-bridge.jpg";
     lockImage = "${variables.homeDir}/Pictures/arch-bridge-blur.png";
     inherit startScript;
@@ -29,9 +30,9 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${variables.homeDir}/bin/dropdown-terminal";
+    dropDownTerminal = "${variables.homeDir}/bin/terminal-dropdown";
     i3-msg = "/run/current-system/sw/bin/swaymsg";
-    i3BarEnable = true;
+    i3BarEnable = false;
     sway = {
       enable = true;
       disabledInputs = [ "2:14:ETPS/2_Elantech_Touchpad" ];
@@ -41,25 +42,19 @@ let
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
-        #screenshooter = "${xfce.xfce4-screenshooter}/bin/xfce4-screenshooter --region --save ~/Pictures";
-        # screenshooter = "${pkgs.grim}/bin/grim-g \"$(slurp)\" \"~/Pictures/Screenshoot-$(date -u -Iseconds).png\"";
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi drun#run";
-        #terminal = "${pkgs.alacritty}/bin/alacritty";
-        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
-        #dropdown-terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down";
+        terminal = "${pkgs.kitty}/bin/kitty";
         chromium = "${pkgs.chromium}/bin/chromium";
+        firefox = "${pkgs.firefox}/bin/firefox";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         a = "${pkgs.atom}/bin/atom";
         code = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         slack = "${pkgs.slack}/bin/slack";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-        #myweechat = "${pkgs.alacritty}/bin/alacritty --class=WeeChat -t WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
-        myweechat = "${xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
+        myweechat = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
     };
     polybar.bars = [ "my" ];
   };
@@ -113,8 +108,8 @@ let
     # ./mkchromecast.nix
     ./freecad.nix
     ./bcrypt.nix
-    ./termite.nix
-    ./way-cooler.nix
+    #./termite.nix
+    #./way-cooler.nix
     ./nvim.nix
     ./konsole.nix
     #./polybar.nix
@@ -125,6 +120,10 @@ let
     ./mount.nix
     ./screenshooter.nix
     ./xfce-terminal-dropdown.nix
+    ./waybar.nix
+    ./launcher.nix
+    ./wofi.nix
+    ./kitty.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"

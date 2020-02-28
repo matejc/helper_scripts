@@ -98,7 +98,7 @@
   # font -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso10646-1
   #font pango:DejaVu Sans Mono 9
   #font pango:Bitstream Vera Sans Mono Roman 9
-  font pango:${variables.font}
+  font pango:${variables.font.family} ${variables.font.extra} ${variables.font.size}
 
   #}}}
   #{{{ Workspaces
@@ -314,8 +314,14 @@
     exec ${pkgs.xss-lock}/bin/xss-lock --ignore-sleep ${variables.homeDir}/bin/lockscreen
     exec ${pkgs.xorg.xset}/bin/xset s off
 
+    exec ${pkgs.mako}/bin/mako
+
     #for_window [class="stalonetray"] exec "${variables.i3-msg} move position 200 px 1060 px", sticky enable
     #exec ${pkgs.stalonetray}/bin/stalonetray
+
+    bar {
+      swaybar_command ${pkgs.waybar.override { pulseSupport = true; }}/bin/waybar
+    }
   ''}
 
   #}}}
@@ -417,7 +423,7 @@
 
   bindcode 233 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight inc
   bindcode 232 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight dec
-  bindsym Ctrl+Mod1+space exec --no-startup-id "${variables.programs.launcher}"
+  bindsym Ctrl+Mod1+space exec --no-startup-id "${variables.homeDir}/bin/launcher"
   bindsym Ctrl+Mod1+b exec --no-startup-id "${variables.homeDir}/bin/bluetooth-connect"
   bindsym Ctrl+Mod1+a exec --no-startup-id "${pkgs.pavucontrol}/bin/pavucontrol"
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
@@ -492,7 +498,7 @@
 
   ${lib.optionalString variables.i3BarEnable ''
   bar {
-    font pango:${variables.font}
+    font pango:${variables.font.family} ${variables.font.extra} ${variables.font.size}
     separator_symbol " • "
     #height 28
     status_command i3status
@@ -573,14 +579,14 @@
     fi
   '';
 } {
-  target = "${variables.homeDir}/bin/xfce-terminal-dropdown";
-  source = pkgs.writeScript "xfce-terminal-dropdown.sh" ''
+  target = "${variables.homeDir}/bin/terminal-dropdown";
+  source = pkgs.writeScript "terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
     RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.marks[0]=="I3WM_SCRATCHPAD").focused')
     if [ -z "$RESULT" ]
     then
-      ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal --title=ScratchTerm "$@" &
+      ${pkgs.kitty}/bin/kitty --title=ScratchTerm "$@" &
       sleep 0.2
       ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
     elif [[ "$RESULT" = "true" ]]

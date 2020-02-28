@@ -45,6 +45,7 @@
 
     export BROWSER="${variables.browser}"
     export EDITOR="${variables.editor}"
+    export TERMINAL="${variables.terminal}"
 
     if [[ $TERM == xterm-termite ]]; then
       . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh

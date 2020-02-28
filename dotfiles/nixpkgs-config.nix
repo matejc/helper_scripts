@@ -6,6 +6,7 @@
         pidgin-otr pidgin-opensteamworks pidgin-skypeweb pidgin-window-merge
         pidgin-xmpp-receipts purple-discord purple-hangouts purple-matrix
         telegram-purple toxprpl purple-facebook purple-xmpp-http-upload
+        purple-slack
       ];
     };
 
@@ -27,6 +28,8 @@
         libxslt.dev libxml2.dev zlib
 
         chromedriver
+
+        (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python37Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
       ];
     };
 
