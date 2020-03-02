@@ -10,7 +10,7 @@
         // Choose the order of the modules
         "modules-left": ["sway/workspaces", "sway/mode"],
         "modules-center": ["sway/window"],
-        "modules-right": ["idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "battery", "battery#bat2", "clock", "tray"],
+        "modules-right": ["idle_inhibitor", "pulseaudio", "network", "cpu", "memory", "temperature", "backlight", "battery", "battery#bat1", "clock", "tray"],
         // Modules configuration
         // "sway/workspaces": {
         //     "disable-scroll": true,
@@ -107,8 +107,17 @@
             // "format-full": "",
             "format-icons": ["", "", "", "", ""]
         },
-        "battery#bat2": {
-            "bat": "BAT2"
+        "battery#bat1": {
+            "bat": "BAT1",
+            "states": {
+                "warning": 30,
+                "critical": 15
+            },
+            "format": "{capacity}% {icon}",
+            "format-charging": "{capacity}% ",
+            "format-plugged": "{capacity}% ",
+            "format-alt": "{time} {icon}",
+            "format-icons": ["", "", "", "", ""]
         },
         "network": {
             // "interface": "wlp2*", // (Optional) To force the use of this interface

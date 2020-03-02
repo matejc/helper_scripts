@@ -303,21 +303,20 @@
       timeout 300 '${variables.homeDir}/bin/lockscreen' \
       timeout 400 'swaymsg "output * dpms off"' \
            resume 'swaymsg "output * dpms on"' \
-     before-sleep '${variables.homeDir}/bin/lockscreen'
+      before-sleep '${variables.homeDir}/bin/lockscreen'
 
-     seat * idle_inhibit keyboard pointer
+    seat * idle_inhibit keyboard pointer
 
     ${lib.concatMapStringsSep "\n" (v: ''
       input ${v} events disabled
     '') variables.sway.disabledInputs}
 
+    input ${variables.sway.trackpoint.identifier} pointer_accel ${variables.sway.trackpoint.accel}
+
     exec ${pkgs.xss-lock}/bin/xss-lock --ignore-sleep ${variables.homeDir}/bin/lockscreen
     exec ${pkgs.xorg.xset}/bin/xset s off
 
-    exec ${pkgs.mako}/bin/mako
-
-    #for_window [class="stalonetray"] exec "${variables.i3-msg} move position 200 px 1060 px", sticky enable
-    #exec ${pkgs.stalonetray}/bin/stalonetray
+    exec ${pkgs.mako}/bin/mako --group-by app-name
 
     bar {
       swaybar_command ${pkgs.waybar.override { pulseSupport = true; }}/bin/waybar

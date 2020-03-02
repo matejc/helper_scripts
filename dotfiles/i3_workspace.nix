@@ -10,7 +10,7 @@
     import os
 
     def usage():
-        return "Usage: {0} [--skip] {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
+        return "Usage: {0} [--skip,--notify] {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
 
     if len(sys.argv) < 2:
         print usage()
@@ -18,11 +18,14 @@
 
     direction = 'next'
     skip = False
+    notify = False
 
     for i in range(1, len(sys.argv)):
         option = sys.argv[i].lower()
         if option in ('prev', 'next', 'prev_on_output', 'next_on_output'):
             direction = option
+        elif option == '--notify':
+            notify = True
         elif option == '--skip':
             skip = True
         else:
@@ -68,17 +71,20 @@
 
         if workspace[u'focused'] == True:
             current = workspace[u'num']
+            result = current
 
             if direction == 'prev':
-                print find_by(workspaces, current, -1, skip=skip)
+                result = find_by(workspaces, current, -1, skip=skip)
             elif direction == 'next':
-                print find_by(workspaces, current, 1, skip=skip)
+                result = find_by(workspaces, current, 1, skip=skip)
             elif direction == 'prev_on_output':
-                print find_by(workspaces, current, -1, workspace[u'output'], skip)
+                result = find_by(workspaces, current, -1, workspace[u'output'], skip)
             elif direction == 'next_on_output':
-                print find_by(workspaces, current, 1, workspace[u'output'], skip)
-            else:
-                print current
+                result = find_by(workspaces, current, 1, workspace[u'output'], skip)
+
+            if notify:
+              subprocess.call(["${pkgs.libnotify}/bin/notify-send", "-a", "workspace", "-t", "500", "Workspace: "+str(result)])
+            print result
 
             break
 

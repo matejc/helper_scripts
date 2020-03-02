@@ -21,9 +21,11 @@ let
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     editor = "${pkgs.nano}/bin/nano";
-    font = "Source Code Pro Semibold 11";
-    alternativeFont = "Source Code Pro:h11";
-    terminalFont = "Source Code Pro Semibold 11";
+    font = {
+      family = "Source Code Pro";
+      extra = "Semibold";
+      size = "11";
+    };
     wallpaper = "${variables.homeDir}/Pictures/blade-of-grass.jpg";
     lockImage = "${variables.homeDir}/Pictures/blade-of-grass-blur.png";
     inherit startScript;
@@ -31,35 +33,34 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${homeDir}/bin/xfce-terminal-dropdown";
+    dropDownTerminal = "${homeDir}/bin/terminal-dropdown";
     /* dropDownTerminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down"; */
     i3-msg = "/run/current-system/sw/bin/swaymsg";
-    i3BarEnable = true;
+    i3BarEnable = false;
     sway = {
       enable = true;
       disabledInputs = [ "1267:769:ELAN_Touchscreen" "1739:0:Synaptics_TM3075-002" ];
+      trackpoint = {
+        identifier = "2:10:TPPS/2_IBM_TrackPoint";
+        accel = "-0.3";
+      };
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
     browser = "chromium";
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
-        #alacritty = "${pkgs.alacritty}/bin/alacritty -e ${homeDir}/bin/tmux-new-session";
-        #nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        launcher = "${pkgs.rofi}/bin/rofi -show combi -combi-modi drun#run";
-        terminal = "${xfce.xfce4-terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.alacritty}/bin/alacritty";
+        terminal = "${pkgs.kitty}/bin/kitty";
         ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        yt = "${pkgs.python3Packages.mps-youtube}/bin/mpsyt";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
         spideroak = "${pkgs.spideroak}/bin/spideroak";
         nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
         riot = "${pkgs.riot-desktop}/bin/riot-desktop";
         signal = "${pkgs.signal-desktop}/bin/signal-desktop";
-        myweechat = "${xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
+        myweechat = "${pkgs.kitty}/bin/kitty --title WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
     };
     # i3minator = {
     #   chat = {
@@ -139,8 +140,8 @@ let
     # ./mkchromecast.nix
     ./freecad.nix
     ./bcrypt.nix
-    ./termite.nix
-    ./way-cooler.nix
+    #./termite.nix
+    #./way-cooler.nix
     ./nvim.nix
     ./konsole.nix
     ./polybar.nix
@@ -152,6 +153,10 @@ let
     ./scan.nix
     ./screenshooter.nix
     ./xfce-terminal-dropdown.nix
+    ./waybar.nix
+    ./launcher.nix
+    ./wofi.nix
+    ./kitty.nix
   ];
 
   #export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
