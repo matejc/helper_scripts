@@ -36,6 +36,10 @@ let
     sway = {
       enable = true;
       disabledInputs = [ "2:14:ETPS/2_Elantech_Touchpad" ];
+      trackpoint = {
+        identifier = "2:14:ETPS/2_Elantech_TrackPoint";
+        accel = "-0.3";
+      };
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
@@ -54,7 +58,7 @@ let
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
         slack = "${pkgs.slack}/bin/slack";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-        myweechat = "${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal -T WeeChat -e '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}'";
+        myweechat = "${pkgs.kitty}/bin/kitty -T WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
     };
     polybar.bars = [ "my" ];
   };
@@ -124,6 +128,7 @@ let
     ./launcher.nix
     ./wofi.nix
     ./kitty.nix
+    ./mako.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"

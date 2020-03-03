@@ -97,6 +97,8 @@
     bindkey "$terminfo[kcuu1]" history-substring-search-up
     bindkey "$terminfo[kcud1]" history-substring-search-down
     export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
+
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
