@@ -50,8 +50,8 @@ let
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         terminal = "${pkgs.kitty}/bin/kitty";
         chromium = "${pkgs.chromium}/bin/chromium";
-        firefox = "${pkgs.firefox}/bin/firefox";
-        ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        ff = "${pkgs.firefox}/bin/firefox";
+        ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         a = "${pkgs.atom}/bin/atom";
         code = "${pkgs.vscodium}/bin/codium";

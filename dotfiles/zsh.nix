@@ -8,7 +8,7 @@
     }
 
     function precmd() {
-      print -Pn "\e]0;%(1j,%j job%(2j|s|); ,)%~\a"
+      print -Pn "\e]0;%(1j,%j job%(2j|s|); ,)$(shrink_path -f)\a"
       RPROMPT="''${return_code}"
       if [ $timer ]; then
         timer_show=$(($SECONDS - $timer))
@@ -34,8 +34,8 @@
         export KUBE_PS1_SYMBOL_ENABLE=false
         export KUBE_PS1_NS_ENABLE=false
         export KUBE_PS1_DIVIDER=""
-        export KUBE_PS1_PREFIX="%F{blue}k8s:%{$reset_color%}"
-        export KUBE_PS1_SUFFIX=""
+        export KUBE_PS1_PREFIX="%F{blue}k8s[%{$reset_color%}"
+        export KUBE_PS1_SUFFIX="%F{blue}]%{$reset_color%}"
 
         RPROMPT="%{$reset_color%}$(kube_ps1)%{$reset_color%} ''${RPROMPT}"
       fi
@@ -65,7 +65,7 @@
       ${pkgs.direnv}/bin/direnv status | ${pkgs.gnugrep}/bin/grep -q "Found RC allowed true"
       if [ "$?" = "0" ]
       then
-        RPROMPT="%F{blue}env:%F{red}$(basename ''${DIRENV_DIR:1})%{$reset_color%} ''${RPROMPT}"
+        RPROMPT="%F{blue}env[%F{red}$(basename ''${DIRENV_DIR:1})%F{blue}]%{$reset_color%} ''${RPROMPT}"
       fi
     }
     typeset -ag precmd_functions;
@@ -99,6 +99,7 @@
     export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
     ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
+    DISABLE_AUTO_TITLE="true"
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
