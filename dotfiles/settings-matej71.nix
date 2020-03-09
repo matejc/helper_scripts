@@ -47,12 +47,13 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = "chromium";
+    browser = programs.firefox;
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         terminal = "${pkgs.kitty}/bin/kitty";
-        ff = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
+        firefox = "${pkgs.firefox}/bin/firefox";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";

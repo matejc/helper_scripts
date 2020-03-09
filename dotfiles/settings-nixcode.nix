@@ -43,7 +43,7 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.chromium;
+    browser = programs.firefox;
     rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
     programs = {
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
@@ -51,7 +51,7 @@ let
         terminal = "${pkgs.kitty}/bin/kitty";
         kitty = "${pkgs.kitty}/bin/kitty";
         chromium = "${pkgs.chromium}/bin/chromium";
-        ff = "${pkgs.firefox}/bin/firefox";
+        firefox = "${pkgs.firefox}/bin/firefox";
         ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         a = "${pkgs.atom}/bin/atom";

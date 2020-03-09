@@ -77,7 +77,7 @@ let
     endif
 
     set ai
-    set smartindent
+    " set smartindent
     set nocopyindent
     set tabstop=4 shiftwidth=4 expandtab softtabstop=4
     set nowrap
