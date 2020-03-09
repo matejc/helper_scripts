@@ -49,6 +49,7 @@ let
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
         terminal = "${pkgs.kitty}/bin/kitty";
+        kitty = "${pkgs.kitty}/bin/kitty";
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox}/bin/firefox";
         ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";

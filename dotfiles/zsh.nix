@@ -100,6 +100,11 @@
 
     ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
     DISABLE_AUTO_TITLE="true"
+
+    autoload -Uz compinit
+    compinit
+    # Completion for kitty
+    kitty + complete setup zsh | source /dev/stdin
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
