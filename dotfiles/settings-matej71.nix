@@ -33,12 +33,12 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${homeDir}/bin/terminal-dropdown";
-    /* dropDownTerminal = "${pkgs.xfce4-13.xfce4-terminal}/bin/xfce4-terminal --drop-down"; */
+    #dropDownTerminal = "${homeDir}/bin/terminal-dropdown";
+    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
     i3-msg = "/run/current-system/sw/bin/swaymsg";
     i3BarEnable = false;
     sway = {
-      enable = true;
+      enable = false;
       disabledInputs = [ "1267:769:ELAN_Touchscreen" "1739:0:Synaptics_TM3075-002" ];
       trackpoint = {
         identifier = "2:10:TPPS/2_IBM_TrackPoint";
@@ -47,13 +47,14 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.firefox;
-    rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
+    browser = programs.chromium;
+    rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+        chromium = "${pkgs.chromium}/bin/chromium";
         ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
-        firefox = "${pkgs.firefox}/bin/firefox";
+        ff = "${pkgs.firefox}/bin/firefox";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
         mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";

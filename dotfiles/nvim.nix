@@ -382,8 +382,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "ff1730373c6139db14b8f2f9b24d4ccd7fcfb01d";
-      sha256 = "02j5npq3clwyx0r8kiq8n9gr8mc275mdgm7fnfjivn9yvhakcf03";
+      rev = "87d892afa0475644e91d9c8a57b7c35491c4dc32";
+      sha256 = "03f9nb2hqmmpxvzxs7lm5kdwivs27cgp53k3h0w7sp1cp3a23gm9";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
   });
@@ -408,7 +408,7 @@ EOF
           ale
           #asyncomplete-vim
           #asyncomplete-omni-vim
-          youcompleteme
+          YouCompleteMe
           omnisharp-vim
           ctrlp-py-matcher
         ];

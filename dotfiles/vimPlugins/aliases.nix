@@ -132,7 +132,6 @@ mapAliases {
   wombat256           = wombat256-vim; # backwards compat, added 2015-7-8
   yankring            = YankRing-vim;
   Yankring            = YankRing-vim;
-  YouCompleteMe       = youcompleteme;
   xterm-color-table   = xterm-color-table-vim;
   zeavim              = zeavim-vim;
 }
