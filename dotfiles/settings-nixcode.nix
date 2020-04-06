@@ -30,11 +30,12 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    dropDownTerminal = "${variables.homeDir}/bin/terminal-dropdown";
+    #dropDownTerminal = "${variables.homeDir}/bin/terminal-dropdown";
+    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce-terminal --drop-down";
     i3-msg = "/run/current-system/sw/bin/swaymsg";
     i3BarEnable = false;
     sway = {
-      enable = true;
+      enable = false;
       disabledInputs = [ "2:14:ETPS/2_Elantech_Touchpad" ];
       trackpoint = {
         identifier = "2:14:ETPS/2_Elantech_TrackPoint";
@@ -43,15 +44,14 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.firefox;
-    rofi.theme = "${homeDir}/.config/rofi/themes/sidetab-my";
+    browser = programs.chromium;
+    rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.kitty}/bin/kitty";
-        kitty = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
         chromium = "${pkgs.chromium}/bin/chromium";
-        firefox = "${pkgs.firefox}/bin/firefox";
+        ff = "${pkgs.firefox}/bin/firefox";
         ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         l = "${pkgs.exa}/bin/exa -gal --git";
         a = "${pkgs.atom}/bin/atom";

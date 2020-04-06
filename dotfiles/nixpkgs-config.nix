@@ -28,6 +28,7 @@
         libxslt.dev libxml2.dev zlib
 
         chromedriver
+        postgresql
 
         (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python37Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
       ];
@@ -549,4 +550,7 @@
     NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
   };
   android_sdk.accept_license = true;
+  permittedInsecurePackages = [
+    "openssl-1.0.2u"
+  ];
 }
