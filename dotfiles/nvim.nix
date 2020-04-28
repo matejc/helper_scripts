@@ -79,7 +79,7 @@ let
     set ai
     " set smartindent
     set nocopyindent
-    set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+    " set tabstop=4 shiftwidth=4 expandtab softtabstop=4
     set nowrap
 
     set virtualedit=onemore
@@ -150,9 +150,19 @@ let
     imap <c-v> <esc>p
     vmap <c-v> <esc>p
 
+    nmap <C-S-Up> :copy .-1<cr>
+    vmap <C-S-Up> :copy '>-1<cr>
+    imap <C-S-Up> <esc>:copy .-1<cr>i
+
     nmap <C-S-Down> :copy .<cr>
     vmap <C-S-Down> :copy '><cr>
     imap <C-S-Down> <esc>:copy .<cr>i
+    nmap <C-S-d> :copy .<cr>
+    vmap <C-S-d> :copy '><cr>
+    imap <C-S-d> <esc>:copy .<cr>i
+    nmap <C-d> :copy .<cr>
+    vmap <C-d> :copy '><cr>
+    imap <C-d> <esc>:copy .<cr>i
 
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
@@ -198,6 +208,7 @@ let
       \}
     func! CtrlSFIfOpen()
       if ctrlsf#win#FindMainWindow() != -1
+        call ctrlsf#StopSearch()
         call ctrlsf#Quit()
       else
         call inputsave()
@@ -342,6 +353,20 @@ if not nvim_lsp.hie then
   }
 end
 nvim_lsp.hie.setup{}
+if not nvim_lsp.robot then
+  configs.robot = {
+    default_config = {
+      cmd = {'robotframework_ls'};
+      filetypes = {'robot'};
+      root_dir = function(fname)
+        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      log_level = vim.lsp.protocol.MessageType.Warning;
+      settings = { };
+    };
+  }
+end
+nvim_lsp.robot.setup{}
 EOF
 
     autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
@@ -353,10 +378,12 @@ EOF
     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
     inoremap <c-c> <ESC>
 
-    " When the <Enter> key is pressed while the popup menu is visible, it only
-    " hides the menu. Use this mapping to close the menu and also start a new
-    " line.
-    inoremap <expr> <CR> (pumvisible() ? "\<c-y>" : "\<CR>")
+    imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
+    imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+    imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+    imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+    imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+    imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
     " Use <TAB> to select the popup menu:
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
@@ -406,11 +433,11 @@ EOF
           vim-nix
           nerdcommenter
           ale
-          #asyncomplete-vim
-          #asyncomplete-omni-vim
           YouCompleteMe
           omnisharp-vim
           ctrlp-py-matcher
+          robotframework-vim
+          sleuth
         ];
         opt = [ nvim-lsp ];
       };
@@ -447,13 +474,13 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server /* omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.python2Packages.robotframework-lsp /* omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
     if [ -z "$1" ]
     then
-      open_nvim_qt $(${pkgs.git}/bin/git ls-files -m --exclude-standard)
+      open_nvim_qt $(${pkgs.git}/bin/git diff --name-only HEAD)
     elif [ -d "$1" ]
     then
       cd "$1"

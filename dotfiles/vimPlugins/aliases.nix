@@ -103,7 +103,6 @@ mapAliases {
   sourcemap           = sourcemap-vim;
   "sourcemap.vim"     = sourcemap-vim;
   surround            = vim-surround;
-  sleuth              = vim-sleuth;
   solidity            = vim-solidity;
   stylish-haskell     = vim-stylish-haskell;
   stylishHaskell      = vim-stylish-haskell; # backwards compat, added 2014-10-18

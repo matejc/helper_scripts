@@ -19,19 +19,47 @@
     py3env = pkgs.buildEnv {
       name = "py3env";
       paths = with pkgs; [
-        python3
-        python3Packages.virtualenv
-        python3Packages.pydbus
-        python3Packages.pygobject3
-        python3Packages.tkinter
+        python3Full.out
         pypi2nix
         libxslt.dev libxml2.dev zlib
 
         chromedriver
         postgresql
+        scrot
+
+        # required by opencv-python
+        gcc.cc.lib
+        glib.out
+        xorg.libSM
+        xorg.libICE
+        xorg.libXext
+        xorg.libXrender
+        xorg.libX11
+
+        chromium
+        python3Packages.tox
+        python3Packages.virtualenv
+
+        python3Packages.tkinter
+        python3Packages.pycairo
+        python3Packages.pygobject2
+
+        pkgconfig
+        cairo.dev
+        xorg.libxcb.dev
+        xorg.libX11.dev
+        xorg.xorgproto
+        glib.dev
+        gobjectIntrospection.dev
+        libffi.dev
+
+        python3Packages.robotframework
 
         (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python37Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
+
+        makeenv
       ];
+      ignoreCollisions = true;
     };
 
     atomenv = pkgs.buildEnv {
@@ -181,9 +209,10 @@
         # python27Packages.pyasn1
 
         # python27Packages.pyflakes
-        python27Packages.pep8
+        python2Packages.pep8
         # python27Packages.pillow
         # python27Packages.wxPython
+        python2Packages.pylint
 
         # which
 
@@ -191,8 +220,8 @@
 
         # for robottests
         #phantomjs2-bin
-        python27Packages.pyperclip
-        python27Packages.requests
+        python2Packages.pyperclip
+        python2Packages.requests
 
         /*opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
         python27Packages.flask python27Packages.sqlite3 python27Packages.werkzeug
@@ -204,6 +233,8 @@
         libpulseaudio libusb1
 
         (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python27Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
+
+        makeenv
       ];
       pathsToLink = [ "/" ];
       ignoreCollisions = true;
@@ -273,8 +304,8 @@
         zlib.dev
         zlib.out
         pciutils
+        stdenv.glibc.out
       ];
-      ignoreCollisions = true;
     };
 
     # for robot tests
