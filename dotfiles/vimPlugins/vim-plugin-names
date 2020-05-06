@@ -1,4 +1,5 @@
 dyng/ctrlsf.vim
+hashivim/vim-hashicorp-tools
 neovim/nvim-lsp
 OmniSharp/omnisharp-vim
 prabirshrestha/asyncomplete-buffer.vim

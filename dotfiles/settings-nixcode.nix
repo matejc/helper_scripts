@@ -30,8 +30,8 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    #dropDownTerminal = "${variables.homeDir}/bin/terminal-dropdown";
-    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce-terminal --drop-down";
+    dropDownTerminal = programs.dropdown;
+    #dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce-terminal --drop-down";
     i3-msg = "/run/current-system/sw/bin/swaymsg";
     i3BarEnable = false;
     sway = {
@@ -49,7 +49,8 @@ let
     programs = {
         nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 95% -h 90% --class kitty-dropdown -f '--class kitty-dropdown' terminal";
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox}/bin/firefox";
         ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";

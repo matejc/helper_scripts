@@ -65,7 +65,7 @@ let
 
     set fixendofline
 
-    autocmd FileType markdown set spell spelllang=en_us
+    autocmd FileType * set spell spelllang=en_us
 
     let g:better_whitespace_enabled=1
     let g:strip_whitespace_on_save=1
@@ -323,22 +323,22 @@ local nvim_lsp = require'nvim_lsp'
 nvim_lsp.pyls.setup{}
 nvim_lsp.tsserver.setup{}
 
-local configs = require'nvim_lsp/skeleton'
+local configs = require'nvim_lsp/configs'
 -- Check if it's already defined for when I reload this file.
-if not nvim_lsp.omnisharp then
-  configs.omnisharp = {
-    default_config = {
-      cmd = {'omnisharp', '-lsp'};
-      filetypes = {'cs'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      log_level = vim.lsp.protocol.MessageType.Warning;
-      settings = {};
-    };
-  }
-end
-nvim_lsp.omnisharp.setup{}
+-- if not nvim_lsp.omnisharp then
+--   configs.omnisharp = {
+--     default_config = {
+--       cmd = {'omnisharp', '-lsp'};
+--       filetypes = {'cs'};
+--       root_dir = function(fname)
+--         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+--       end;
+--       log_level = vim.lsp.protocol.MessageType.Warning;
+--       settings = {};
+--     };
+--   }
+-- end
+-- nvim_lsp.omnisharp.setup{}
 if not nvim_lsp.hie then
   configs.hie = {
     default_config = {
@@ -353,20 +353,20 @@ if not nvim_lsp.hie then
   }
 end
 nvim_lsp.hie.setup{}
-if not nvim_lsp.robot then
-  configs.robot = {
-    default_config = {
-      cmd = {'robotframework_ls'};
-      filetypes = {'robot'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      log_level = vim.lsp.protocol.MessageType.Warning;
-      settings = { };
-    };
-  }
-end
-nvim_lsp.robot.setup{}
+-- if not nvim_lsp.robot then
+--   configs.robot = {
+--     default_config = {
+--       cmd = {'robotframework_ls'};
+--       filetypes = {'robot'};
+--       root_dir = function(fname)
+--         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+--       end;
+--       log_level = vim.lsp.protocol.MessageType.Warning;
+--       settings = { };
+--     };
+--   }
+-- end
+-- nvim_lsp.robot.setup{}
 EOF
 
     autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
@@ -438,6 +438,7 @@ EOF
           ctrlp-py-matcher
           robotframework-vim
           sleuth
+          vim-hashicorp-tools
         ];
         opt = [ nvim-lsp ];
       };
@@ -474,7 +475,7 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server pkgs.python2Packages.robotframework-lsp /* omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server /* pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }

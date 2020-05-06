@@ -1,4 +1,12 @@
 { variables, config, pkgs, lib }:
+let
+  gitrootSrc = pkgs.fetchFromGitHub {
+    owner = "mollifier";
+    repo = "cd-gitroot";
+    rev = "fec94c5b2178b56de8726013f53bb09fb51311e6";
+    sha256 = "1xm1gl2mmq5difl9m57k0nh6araxqgj9vwqkh7qhqa79jm8m6my4";
+  };
+in
 [{
   target = "${variables.homeDir}/.zshrc";
   source = pkgs.writeText "zshrc" ''
@@ -103,8 +111,13 @@
 
     autoload -Uz compinit
     compinit
+
     # Completion for kitty
-    kitty + complete setup zsh | source /dev/stdin
+    ${pkgs.kitty}/bin/kitty + complete setup zsh | source /dev/stdin
+
+    fpath=(${gitrootSrc}(N-/) $fpath)
+    autoload -Uz cd-gitroot
+    alias cdu='cd-gitroot'
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
