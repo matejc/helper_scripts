@@ -586,7 +586,7 @@
     if [ -z "$RESULT" ]
     then
       ${pkgs.kitty}/bin/kitty --title=ScratchTerm "$@" &
-      sleep 0.2
+      sleep 0.4
       ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
     elif [[ "$RESULT" = "true" ]]
     then
