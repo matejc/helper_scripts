@@ -48,21 +48,21 @@ let
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
-        filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
-        cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
-        dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
-        #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
-        chromium = "${pkgs.chromium}/bin/chromium";
-        ff = "${pkgs.firefox}/bin/firefox";
-        c = "${pkgs.vscodium}/bin/codium";
-        s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-        mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-        spideroak = "${pkgs.spideroak}/bin/spideroak";
-        nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
-        riot = "${pkgs.riot-desktop}/bin/riot-desktop";
-        signal = "${pkgs.signal-desktop}/bin/signal-desktop";
-        myweechat = "${pkgs.kitty}/bin/kitty --title WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
+      filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
+      cmst = "${pkgs.cmst}/bin/cmst --minimized";
+      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+      #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
+      chromium = "${pkgs.chromium}/bin/chromium";
+      ff = "${pkgs.firefox}/bin/firefox";
+      c = "${pkgs.vscodium}/bin/codium";
+      s = "${pkgs.sublime3}/bin/sublime3 --new-window";
+      mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+      spideroak = "${pkgs.spideroak}/bin/spideroak";
+      nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
+      riot = "${pkgs.riot-desktop}/bin/riot-desktop";
+      signal = "${pkgs.signal-desktop}/bin/signal-desktop";
+      myweechat = "${pkgs.kitty}/bin/kitty --title WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
     };
     # i3minator = {
     #   chat = {
