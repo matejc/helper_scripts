@@ -24,7 +24,7 @@
         libxslt.dev libxml2.dev zlib
 
         chromedriver
-        postgresql
+        postgresql libmysqlclient
         scrot
 
         # required by opencv-python

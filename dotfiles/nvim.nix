@@ -79,7 +79,7 @@ let
     set ai
     " set smartindent
     set nocopyindent
-    " set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+    set tabstop=4 shiftwidth=4 expandtab softtabstop=4
     set nowrap
 
     set virtualedit=onemore
@@ -443,6 +443,7 @@ EOF
           robotframework-vim
           sleuth
           vim-hashicorp-tools
+          Jenkinsfile-vim-syntax
         ];
         opt = [ nvim-lsp ];
       };

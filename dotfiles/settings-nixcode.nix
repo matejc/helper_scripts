@@ -131,6 +131,7 @@ let
     ./wofi.nix
     ./kitty.nix
     ./mako.nix
+    ./screenshot.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
