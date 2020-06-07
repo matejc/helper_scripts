@@ -4,9 +4,9 @@
   source = pkgs.writeScript "screenshooter.sh" ''
     #!${pkgs.stdenv.shell}
     ${if variables.sway.enable then ''
-      ${pkgs.wofi}/bin/wofi --show drun,run --insensitive --prompt Search
+      BEMENU_BACKEND=wayland ${variables.homeDir}/bin/bemenu-launcher
     '' else ''
-      ${pkgs.rofi}/bin/rofi -show combi -combi-modi drun#run
+      ${pkgs.rofi}/bin/rofi -show combi -combi-modi run
     ''}
   '';
 }]

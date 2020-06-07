@@ -118,6 +118,9 @@ in
     fpath=(${gitrootSrc}(N-/) $fpath)
     autoload -Uz cd-gitroot
     alias cdu='cd-gitroot'
+
+    alias ssh='env TERM=screen ssh'
+    alias l='${pkgs.exa}/bin/exa -gal --git'
   '';
 } {
   target = "${variables.homeDir}/.zlogin";

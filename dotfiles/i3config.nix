@@ -428,7 +428,7 @@
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
   bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
-  bindsym Ctrl+Mod1+h exec --no-startup-id ${pkgs.xfce.thunar}/bin/thunar
+  bindsym Ctrl+Mod1+h exec --no-startup-id ${variables.programs.filemanager}
   bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
   bindsym Ctrl+Mod1+r exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
 

@@ -191,6 +191,8 @@ let
     vmap <C-Down> :m '>+1<CR>gv=gv
     vmap <C-Up> :m '<-2<CR>gv=gv
 
+    nmap <DEL> "_x
+
     " let g:bufferline_echo = 0
     " autocmd VimEnter *
     "   \ let &statusline='%{bufferline#refresh_status()}'
@@ -382,6 +384,8 @@ EOF
     imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
     imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
     imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+    imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
+    imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
     imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
     imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import json
 import os
 import re
 import subprocess
@@ -40,8 +39,8 @@ def list_paths(path, executable=False, directory=False, recursive=False, regular
 def executables():
     result = []
 
-    # for directory in list_env_var('PATH'):
-    for directory in ["/home/matejc/bin","/var/setuid-wrappers","/home/matejc/.nix-profile/bin","/home/matejc/.nix-profile/sbin","/nix/var/nix/profiles/default/bin","/nix/var/nix/profiles/default/sbin","/run/current-system/sw/bin","/run/current-system/sw/sbin"]:
+    # for directory in ["/home/matejc/bin","/var/setuid-wrappers","/home/matejc/.nix-profile/bin","/home/matejc/.nix-profile/sbin","/nix/var/nix/profiles/default/bin","/nix/var/nix/profiles/default/sbin","/run/current-system/sw/bin","/run/current-system/sw/sbin"]:
+    for directory in list_env_var('PATH'):
         paths = list_paths(directory, executable=True)
         result += map(lambda item: "{0:<50} [Executable: '{1}']".format(item[1], os.path.join(item[0], item[1])), paths)
 
@@ -60,7 +59,7 @@ def join(paths):
 
 
 def dmenu(args=[], options=[]):
-    dmenu_cmd = ["dmenu"]
+    dmenu_cmd = ["bemenu"]
     if args:
         dmenu_cmd += args
     p = subprocess.Popen(
@@ -73,6 +72,7 @@ def dmenu(args=[], options=[]):
         stdout, _ = p.communicate()
     return stdout.decode('utf-8').strip('\n')
 
+
 def read_last(path):
     result = []
     if not os.path.isfile(path):
@@ -84,6 +84,7 @@ def read_last(path):
                 result += [s]
     return result
 
+
 def write_last(path, newentry):
     lines = read_last(path)
     if not newentry:
@@ -93,11 +94,12 @@ def write_last(path, newentry):
     with open(path, 'w') as f:
         f.write(join(remove_duplicates(lines[0:4])))
 
+
 def remove_duplicates(values):
     result = []
     seen = set()
     for value in values:
-        if not value in seen:
+        if value not in seen:
             result.append(value)
             seen.add(value)
     return result

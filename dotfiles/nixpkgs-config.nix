@@ -397,6 +397,7 @@
         go2nix
         dep
         dep2nix
+        vgo2nix
         /*oniguruma*/
       ];
       ignoreCollisions = true;
@@ -579,9 +580,11 @@
     NIX_MY_PKGS = "/home/matejc/workarea/nixpkgs";
     NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
     NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
+    NIX_MY_BACKUP = "git@github.com:matejc/configurations.git";
   };
   android_sdk.accept_license = true;
   permittedInsecurePackages = [
     "openssl-1.0.2u"
+    "p7zip-16.02"
   ];
 }

@@ -33,12 +33,11 @@ let
     timeFormat = "%a %d %b %Y %H:%M:%S";
     backlightSysDir = "/sys/class/backlight/intel_backlight";
     terminal = programs.terminal;
-    #dropDownTerminal = "${homeDir}/bin/terminal-dropdown";
-    dropDownTerminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+    dropDownTerminal = programs.dropdown;
     i3-msg = "/run/current-system/sw/bin/swaymsg";
     i3BarEnable = false;
     sway = {
-      enable = false;
+      enable = true;
       disabledInputs = [ "1267:769:ELAN_Touchscreen" "1739:0:Synaptics_TM3075-002" ];
       trackpoint = {
         identifier = "2:10:TPPS/2_IBM_TrackPoint";
@@ -50,10 +49,11 @@ let
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
+        filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
         chromium = "${pkgs.chromium}/bin/chromium";
-        ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
         ff = "${pkgs.firefox}/bin/firefox";
         c = "${pkgs.vscodium}/bin/codium";
         s = "${pkgs.sublime3}/bin/sublime3 --new-window";
@@ -157,7 +157,7 @@ let
     ./xfce-terminal-dropdown.nix
     ./waybar.nix
     ./launcher.nix
-    ./wofi.nix
+    ./bemenu.nix
     ./kitty.nix
   ];
 
@@ -168,7 +168,7 @@ let
   restartScript = pkgs.writeScript "restart-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    ${variables.homeDir}/bin/xinput_custom_script.sh
+    #${variables.homeDir}/bin/xinput_custom_script.sh
 
     ${pkgs.procps}/bin/pkill dunst
     ${pkgs.dunst}/bin/dunst &
@@ -186,7 +186,6 @@ let
     #!${pkgs.stdenv.shell}
 
     ${variables.programs.mykeepassxc} &
-    ${pkgs.tdesktop}/bin/telegram-desktop &
     ${variables.programs.spideroak} &
     ${variables.programs.nextcloud-client} &
     ${variables.browser} &

@@ -6,7 +6,7 @@ export PATH="$nixprofile/bin:$PATH"
 export PKG_CONFIG_PATH="$nixprofile/lib/pkgconfig"
 export PS1="goenv $PS1"
 
-export GOPATH="`pwd`/Godeps/_workspace"
+#export GOPATH="`pwd`/Godeps/_workspace"
 
 function package() {
     if [[ -z "$1" ]]
