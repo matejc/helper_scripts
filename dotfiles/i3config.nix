@@ -172,7 +172,8 @@
   for_window [title="^WeeChat$"] move container to workspace $w1
 
   # for_window [class="^Alacritty$"] move container to workspace $w2
-  for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
+  #for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
+  for_window [app_id="^xfce4-terminal$"] border pixel 1
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
   for_window [class="^jetbrains-goland$"] move container to workspace $w3
@@ -533,51 +534,6 @@
   #for_window [con_mark="I3WM_SCRATCHPAD"] exec "${variables.i3-msg} resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   '';
 } {
-  target = "${variables.homeDir}/bin/i3wm-dropdown";
-  source = pkgs.writeScript "i3wm-dropdown.sh" ''
-    #!${pkgs.stdenv.shell}
-
-    ${pkgs.xdotool}/bin/xdotool search --name '^ScratchTerm.*' &>/dev/null
-    if [ $? -gt 0 ]
-    then
-      TMUX_SESSION_NAME='ScratchTerm' ${variables.terminal}
-    else
-      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] scratchpad show'
-    fi
-  '';
-} {
-  target = "${variables.homeDir}/bin/termite-dropdown";
-  source = pkgs.writeScript "termite-dropdown.sh" ''
-    #!${pkgs.stdenv.shell}
-    set -x
-    if [[ "$(${variables.homeDir}/bin/i3_query name ScratchTerm)" = "null" ]]
-    then
-      ${pkgs.termite}/bin/termite --title=ScratchTerm "$@"
-      sleep 0.2
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] move scratchpad, border pixel 1, sticky enable"
-      sleep 0.1
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] $(${variables.homeDir}/bin/sway-window-center 95 90)"
-    else
-      ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
-    fi
-  '';
-} {
-  target = "${variables.homeDir}/bin/scratchterm";
-  source = pkgs.writeScript "scratchterm.sh" ''
-    #!${pkgs.stdenv.shell}
-    set -x
-    if [[ "$(${variables.homeDir}/bin/i3_query name ScratchTerm)" = "null" ]]
-    then
-      "$1" --title=ScratchTerm "''${@:2}" &
-      sleep 0.2
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] move scratchpad, border pixel 1, sticky enable"
-      sleep 0.1
-      ${variables.i3-msg} "[title="^ScratchTerm.*"] $(${variables.homeDir}/bin/i3-window-center 95 90)"
-    else
-      ${variables.i3-msg} '[title="^ScratchTerm.*"] scratchpad show'
-    fi
-  '';
-} {
   target = "${variables.homeDir}/bin/terminal-dropdown";
   source = pkgs.writeScript "terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
@@ -585,7 +541,7 @@
     RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.marks[0]=="I3WM_SCRATCHPAD").focused')
     if [ -z "$RESULT" ]
     then
-      ${pkgs.kitty}/bin/kitty --title=ScratchTerm "$@" &
+      ${variables.programs.terminal} --title=ScratchTerm "$@" &
       sleep 0.4
       ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
     elif [[ "$RESULT" = "true" ]]

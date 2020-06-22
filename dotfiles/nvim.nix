@@ -16,6 +16,13 @@ let
   all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/d98bdbff3ebdab408a12a9b7890d4cf400180839") {};
   hie = (all-hies.selection { selector = p: { inherit (p) ghc865; }; });
 
+  sha1Vim = pkgs.fetchFromGitHub {
+    owner = "vim-scripts";
+    repo = "sha1.vim";
+    rev = "40b3bb60d0bda010531422b948ff30bd4fa6b959";
+    sha256 = "16d2wa81v4kk46cyhi10vnrpgvc0abgzi997bv3yncd5y55psxzm";
+  };
+
   customRC = ''
     " if hidden is not set, TextEdit might fail.
     set hidden
@@ -405,6 +412,23 @@ EOF
 
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:airline#extensions#tabline#enabled = 1
+
+    set ssop="buffers,curdir,tabpages"
+
+    source ${sha1Vim}/plugin/sha1.vim
+
+    function! SessionPath()
+      return "${variables.homeDir}/.vim-sessions/Session-" . sha1#sha1( getcwd() ) . ".vim"
+    endfunction
+
+    autocmd VimLeave * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
+        \ call mkdir("${variables.homeDir}/.vim-sessions") |
+        \ endif |
+        \ execute "mksession! " . SessionPath()
+
+    autocmd VimEnter * nested if argc() == 0 && filereadable(SessionPath()) |
+        \ execute "source " . SessionPath()
+
   '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -484,7 +508,7 @@ in [{
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
-    if [ -z "$1" ]
+    if [[ $@ == *" -g"* ]]
     then
       open_nvim_qt $(${pkgs.git}/bin/git diff --name-only HEAD)
     elif [ -d "$1" ]

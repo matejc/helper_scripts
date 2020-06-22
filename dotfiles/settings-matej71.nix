@@ -1,6 +1,5 @@
 { pkgs, lib ? pkgs.lib }:
 let
-  xfce = pkgs.xfce4-14;
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
@@ -51,8 +50,9 @@ let
     programs = {
         filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
         cmst = "${pkgs.cmst}/bin/cmst --minimized";
-        terminal = "${pkgs.kitty}/bin/kitty";
-        dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
+        terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+        dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+        #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
         chromium = "${pkgs.chromium}/bin/chromium";
         ff = "${pkgs.firefox}/bin/firefox";
         c = "${pkgs.vscodium}/bin/codium";
@@ -159,6 +159,8 @@ let
     ./launcher.nix
     ./bemenu.nix
     ./kitty.nix
+    ./bash.nix
+    ./starship.nix
   ];
 
   #export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
