@@ -50,8 +50,10 @@ let
       filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
       nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
       cmst = "${pkgs.cmst}/bin/cmst --minimized";
-      terminal = "${pkgs.kitty}/bin/kitty";
-      dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 95% -h 90% --class kitty-dropdown -f '--class kitty-dropdown' terminal";
+      #terminal = "${pkgs.kitty}/bin/kitty";
+      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
+      dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
       chromium = "${pkgs.chromium}/bin/chromium";
       ff = "${pkgs.firefox}/bin/firefox";
       ff-dev = "${pkgs.firefox-devedition-bin}/bin/firefox-devedition";
@@ -130,9 +132,12 @@ let
     ./waybar.nix
     ./launcher.nix
     ./wofi.nix
+    ./bemenu.nix
     ./kitty.nix
     ./mako.nix
     ./screenshot.nix
+    ./bash.nix
+    ./starship.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"
@@ -157,10 +162,9 @@ let
   startScript = pkgs.writeScript "start-script.sh" ''
     #!${pkgs.stdenv.shell}
 
-    ${variables.homeDir}/bin/mykeepassxc &
+    ${variables.programs.mykeepassxc} &
     ${variables.browser} &
     ${variables.programs.slack} &
-    ${variables.programs.myweechat} &
     { sleep 2; ${variables.programs.cmst}; } &
 
     echo "DONE"

@@ -305,6 +305,8 @@
         zlib.out
         pciutils
         stdenv.glibc.out
+
+        ncurses
       ];
     };
 

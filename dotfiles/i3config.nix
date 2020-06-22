@@ -313,6 +313,7 @@
     '') variables.sway.disabledInputs}
 
     input ${variables.sway.trackpoint.identifier} pointer_accel ${variables.sway.trackpoint.accel}
+    input ${variables.sway.trackpoint.identifier} middle_emulation enabled
 
     exec ${pkgs.xss-lock}/bin/xss-lock --ignore-sleep ${variables.homeDir}/bin/lockscreen
     exec ${pkgs.xorg.xset}/bin/xset s off
