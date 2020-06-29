@@ -6,4 +6,5 @@ in
   {
     nvim-lsp-install = (pkgs.lib.elemAt nvim 0).source;
     nvim = (pkgs.lib.elemAt nvim 1).source;
+    guinvim = (pkgs.lib.elemAt nvim 2).source;
   }

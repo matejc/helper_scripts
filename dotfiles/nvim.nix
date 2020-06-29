@@ -42,15 +42,15 @@ let
 
     " always show signcolumns
     set signcolumn=yes
-
-    if exists('g:GuiLoaded')
-      au VimEnter * GuiPopupmenu 0
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
-      set termguicolors
-    endif
-
     set cursorline
     set number
+
+    "if exists('g:GuiLoaded')
+      au VimEnter * GuiPopupmenu 0
+      "au VimEnter * call GuiClipboard()
+      set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+      set termguicolors
+    "endif
 
     colorscheme solarized8_high
     set background=light
@@ -429,8 +429,7 @@ EOF
 
     autocmd VimEnter * nested if argc() == 0 && filereadable(SessionPath()) |
         \ execute "source " . SessionPath()
-
-  '';
+ '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
     name = "neovim-unwrapped-0.5.0";
@@ -500,6 +499,17 @@ in [{
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
     ${neovim}/bin/nvim "$@"
+  '';
+} {
+  target = "${variables.homeDir}/bin/guinvim";
+  source = pkgs.writeScript "guinvim.sh" ''
+    #!${pkgs.stdenv.shell}
+    set -xe
+    export PWDHASH="$(${pkgs.coreutils}/bin/pwd | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}')"
+    export SOCK_PREFIX="''${SOCK_PREFIX:-/tmp}"
+    export NVIM_SOCKET="$SOCK_PREFIX/$PWDHASH.sock"
+    { sleep 2; ''${NVIM_QT_PATH} --server "$NVIM_SOCKET"; } &
+    ${neovim}/bin/nvim --listen "$NVIM_SOCKET" --headless "''${@:2}"
   '';
 } {
   target = "${variables.homeDir}/bin/q";
