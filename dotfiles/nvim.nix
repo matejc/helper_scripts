@@ -43,8 +43,12 @@ let
     " always show signcolumns
     set signcolumn=yes
 
-    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
-    set termguicolors
+    if exists('g:GuiLoaded')
+      au VimEnter * GuiPopupmenu 0
+      set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+      set termguicolors
+    endif
+
     set cursorline
     set number
 
@@ -320,9 +324,6 @@ let
     imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
     imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
 
-
-    au VimEnter * GuiPopupmenu 0
-
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
 
@@ -468,6 +469,7 @@ EOF
           sleuth
           vim-hashicorp-tools
           Jenkinsfile-vim-syntax
+          neovim-gui-shim
         ];
         opt = [ nvim-lsp ];
       };
