@@ -497,7 +497,7 @@ in [{
   target = "${variables.homeDir}/bin/nvim";
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
-    ${neovim}/bin/nvim -V9/tmp/nvim.log "$@"
+    ${neovim}/bin/nvim "$@"
   '';
 } {
   target = "${variables.homeDir}/bin/q";
