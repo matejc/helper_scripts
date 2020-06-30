@@ -45,12 +45,8 @@ let
     set cursorline
     set number
 
-    "if exists('g:GuiLoaded')
-      au VimEnter * GuiPopupmenu 0
-      "au VimEnter * call GuiClipboard()
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
-      set termguicolors
-    "endif
+    " set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+    " set termguicolors
 
     colorscheme solarized8_high
     set background=light
@@ -414,7 +410,7 @@ EOF
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:airline#extensions#tabline#enabled = 1
 
-    set ssop="buffers,sesdir,tabpages,terminal,unix"
+    set sessionoptions-=options
 
     source ${sha1Vim}/plugin/sha1.vim
 
@@ -501,6 +497,15 @@ in [{
     ${neovim}/bin/nvim "$@"
   '';
 } {
+  target = "${variables.homeDir}/.config/nvim/after/ginit.vim";
+  source = pkgs.writeText "ginit.vim" ''
+    GuiPopupmenu 0
+    GuiTabline 0
+    call GuiClipboard()
+    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+    set termguicolors
+  '';
+}  {
   target = "${variables.homeDir}/bin/guinvim";
   source = pkgs.writeScript "guinvim.sh" ''
     #!${pkgs.stdenv.shell}
