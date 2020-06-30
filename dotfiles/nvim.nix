@@ -414,7 +414,7 @@ EOF
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:airline#extensions#tabline#enabled = 1
 
-    set ssop="buffers,curdir,tabpages"
+    set ssop="buffers,sesdir,tabpages,terminal,unix"
 
     source ${sha1Vim}/plugin/sha1.vim
 
