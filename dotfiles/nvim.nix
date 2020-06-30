@@ -45,8 +45,8 @@ let
     set cursorline
     set number
 
-    " set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
-    " set termguicolors
+    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+    set termguicolors
 
     colorscheme solarized8_high
     set background=light
@@ -502,8 +502,6 @@ in [{
     GuiPopupmenu 0
     GuiTabline 0
     call GuiClipboard()
-    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
-    set termguicolors
   '';
 }  {
   target = "${variables.homeDir}/bin/guinvim";
