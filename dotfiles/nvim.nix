@@ -508,8 +508,11 @@ in [{
     export PWDHASH="$(${pkgs.coreutils}/bin/pwd | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}')"
     export NVIM_SOCK_PREFIX="''${NVIM_SOCK_PREFIX:-/tmp}"
     export NVIM_SOCKET="$NVIM_SOCK_PREFIX/$PWDHASH.sock"
-    ${pkgs.coreutils}/bin/mkfifo "$NVIM_SOCKET"
-    { sleep 2; ''${NVIM_QT_PATH} --server "$NVIM_SOCKET"; } &
+    if [ ! -f "$NVIM_SOCKET" ]
+    then
+      ${pkgs.coreutils}/bin/mkfifo "$NVIM_SOCKET"
+    fi
+    { sleep 1; ''${NVIM_QT_PATH} --server "$NVIM_SOCKET"; } &
     ${neovim}/bin/nvim --listen "$NVIM_SOCKET" --headless "$@"
   '';
 } {
