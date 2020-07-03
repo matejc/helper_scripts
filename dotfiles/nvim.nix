@@ -502,6 +502,7 @@ EOF
           vim-vinegar
           vim-fugitive
           nerdtree
+          nerdtree-git-plugin
         ];
         opt = [ nvim-lsp ];
       };
