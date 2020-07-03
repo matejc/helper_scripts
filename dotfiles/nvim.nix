@@ -251,7 +251,7 @@ let
     let g:airline_powerline_fonts = 0
     let g:airline_theme='solarized'
 
-    map <C-o> <esc>:Explore<cr>
+    map <C-o> <esc>:NERDTreeToggle<CR>
 
     let g:VM_mouse_mappings = 1
     let g:VM_maps = {}
@@ -450,6 +450,15 @@ EOF
     if has("autocmd")
       autocmd VimEnter * :call SetupCtrlP()
     endif
+
+    tab sball
+    set switchbuf=usetab,newtab
+    let g:NERDTreeDirArrowExpandable = '+'
+    let g:NERDTreeDirArrowCollapsible = '-'
+    " hide NERDTree on file open
+    let g:NERDTreeQuitOnOpen = 1
+    " do not display NERDTree help
+    let g:NERDTreeMinimalUI = 1
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -492,6 +501,7 @@ EOF
           neovim-gui-shim
           vim-vinegar
           vim-fugitive
+          nerdtree
         ];
         opt = [ nvim-lsp ];
       };
