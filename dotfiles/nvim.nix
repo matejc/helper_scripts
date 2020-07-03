@@ -428,6 +428,12 @@ EOF
 
     autocmd VimEnter * nested if argc() == 0 && filereadable(SessionPath()) |
         \ execute "source " . SessionPath()
+
+    let g:netrw_banner = 0
+    let g:netrw_liststyle = 3
+    " let g:netrw_browse_split = 4
+    " let g:netrw_altv = 1
+    " let g:netrw_winsize = 25
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -468,6 +474,8 @@ EOF
           vim-hashicorp-tools
           Jenkinsfile-vim-syntax
           neovim-gui-shim
+          vim-vinegar
+          vim-fugitive
         ];
         opt = [ nvim-lsp ];
       };
