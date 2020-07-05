@@ -55,7 +55,7 @@ let
     function! ProjectName()
       return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
     endfunction
-    set titlestring=%t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)\ \-\ %{ProjectName()}%(\ %a%)
+    set titlestring=%{ProjectName()}\:\ %t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
 
     filetype plugin on
     if has ("autocmd")
@@ -467,8 +467,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "87d892afa0475644e91d9c8a57b7c35491c4dc32";
-      sha256 = "03f9nb2hqmmpxvzxs7lm5kdwivs27cgp53k3h0w7sp1cp3a23gm9";
+      rev = "7b529e7912517af078e005dd7b06b3d042be9cb7";
+      sha256 = "0byprkm4ksh5lk0hmwx6whaw317jgkwyxdn706y74m6p8b61dliy";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
   });
@@ -503,6 +503,7 @@ EOF
           vim-fugitive
           nerdtree
           nerdtree-git-plugin
+          ansible-vim
         ];
         opt = [ nvim-lsp ];
       };
