@@ -592,7 +592,7 @@ in [{
     set -xe
     export PWDHASH="$(${pkgs.coreutils}/bin/pwd | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}')"
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
-    { ${pkgs.coreutils}/bin/sleep 1; ''${NVIM_QT_PATH} --server "$NVIM_LISTEN"; } &
+    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_QT_PATH} --server "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@"
   '';
 } {
