@@ -60,7 +60,7 @@ let
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
       spideroak = "${pkgs.spideroak}/bin/spideroak";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
-      riot = "${pkgs.riot-desktop}/bin/riot-desktop";
+      riot = "${pkgs.element-desktop}/bin/element-desktop";
       signal = "${pkgs.signal-desktop}/bin/signal-desktop";
       myweechat = "${pkgs.kitty}/bin/kitty --title WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
     };
@@ -161,6 +161,7 @@ let
     ./kitty.nix
     ./bash.nix
     ./starship.nix
+    ./keepassxc-browser.nix
   ];
 
   #export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"

@@ -1,4 +1,4 @@
-{ name }:
+{ name, exposeScript ? false }:
 { config, pkgs, lib, ... }:
 let
   settings = import (./. + "/settings-${name}.nix") { inherit pkgs; };
@@ -30,7 +30,7 @@ let
 
     ${activationScript}
   '';
-in {
+in if exposeScript then dotFilesScript else {
   system.activationScripts."dotfiles-${name}" = ''
     ${dotFilesScript} || true
   '';

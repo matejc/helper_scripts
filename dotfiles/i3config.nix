@@ -321,7 +321,7 @@
     exec ${pkgs.mako}/bin/mako --group-by app-name
 
     bar {
-      swaybar_command ${pkgs.waybar.override { pulseSupport = true; }}/bin/waybar
+      swaybar_command ${pkgs.waybar}/bin/waybar
     }
   ''}
 
@@ -543,7 +543,7 @@
     if [ -z "$RESULT" ]
     then
       ${variables.programs.terminal} --title=ScratchTerm "$@" &
-      sleep 0.4
+      sleep 0.6
       ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
     elif [[ "$RESULT" = "true" ]]
     then

@@ -8,5 +8,7 @@ prabirshrestha/asyncomplete-file.vim
 prabirshrestha/asyncomplete-tags.vim
 prabirshrestha/asyncomplete.vim
 prabirshrestha/async.vim
+preservim/nerdtree
 sickill/vim-pasta
+Xuyuanp/nerdtree-git-plugin
 yami-beta/asyncomplete-omni.vim

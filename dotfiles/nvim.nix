@@ -89,7 +89,7 @@ let
     set ai
     " set smartindent
     set nocopyindent
-    set tabstop=4 shiftwidth=4 expandtab softtabstop=4
+    set tabstop=2 shiftwidth=2 expandtab softtabstop=2
     set nowrap
 
     set virtualedit=onemore
@@ -138,8 +138,6 @@ let
     vmap <S-Up> k
     vmap <S-Left> h
     vmap <S-Right> l
-    nmap <C-S-Right> vw
-    nmap <C-S-Left> hvb
 
     nmap <C-k> "_dd
     imap <C-k> <esc>"_ddi
@@ -183,23 +181,18 @@ let
     nmap <S-PageUp> v10<up>
     nmap <S-PageDown> v10<down>
 
-    nmap <C-S-Right> vw
-    nmap <C-S-Left> hvb
-    imap <C-S-Right> <esc>vw
-    imap <C-S-Left> <esc>hvb
-
     vmap <Tab> >gv
     vmap <S-Tab> <gv
     imap <S-Tab> <esc>v<i
     nmap <Tab> v><esc>
     nmap <S-Tab> v<<esc>
 
-    nmap <C-Down> :m .+1<CR>==
-    nmap <C-Up> :m .-2<CR>==
-    imap <C-Down> <Esc>:m .+1<CR>==gi
-    imap <C-Up> <Esc>:m .-2<CR>==gi
-    vmap <C-Down> :m '>+1<CR>gv=gv
-    vmap <C-Up> :m '<-2<CR>gv=gv
+    nmap <A-Down> :m .+1<CR>==
+    nmap <A-Up> :m .-2<CR>==
+    imap <A-Down> <Esc>:m .+1<CR>==gi
+    imap <A-Up> <Esc>:m .-2<CR>==gi
+    vmap <A-Down> :m '>+1<CR>gv=gv
+    vmap <A-Up> :m '<-2<CR>gv=gv
 
     nmap <DEL> "_x
 
@@ -259,14 +252,16 @@ let
     let g:VM_maps['Find Subword Under']          = '<C-n>'
     let g:VM_maps["Select All"]                  = '<leader>A'
     let g:VM_maps["Start Regex Search"]          = 'g/'
-    let g:VM_maps["Add Cursor Down"]             = '<A-Down>'
-    let g:VM_maps["Add Cursor Up"]               = '<A-Up>'
+    let g:VM_maps["Add Cursor Down"]             = '<C-Down>'
+    let g:VM_maps["Add Cursor Up"]               = '<C-Up>'
     let g:VM_maps["Add Cursor At Pos"]           = 'g<space>'
     let g:VM_maps["Visual Regex"]                = 'g/'
     let g:VM_maps["Visual All"]                  = '<leader>A'
     let g:VM_maps["Visual Add"]                  = '<A-a>'
     let g:VM_maps["Visual Find"]                 = '<A-f>'
     let g:VM_maps["Visual Cursors"]              = '<A-c>'
+    let g:VM_maps["Select l"]              = '<A-Right>'
+    let g:VM_maps["Select h"]              = '<A-Left>'
 
     set autoread
     au FocusGained,BufEnter * :checktime
@@ -322,6 +317,43 @@ let
 
     imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
     imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
+
+    " Override w motion
+    function! MyVisualWMotion()
+        " Save the initial position
+        let initialLine=line('.')
+
+        " Execute the builtin word motion and get the new position
+        normal! gvw
+        let newLine=line('.')
+
+        " If the line as changed go back to the previous line
+        if initialLine != newLine
+            normal gv$l
+        endif
+    endfunction
+
+    " Override b motion
+    function! MyVisualBMotion()
+        " Save the initial position
+        let initialLine=line('.')
+
+        " Execute the builtin word motion and get the new position
+        normal! gvb
+        let newLine=line('.')
+
+        " If the line as changed go back to the previous line
+        if initialLine != newLine
+              normal gv0
+        endif
+    endfunction
+
+    vmap <C-S-Right> :call MyVisualWMotion()<CR>
+    vmap <C-S-Left> :call MyVisualBMotion()<CR>
+    nmap <C-S-Right> v:call MyVisualWMotion()<CR>
+    nmap <C-S-Left> hv:call MyVisualBMotion()<CR>
+    imap <C-S-Right> <esc>v:call MyVisualWMotion()<CR>
+    imap <C-S-Left> <esc>hv:call MyVisualBMotion()<CR>
 
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
@@ -453,12 +485,22 @@ EOF
 
     tab sball
     set switchbuf=usetab,newtab
+
     let g:NERDTreeDirArrowExpandable = '+'
     let g:NERDTreeDirArrowCollapsible = '-'
     " hide NERDTree on file open
     let g:NERDTreeQuitOnOpen = 1
     " do not display NERDTree help
     let g:NERDTreeMinimalUI = 1
+
+    augroup bufclosetrack
+      au!
+      autocmd BufLeave * let g:lastWinName = @%
+    augroup END
+    function! LastWindow()
+      exe "edit " . g:lastWinName
+    endfunction
+    command -nargs=0 LastWindow call LastWindow()
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -467,8 +509,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "7b529e7912517af078e005dd7b06b3d042be9cb7";
-      sha256 = "0byprkm4ksh5lk0hmwx6whaw317jgkwyxdn706y74m6p8b61dliy";
+      rev = "1153ac9036ab62ee25078248a01dc56a2311b9a6";
+      sha256 = "1nq4b76x8z3prw3sbvf28vvq1g8ml0w42fmh9rrv76rcqfl6dj1q";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
   });
@@ -504,6 +546,7 @@ EOF
           nerdtree
           nerdtree-git-plugin
           ansible-vim
+          gv-vim
         ];
         opt = [ nvim-lsp ];
       };

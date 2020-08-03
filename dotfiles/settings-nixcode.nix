@@ -138,6 +138,7 @@ let
     ./screenshot.nix
     ./bash.nix
     ./starship.nix
+    ./keepassxc-browser.nix
   ];
 
 #  export PATH="${pkgs.polybar.override { i3Support = true; pulseSupport = true; }}/bin:$PATH"

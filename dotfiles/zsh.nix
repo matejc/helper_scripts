@@ -62,8 +62,13 @@ in
     # alt+r
     bindkey '^[r' redo
 
+    # ctrl + left/right
     bindkey "^[[1;5C" forward-word
     bindkey "^[[1;5D" backward-word
+
+    # alt + left/right
+    bindkey "^[[1;3C" forward-word
+    bindkey "^[[1;3D" backward-word
 
     setopt histignorespace
 

@@ -39,12 +39,12 @@ let
 
   asyncomplete-omni-vim = buildVimPluginFrom2Nix {
     pname = "asyncomplete-omni-vim";
-    version = "2020-01-09";
+    version = "2020-07-29";
     src = fetchFromGitHub {
       owner = "yami-beta";
       repo = "asyncomplete-omni.vim";
-      rev = "f67b1786494d28f53c4c581a60e1c5fccdcccadb";
-      sha256 = "1wnk64fds7pbv4ynzhd6h3qnbd1wi2b334p4krv80dwsjcppyf4l";
+      rev = "85141dceccd1b1bd46ce9365ce7e1c77d83ad437";
+      sha256 = "1hpai1d7157wp2vr3vx3wnpm6ilvrbxs8bx6camkhycvi79krb1p";
     };
   };
 
@@ -72,12 +72,12 @@ let
 
   ctrlsf-vim = buildVimPluginFrom2Nix {
     pname = "ctrlsf-vim";
-    version = "2020-04-10";
+    version = "2020-07-02";
     src = fetchFromGitHub {
       owner = "dyng";
       repo = "ctrlsf.vim";
-      rev = "9503f99336c9088bbc062fdf8fa57a014d2b8c48";
-      sha256 = "0bigzqvijdgf3d58z8psqmmdajb6zrygbwn7ggx1m0s9mlzppslk";
+      rev = "b44b3f33b0e736f8dc74cd5a4da81f3344162373";
+      sha256 = "196l8abicq2lchpnvcm8133157rmanzvjwlzw2fgxw97vxvdfcfm";
     };
   };
 
@@ -92,25 +92,47 @@ let
     };
   };
 
+  nerdtree = buildVimPluginFrom2Nix {
+    pname = "nerdtree";
+    version = "2020-07-24";
+    src = fetchFromGitHub {
+      owner = "preservim";
+      repo = "nerdtree";
+      rev = "4a32dd0be35621dc8d4b73836f58434ff3e73124";
+      sha256 = "0cgib0afmm0v1lwqbkrmyw0s7z69g4qz2lcijrp7h3vd5ljzkqjl";
+    };
+  };
+
+  nerdtree-git-plugin = buildVimPluginFrom2Nix {
+    pname = "nerdtree-git-plugin";
+    version = "2020-08-01";
+    src = fetchFromGitHub {
+      owner = "Xuyuanp";
+      repo = "nerdtree-git-plugin";
+      rev = "7dfb62a1d9b6233825f8df1ec96d53c472244a3a";
+      sha256 = "0mg9q8w7ja04f9s8sk389nmhxhac8h2a73swxr755sn4l0dbzpq0";
+    };
+  };
+
   nvim-lsp = buildVimPluginFrom2Nix {
     pname = "nvim-lsp";
-    version = "2020-06-24";
+    version = "2020-07-08";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lsp";
-      rev = "8e978339b57cd03d97ae301659136ce103435910";
-      sha256 = "14j15cfbzxv2m12i4r5j3fk3438l7k27knnrbkqas83jvrkb3q2f";
+      rev = "3f7223659f39273c5fe4f2f2d7ee8baa827a9cfb";
+      sha256 = "104439qy1nqgzxrj8pfvd05shnpywm0qj1w68rm701hwpig6j7q6";
     };
   };
 
   omnisharp-vim = buildVimPluginFrom2Nix {
     pname = "omnisharp-vim";
-    version = "2020-06-24";
+    version = "2020-07-25";
     src = fetchFromGitHub {
       owner = "OmniSharp";
       repo = "omnisharp-vim";
-      rev = "798c1b4371b9e9635ec4ab3f34fb8d680a8e1e23";
-      sha256 = "1v1viwlajq2lavkmg5ivvqga7cn4lq7i4snfqpwiqqpw15cvh1jz";
+      rev = "473d96883c8fca3fe50ed63f29e4de7cc4b3b3d4";
+      sha256 = "17953dzbfvpm7j4sj0b797qn5szq6dwk9ysbya717808hcvg17zz";
       fetchSubmodules = true;
     };
   };
