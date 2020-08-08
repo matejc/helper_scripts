@@ -258,13 +258,17 @@
         git
         ruby
         #rubyLibs.nix
-        nix
 
         bundler bundix
-        jekyll
+        rubyPackages.jekyll
+        rubyPackages.jekyll-watch
         gnumake stdenv.cc pkgconfig
 
+        zlib.dev
+        zlib
+
         libxslt.dev
+        libxml2.dev
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis

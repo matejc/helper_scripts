@@ -34,7 +34,7 @@ export GEM_PATH=`nix-instantiate --eval-only --strict -E "let pkgs = import <nix
 
 
 function nokogiri() {
-    echo bundle config build.nokogiri -- --use-system-libraries \
+    bundle config build.nokogiri -- --use-system-libraries \
         --with-exslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
         --with-exslt-lib=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.out + \"/lib\"" | sed -e 's/^"//'  -e 's/"$//'` \
         --with-xslt-include=`nix-instantiate --eval-only --strict -E "let pkgs = import <nixpkgs> {}; in pkgs.libxslt.dev + \"/include\"" | sed -e 's/^"//'  -e 's/"$//'` \
