@@ -241,7 +241,7 @@ let
 
     map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-    vmap / :call feedkeys("/" . <SID>get_visual_selection())
+    vmap / :call feedkeys("/" . <SID>get_visual_selection())<cr>
 
     let g:ctrlp_cmd = 'CtrlPMixed'
     let g:ctrlp_custom_ignore = {
