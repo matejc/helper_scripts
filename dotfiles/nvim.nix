@@ -371,6 +371,9 @@ let
     imap <C-S-Right> <esc>v:call MyVisualWMotion()<CR>
     imap <C-S-Left> <esc>hv:call MyVisualBMotion()<CR>
 
+    nnoremap d "_d
+    vnoremap d "_d
+
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
 
