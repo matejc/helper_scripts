@@ -72,6 +72,8 @@ let
 
     set fixendofline
 
+    set ignorecase
+
     autocmd FileType * set spell spelllang=en_us
 
     hi clear SpellBad
@@ -201,6 +203,18 @@ let
     "   \ let &statusline='%{bufferline#refresh_status()}'
     "   \ .bufferline#get_status_string()
 
+    function! s:get_visual_selection()
+        let [line_start, column_start] = getpos("'<")[1:2]
+        let [line_end, column_end] = getpos("'>")[1:2]
+        let lines = getline(line_start, line_end)
+        if len(lines) == 0
+            return ""
+        endif
+        let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+        let lines[0] = lines[0][column_start - 1:]
+        return join(lines, "\n")
+    endfunction
+
     let g:ctrlsf_ackprg='${pkgs.ag}/bin/ag'
     let g:ctrlsf_search_mode = 'async'
     let g:ctrlsf_default_view_mode = 'compact'
@@ -217,7 +231,7 @@ let
         call ctrlsf#Quit()
       else
         call inputsave()
-        let text = input('Search: ')
+        let text = input('Search: ', s:get_visual_selection())
         call inputrestore()
         if !empty(text)
           call ctrlsf#Search(text)
@@ -226,6 +240,8 @@ let
     endf
 
     map <C-f> <esc>:call CtrlSFIfOpen()<cr>
+
+    vmap / :call feedkeys("/" . <SID>get_visual_selection())
 
     let g:ctrlp_cmd = 'CtrlPMixed'
     let g:ctrlp_custom_ignore = {

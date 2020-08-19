@@ -56,6 +56,7 @@
         python3Packages.robotframework
 
         (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python37Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
+        python3Packages.pyyaml
 
         makeenv
       ];
