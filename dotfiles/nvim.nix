@@ -196,8 +196,6 @@ let
     vmap <A-Down> :m '>+1<CR>gv=gv
     vmap <A-Up> :m '<-2<CR>gv=gv
 
-    nmap <DEL> "_x
-
     " let g:bufferline_echo = 0
     " autocmd VimEnter *
     "   \ let &statusline='%{bufferline#refresh_status()}'
@@ -373,6 +371,9 @@ let
 
     nnoremap d "_d
     vnoremap d "_d
+
+    nnoremap <del> "_d
+    vnoremap <del> "_d
 
 lua << EOF
 package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
