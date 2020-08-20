@@ -156,8 +156,8 @@ let
     nmap <C-c> yy
     vmap <C-c> y
 
-    nmap <c-v> p
-    imap <c-v> <esc>lp
+    nmap <c-v> i<esc>p
+    imap <c-v> <esc>pi
     vmap <c-v> p
 
     nmap <C-S-Up> :copy .-1<cr>
@@ -372,7 +372,8 @@ let
     nnoremap d "_d
     vnoremap d "_d
 
-    nnoremap <del> "_d
+    inoremap <del> <esc>l"_dli
+    nnoremap <del> "_dl
     vnoremap <del> "_d
 
 lua << EOF
@@ -521,6 +522,9 @@ EOF
       exe "edit " . g:lastWinName
     endfunction
     command -nargs=0 LastWindow call LastWindow()
+
+    set list
+    set listchars=tab:▸·,trail:×,nbsp:⎵
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
