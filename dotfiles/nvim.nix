@@ -470,7 +470,7 @@ EOF
     source ${sha1Vim}/plugin/sha1.vim
 
     function! SessionPath()
-      return "${variables.homeDir}/.vim-sessions/Session-" . sha1#sha1( getcwd() ) . ".vim"
+      return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . sha1#sha1( getcwd() ) . ".vim"
     endfunction
 
     autocmd VimLeave * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
