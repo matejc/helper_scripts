@@ -88,10 +88,10 @@ let
       set undofile
     endif
 
-    set ai
+    set autoindent
     " set smartindent
     set nocopyindent
-    set tabstop=2 shiftwidth=2 expandtab softtabstop=2
+    " set tabstop=2 shiftwidth=2 expandtab softtabstop=2
     set nowrap
 
     set virtualedit=onemore
@@ -157,8 +157,8 @@ let
     vmap <C-c> y
 
     nmap <c-v> p
-    imap <c-v> <esc>p
-    vmap <c-v> <esc>p
+    imap <c-v> <esc>lp
+    vmap <c-v> p
 
     nmap <C-S-Up> :copy .-1<cr>
     vmap <C-S-Up> :copy '>-1<cr>
