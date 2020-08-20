@@ -48,8 +48,11 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    colorscheme solarized8_high
+    colorscheme NeoSolarized
     set background=light
+    let g:gitgutter_override_sign_column_highlight = 0
+    let g:neosolarized_contrast = "high"
+    let g:neosolarized_visibility = "low"
 
     set title
     function! ProjectName()
@@ -90,7 +93,7 @@ let
 
     set autoindent
     " set smartindent
-    set nocopyindent
+    " set nocopyindent
     " set tabstop=2 shiftwidth=2 expandtab softtabstop=2
     set nowrap
 
@@ -157,7 +160,7 @@ let
     vmap <C-c> y
 
     nmap <c-v> i<esc>p
-    imap <c-v> <esc>pi
+    imap <c-v> <esc>pi<right>
     vmap <c-v> p
 
     nmap <C-S-Up> :copy .-1<cr>
@@ -544,7 +547,7 @@ EOF
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
         start = [
-          awesome-vim-colorschemes
+          NeoSolarized
           vim-gitgutter
           undotree
           vim-better-whitespace
