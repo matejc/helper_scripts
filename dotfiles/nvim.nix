@@ -527,7 +527,7 @@ EOF
     command -nargs=0 LastWindow call LastWindow()
 
     set list
-    set listchars=tab:▸·,trail:×,nbsp:⎵
+    set listchars=tab:▸\ ,trail:×,nbsp:⎵
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
