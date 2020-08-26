@@ -1,6 +1,7 @@
 dyng/ctrlsf.vim
 equalsraf/neovim-gui-shim
 hashivim/vim-hashicorp-tools
+Houl/motpat-vim
 neovim/nvim-lsp
 OmniSharp/omnisharp-vim
 prabirshrestha/asyncomplete-buffer.vim

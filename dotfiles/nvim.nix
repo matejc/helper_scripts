@@ -141,16 +141,16 @@ let
     nmap <S-Right> vl
     vmap <S-Down> j
     vmap <S-Up> k
-    vmap <S-Left> h
+
     vmap <S-Right> l
 
     nmap <C-k> "_dd
     imap <C-k> <esc>"_ddi
     vmap <C-k> "_d
 
-    nmap <C-x> dd
-    imap <C-x> <esc>ddi
-    vmap <C-x> d
+    nnoremap <C-x> dd
+    inoremap <C-x> <esc>ddi
+    vnoremap <C-x> d
 
     nmap <C-a> gg0vG$
     imap <C-a> <esc>gg0vG$
@@ -163,13 +163,13 @@ let
     imap <c-v> <esc>pi<right>
     vmap <c-v> p
 
-    nmap <C-S-Up> :copy .-1<cr>
-    vmap <C-S-Up> :copy '>-1<cr>
-    imap <C-S-Up> <esc>:copy .-1<cr>i
+    " nmap <C-S-Up> :copy .-1<cr>
+    " vmap <C-S-Up> :copy '>-1<cr>
+    " imap <C-S-Up> <esc>:copy .-1<cr>i
 
-    nmap <C-S-Down> :copy .<cr>
-    vmap <C-S-Down> :copy '><cr>
-    imap <C-S-Down> <esc>:copy .<cr>i
+    " nmap <C-S-Down> :copy .<cr>
+    " vmap <C-S-Down> :copy '><cr>
+    " imap <C-S-Down> <esc>:copy .<cr>i
     nmap <C-S-d> :copy .<cr>
     vmap <C-S-d> :copy '><cr>
     imap <C-S-d> <esc>:copy .<cr>i
@@ -242,7 +242,7 @@ let
 
     map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
-    vmap / :call feedkeys("/" . <SID>get_visual_selection())<cr>
+    vmap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
 
     let g:ctrlp_cmd = 'CtrlPMixed'
     let g:ctrlp_custom_ignore = {
@@ -256,6 +256,7 @@ let
     imap <C-p> <esc>:CtrlPMixed<Return>
 
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
+    nnoremap <C-h> <leader>hu
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 0
@@ -291,91 +292,54 @@ let
     imap <c-/> <esc><leader>c<space>
     vmap <c-/> <leader>c<space>
 
-    " Override w motion
-    function! MyWMotion()
-        " Save the initial position
-        let initialLine=line('.')
-
-        " Execute the builtin word motion and get the new position
-        normal! w
-        let newLine=line('.')
-
-        " If the line as changed go back to the previous line
-        if initialLine != newLine
-            normal k$l
+    fu! <sid>MyMotionDir(mode, dir)
+      if a:dir
+        let newCol=col(".")
+        if newCol == 1
+          return 'k$'
+        else
+          let initialLine=line('.')
+          let newLine=search('\i\+', 'b')
+          if initialLine != newLine
+            return '0'
+          else
+            let scol=col('.')
+            return ":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
+          endif
         endif
-    endfunction
-
-    " Override b motion
-    function! MyBMotion()
-        " Save the initial position
-        let initialLine=line('.')
-
-        " Execute the builtin word motion and get the new position
-        normal! b
-        let newLine=line('.')
-
-        " If the line as changed go back to the previous line
-        if initialLine != newLine
-            normal j
-
-            let newCol=virtcol('.')
-            if newCol != 1
-                normal 0
-            else
-                normal ^
-            endif
+      else
+        let newCol=col('.')
+        if newCol == col('$')
+          return 'j0'
+        else
+          let initialLine=line('.')
+          let newLine=search('\i\+')
+          if initialLine != newLine
+            return '$'
+          else
+            let scol=col('.')
+            return ":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
+          endif
         endif
-
-    endfunction
-
-    nmap <silent> <c-right> :call MyWMotion()<CR>
-    nmap <silent> <c-left> :call MyBMotion()<CR>
-
-    imap <silent> <c-right> <esc>l:call MyWMotion()<CR>i
-    imap <silent> <c-left> <esc>:call MyBMotion()<CR>i
-
-    " Override w motion
-    function! MyVisualWMotion()
-        " Save the initial position
-        let initialLine=line('.')
-
-        " Execute the builtin word motion and get the new position
-        normal! gvw
-        let newLine=line('.')
-
-        " If the line as changed go back to the previous line
-        if initialLine != newLine
-            normal gv$l
-        endif
-    endfunction
-
-    " Override b motion
-    function! MyVisualBMotion()
-        " Save the initial position
-        let initialLine=line('.')
-
-        " Execute the builtin word motion and get the new position
-        normal! gvb
-        let newLine=line('.')
-
-        " If the line as changed go back to the previous line
-        if initialLine != newLine
-              normal gv0
-        endif
-    endfunction
-
-    vmap <C-S-Right> :call MyVisualWMotion()<CR>
-    vmap <C-S-Left> :call MyVisualBMotion()<CR>
-    nmap <C-S-Right> v:call MyVisualWMotion()<CR>
-    nmap <C-S-Left> hv:call MyVisualBMotion()<CR>
-    imap <C-S-Right> <esc>v:call MyVisualWMotion()<CR>
-    imap <C-S-Left> <esc>hv:call MyVisualBMotion()<CR>
+      endif
+    endfu
+    fu! MyMove(mode, line, column)
+      if a:mode == 'v'
+        execute "normal! gv"
+      endif
+      call cursor([a:line, a:column])
+    endfu
+    nnoremap <silent> <c-right> :<c-u>call <sid>MyMotionDir('n', 0)<cr>
+    nnoremap <silent> <c-left> :<c-u>call <sid>MyMotionDir('n', 1)<cr>
+    vnoremap <silent> <expr> <c-right> <sid>MyMotionDir('v', 0)
+    vnoremap <silent> <expr> <c-left> <sid>MyMotionDir('v', 1)
+    inoremap <silent> <c-right> <esc>l:<c-u>call <sid>MyMotionDir('i', 0)<cr>i
+    inoremap <silent> <c-left> <esc>:<c-u>call <sid>MyMotionDir('i', 1)<cr>i
 
     nnoremap d "_d
+    nnoremap D "_D
     vnoremap d "_d
 
-    inoremap <del> <esc>l"_dli
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
@@ -447,8 +411,8 @@ EOF
     imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
     imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
     imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-    imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
-    imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
+    "imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
+    "imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
     imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
     imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
@@ -574,6 +538,7 @@ EOF
           nerdtree-git-plugin
           ansible-vim
           gv-vim
+          motpat-vim
         ];
         opt = [ nvim-lsp ];
       };
