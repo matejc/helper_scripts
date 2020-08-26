@@ -293,32 +293,44 @@ let
     vmap <c-/> <leader>c<space>
 
     fu! <sid>MyMotionDir(mode, dir)
+      let prefix=""
+      if a:mode == 'i'
+        let prefix='normal! '
+      endif
       if a:dir
         let newCol=col(".")
         if newCol == 1
-          return 'k$'
+          return prefix.'k$l'
         else
           let initialLine=line('.')
           let newLine=search('\i\+', 'b')
           if initialLine != newLine
-            return '0'
+            if a:mode == 'i'
+              return prefix.'j0'
+            else
+              return '0'
+            endif
           else
             let scol=col('.')
-            return ":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
+            return prefix.":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
           endif
         endif
       else
         let newCol=col('.')
         if newCol == col('$')
-          return 'j0'
+          return prefix.'j0'
         else
           let initialLine=line('.')
           let newLine=search('\i\+')
           if initialLine != newLine
-            return '$'
+            if a:mode == 'i'
+              return prefix.'k$l'
+            else
+              return '$l'
+            endif
           else
             let scol=col('.')
-            return ":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
+            return prefix.":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
           endif
         endif
       endif
@@ -329,12 +341,12 @@ let
       endif
       call cursor([a:line, a:column])
     endfu
-    nnoremap <silent> <c-right> :<c-u>call <sid>MyMotionDir('n', 0)<cr>
-    nnoremap <silent> <c-left> :<c-u>call <sid>MyMotionDir('n', 1)<cr>
+    nnoremap <silent> <expr> <c-right> <sid>MyMotionDir('n', 0)
+    nnoremap <silent> <expr> <c-left> <sid>MyMotionDir('n', 1)
     vnoremap <silent> <expr> <c-right> <sid>MyMotionDir('v', 0)
     vnoremap <silent> <expr> <c-left> <sid>MyMotionDir('v', 1)
-    inoremap <silent> <c-right> <esc>l:<c-u>call <sid>MyMotionDir('i', 0)<cr>i
-    inoremap <silent> <c-left> <esc>:<c-u>call <sid>MyMotionDir('i', 1)<cr>i
+    inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
+    inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
 
     nnoremap d "_d
     nnoremap D "_D

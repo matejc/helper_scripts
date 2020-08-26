@@ -52,6 +52,7 @@
         glib.dev
         gobjectIntrospection.dev
         libffi.dev
+        libglvnd
 
         python3Packages.robotframework
 

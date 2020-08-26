@@ -80,7 +80,7 @@ in
     export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
     ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
-    #DISABLE_AUTO_TITLE="true"
+    DISABLE_AUTO_TITLE="true"
 
     autoload -Uz compinit
     compinit
