@@ -321,7 +321,7 @@ let
         else
           let newLine=search(g:mpattern, "", initialLine)
           if initialCol == col('.')
-            let newLine=search('$', "", initialLine)
+            call cursor([newLine, col('$')])
           endif
         endif
         let scol=col('.')
