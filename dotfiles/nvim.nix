@@ -292,47 +292,40 @@ let
     imap <c-/> <esc><leader>c<space>
     vmap <c-/> <leader>c<space>
 
+    let g:mpattern='[a-zA-Z0-9]\+\|^\|$'
+
     fu! <sid>MyMotionDir(mode, dir)
       let prefix=""
       if a:mode == 'i'
         let prefix='normal! '
       endif
       if a:dir
-        let newCol=col(".")
-        if newCol == 1
-          return prefix.'k$l'
-        else
-          let initialLine=line('.')
-          let newLine=search('\i\+', 'b')
-          if initialLine != newLine
-            if a:mode == 'i'
-              return prefix.'j0'
-            else
-              return '0'
-            endif
-          else
-            let scol=col('.')
-            return prefix.":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
-          endif
+        let initialLine=line('.')
+        let initialCol=col('.')
+        if initialCol == col('$')
+          call search('.', 'b', initialLine)
         endif
+        let initialCol=col('.')
+        if initialCol == 1
+          let newLine=search('$', 'b', initialLine-1)
+        else
+          let newLine=search(g:mpattern, 'b', initialLine-1)
+        endif
+        let scol=col('.')
+        return prefix.":call MyMove('".a:mode."',".newLine.",".scol.")\<cr>"
       else
-        let newCol=col('.')
-        if newCol == col('$')
-          return prefix.'j0'
+        let initialLine=line('.')
+        let initialCol=col('.')
+        if initialCol == col('$')
+          let newLine=search('^', "", initialLine+1)
         else
-          let initialLine=line('.')
-          let newLine=search('\i\+')
-          if initialLine != newLine
-            if a:mode == 'i'
-              return prefix.'k$l'
-            else
-              return '$l'
-            endif
-          else
-            let scol=col('.')
-            return prefix.":call MyMove('".a:mode."',".initialLine.",".scol.")\<cr>"
+          let newLine=search(g:mpattern, "", initialLine)
+          if initialCol == col('.')
+            let newLine=search('$', "", initialLine)
           endif
         endif
+        let scol=col('.')
+        return prefix.":call MyMove('".a:mode."',".newLine.",".scol.")\<cr>"
       endif
     endfu
     fu! MyMove(mode, line, column)
@@ -347,6 +340,8 @@ let
     vnoremap <silent> <expr> <c-left> <sid>MyMotionDir('v', 1)
     inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
     inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
+
+    set nowrapscan
 
     nnoremap d "_d
     nnoremap D "_D
