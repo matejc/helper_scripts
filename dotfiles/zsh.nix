@@ -10,6 +10,8 @@ in
 [{
   target = "${variables.homeDir}/.zshrc";
   source = pkgs.writeText "zshrc" ''
+    ZSH_DISABLE_COMPFIX="true"
+
     unset RPS1  # clean up
 
     function preexec() {
