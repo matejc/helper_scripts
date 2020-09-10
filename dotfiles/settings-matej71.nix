@@ -58,7 +58,6 @@ let
       c = "${pkgs.vscodium}/bin/codium";
       s = "${pkgs.sublime3}/bin/sublime3 --new-window";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-      spideroak = "${pkgs.spideroak}/bin/spideroak";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
       riot = "${pkgs.element-desktop}/bin/element-desktop";
       signal = "${pkgs.signal-desktop}/bin/signal-desktop";
@@ -189,7 +188,6 @@ let
     #!${pkgs.stdenv.shell}
 
     ${variables.programs.mykeepassxc} &
-    ${variables.programs.spideroak} &
     ${variables.programs.nextcloud-client} &
     ${variables.browser} &
     ${variables.programs.myweechat} &
