@@ -100,6 +100,16 @@ in
     alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git"'
 
     eval "$(${pkgs.starship}/bin/starship init zsh)"
+
+    # include .profile if it exists
+    if [ -f "$HOME/.profile" ]; then
+        . "$HOME/.profile"
+    fi
+
+    # set PATH so it includes user's private bin if it exists
+    if [ -d "$HOME/bin" ] ; then
+        PATH="$HOME/bin:$PATH"
+    fi
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
