@@ -24,8 +24,8 @@ in
     export EDITOR="${variables.editor}"
     export TERMINAL="${variables.terminal}"
 
+    . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
     if [[ $TERM == xterm-termite ]]; then
-      . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
       __vte_osc7
     fi
     ${lib.optionalString (variables.term != null) ''
@@ -72,7 +72,12 @@ in
 
     setopt histignorespace
 
+    source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    export ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
+
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+    export ZSH_AUTOSUGGEST_STRATEGY=("history")
 
     source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
     bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -90,6 +95,7 @@ in
     alias cdu='cd-gitroot'
 
     alias l='${pkgs.exa}/bin/exa -gal --git'
+    alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git"'
 
     eval "$(${pkgs.starship}/bin/starship init zsh)"
   '';

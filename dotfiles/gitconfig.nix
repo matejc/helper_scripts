@@ -8,7 +8,7 @@
     [core]
         editor = ${variables.editor}
         excludesfile = ${variables.homeDir}/.gitignore
-        pager = ${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX
+        pager = env PATH="$PATH:${pkgs.perl}/bin" ${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | ${pkgs.less}/bin/less --tabs=4 -RFX
     [color]
         branch = auto
         diff = auto

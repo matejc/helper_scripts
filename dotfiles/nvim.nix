@@ -188,9 +188,9 @@ let
 
     vmap <Tab> >gv
     vmap <S-Tab> <gv
-    imap <S-Tab> <esc>v<i
-    nmap <Tab> v><esc>
-    nmap <S-Tab> v<<esc>
+    nmap <Tab> >>
+    nmap <S-Tab> <<
+    inoremap <S-Tab> <C-d>
 
     nmap <A-Down> :m .+1<CR>==
     nmap <A-Up> :m .-2<CR>==
@@ -303,13 +303,13 @@ let
         let initialLine=line('.')
         let initialCol=col('.')
         if initialCol == col('$')
-          call search('.', 'b', initialLine)
+          call search('.', 'bW', initialLine)
         endif
         let initialCol=col('.')
         if initialCol == 1
-          let newLine=search('$', 'b', initialLine-1)
+          let newLine=search('$', 'bW', initialLine-1)
         else
-          let newLine=search(g:mpattern, 'b', initialLine-1)
+          let newLine=search(g:mpattern, 'bW', initialLine-1)
         endif
         let scol=col('.')
         return prefix.":call MyMove('".a:mode."',".newLine.",".scol.")\<cr>"
@@ -317,9 +317,9 @@ let
         let initialLine=line('.')
         let initialCol=col('.')
         if initialCol == col('$')
-          let newLine=search('^', "", initialLine+1)
+          let newLine=search('^', "W", initialLine+1)
         else
-          let newLine=search(g:mpattern, "", initialLine)
+          let newLine=search(g:mpattern, "W", initialLine)
           if initialCol == col('.')
             call cursor([newLine, col('$')])
           endif
@@ -341,7 +341,7 @@ let
     inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
     inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
 
-    set nowrapscan
+    inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
 
     nnoremap d "_d
     nnoremap D "_D
@@ -389,6 +389,18 @@ if not nvim_lsp.hie then
   }
 end
 nvim_lsp.hie.setup{}
+-- configs.rnix = {
+--   default_config = {
+--     cmd = {'${pkgs.rnix-lsp}/bin/rnix-lsp'};
+--     filetypes = {'nix'};
+--     root_dir = function(fname)
+--       return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+--     end;
+--     log_level = vim.lsp.protocol.MessageType.Warning;
+--     settings = {};
+--   };
+-- }
+-- nvim_lsp.rnix.setup{}
 -- if not nvim_lsp.robot then
 --   configs.robot = {
 --     default_config = {
@@ -420,12 +432,12 @@ EOF
     imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
     "imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
     "imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
-    imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-    imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+    "imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+    "imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
     " Use <TAB> to select the popup menu:
     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-    inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+    "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-d>"
 
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
@@ -544,8 +556,8 @@ EOF
           nerdtree
           nerdtree-git-plugin
           ansible-vim
-          gv-vim
-          motpat-vim
+          #gv-vim
+          #motpat-vim
         ];
         opt = [ nvim-lsp ];
       };
@@ -570,6 +582,17 @@ in [{
       typescript \
       typescript-language-server \
       yaml-language-server
+
+    function ensure_lsp_link() {
+      local name="$1"
+      local path="$2"
+      local cmdbasename="$(${pkgs.coreutils}/bin/basename $path)"
+      local destination="${variables.homeDir}/.cache/nvim/nvim_lsp/$name/bin"
+      mkdir -p "$destination"
+      ln -svf "$path" "$destination/$cmdbasename"
+    }
+
+    ensure_lsp_link "rnix" "${pkgs.rnix-lsp}/bin/rnix-lsp"
   '';
 } {
   target = "${variables.homeDir}/bin/nvim";
