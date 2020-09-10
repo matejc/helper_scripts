@@ -22,7 +22,9 @@ in
 
     export BROWSER="${variables.browser}"
     export EDITOR="${variables.editor}"
-    export TERMINAL="${variables.terminal}"
+    ${lib.optionalString (variables.terminal != null) ''
+      export TERMINAL="${variables.terminal}"
+    ''}
 
     . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
     if [[ $TERM == xterm-termite ]]; then

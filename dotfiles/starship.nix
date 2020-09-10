@@ -4,5 +4,8 @@
   source = pkgs.writeText "starship" ''
     [aws]
     disabled = true
+
+    [character]
+    symbol = ">"
   '';
 }]

@@ -1,7 +1,7 @@
 { pkgs, lib ? pkgs.lib }:
 let
   variables = rec {
-    prefix = "${variable.homeDir}/workarea/helper_scripts";
+    prefix = "${variables.homeDir}/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/${variables.user}";
@@ -16,9 +16,9 @@ let
     };
     term = null;
     browser = programs.chromium;
+    terminal = null;
     programs = {
       chromium = "Chrome.exe";
-      code = "${pkgs.vscodium}/bin/codium";
     };
   };
 
@@ -29,7 +29,6 @@ let
     ./zsh.nix
     ./programs.nix
     ./nvim.nix
-    ./bash.nix
     ./starship.nix
   ];
 
