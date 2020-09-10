@@ -74,6 +74,14 @@ in
     bindkey "^[[1;3C" forward-word
     bindkey "^[[1;3D" backward-word
 
+    export HISTFILESIZE=1000000000
+    export HISTSIZE=1000000000
+    export HISTFILE=~/.zsh_history
+
+    setopt HIST_FIND_NO_DUPS
+    # following should be turned off, if sharing history via setopt SHARE_HISTORY
+    setopt INC_APPEND_HISTORY
+
     setopt histignorespace
 
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
