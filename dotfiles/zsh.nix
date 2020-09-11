@@ -89,19 +89,30 @@ in
 
     setopt histignorespace
 
+    # 0 -- vanilla completion (abc => abc)
+    # 1 -- smart case completion (abc => Abc)
+    # 2 -- word flex completion (abc => A-big-Car)
+    # 3 -- full flex completion (abc => ABraCadabra)
+    zstyle ':completion:*' matcher-list "" \
+      'm:{a-z\-}={A-Z\_}' \
+      'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
+      'r:|?=** m:{a-z\-}={A-Z\_}'
+
+    zstyle ':completion:*' menu select
+
     source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    export ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
+    ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
 
     source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-    export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
-    export ZSH_AUTOSUGGEST_STRATEGY=("history")
+    ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+    ZSH_AUTOSUGGEST_STRATEGY=("history")
+    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
     source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
     bindkey "$terminfo[kcuu1]" history-substring-search-up
     bindkey "$terminfo[kcud1]" history-substring-search-down
-    export HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
+    HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
-    ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
     DISABLE_AUTO_TITLE="true"
 
     autoload -Uz compinit
