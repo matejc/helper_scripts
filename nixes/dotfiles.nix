@@ -1,4 +1,4 @@
-{ name, pkgs ? import <nixpkgs> {} }:
+{ name, pkgs ? import (fetchTarball "https://github.com/matejc/nixpkgs/archive/mylocal193.tar.gz") {} }:
 let
   dotfiles = import ../dotfiles/default.nix
     { inherit name; exposeScript = true; }
