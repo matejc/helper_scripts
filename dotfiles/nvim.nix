@@ -622,7 +622,7 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python pkgs.python3Packages.python-language-server /* pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /* pkgs.python3Packages.python-language-server pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
