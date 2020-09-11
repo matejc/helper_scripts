@@ -66,6 +66,12 @@ in
     # alt+r
     bindkey '^[r' redo
 
+    WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+    MOTION_WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+    ""{back,for}ward-word() WORDCHARS=$MOTION_WORDCHARS zle .$WIDGET
+    zle -N forward-word
+    zle -N backward-word
+
     # ctrl + left/right
     bindkey "^[[1;5C" forward-word
     bindkey "^[[1;5D" backward-word
@@ -79,8 +85,7 @@ in
     export HISTFILE=~/.zsh_history
 
     setopt HIST_FIND_NO_DUPS
-    # following should be turned off, if sharing history via setopt SHARE_HISTORY
-    setopt INC_APPEND_HISTORY
+    setopt SHARE_HISTORY
 
     setopt histignorespace
 
