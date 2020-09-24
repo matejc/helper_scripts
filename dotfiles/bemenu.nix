@@ -109,7 +109,7 @@
 
 
     s = join(read_last('${variables.homeDir}/.dmenu_last') + sorted(executables()) + sorted(dirs()))
-    run = dmenu(['-p', 'run:', '-l', '10', '-P', '>', '-i', '--fork'], [s])
+    run = dmenu(['-p', 'run:', '-l', '10', '-P', '>', '-i', '-b', '-f', '--fork'], [s])
     if run:
         match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
         if match:

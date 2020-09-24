@@ -66,8 +66,8 @@ in
     # alt+r
     bindkey '^[r' redo
 
-    WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
-    MOTION_WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+    WORDCHARS='*?_-~=&;!#$%^{}<>'
+    MOTION_WORDCHARS='*?_-~=&;!#$%^{}<>'
     ""{back,for}ward-word() WORDCHARS=$MOTION_WORDCHARS zle .$WIDGET
     zle -N forward-word
     zle -N backward-word
@@ -111,6 +111,8 @@ in
     source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
     bindkey "$terminfo[kcuu1]" history-substring-search-up
     bindkey "$terminfo[kcud1]" history-substring-search-down
+    bindkey "^[[A" history-substring-search-up
+    bindkey "^[[B" history-substring-search-down
     HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
     DISABLE_AUTO_TITLE="true"
@@ -121,9 +123,12 @@ in
     fpath=(${gitrootSrc}(N-/) $fpath)
     autoload -Uz cd-gitroot
     alias cdu='cd-gitroot'
+    alias ...='cd-gitroot'
 
     alias l='${pkgs.exa}/bin/exa -gal --git'
     alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git"'
+
+    alias ..='cd ..'
 
     eval "$(${pkgs.starship}/bin/starship init zsh)"
 
