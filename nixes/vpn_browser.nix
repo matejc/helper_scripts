@@ -18,6 +18,7 @@ let
 
     sudo nixos-container start vpn
     sudo nixos-container run vpn -- protonvpn c -f
+
     sudo nixos-container run vpn -- start_xpra $@ &
 
     while ! ${pkgs.socat}/bin/socat -u OPEN:/dev/null UNIX-CONNECT:/run/xpra-vpn/vpn-0
@@ -26,9 +27,10 @@ let
       sleep 1
     done
 
-    ${xpra}/bin/xpra attach --opengl=yes --video-encoders=rgb24 socket:///run/xpra-vpn/vpn-0
+    ${xpra}/bin/xpra attach --opengl=yes --video-encoders=rgb24 socket:///run/xpra-vpn/vpn-0 &
+    xpra_pid="$!"
 
-    sudo nixos-container run vpn -- protonvpn d
+    sudo -E bash -c "while [ -d \"/proc/$xpra_pid\" ]; do sleep 1; done; nixos-container run vpn -- protonvpn d"
   '';
 in
 {
@@ -41,9 +43,6 @@ in
     privateNetwork = true;
     hostAddress = "192.168.10.10";
     localAddress = "192.168.10.11";
-    forwardPorts = [
-      {"containerPort" = 10000; "hostPort" = 10000; "protocol" = "udp";}
-    ];
     allowedDevices = [
       { modifier = "rw"; node = "/dev/vga_arbiter"; }
     ];
