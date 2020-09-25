@@ -1,12 +1,15 @@
-{ outInterface }:
+{ outInterface, nameserver ? null }:
 { config, pkgs, lib, ... }:
 let
+  xpra = pkgs.xpra.overrideDerivation (old: {
+    propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.python3Packages.pyinotify ];
+  });
   start_xpra = pkgs.writeScriptBin "start_xpra" ''
     #!${pkgs.stdenv.shell}
 
     set -e
 
-    sudo -iu browser xpra start --video-encoders=rgb24 --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}
+    sudo -iu browser ${xpra}/bin/xpra start --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}
   '';
   start_vpn_container = pkgs.writeScriptBin "start_vpn_container" ''
     #!${pkgs.stdenv.shell}
@@ -17,9 +20,13 @@ let
     sudo nixos-container run vpn -- protonvpn c -f
     sudo nixos-container run vpn -- start_xpra $@ &
 
-    sleep 5
+    while ! ${pkgs.socat}/bin/socat -u OPEN:/dev/null UNIX-CONNECT:/run/xpra-vpn/vpn-0
+    do
+      echo "Waiting for /run/xpra-vpn/vpn-0 ..."
+      sleep 1
+    done
 
-    ${pkgs.xpra}/bin/xpra attach socket:///run/xpra-vpn/vpn-0
+    ${xpra}/bin/xpra attach --opengl=yes --video-encoders=rgb24 socket:///run/xpra-vpn/vpn-0
 
     sudo nixos-container run vpn -- protonvpn d
   '';
@@ -53,8 +60,8 @@ in
       isReadOnly = false;
     };
     config = {
-      users.users.browser = { isNormalUser = true; uid = 1000; };
-      environment.systemPackages = with pkgs; [ xpra chromium protonvpn-cli coreutils start_xpra ];
+      users.users.browser = { isNormalUser = true; uid = 1000; extraGroups = [ "video" ]; };
+      environment.systemPackages = with pkgs; [ chromium protonvpn-cli coreutils start_xpra ];
       system.activationScripts.startup = ''
         mkdir -p /run/user/1000
         chown 1000 /run/user/1000
@@ -72,7 +79,15 @@ in
       hardware.opengl.enable = true;
       hardware.opengl.extraPackages = config.hardware.opengl.extraPackages;
       networking.firewall.enable = false;
+      networking.nameservers = [ nameserver ];
       boot.kernelPackages = pkgs.linuxPackages_latest;
+      programs.chromium = {
+        enable = true;
+        extensions = [
+          "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
+          "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
+        ];
+      };
     };
   };
   system.activationScripts.container_vpn_startup = ''
