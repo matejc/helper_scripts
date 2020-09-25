@@ -9,7 +9,7 @@ let
 
     set -e
 
-    sudo -iu browser ${xpra}/bin/xpra start --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}
+    sudo -iu browser ${xpra}/bin/xpra start --printing=no --mdns=no --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}
   '';
   start_vpn_container = pkgs.writeScriptBin "start_vpn_container" ''
     #!${pkgs.stdenv.shell}
@@ -59,7 +59,7 @@ in
       isReadOnly = false;
     };
     config = {
-      users.users.browser = { isNormalUser = true; uid = 1000; extraGroups = [ "video" ]; };
+      users.users.browser = { isNormalUser = true; uid = 1000; extraGroups = [ "video" "audio" ]; };
       environment.systemPackages = with pkgs; [ chromium protonvpn-cli coreutils start_xpra ];
       system.activationScripts.startup = ''
         mkdir -p /run/user/1000
