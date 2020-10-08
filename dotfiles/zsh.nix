@@ -80,8 +80,9 @@ in
     bindkey "^[[1;3C" forward-word
     bindkey "^[[1;3D" backward-word
 
-    export HISTFILESIZE=1000000000
-    export HISTSIZE=1000000000
+    export HISTFILESIZE=10000000
+    export HISTSIZE=10000000
+    export SAVEHIST=10000000
     export HISTFILE=~/.zsh_history
 
     setopt HIST_FIND_NO_DUPS
