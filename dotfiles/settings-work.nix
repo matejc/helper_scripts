@@ -28,7 +28,6 @@ let
     ./jstools.nix
     ./zsh.nix
     ./programs.nix
-    ./nvim.nix
     ./starship.nix
   ];
 
