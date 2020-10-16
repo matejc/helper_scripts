@@ -28,7 +28,10 @@ let
       c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
-      myweechat = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title WeeChat '${pkgs.writeScript "weechat" "${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat"}' &";
+      myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''
+        #!${pkgs.stdenv.shell}
+        ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
+      ''}";
     };
     startup = [
       "${homeDir}/bin/nextcloud-client"

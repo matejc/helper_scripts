@@ -1,4 +1,4 @@
-{ outInterface, nameserver ? null }:
+{ outInterface, nameserver ? null, extraPackages ? [] }:
 { config, pkgs, lib, ... }:
 let
   xpra = pkgs.xpra.overrideDerivation (old: {
@@ -9,7 +9,7 @@ let
 
     set -e
 
-    sudo -iu browser ${xpra}/bin/xpra start --printing=no --mdns=no --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}
+    su -l -c "${xpra}/bin/xpra start --printing=no --mdns=no --daemon=no --exit-with-children=yes --start-child=$1 ''${@:2}" browser
   '';
   start_vpn_container = pkgs.writeScriptBin "start_vpn_container" ''
     #!${pkgs.stdenv.shell}
@@ -19,7 +19,14 @@ let
     sudo nixos-container start vpn
     sudo nixos-container run vpn -- protonvpn c -f
 
-    sudo nixos-container run vpn -- start_xpra $@ &
+    sudo nixos-container run vpn -- start_xpra "$1" &
+
+    all=("$@")
+    for arg in "''${all[@]:1}"
+    do
+      echo "Starting $arg ..."
+      sudo nixos-container run vpn -- su -l -c "$arg" browser &
+    done
 
     while ! ${pkgs.socat}/bin/socat -u OPEN:/dev/null UNIX-CONNECT:/run/xpra-vpn/vpn-0
     do
@@ -30,7 +37,7 @@ let
     ${xpra}/bin/xpra attach --opengl=yes --video-encoders=rgb24 socket:///run/xpra-vpn/vpn-0 &
     xpra_pid="$!"
 
-    sudo -E bash -c "while [ -d \"/proc/$xpra_pid\" ]; do sleep 1; done; nixos-container run vpn -- protonvpn d"
+    sudo -E bash -c "while [ -d \"/proc/$xpra_pid\" ]; do sleep 1; done; nixos-container run vpn -- su -c 'kill -TERM -1' browser; nixos-container run vpn -- protonvpn d; nixos-container stop vpn"
   '';
 in
 {
@@ -60,7 +67,7 @@ in
     };
     config = {
       users.users.browser = { isNormalUser = true; uid = 1000; extraGroups = [ "video" "audio" ]; };
-      environment.systemPackages = with pkgs; [ chromium protonvpn-cli coreutils start_xpra ];
+      environment.systemPackages = with pkgs; [ chromium protonvpn-cli coreutils start_xpra ] ++ extraPackages;
       system.activationScripts.startup = ''
         mkdir -p /run/user/1000
         chown 1000 /run/user/1000
@@ -78,7 +85,7 @@ in
       hardware.opengl.enable = true;
       hardware.opengl.extraPackages = config.hardware.opengl.extraPackages;
       networking.firewall.enable = false;
-      networking.nameservers = [ nameserver ];
+      networking.nameservers = lib.optionals (nameserver != null) [ nameserver ];
       boot.kernelPackages = pkgs.linuxPackages_latest;
       programs.chromium = {
         enable = true;
