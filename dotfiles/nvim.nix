@@ -350,74 +350,70 @@ let
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
-#lua << EOF
-#package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
-
-#vim.cmd('packadd nvim-lsp')
-#local nvim_lsp = require'nvim_lsp'
-
-#nvim_lsp.pyls.setup{}
-#nvim_lsp.tsserver.setup{}
-
-#local configs = require'nvim_lsp/configs'
-#-- Check if it's already defined for when I reload this file.
-#-- if not nvim_lsp.omnisharp then
-#--   configs.omnisharp = {
-#--     default_config = {
-#--       cmd = {'omnisharp', '-lsp'};
-#--       filetypes = {'cs'};
-#--       root_dir = function(fname)
-#--         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-#--       end;
-#--       log_level = vim.lsp.protocol.MessageType.Warning;
-#--       settings = {};
-#--     };
-#--   }
-#-- end
-#-- nvim_lsp.omnisharp.setup{}
-#if not nvim_lsp.hie then
-  #configs.hie = {
-    #default_config = {
-      #cmd = {'hie-wrapper', '--lsp'};
-      #filetypes = {'haskell'};
-      #root_dir = function(fname)
-        #return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      #end;
-      #log_level = vim.lsp.protocol.MessageType.Warning;
-      #settings = {};
-    #};
-  #}
-#end
-#nvim_lsp.hie.setup{}
-#-- configs.rnix = {
-#--   default_config = {
-#--     cmd = {'${pkgs.rnix-lsp}/bin/rnix-lsp'};
-#--     filetypes = {'nix'};
-#--     root_dir = function(fname)
-#--       return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-#--     end;
-#--     log_level = vim.lsp.protocol.MessageType.Warning;
-#--     settings = {};
-#--   };
-#-- }
-#-- nvim_lsp.rnix.setup{}
-#-- if not nvim_lsp.robot then
-#--   configs.robot = {
-#--     default_config = {
-#--       cmd = {'robotframework_ls'};
-#--       filetypes = {'robot'};
-#--       root_dir = function(fname)
-#--         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-#--       end;
-#--       log_level = vim.lsp.protocol.MessageType.Warning;
-#--       settings = { };
-#--     };
-#--   }
-#-- end
-#-- nvim_lsp.robot.setup{}
-#EOF
-
-    #autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
+" lua << EOF
+" package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
+" vim.cmd('packadd nvim-lsp')
+" local nvim_lsp = require'nvim_lsp'
+" nvim_lsp.pyls.setup{}
+" nvim_lsp.tsserver.setup{}
+" local configs = require'nvim_lsp/configs'
+" -- Check if it's already defined for when I reload this file.
+" -- if not nvim_lsp.omnisharp then
+" --   configs.omnisharp = {
+" --     default_config = {
+" --       cmd = {'omnisharp', '-lsp'};
+" --       filetypes = {'cs'};
+" --       root_dir = function(fname)
+" --         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+" --       end;
+" --       log_level = vim.lsp.protocol.MessageType.Warning;
+" --       settings = {};
+" --     };
+" --   }
+" -- end
+" -- nvim_lsp.omnisharp.setup{}
+" if not nvim_lsp.hie then
+"  #configs.hie = {
+"    #default_config = {
+"      #cmd = {'hie-wrapper', '--lsp'};
+"      #filetypes = {'haskell'};
+"      #root_dir = function(fname)
+"        #return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+"      #end;
+"      #log_level = vim.lsp.protocol.MessageType.Warning;
+"      #settings = {};
+"    #};
+"  #}
+" end
+" nvim_lsp.hie.setup{}
+" -- configs.rnix = {
+" --   default_config = {
+" --     cmd = {'${pkgs.rnix-lsp}/bin/rnix-lsp'};
+" --     filetypes = {'nix'};
+" --     root_dir = function(fname)
+" --       return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+" --     end;
+" --     log_level = vim.lsp.protocol.MessageType.Warning;
+" --     settings = {};
+" --   };
+" -- }
+" -- nvim_lsp.rnix.setup{}
+" -- if not nvim_lsp.robot then
+" --   configs.robot = {
+" --     default_config = {
+" --       cmd = {'robotframework_ls'};
+" --       filetypes = {'robot'};
+" --       root_dir = function(fname)
+" --         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+" --       end;
+" --       log_level = vim.lsp.protocol.MessageType.Warning;
+" --       settings = { };
+" --     };
+" --   }
+" -- end
+" -- nvim_lsp.robot.setup{}
+" EOF
+"     autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages

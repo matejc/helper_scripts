@@ -78,6 +78,7 @@ let
     ./starship.nix
     ./keepassxc-browser.nix
     ./startup.nix
+    ./trace2scad.nix
   ];
 
   activationScript = ''
