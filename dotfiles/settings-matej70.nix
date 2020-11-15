@@ -37,7 +37,6 @@ let
       "${homeDir}/bin/nextcloud-client"
       "${homeDir}/bin/mykeepassxc"
       "${homeDir}/bin/chromium"
-      "${pkgs.qownnotes}/bin/QOwnNotes"
     ];
   };
 

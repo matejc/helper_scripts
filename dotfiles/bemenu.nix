@@ -107,9 +107,20 @@
                 seen.add(value)
         return result
 
+    def execute_menu():
+        menu_cmd = ["${pkgs.bemenu}/bin/bemenu"]
+        menu_args = ['-p', 'run:', '-l', '10', '-P', '>', '-i', '-b', '-f', '--fork']
+        return subprocess.Popen(
+            menu_cmd + menu_args,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
+
+    menu_process = execute_menu()
 
     s = join(read_last('${variables.homeDir}/.dmenu_last') + sorted(executables()) + sorted(dirs()))
-    run = dmenu(['-p', 'run:', '-l', '10', '-P', '>', '-i', '-b', '-f', '--fork'], [s])
+
+    menu_stdout, _ = menu_process.communicate('\n'.join([s]).encode())
+    run = menu_stdout.decode().strip('\n')
     if run:
         match = re.match(r'.+\s+\[Executable\: \'(.+)\'\]', run)
         if match:
