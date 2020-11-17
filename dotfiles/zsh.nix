@@ -66,8 +66,8 @@ in
     # alt+r
     bindkey '^[r' redo
 
-    WORDCHARS='*?_-~=&;!#$%^{}<>'
-    MOTION_WORDCHARS='*?_-~=&;!#$%^{}<>'
+    WORDCHARS='*?_~=&;!#$%^{}<>'
+    MOTION_WORDCHARS='*?_~=&;!#$%^{}<>'
     ""{back,for}ward-word() WORDCHARS=$MOTION_WORDCHARS zle .$WIDGET
     zle -N forward-word
     zle -N backward-word

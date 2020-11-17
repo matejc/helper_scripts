@@ -47,7 +47,7 @@ let
     browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
-      filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
+      filemanager = "${pkgs.dolphin}/bin/dolphin";
       nm-applet = "${pkgs.networkmanagerapplet}/bin/nm-applet";
       cmst = "${pkgs.cmst}/bin/cmst --minimized";
       #terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
