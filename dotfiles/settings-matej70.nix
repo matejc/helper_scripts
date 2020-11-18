@@ -78,6 +78,7 @@ let
     ./keepassxc-browser.nix
     ./startup.nix
     ./trace2scad.nix
+    ./superslicer.nix
   ];
 
   activationScript = ''
