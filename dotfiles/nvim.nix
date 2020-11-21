@@ -507,6 +507,23 @@ let
 
     set list
     set listchars=tab:▸\ ,trail:×,nbsp:⎵
+
+    augroup python
+      au!
+      au BufNewFile,BufRead *.py set tabstop=4
+      au BufNewFile,BufRead *.py set softtabstop=4
+      au BufNewFile,BufRead *.py set shiftwidth=4
+      au BufNewFile,BufRead *.py set textwidth=79
+      au BufNewFile,BufRead *.py set expandtab
+      au BufNewFile,BufRead *.py set autoindent
+      au BufNewFile,BufRead *.py set fileformat=unix
+    augroup END
+
+    augroup web
+      au BufNewFile,BufRead *.js, *.html, *.css set tabstop=2
+      au BufNewFile,BufRead *.js, *.html, *.css set softtabstop=2
+      au BufNewFile,BufRead *.js, *.html, *.css set shiftwidth=2
+    augroup END
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -553,6 +570,7 @@ let
           nerdtree
           nerdtree-git-plugin
           ansible-vim
+          vim-flake8
           #gv-vim
           #motpat-vim
         ];
