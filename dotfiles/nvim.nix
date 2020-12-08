@@ -568,8 +568,8 @@ let
           vimPlugins.neovim-gui-shim
           vim-vinegar
           vim-fugitive
-          nerdtree
-          nerdtree-git-plugin
+          vimPlugins.nerdtree
+          vimPlugins.nerdtree-git-plugin
           ansible-vim
           vimPlugins.python-mode
           #gv-vim
