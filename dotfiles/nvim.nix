@@ -495,6 +495,7 @@ let
     let g:NERDTreeQuitOnOpen = 1
     " do not display NERDTree help
     let g:NERDTreeMinimalUI = 1
+    let g:NERDTreeGlyphReadOnly = "RO"
 
     augroup bufclosetrack
       au!
