@@ -10,6 +10,7 @@ prabirshrestha/asyncomplete-tags.vim
 prabirshrestha/asyncomplete.vim
 prabirshrestha/async.vim
 preservim/nerdtree
+python-mode/python-mode
 sickill/vim-pasta
 Xuyuanp/nerdtree-git-plugin
 yami-beta/asyncomplete-omni.vim

@@ -542,7 +542,7 @@ let
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
-      packages.myVimPackage = with pkgs.vimPlugins; with vimPlugins; {
+      packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
           NeoSolarized
           vim-gitgutter
@@ -551,26 +551,26 @@ let
           vim-jsbeautify
           vim-visual-multi
           vim-pasta
-          ctrlsf-vim
+          vimPlugins.ctrlsf-vim
           ctrlp
           vim-airline vim-airline-themes
           vim-nix
           nerdcommenter
           ale
           YouCompleteMe
-          omnisharp-vim
+          vimPlugins.omnisharp-vim
           ctrlp-py-matcher
           robotframework-vim
           sleuth
-          vim-hashicorp-tools
+          vimPlugins.vim-hashicorp-tools
           Jenkinsfile-vim-syntax
-          neovim-gui-shim
+          vimPlugins.neovim-gui-shim
           vim-vinegar
           vim-fugitive
           nerdtree
           nerdtree-git-plugin
           ansible-vim
-          vim-flake8
+          vimPlugins.python-mode
           #gv-vim
           #motpat-vim
         ];
@@ -639,7 +639,12 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /* pkgs.python3Packages.python-language-server pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */ pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+      export PYTHONPATH="${pkgs.python3Packages.pylama}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages:$PYTHONPATH"
+      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /*
+        pkgs.python3Packages.python-language-server
+        pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */
+        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
+        pkgs.python3Packages.virtualenv pkgs.python3Packages.pylint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }

@@ -22,6 +22,8 @@
 
 # vCoolor dependency
 , gnome3
+
+, python3Packages
 }:
 
 self: super: {
@@ -34,6 +36,21 @@ self: super: {
 
       substituteInPlace $out/share/vim-plugins/omnisharp-vim/rplugin/python3/deoplete/sources/deoplete_OmniSharp.py \
         --replace "join(OMNISHARP_ROOT, 'log')" "join(os.environ['HOME'], '.omnisharp-vim')"
+    '';
+  });
+
+  python-mode = super.python-mode.overrideAttrs (old: rec {
+    version = "0.13.0";
+    src = fetchFromGitHub {
+      owner = "python-mode";
+      repo = "python-mode";
+      rev = "refs/tags/${version}";
+      sha256 = "18q81zxi8i7l87dhdg9gzhl27fh3q9ra6q7rfxxk7f238v5s9gn4";
+    };
+    preFixup = ''
+      substituteInPlace $out/share/vim-plugins/python-mode/pymode/lint.py \
+        --replace "from pylama.lint.extensions" "import sys; sys.path.append('${python3Packages.setuptools}/lib/${python3Packages.python.libPrefix}/site-packages'); sys.path.append('${python3Packages.pylama}/lib/${python3Packages.python.libPrefix}/site-packages'); from pylama.lint.extensions"
+      cat -n $out/share/vim-plugins/python-mode/pymode/lint.py
     '';
   });
 
