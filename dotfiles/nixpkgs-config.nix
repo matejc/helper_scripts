@@ -578,8 +578,6 @@
       ];
       ignoreCollisions = true;
     };
-
-    ycmd = pkgs.ycmd.override { rustracerd = (import (builtins.fetchTarball https://github.com/NixOS/nixpkgs/archive/nixos-20.03-small.tar.gz) {}).rustracerd; };
   };
 
   allowUnfree = true;
