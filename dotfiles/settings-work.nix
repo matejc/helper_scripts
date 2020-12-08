@@ -29,6 +29,7 @@ let
     ./zsh.nix
     ./programs.nix
     ./starship.nix
+    ./nvim.nix
   ];
 
   activationScript = ''

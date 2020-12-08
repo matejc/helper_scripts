@@ -50,7 +50,6 @@ self: super: {
     preFixup = ''
       substituteInPlace $out/share/vim-plugins/python-mode/pymode/lint.py \
         --replace "from pylama.lint.extensions" "import sys; sys.path.append('${python3Packages.setuptools}/lib/${python3Packages.python.libPrefix}/site-packages'); sys.path.append('${python3Packages.pylama}/lib/${python3Packages.python.libPrefix}/site-packages'); from pylama.lint.extensions"
-      cat -n $out/share/vim-plugins/python-mode/pymode/lint.py
     '';
   });
 

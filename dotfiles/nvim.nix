@@ -639,7 +639,6 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PYTHONPATH="${pkgs.python3Packages.pylama}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages:$PYTHONPATH"
       export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /*
         pkgs.python3Packages.python-language-server
         pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */
