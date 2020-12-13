@@ -6,7 +6,7 @@
         name = ${variables.fullName}
         email = ${variables.email}
     [core]
-        editor = ${variables.editor}
+        editor = ${variables.programs.editor}
         excludesfile = ${variables.homeDir}/.gitignore
         pager = ${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | ${pkgs.less}/bin/less --tabs=4 -RFX
     [color]

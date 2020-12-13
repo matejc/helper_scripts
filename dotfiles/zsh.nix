@@ -22,16 +22,16 @@ in
       print -Pn "\e]0;%(1j,%j job%(2j|s|); ,)%2~\a"
     }
 
-    export BROWSER="${variables.browser}"
-    export EDITOR="${variables.editor}"
-    ${lib.optionalString (variables.terminal != null) ''
-      export TERMINAL="${variables.terminal}"
+    export BROWSER="${variables.programs.browser}"
+    export EDITOR="${variables.programs.editor}"
+    ${lib.optionalString (variables.programs.terminal != null) ''
+      export TERMINAL="${variables.programs.terminal}"
     ''}
 
-    . ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
-    if [[ $TERM == xterm-termite ]]; then
-      __vte_osc7
-    fi
+    #. ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
+    #if [[ $TERM == xterm-termite ]]; then
+      #__vte_osc7
+    #fi
     ${lib.optionalString (variables.term != null) ''
       export TERM="${variables.term}"
     ''}
@@ -127,11 +127,9 @@ in
     alias ...='cd-gitroot'
 
     alias l='${pkgs.exa}/bin/exa -gal --git'
-    alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git"'
+    alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
 
     alias ..='cd ..'
-
-    eval "$(${pkgs.starship}/bin/starship init zsh)"
 
     # include .profile if it exists
     if [ -f "$HOME/.profile" ]; then
@@ -142,29 +140,48 @@ in
     if [ -d "$HOME/bin" ] ; then
         PATH="$HOME/bin:$PATH"
     fi
+
+    if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
+    if [ -e $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ]; then . $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh; fi
+
+    export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
+    export LC_ALL="en_US.UTF-8"
+    export LANG="en"
+    export LANGUAGE="en"
+
+    set_oldpwd() {
+      echo "$PWD" >${variables.homeDir}/.oldpwd
+    }
+
+    trap set_oldpwd EXIT
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
   source = pkgs.writeText "zlogin" ''
-  (
-    # Function to determine the need of a zcompile. If the .zwc file
-    # does not exist, or the base file is newer, we need to compile.
-    # These jobs are asynchronous, and will not impact the interactive shell
-    zcompare() {
-      if [[ -s ''${1} && ( ! -s ''${1}.zwc || ''${1} -nt ''${1}.zwc) ]]; then
-        zcompile ''${1}
-      fi
-    }
+    (
+      # Function to determine the need of a zcompile. If the .zwc file
+      # does not exist, or the base file is newer, we need to compile.
+      # These jobs are asynchronous, and will not impact the interactive shell
+      zcompare() {
+        if [[ -s ''${1} && ( ! -s ''${1}.zwc || ''${1} -nt ''${1}.zwc) ]]; then
+          zcompile ''${1}
+        fi
+      }
 
-    setopt EXTENDED_GLOB
+      setopt EXTENDED_GLOB
 
-    # zcompile the completion cache; siginificant speedup.
-    for file in ${variables.homeDir}/.zcomp^(*.zwc)(.); do
-      zcompare ''${file}
-    done
+      # zcompile the completion cache; siginificant speedup.
+      for file in ${variables.homeDir}/.zcomp^(*.zwc)(.); do
+        zcompare ''${file}
+      done
 
-    # zcompile .zshrc
-    zcompare ${variables.homeDir}/.zshrc
-  ) &!
+      # zcompile .zshrc
+      zcompare ${variables.homeDir}/.zshrc
+    ) &!
+    if [[ -f "${variables.homeDir}/.oldpwd" ]]
+    then
+      cd "$(cat ${variables.homeDir}/.oldpwd)"
+      rm "${variables.homeDir}/.oldpwd"
+    fi
   '';
 }]

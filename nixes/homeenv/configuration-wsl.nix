@@ -1,0 +1,463 @@
+{ pkgs, lib, config, ... }:
+with lib;
+with pkgs;
+let
+  dotfiles = import ../../dotfiles/default.nix
+    { name = "hm-wsl"; exposeScript = true; inherit context; }
+    { inherit pkgs lib config; };
+
+  dotFileAt = file: at:
+    (elemAt (import file { inherit lib pkgs; inherit (context) variables config; }) at).source;
+
+  context.dotFilePaths = [
+    ../../dotfiles/programs.nix
+    ../../dotfiles/nvim.nix
+    ../../dotfiles/xfce4-terminal.nix
+    ../../dotfiles/gitconfig.nix
+    ../../dotfiles/gitignore.nix
+    ../../dotfiles/nix.nix
+  ];
+  context.activationScript = "";
+  context.variables = rec {
+    fullName = "Matej Cotman";
+    email = "matej@matejc.com";
+    flake = "${homeDir}/workarea/helper_scripts/nixes/homeenv#wsl";
+    wirelessInterfaces = [];
+    ethernetInterfaces = [ "eth0" ];
+    mounts = [ "/" ];
+    font = {
+      family = "FiraCode Nerd Font Mono";
+      style = "Regular";
+      size = "11";
+    };
+    i3-msg = "${programs.i3-msg}";
+    homeDir = config.home.homeDirectory;
+    user = config.home.username;
+    profileDir = config.home.profileDirectory;
+    wallpaper = "${homeDir}/Pictures/wallpaper.jpg";
+    term = null;
+    programs = {
+      filemanager = "${xfce.thunar}/bin/thunar";
+      terminal = "${xfce.terminal}/bin/xfce4-terminal";
+      dropdown = "${dotFileAt ../../dotfiles/i3config.nix 1} --role=ScratchTerm";
+      browser = "${firefox}/bin/firefox";
+      editor = "${nano}/bin/nano";
+      window-size = dotFileAt ../../dotfiles/i3config.nix 2;
+      window-center = dotFileAt ../../dotfiles/i3config.nix 3;
+      i3-msg = "${i3}/bin/i3-msg";
+      setup-systemd = setupSystemd;
+      startx = startx;
+      thissession = thisSession;
+      activate = activate;
+    };
+    restartScript = pkgs.writeScript "restart-script.sh" ''
+      #!${pkgs.stdenv.shell}
+
+      ${pkgs.procps}/bin/pkill dunst
+      ${pkgs.dunst}/bin/dunst &
+
+      ${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}
+
+      ${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources
+
+      export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
+      ${pkgs.procps}/bin/pkill polybar
+      polybar my &
+
+      echo "DONE"
+    '';
+    defaultUserShell = "${profileDir}/bin/zsh";
+  };
+  context.config = {};
+
+  activate = writeScript "activate.sh" ''
+    #!${stdenv.shell}
+    set -e
+    ${nixFlakes}/bin/nix --experimental-features "nix-command flakes" build --impure "${context.variables.flake}" --out-link "${context.variables.homeDir}/.last-activate-result" "$@"
+    ${thisSession} ${context.variables.homeDir}/.last-activate-result/activate
+  '';
+
+  startScriptRoot = writeScript "start-script-root.sh" ''
+    #!${stdenv.shell}
+
+    sysctl -w fs.inotify.max_user_watches=524288
+
+    exit 0
+  '';
+
+  setupSystemd = writeScript "setup-systemd.sh" ''
+    #!${stdenv.shell}
+
+    set -e
+
+    apt-get update
+    apt-get install -y dbus policykit-1 daemonize
+    ln -sfv ${fakeBash} /usr/bin/bash
+
+    echo "/bin/sh" > /etc/shells
+    echo "/bin/bash" >> /etc/shells
+    echo "/usr/bin/bash" >> /etc/shells
+    echo "${context.variables.defaultUserShell}" >> /etc/shells
+
+    chsh --shell /usr/bin/bash root
+    chsh --shell ${context.variables.defaultUserShell} ${context.variables.user}
+
+    ln -svf ${startScriptRoot} /etc/rc.local
+
+    cat << EOF >/etc/xrdp/startwm.sh
+    #!/bin/sh
+    exec ${context.variables.homeDir}/bin/startx
+    EOF
+
+    echo -e "\nRun: wsl.exe --shutdown"
+    echo -e "Run: ubuntu2004.exe config --default-user root\n"
+  '';
+
+  fakeBash = pkgs.writeScript "fake-bash.sh" ''
+    #!${stdenv.shell}
+
+    UNAME="${context.variables.user}"
+
+    UUID=$(id -u "''${UNAME}")
+    UGID=$(id -g "''${UNAME}")
+    UHOME=$(getent passwd "''${UNAME}" | cut -d: -f6)
+    USHELL=$(getent passwd "''${UNAME}" | cut -d: -f7)
+
+    if [[ -p /dev/stdin || "''${BASH_ARGC}" > 0 && "''${BASH_ARGV[1]}" != "-c" ]]; then
+        USHELL=${stdenv.shell}
+    fi
+
+    if [[ "''${PWD}" = "/root" ]]; then
+        cd "''${UHOME}"
+    fi
+
+    # get pid of systemd
+    SYSTEMD_PID=$(pgrep -xo systemd)
+
+    # if we're already in the systemd environment
+    if [[ "''${SYSTEMD_PID}" -eq "1" ]]; then
+        exec "''${USHELL}" "$@"
+    fi
+
+    # start systemd if not started
+    daemonize -l "''${HOME}/.systemd.lock" /usr/bin/unshare -fp --mount-proc /lib/systemd/systemd --system-unit=basic.target 2>/dev/null
+    # wait for systemd to start
+    while [[ "''${SYSTEMD_PID}" = "" ]]; do
+        sleep 0.5
+        SYSTEMD_PID=$(pgrep -xo systemd)
+    done
+
+    # enter systemd namespace
+    exec /usr/bin/nsenter -t "''${SYSTEMD_PID}" -m -p --wd="''${PWD}" /sbin/runuser -s "''${USHELL}" "''${UNAME}" -- "''${@}"
+  '';
+
+  startx = writeScript "startx.sh" ''
+    #!${context.variables.defaultUserShell}
+
+    exec ${thisSession} ${context.variables.profileDir}/bin/i3
+  '';
+
+  thisSession = writeScript "thissession.sh" ''
+    #!${context.variables.defaultUserShell} -l
+    export PATH="${coreutils}/bin:${gawk}/bin:${procps}/bin:${stdenv.cc.libc.bin}/bin:$PATH"
+    export USER="${context.variables.user}"
+    export XDG_RUNTIME_DIR="/run/user/$(getent passwd "$USER" | cut -d: -f3)"
+    export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
+    local proc_environ="/proc/$(pgrep i3)/environ"
+    if [[ -f "$proc_environ" ]]
+    then
+      export DISPLAY="$(cat /proc/$(pgrep i3)/environ | tr '\0' '\n' | awk -F= '/DISPLAY=.*/{printf $2}')"
+    else
+      echo "Can't set DISPLAY, no such file: $proc_environ" 1>&2
+    fi
+    env XAUTHORITY="${context.variables.homeDir}/.Xauthority" "$@"
+  '';
+
+  # https://nix-community.github.io/home-manager/options.html
+in
+  {
+    nixpkgs.config = import "${builtins.toString ./.}/../../dotfiles/nixpkgs-config.nix";
+    xdg = {
+      enable = true;
+      configFile."nixpkgs/config.nix".source = "${builtins.toString ./.}/../../dotfiles/nixpkgs-config.nix";
+      dataFile."icons".source = "${context.variables.profileDir}/share/icons";
+      dataFile."themes".source = "${context.variables.profileDir}/share/themes";
+      dataFile."fonts".source = "${context.variables.profileDir}/share/fonts";
+      dataFile."mime".source = "${context.variables.profileDir}/share/mime";
+    };
+    fonts.fontconfig.enable = true;
+    home.packages = with pkgs; [
+      font-awesome
+      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      xorg.xauth
+      xfce.terminal
+      git
+    ];
+
+    gtk = {
+      enable = true;
+      font.name = "${context.variables.font.family} ${context.variables.font.style} ${context.variables.font.size}";
+      iconTheme = {
+        name = "breeze";
+        package = breeze-icons;
+      };
+      theme = {
+        name = "Breeze";
+        package = breeze-gtk;
+      };
+    };
+
+    programs.firefox = {
+      enable = true;
+      profiles = {
+        myprofile = {
+          settings = {
+            "general.smoothScroll" = false;
+          };
+        };
+      };
+    };
+
+    programs.htop.enable = true;
+
+    programs.home-manager = {
+      enable = true;
+    };
+
+    programs.i3status.enable = false;
+
+    xsession.windowManager.i3 = {
+      enable = true;
+      config = rec {
+        assigns = {
+          "2" = [{ class = "^Xfce4-terminal$"; window_role = "^xfce4-terminal.*"; }];
+          "3" = [{ class = "^.nvim-qt-wrapped$"; }];
+          "4" = [{ class = "^Firefox$"; }];
+        };
+        bars = [];
+        colors = {
+          background = "#ff0000";
+          focused = { background = "#272822"; border = "#272822"; childBorder = "#66D9EF"; indicator = "#66D9EF"; text = "#A6E22E"; };
+          focusedInactive = { background = "#272822"; border = "#272822"; childBorder = "#272822"; indicator = "#272822"; text = "#66D9EF"; };
+          unfocused = { background = "#1E1F1C"; border = "#1E1F1C"; childBorder = "#272822"; indicator = "#272822"; text = "#939393"; };
+          urgent = { background = "#F92672"; border = "#F92672"; childBorder = "#F92672"; indicator = "#F92672"; text = "#FFFFFF"; };
+        };
+        fonts = [ "${context.variables.font.family} ${context.variables.font.style} ${context.variables.font.size}" ];
+        keybindings =
+          mkOptionDefault {
+            "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
+            "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
+            "F12" = "exec ${dotFileAt ../../dotfiles/i3config.nix 1}";
+            "${modifier}+Control+k" = "kill";
+            "${modifier}+Control+space" = "exec ${dotFileAt ../../dotfiles/bemenu.nix 0}";
+            "Control+Tab" = "workspace back_and_forth";
+            "${modifier}+Control+Left" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} --skip prev) && ${context.variables.i3-msg} workspace $WSNUM";
+            "${modifier}+Control+Right" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} --skip next) && ${context.variables.i3-msg} workspace $WSNUM";
+            "${modifier}+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} prev) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "${modifier}+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} next) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+          };
+          modifier = "Mod1";
+          startup = [
+            { command = "systemctl --user restart polybar"; always = true; }
+            { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
+            { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
+            { command = "${context.variables.programs.browser}"; }
+            { command = "${context.variables.programs.terminal}"; }
+          ];
+          window = {
+            border = 1;
+            commands = [
+              { command = "border pixel 1"; criteria = { class = "Xfce4-terminal"; }; }
+              { command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
+              { command = "border pixel 1"; criteria = { class = "Firefox"; }; }
+            ];
+          };
+        };
+  };
+
+  services.polybar =
+    let
+      variables = context.variables;
+    in rec {
+      enable = true;
+      package = polybar.override { i3Support = true; };
+    config = {
+      colors = {
+        background = "#e0272822";
+        background-alt = "#454932";
+        foreground = "#dfdfdf";
+        foreground-alt = "#555942";
+        primary = "#FD971F";
+        secondary = "#5900ff";
+        alert = "#A6E22E";
+        underline = "#0a81f5";
+      };
+      settings = {
+        screenchange-reload = true;
+      };
+      "global/wm" = {
+        margin-top = 5;
+        margin-bottom = 5;
+      };
+      "bar/my" = {
+        width = "100%";
+        height = "24";
+        radius = "0.0";
+        fixed-center = false;
+        bottom = true;
+        background = config.colors.background;
+        foreground = config.colors.foreground;
+        line-size = 2;
+        line-color = "#f00";
+        border-size = 0;
+        border-color = "#00000000";
+        padding-left = 0;
+        padding-right = 2;
+        module-margin-left = 1;
+        module-margin-right = 2;
+        #font-0 = "Font Awesome 5 Free Solid:size=10";
+        font-0 = "${context.variables.font.family}:style=${context.variables.font.style}:size=${context.variables.font.size}";
+        modules-left = "i3 xwindow";
+        modules-right = "xkeyboard filesystem memory cpu ${concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip date";
+        tray-position = "right";
+        tray-padding = 2;
+        tray-background = config.colors.background;
+        tray-reparent = true;
+      };
+      "module/xwindow" = {
+        type = "internal/xwindow";
+        label = "%title:0:60:...%";
+      };
+      "module/xkeyboard" = {
+        type = "internal/xkeyboard";
+        format = "<label-indicator>";
+        blacklist-0 = "num lock";
+        blacklist-1 = "scroll lock";
+        format-prefix-foreground = config.colors.foreground-alt;
+        format-prefix-underline = config.colors.underline;
+        label-indicator-padding = 2;
+        label-indicator-margin = 1;
+        label-indicator-background = config.colors.secondary;
+        label-indicator-underline = config.colors.underline;
+      };
+      "module/filesystem" = {
+        type = "internal/fs";
+        interval = "25";
+        label-mounted = "%{F#0a81f5}%mountpoint%%{F-} %percentage_used%%";
+        label-mounted-underline = config.colors.underline;
+        label-unmounted = "%mountpoint% not mounted";
+        label-unmounted-foreground = config.colors.foreground-alt;
+      } // builtins.listToAttrs (imap (i: m: { name = "mount-${toString (i - 1)}"; value = m; }) variables.mounts);
+      "module/i3" = {
+        type = "internal/i3";
+        format = "<label-state> <label-mode>";
+        index-sort = true;
+        wrapping-scroll = false;
+        label-mode-padding = 1;
+        label-mode-foreground = "#000";
+        label-mode-background = config.colors.primary;
+        label-focused = "%index%";
+        label-focused-background = config.colors.background-alt;
+        label-focused-underline = config.colors.primary;
+        label-focused-padding = 1;
+        label-unfocused = "%index%";
+        label-unfocused-padding = 1;
+        label-visible = "%index%";
+        label-visible-background = config.colors.background-alt;
+        label-visible-padding = 1;
+        label-urgent = "%index%";
+        label-urgent-foreground = config.colors.foreground-alt;
+        label-urgent-background = config.colors.alert;
+        label-urgent-padding = 1;
+      };
+      "module/cpu" = {
+        type = "internal/cpu";
+        interval = 2;
+        format-prefix = " ";
+        format-prefix-foreground = config.colors.foreground-alt;
+        format-underline = config.colors.underline;
+        label = "%percentage%%";
+      };
+      "module/memory" = {
+        type = "internal/memory";
+        interval = 2;
+        format-prefix = " ";
+        format-prefix-foreground = config.colors.foreground-alt;
+        format-underline = config.colors.underline;
+        label = "%percentage_used%%";
+      };
+      "module/date" = {
+        type = "internal/date";
+        interval = 5;
+        date = "%a, %d.%m.%Y";
+        time = "%H:%M";
+        format-underline = config.colors.underline;
+        label = "%time% %date%";
+      };
+      "module/external-ip" = {
+        type = "custom/script";
+        exec = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
+        click-left = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
+        click-right = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.xclip}/bin/xclip -selection primary";
+        interval = 30;
+        format-underline = config.colors.underline;
+        format-prefix = " ";
+      };
+    } // (
+      builtins.listToAttrs (imap (i: interface: { name = "module/wlan-${toString i}"; value = {
+        type = "internal/network";
+        interface = interface;
+        interval = 3;
+        format-connected = "<ramp-signal> <label-connected>";
+        format-connected-underline = config.colors.underline;
+        label-connected = "%essid%";
+        format-disconnected = "<label-disconnected>";
+        label-disconnected = "%ifname% disconnected";
+        label-disconnected-foreground = config.colors.foreground-alt;
+        ramp-signal-0 = "";
+        ramp-signal-1 = "";
+        ramp-signal-2 = "";
+        ramp-signal-0-foreground = "#ff0000";
+        ramp-signal-1-foreground = "#ffa500";
+        ramp-signal-2-foreground = "#00ff00";
+      }; }) variables.wirelessInterfaces)
+      ) // (
+        builtins.listToAttrs (imap (i: interface: { name = "module/eth${toString i}"; value = {
+          type = "internal/network";
+          interface = interface;
+          interval = 3;
+          format-connected-underline = config.colors.underline;
+          label-connected = " %local_ip%";
+          format-disconnected = "";
+        }; }) variables.ethernetInterfaces)
+      );
+    script = "${thisSession} polybar my &";
+  };
+
+  home.activation.dotfiles = hm.dag.entryBefore ["writeBoundary"] ''
+    $DRY_RUN_CMD ${dotfiles}
+    $DRY_RUN_CMD rm -fv ${context.variables.homeDir}/.zshrc.zwc
+  '';
+  home.activation.instructions = hm.dag.entryAfter ["writeBoundary"] ''
+    echo -e "\nTo setup systemd under WSL2,"
+    echo -e "run as root: ${setupSystemd}\n"
+  '';
+  programs.zsh = {
+    enable = true;
+    enableVteIntegration = true;
+    initExtra = readFile (dotFileAt ../../dotfiles/zsh.nix 0);
+    loginExtra = readFile (dotFileAt ../../dotfiles/zsh.nix 1);
+  };
+  programs.starship = {
+    enable = true;
+    settings = {
+      character.success_symbol = "[➜](bold green) ";
+      character.error_symbol = "[✗](bold red) ";
+    };
+  };
+
+  # TODO:
+  # - xrdp
+  # - start.ps1 and start.ahk to /mnt/c/tools/
+  # - dunst
+}

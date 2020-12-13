@@ -107,11 +107,11 @@
                 seen.add(value)
         return result
 
-    def execute_menu():
-        menu_cmd = ["${pkgs.bemenu}/bin/bemenu"]
-        menu_args = ['-p', 'run:', '-l', '10', '-P', '>', '-i', '-b', '-f', '--fork']
+    def execute_menu(cmd="${pkgs.bemenu}/bin/bemenu", custom_args=['-P', '>', '-b', '--fork']):
+        menu_cmd = [cmd]
+        menu_args = ['-p', 'run', '-l', '10', '-i']
         return subprocess.Popen(
-            menu_cmd + menu_args,
+            menu_cmd + menu_args + custom_args,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
 

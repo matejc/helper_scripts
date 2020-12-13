@@ -173,7 +173,7 @@
 
   # for_window [class="^Alacritty$"] move container to workspace $w2
   #for_window [class="^Xfce4-terminal$" window_role="xfce4-terminal-dropdown"] border pixel 1
-  for_window [app_id="^xfce4-terminal$"] border pixel 1
+  #for_window [app_id="^xfce4-terminal$"] border pixel 1
 
   for_window [class="^jetbrains-idea$"] move container to workspace $w3
   for_window [class="^jetbrains-goland$"] move container to workspace $w3
@@ -233,7 +233,7 @@
   #}}}
   #{{{   Resize
 
-  mode "resize" {
+  mode "resize2" {
           # These bindings trigger as soon as you enter the resize mode
 
           # They resize the border in the direction you pressed, e.g.
@@ -270,7 +270,7 @@
   bindsym Escape mode "default"
   }
 
-  bindsym $mod+r mode "resize"
+  bindsym $mod+r mode "resize2"
   #}}}
   #{{{   Tiling / Floating / Fullscreen
 
@@ -431,13 +431,13 @@
   bindsym Ctrl+Mod1+m exec --no-startup-id "${variables.homeDir}/bin/usb-mount"
   bindsym Ctrl+Mod1+l exec --no-startup-id ${variables.lockscreen}
   bindsym Ctrl+Mod1+h exec --no-startup-id ${variables.programs.filemanager}
-  bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.terminal}
+  bindsym Ctrl+Mod1+t exec --no-startup-id ${variables.programs.terminal}
   bindsym Ctrl+Mod1+r exec --no-startup-id "${variables.homeDir}/bin/xrandr-change"
 
-  bindcode 150 exec --no-startup-id "${variables.dropDownTerminal}"
-  bindcode 152 exec --no-startup-id "${variables.dropDownTerminal}"
-  bindcode 164 exec --no-startup-id "${variables.dropDownTerminal}"
-  bindsym F12 exec --no-startup-id "${variables.dropDownTerminal}"
+  bindcode 150 exec --no-startup-id "${variables.programs.dropdown}"
+  bindcode 152 exec --no-startup-id "${variables.programs.dropdown}"
+  bindcode 164 exec --no-startup-id "${variables.programs.dropdown}"
+  bindsym F12 exec --no-startup-id "${variables.programs.dropdown}"
 
   #bindsym F1 [title="flow"] move workspace current
   #bindsym --release Print exec /run/current-system/sw/bin/scrot --select -e 'mv $f /home/matejc/Pictures/'
@@ -502,7 +502,7 @@
     font pango:${variables.font.family} ${variables.font.extra} ${variables.font.size}
     separator_symbol " • "
     #height 28
-    status_command i3status
+    status_command ${pkgs.i3status}/bin/i3status
 
     #  statusbar colors       border      background   text
     colors {
@@ -539,12 +539,18 @@
   source = pkgs.writeScript "terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.nodes[].nodes[].floating_nodes[]|select(.marks[0]=="I3WM_SCRATCHPAD").focused')
+    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[].nodes[] | select(.marks[0]=="I3WM_SCRATCHPAD").focused')
     if [ -z "$RESULT" ]
     then
       ${variables.programs.terminal} --title=ScratchTerm "$@" &
-      sleep 0.6
-      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
+      sleep 1
+      if [ ! -f "${variables.homeDir}/bin/window-center" ]
+      then
+        ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
+      else
+        WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
+        ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
+      fi
     elif [[ "$RESULT" = "true" ]]
     then
       ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] move scratchpad'

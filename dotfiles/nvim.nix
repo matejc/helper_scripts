@@ -99,6 +99,8 @@ let
 
     set virtualedit=onemore
 
+    set encoding=utf-8
+
     nno <silent> <c-m> :messages<cr>
     nno <silent> <c-w> :bd<cr>
     map <c-q> <esc>:qall
@@ -259,7 +261,7 @@ let
     nnoremap <C-h> <leader>hu
 
     let g:airline#extensions#tabline#enabled = 1
-    let g:airline_powerline_fonts = 0
+    let g:airline_powerline_fonts = 1
     let g:airline_theme='solarized'
 
     map <C-o> <esc>:NERDTreeToggle<CR>

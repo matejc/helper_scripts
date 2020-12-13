@@ -1,11 +1,14 @@
-{ name, exposeScript ? false }:
+{ name, exposeScript ? false, context ? null }:
 { config, pkgs, lib, ... }:
 let
-  settings = import (./. + "/settings-${name}.nix") { inherit pkgs; };
+  context' = if context == null then
+    import (./. + "/settings-${name}.nix") { inherit pkgs; }
+  else
+    context;
 
-  variables = settings.variables;
-  dotFilePaths = settings.dotFilePaths;
-  activationScript = settings.activationScript;
+  variables = context'.variables;
+  dotFilePaths = context'.dotFilePaths;
+  activationScript = context'.activationScript;
 
   dotFileFun = nixFilePath:
     let
