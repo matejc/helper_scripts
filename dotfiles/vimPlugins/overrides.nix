@@ -41,16 +41,22 @@ self: super: {
 
   python-mode = super.python-mode.overrideAttrs (old: rec {
     version = "0.13.0";
-    src = fetchFromGitHub {
-      owner = "python-mode";
-      repo = "python-mode";
+    src = fetchgit {
+      url = "git://github.com/python-mode/python-mode";
       rev = "refs/tags/${version}";
-      sha256 = "18q81zxi8i7l87dhdg9gzhl27fh3q9ra6q7rfxxk7f238v5s9gn4";
+      sha256 = "126fr813x0066x6q6303fbsjpixz52c8aa7fh3xygi955h6w92bw";
+      deepClone = true;
+      fetchSubmodules = true;
     };
-    preFixup = ''
-      substituteInPlace $out/share/vim-plugins/python-mode/pymode/lint.py \
-        --replace "from pylama.lint.extensions" "import sys; sys.path.append('${python3Packages.setuptools}/lib/${python3Packages.python.libPrefix}/site-packages'); sys.path.append('${python3Packages.pylama}/lib/${python3Packages.python.libPrefix}/site-packages'); from pylama.lint.extensions"
-    '';
+    #preFixup = ''
+      #substituteInPlace $out/share/vim-plugins/python-mode/pymode/lint.py \
+        #--replace "    pass" "    raise"
+      #cat $out/share/vim-plugins/python-mode/pymode/lint.py
+    #'';
+    #preFixup = ''
+      #substituteInPlace $out/share/vim-plugins/python-mode/pymode/lint.py \
+        #--replace "from pylama.lint.extensions" "import sys; sys.path.append('${python3Packages.setuptools}/lib/${python3Packages.python.libPrefix}/site-packages'); from pylama.lint.extensions"
+    #'';
   });
 
 }

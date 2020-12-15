@@ -438,9 +438,16 @@ let
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
     let g:ale_completion_enabled = 0
-    let g:ale_linters = {
-      \   'cs': [],
+
+    " Do not lint or fix minified files.
+    let g:ale_pattern_options = {
+      \ '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
+      \ '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
+      \ '\.cs$': {'ale_linters': [], 'ale_fixers': []},
+      \ '\.py$': {'ale_linters': [], 'ale_fixers': []},
       \}
+    " If you configure g:ale_pattern_options outside of vimrc, you need this.
+    let g:ale_pattern_options_enabled = 1
 
     let g:OmniSharp_server_stdio = 1
     let g:OmniSharp_server_path = 'omnisharp'
@@ -525,6 +532,16 @@ let
       au BufNewFile,BufRead *.js, *.html, *.css set softtabstop=2
       au BufNewFile,BufRead *.js, *.html, *.css set shiftwidth=2
     augroup END
+
+    let g:pymode_lint_checkers = [ 'pylint', 'pyflakes', 'pep8', 'mccabe' ]
+    let g:pymode_paths = [
+      \'${pkgs.python3Packages.isort}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
+      \'${pkgs.python3Packages.lazy-object-proxy}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
+      \'${pkgs.python3Packages.wrapt}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
+      \'${pkgs.python3Packages.setuptools}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
+    \]
+    let g:pymode_lint_cwindow = 0
+
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
@@ -547,7 +564,7 @@ let
         start = [
           NeoSolarized
           vim-gitgutter
-          undotree
+          #undotree
           vim-better-whitespace
           vim-jsbeautify
           vim-visual-multi
@@ -643,8 +660,7 @@ in [{
       export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /*
         pkgs.python3Packages.python-language-server
         pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */
-        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
-        pkgs.python3Packages.virtualenv pkgs.python3Packages.pylint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
