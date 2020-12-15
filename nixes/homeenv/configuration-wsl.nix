@@ -451,7 +451,7 @@ in
   programs.starship = {
     enable = true;
     settings = {
-      character.success_symbol = "[➜](bold green) ";
+      character.success_symbol = "[❯](bold green) ";
       character.error_symbol = "[✗](bold red) ";
     };
   };

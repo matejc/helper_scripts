@@ -6,6 +6,7 @@
     disabled = true
 
     [character]
-    symbol = ">"
+    success_symbol = "[❯](bold green) "
+    error_symbol = "[✗](bold red) "
   '';
 }]

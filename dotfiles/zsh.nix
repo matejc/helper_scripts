@@ -153,7 +153,13 @@ in
       echo "$PWD" >${variables.homeDir}/.oldpwd
     }
 
-    trap set_oldpwd EXIT
+    #trap set_oldpwd EXIT
+
+    if [[ -z "$STARSHIP_SHELL" ]]
+    then
+      export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
+      eval "$(${pkgs.starship}/bin/starship init zsh)"
+    fi
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
