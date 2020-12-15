@@ -112,14 +112,14 @@ let
     nno <silent> <c-cr> o
     imap <silent> <c-cr> <esc>o
 
-    nno <a-u> u
-    ino <a-u> <esc>u
-    nno <a-r> <C-R>
-    ino <a-r> <esc><C-R>
-    imap <c-z> <esc>ui
-    nmap <c-z> u
+    inoremap <C-u> <esc>u
+    nnoremap <C-u> u
+    "nno <C-r> <C-R>
+    "ino <C-r> <esc><C-R>
+    inoremap <C-z> <esc>ui
+    nnoremap <C-z> u
 
-    map <C-u> <esc>:UndotreeToggle<CR>
+    "nnoremap <C-U> <esc>:UndotreeToggle<CR>
 
     imap <C-b> <esc>mzgg=G`zi
     nmap <C-b> mzgg=G`z
@@ -172,9 +172,7 @@ let
     " nmap <C-S-Down> :copy .<cr>
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
-    nmap <C-S-d> :copy .<cr>
-    vmap <C-S-d> :copy '><cr>
-    imap <C-S-d> <esc>:copy .<cr>i
+
     nmap <C-d> :copy .<cr>
     vmap <C-d> :copy '><cr>
     imap <C-d> <esc>:copy .<cr>i
@@ -194,12 +192,12 @@ let
     nmap <S-Tab> <<
     inoremap <S-Tab> <C-d>
 
-    nmap <A-Down> :m .+1<CR>==
-    nmap <A-Up> :m .-2<CR>==
-    imap <A-Down> <Esc>:m .+1<CR>==gi
-    imap <A-Up> <Esc>:m .-2<CR>==gi
-    vmap <A-Down> :m '>+1<CR>gv=gv
-    vmap <A-Up> :m '<-2<CR>gv=gv
+    nmap <C-S-Down> :m .+1<CR>==
+    nmap <C-S-Up> :m .-2<CR>==
+    imap <C-S-Down> <Esc>:m .+1<CR>==gi
+    imap <C-S-Up> <Esc>:m .-2<CR>==gi
+    vmap <C-S-Down> :m '>+1<CR>gv=gv
+    vmap <C-S-Up> :m '<-2<CR>gv=gv
 
     " let g:bufferline_echo = 0
     " autocmd VimEnter *

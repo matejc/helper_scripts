@@ -17,10 +17,9 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
-    editor = "${pkgs.nano}/bin/nano";
     font = {
       family = "Source Code Pro";
-      extra = "Semibold";
+      style = "Semibold";
       size = "11";
     };
     wallpaper = "${variables.homeDir}/Pictures/arch-bridge.jpg";
@@ -44,7 +43,6 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.chromium;
     rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
       filemanager = "${pkgs.dolphin}/bin/dolphin";
@@ -54,7 +52,7 @@ let
       terminal = "${pkgs.konsole}/bin/konsole";
       dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
       #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
-      chromium = "${pkgs.chromium}/bin/chromium";
+      browser = "${pkgs.chromium}/bin/chromium";
       ff = "${pkgs.firefox}/bin/firefox";
       l = "${pkgs.exa}/bin/exa -gal --git";
       a = "${pkgs.atom}/bin/atom";
@@ -63,6 +61,7 @@ let
       slack = "${pkgs.slack}/bin/slack";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat";
+      editor = "${pkgs.nano}/bin/nano";
     };
     polybar.bars = [ "my" ];
   };
@@ -163,7 +162,7 @@ let
     #!${pkgs.stdenv.shell}
 
     ${variables.programs.mykeepassxc} &
-    ${variables.browser} &
+    ${variables.programs.browser} &
     ${variables.programs.slack} &
     { sleep 2; ${variables.programs.cmst}; } &
 

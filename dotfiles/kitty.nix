@@ -8,7 +8,7 @@
 #: individual font faces and even specify special fonts for particular
 #: characters.
 
-  font_family      ${variables.font.family} ${variables.font.extra}
+  font_family      ${variables.font.family} ${variables.font.style}
   bold_font        auto
   italic_font      auto
   bold_italic_font auto

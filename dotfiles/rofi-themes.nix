@@ -17,7 +17,7 @@
 configuration {
         show-icons:   true;
         sidebar-mode: true;
-        font: "${variables.font.family} ${variables.font.extra} ${variables.font.size}";
+        font: "${variables.font.family} ${variables.font.style} ${variables.font.size}";
 }
 
 * {
