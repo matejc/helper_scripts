@@ -40,5 +40,6 @@
     DefaultWorkingDir=~
     Encoding=UTF-8
     CommandLoginShell=TRUE
+    ScrollingOnOutput=FALSE
   '';
 }

@@ -54,6 +54,9 @@ in
       #precmd_functions+=_direnv_hook;
     #fi
 
+    # del
+    bindkey '^[[3~' delete-char
+
     # alt+del
     bindkey '^[[3;3~' kill-word
 
@@ -145,7 +148,7 @@ in
     if [ -e $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ]; then . $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh; fi
 
     export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
-    export LC_ALL="en_US.UTF-8"
+    export LC_ALL="${variables.locale.all}"
     export LANG="en"
     export LANGUAGE="en"
 

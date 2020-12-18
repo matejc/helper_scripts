@@ -21,6 +21,7 @@ let
   context.variables = rec {
     fullName = "Matej Cotman";
     email = "matej@matejc.com";
+    locale.all = "en_US.UTF-8";
     flake = "${homeDir}/workarea/helper_scripts/nixes/homeenv#wsl";
     wirelessInterfaces = [];
     ethernetInterfaces = [ "eth0" ];
@@ -42,6 +43,7 @@ let
       dropdown = "${dotFileAt ../../dotfiles/i3config.nix 1} --role=ScratchTerm";
       browser = "${firefox}/bin/firefox";
       editor = "${nano}/bin/nano";
+      launcher = dotFileAt ../../dotfiles/bemenu.nix 0;
       window-size = dotFileAt ../../dotfiles/i3config.nix 2;
       window-center = dotFileAt ../../dotfiles/i3config.nix 3;
       i3-msg = "${i3}/bin/i3-msg";
@@ -91,7 +93,7 @@ let
     set -e
 
     apt-get update
-    apt-get install -y dbus policykit-1 daemonize
+    apt-get install -y dbus policykit-1 daemonize xrdp
     ln -sfv ${fakeBash} /usr/bin/bash
 
     echo "/bin/sh" > /etc/shells
@@ -108,6 +110,10 @@ let
     #!/bin/sh
     exec ${context.variables.homeDir}/bin/startx
     EOF
+
+    sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
+
+    systemctl enable xrdp
 
     echo -e "\nRun: wsl.exe --shutdown"
     echo -e "Run: ubuntu2004.exe config --default-user root\n"
@@ -230,7 +236,7 @@ in
       enable = true;
       config = rec {
         assigns = {
-          "2" = [{ class = "^Xfce4-terminal$"; window_role = "^xfce4-terminal.*"; }];
+          "2" = [{ window_role = "^xfce4-terminal.*"; }];
           "3" = [{ class = "^.nvim-qt-wrapped$"; }];
           "4" = [{ class = "^Firefox$"; }];
         };
@@ -247,9 +253,9 @@ in
           mkOptionDefault {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
-            "F12" = "exec ${dotFileAt ../../dotfiles/i3config.nix 1}";
+            "F12" = "exec ${context.variables.programs.dropdown}";
             "${modifier}+Control+k" = "kill";
-            "${modifier}+Control+space" = "exec ${dotFileAt ../../dotfiles/bemenu.nix 0}";
+            "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
             "Control+Tab" = "workspace back_and_forth";
             "${modifier}+Control+Left" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} --skip prev) && ${context.variables.i3-msg} workspace $WSNUM";
             "${modifier}+Control+Right" = "exec WSNUM=$(${dotFileAt ../../dotfiles/i3_workspace.nix 0} --skip next) && ${context.variables.i3-msg} workspace $WSNUM";
@@ -259,6 +265,7 @@ in
           modifier = "Mod1";
           startup = [
             { command = "systemctl --user restart polybar"; always = true; }
+            { command = "systemctl --user restart dunst"; always = true; }
             { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
             { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
             { command = "${context.variables.programs.browser}"; }
@@ -433,6 +440,73 @@ in
       );
     script = "${thisSession} polybar my &";
   };
+  services.dunst = {
+    enable = true;
+    settings = {
+      global = {
+        font = "${context.variables.font.family} ${context.variables.font.style} ${context.variables.font.size}";
+        allow_markup = "yes";
+        plain_text = "no";
+        format = "<b>%s</b>\\n%b";
+        sort = "no";
+        indicate_hidden = "yes";
+        alignment = "center";
+        bounce_freq = 0;
+        show_age_threshold = -1;
+        word_wrap = "yes";
+        ignore_newline = "no";
+        stack_duplicates = "yes";
+        hide_duplicates_count = "yes";
+        geometry = "300x50-15+15";
+        shrink = "no";
+        transparency = 50;
+        idle_threshold = 0;
+        monitor = 0;
+        follow = "none";
+        sticky_history = "yes";
+        history_length = 15;
+        show_indicators = "no";
+        line_height = 3;
+        separator_height = 2;
+        padding = 6;
+        horizontal_padding = 6;
+        separator_color = "frame";
+        startup_notification = "false";
+        dmenu = "${pkgs.rofi}/bin/rofi -dmenu -p dunst:";
+        browser = "${context.variables.programs.browser}";
+        icon_position = "off";
+        max_icon_size = 80;
+        icon_folders = "${pkgs.paper-icon-theme}/share/icons/Paper/16x16/mimetypes/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/status/:${pkgs.paper-icon-theme}/share/icons/Paper/16x16/devices/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/notifications/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/emblems/";
+      };
+      frame = {
+        width = 3;
+        color = "#8EC07C";
+      };
+      shortcuts = {
+        close = "ctrl+space";
+        close_all = "ctrl+shift+space";
+      };
+      urgency_low = {
+        frame_color = "#A6E22E";
+        foreground = "#A6E22E";
+        background = "#1E1F1C";
+        timeout = 10;
+      };
+      urgency_normal = {
+        frame_color = "#66D9EF";
+        foreground = "#66D9EF";
+        background = "#1E1F1C";
+        timeout = 20;
+      };
+      urgency_critical = {
+        frame_color = "#F92672";
+        foreground = "#F92672";
+        background = "#1E1F1C";
+        timeout = 30;
+      };
+    };
+  };
+  systemd.user.services.dunst.Service.ExecStart = mkForce "${thisSession} ${dunst}/bin/dunst";
 
   home.activation.dotfiles = hm.dag.entryBefore ["writeBoundary"] ''
     $DRY_RUN_CMD ${dotfiles}
@@ -457,7 +531,5 @@ in
   };
 
   # TODO:
-  # - xrdp
   # - start.ps1 and start.ahk to /mnt/c/tools/
-  # - dunst
 }

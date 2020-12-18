@@ -542,8 +542,8 @@
     RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[].nodes[] | select(.marks[0]=="I3WM_SCRATCHPAD").focused')
     if [ -z "$RESULT" ]
     then
-      ${variables.programs.terminal} --title=ScratchTerm "$@" &
-      sleep 1
+      ${variables.programs.terminal} --title=ScratchTerm $@ &
+      sleep 0.5
       if [ ! -f "${variables.homeDir}/bin/window-center" ]
       then
         ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
