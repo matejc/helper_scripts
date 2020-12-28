@@ -525,6 +525,7 @@ let
       au BufNewFile,BufRead *.py set expandtab
       au BufNewFile,BufRead *.py set autoindent
       au BufNewFile,BufRead *.py set fileformat=unix
+      au BufRead *.py PymodeLint
     augroup END
 
     augroup web
