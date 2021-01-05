@@ -19,10 +19,9 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
-    editor = "${pkgs.nano}/bin/nano";
     font = {
       family = "Source Code Pro";
-      extra = "Semibold";
+      style = "Semibold";
       size = "11";
     };
     wallpaper = "${variables.homeDir}/Pictures/blade-of-grass.jpg";
@@ -45,15 +44,17 @@ let
     };
     lockscreen = "${homeDir}/bin/lockscreen";
     term = null;
-    browser = programs.chromium;
+    locale.all = "en_US.utf8";
     rofi.theme = "${homeDir}/.config/rofi/themes/material";
     programs = {
+      editor = "${pkgs.nano}/bin/nano";
       filemanager = "${pkgs.xfce.thunar.override { thunarPlugins = with pkgs.xfce; [ thunar-volman thunar-archive-plugin ]; }}/bin/thunar";
       cmst = "${pkgs.cmst}/bin/cmst --minimized";
-      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
-      dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+      terminal = "${pkgs.konsole}/bin/konsole";
+      #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+      dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
       #dropdown = if sway.enable then "${homeDir}/bin/terminal-dropdown" else "${pkgs.tdrop}/bin/tdrop -ma --class kitty-dropdown -f '--class kitty-dropdown' terminal";
-      chromium = "${pkgs.chromium}/bin/chromium";
+      browser = "${pkgs.chromium}/bin/chromium";
       ff = "${pkgs.firefox}/bin/firefox";
       c = "${pkgs.vscodium}/bin/codium";
       s = "${pkgs.sublime3}/bin/sublime3 --new-window";
@@ -189,7 +190,7 @@ let
 
     ${variables.programs.mykeepassxc} &
     ${variables.programs.nextcloud-client} &
-    ${variables.browser} &
+    ${variables.programs.browser} &
     ${variables.programs.myweechat} &
     { sleep 2; ${variables.programs.cmst}; } &
 
