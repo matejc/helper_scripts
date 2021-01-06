@@ -16,6 +16,9 @@ let
     ../../dotfiles/gitconfig.nix
     ../../dotfiles/gitignore.nix
     ../../dotfiles/nix.nix
+    ../../dotfiles/oath.nix
+    ../../dotfiles/jstools.nix
+    ../../dotfiles/superslicer.nix
   ];
   context.activationScript = "";
   context.variables = rec {
@@ -41,48 +44,33 @@ let
       filemanager = "${xfce.thunar}/bin/thunar";
       terminal = "${xfce.terminal}/bin/xfce4-terminal";
       dropdown = "${dotFileAt ../../dotfiles/i3config.nix 1} --role=ScratchTerm";
-      browser = "${firefox}/bin/firefox";
+      browser = "${profileDir}/bin/chromium";
       editor = "${nano}/bin/nano";
       launcher = dotFileAt ../../dotfiles/bemenu.nix 0;
       window-size = dotFileAt ../../dotfiles/i3config.nix 2;
       window-center = dotFileAt ../../dotfiles/i3config.nix 3;
       i3-msg = "${i3}/bin/i3-msg";
       setup-systemd = setupSystemd;
-      startx = startx;
-      thissession = thisSession;
       activate = activate;
+      "startwm.sh" = startwm;
     };
-    restartScript = pkgs.writeScript "restart-script.sh" ''
-      #!${pkgs.stdenv.shell}
-
-      ${pkgs.procps}/bin/pkill dunst
-      ${pkgs.dunst}/bin/dunst &
-
-      ${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}
-
-      ${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources
-
-      export PATH="${pkgs.polybar.override { i3Support = true; }}/bin:$PATH"
-      ${pkgs.procps}/bin/pkill polybar
-      polybar my &
-
-      echo "DONE"
-    '';
-    defaultUserShell = "${profileDir}/bin/zsh";
+    shell = "${profileDir}/bin/zsh";
+    sway.enable = false;
   };
   context.config = {};
 
   activate = writeScript "activate.sh" ''
-    #!${stdenv.shell}
+    #!${context.variables.shell}
     set -e
     ${nixFlakes}/bin/nix --experimental-features "nix-command flakes" build --impure "${context.variables.flake}" --out-link "${context.variables.homeDir}/.last-activate-result" "$@"
-    ${thisSession} ${context.variables.homeDir}/.last-activate-result/activate
+    ${context.variables.homeDir}/.last-activate-result/activate
   '';
 
   startScriptRoot = writeScript "start-script-root.sh" ''
     #!${stdenv.shell}
 
     sysctl -w fs.inotify.max_user_watches=524288
+    systemctl start xrdp
 
     exit 0
   '';
@@ -93,27 +81,26 @@ let
     set -e
 
     apt-get update
-    apt-get install -y dbus policykit-1 daemonize xrdp
-    ln -sfv ${fakeBash} /usr/bin/bash
+    apt-get install -y dbus policykit-1 daemonize xrdp wslu binfmt-support
+    ln -sfv ${context.variables.homeDir}/.var/bash /usr/bin/bash
 
     echo "/bin/sh" > /etc/shells
     echo "/bin/bash" >> /etc/shells
     echo "/usr/bin/bash" >> /etc/shells
-    echo "${context.variables.defaultUserShell}" >> /etc/shells
+    echo "${context.variables.shell}" >> /etc/shells
 
     chsh --shell /usr/bin/bash root
-    chsh --shell ${context.variables.defaultUserShell} ${context.variables.user}
+    chsh --shell ${context.variables.shell} ${context.variables.user}
 
-    ln -svf ${startScriptRoot} /etc/rc.local
+    ln -svf ${context.variables.homeDir}/.var/rc.local /etc/rc.local
 
-    cat << EOF >/etc/xrdp/startwm.sh
-    #!/bin/sh
-    exec ${context.variables.homeDir}/bin/startx
-    EOF
+    ln -svf ${context.variables.homeDir}/.var/startwm.sh /etc/xrdp/startwm.sh
 
     sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
 
     systemctl enable xrdp
+
+    echo 1 > /proc/sys/fs/binfmt_misc/WSLInterop
 
     echo -e "\nRun: wsl.exe --shutdown"
     echo -e "Run: ubuntu2004.exe config --default-user root\n"
@@ -157,31 +144,18 @@ let
     exec /usr/bin/nsenter -t "''${SYSTEMD_PID}" -m -p --wd="''${PWD}" /sbin/runuser -s "''${USHELL}" "''${UNAME}" -- "''${@}"
   '';
 
-  startx = writeScript "startx.sh" ''
-    #!${context.variables.defaultUserShell}
+  startwm = exec "${context.variables.profileDir}/bin/i3";
 
-    exec ${thisSession} ${context.variables.profileDir}/bin/i3
-  '';
-
-  thisSession = writeScript "thissession.sh" ''
-    #!${context.variables.defaultUserShell} -l
-    export PATH="${coreutils}/bin:${gawk}/bin:${procps}/bin:${stdenv.cc.libc.bin}/bin:$PATH"
-    export USER="${context.variables.user}"
-    export XDG_RUNTIME_DIR="/run/user/$(getent passwd "$USER" | cut -d: -f3)"
-    export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
-    local proc_environ="/proc/$(pgrep i3)/environ"
-    if [[ -f "$proc_environ" ]]
-    then
-      export DISPLAY="$(cat /proc/$(pgrep i3)/environ | tr '\0' '\n' | awk -F= '/DISPLAY=.*/{printf $2}')"
-    else
-      echo "Can't set DISPLAY, no such file: $proc_environ" 1>&2
-    fi
-    env XAUTHORITY="${context.variables.homeDir}/.Xauthority" "$@"
-  '';
+  exec = cmd: "${writeScript "exec.sh" ''
+    #!${context.variables.shell}
+    source "${context.variables.homeDir}/.zshrc"
+    exec ${cmd}
+  ''}";
 
   # https://nix-community.github.io/home-manager/options.html
 in
   {
+    imports = [ ./pulse.nix ];
     nixpkgs.config = import "${builtins.toString ./.}/../../dotfiles/nixpkgs-config.nix";
     xdg = {
       enable = true;
@@ -199,6 +173,9 @@ in
       xfce.terminal
       git
     ];
+    home.file.".var/rc.local".source = startScriptRoot;
+    home.file.".var/bash".source = fakeBash;
+    home.file.".var/startwm.sh".source = startwm;
 
     gtk = {
       enable = true;
@@ -213,10 +190,22 @@ in
       };
     };
 
-    programs.firefox = {
+    programs.chromium = {
       enable = true;
+      package = chromium.override { enableVaapi = true; };
+      extensions = [
+        "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
+        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+      ];
+    };
+
+    programs.firefox = {
+      enable = false;
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        https-everywhere ublock-origin
+      ];
       profiles = {
-        myprofile = {
+        default = {
           settings = {
             "general.smoothScroll" = false;
           };
@@ -230,6 +219,7 @@ in
       enable = true;
     };
 
+    targets.genericLinux.enable = true;
     programs.i3status.enable = false;
 
     xsession.windowManager.i3 = {
@@ -238,7 +228,7 @@ in
         assigns = {
           "2" = [{ window_role = "^xfce4-terminal.*"; }];
           "3" = [{ class = "^.nvim-qt-wrapped$"; }];
-          "4" = [{ class = "^Firefox$"; }];
+          "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
         };
         bars = [];
         colors = {
@@ -277,6 +267,7 @@ in
               { command = "border pixel 1"; criteria = { class = "Xfce4-terminal"; }; }
               { command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
               { command = "border pixel 1"; criteria = { class = "Firefox"; }; }
+              { command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
             ];
           };
         };
@@ -285,9 +276,10 @@ in
   services.polybar =
     let
       variables = context.variables;
+      pulse = true;
     in rec {
       enable = true;
-      package = polybar.override { i3Support = true; };
+      package = polybar.override { i3Support = true; pulseSupport = pulse; };
     config = {
       colors = {
         background = "#e0272822";
@@ -325,7 +317,7 @@ in
         #font-0 = "Font Awesome 5 Free Solid:size=10";
         font-0 = "${context.variables.font.family}:style=${context.variables.font.style}:size=${context.variables.font.size}";
         modules-left = "i3 xwindow";
-        modules-right = "xkeyboard filesystem memory cpu ${concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip date";
+        modules-right = "xkeyboard filesystem memory cpu ${optionalString pulse "volume"} ${concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip date";
         tray-position = "right";
         tray-padding = 2;
         tray-background = config.colors.background;
@@ -405,10 +397,31 @@ in
         type = "custom/script";
         exec = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
         click-left = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
-        click-right = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.coreutils}/bin/tr -d '\n' | ${pkgs.xclip}/bin/xclip -selection primary";
+        click-right = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.coreutils}/bin/tr -d '\\n' | ${pkgs.xclip}/bin/xclip -selection primary";
         interval = 30;
         format-underline = config.colors.underline;
         format-prefix = " ";
+      };
+      "module/volume" = {
+        type = "internal/pulseaudio";
+        use-ui-max = false;
+        format-volume = "<ramp-volume> <bar-volume>";
+        ramp-volume-0 = "";
+        ramp-volume-1 = "";
+        ramp-volume-2 = "";
+        format-muted-foreground = config.colors.foreground;
+        label-muted = "婢";
+        bar-volume-width = "10";
+        bar-volume-foreground-0 = "#55aa55";
+        bar-volume-foreground-1 = "#55aa55";
+        bar-volume-foreground-2 = "#55aa55";
+        bar-volume-foreground-3 = "#f5a70a";
+        bar-volume-foreground-4 = "#ff5555";
+        bar-volume-gradient = false;
+        bar-volume-indicator = "";
+        bar-volume-fill = "─";
+        bar-volume-empty = "─";
+        bar-volume-empty-foreground = config.colors.foreground-alt;
       };
     } // (
       builtins.listToAttrs (imap (i: interface: { name = "module/wlan-${toString i}"; value = {
@@ -438,7 +451,7 @@ in
           format-disconnected = "";
         }; }) variables.ethernetInterfaces)
       );
-    script = "${thisSession} polybar my &";
+    script = exec "polybar my &";
   };
   services.dunst = {
     enable = true;
@@ -506,7 +519,9 @@ in
       };
     };
   };
-  systemd.user.services.dunst.Service.ExecStart = mkForce "${thisSession} ${dunst}/bin/dunst";
+  systemd.user.services.dunst.Service.ExecStart = mkForce (exec "${dunst}/bin/dunst");
+
+  services.pulse.enable = false;
 
   home.activation.dotfiles = hm.dag.entryBefore ["writeBoundary"] ''
     $DRY_RUN_CMD ${dotfiles}
@@ -519,7 +534,12 @@ in
   programs.zsh = {
     enable = true;
     enableVteIntegration = true;
-    initExtra = readFile (dotFileAt ../../dotfiles/zsh.nix 0);
+    initExtra = ''
+      ${readFile (dotFileAt ../../dotfiles/zsh.nix 0)}
+
+      . "${pkgs.nix}/etc/profile.d/nix.sh"
+      . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
+    '';
     loginExtra = readFile (dotFileAt ../../dotfiles/zsh.nix 1);
   };
   programs.starship = {

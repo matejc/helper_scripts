@@ -144,19 +144,30 @@ in
         PATH="$HOME/bin:$PATH"
     fi
 
-    if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
-    if [ -e $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ]; then . $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh; fi
+    #if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi
+    #if [ -e $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh ]; then . $HOME/.nix-profile/etc/profile.d/hm-session-vars.sh; fi
 
     export LOCALE_ARCHIVE="${pkgs.glibcLocales}/lib/locale/locale-archive"
     export LC_ALL="${variables.locale.all}"
-    export LANG="en"
-    export LANGUAGE="en"
+    export LC_CTYPE="${variables.locale.all}"
+    export LANG="${variables.locale.all}"
+    export LANGUAGE="${variables.locale.all}"
 
     set_oldpwd() {
       echo "$PWD" >${variables.homeDir}/.oldpwd
     }
 
     #trap set_oldpwd EXIT
+
+    export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.bin}/bin/getent passwd "${variables.user}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
+    export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
+    export XAUTHORITY="${variables.homeDir}/.Xauthority"
+    export PULSE_SERVER="tcp:$(${pkgs.iproute}/bin/ip route | ${pkgs.gawk}/bin/awk '/default via / {print $3; exit}' 2>/dev/null)"
+    display_no="$(${pkgs.coreutils}/bin/ls -1 /tmp/.X11-unix | ${pkgs.gawk}/bin/awk 'NR==1{if ($1 ~ /^X/) { gsub(/^X/,":",$1); printf $1; } }')"
+    if [[ ! -z "$display_no" ]]
+    then
+      export DISPLAY="''${DISPLAY:-$display_no}"
+    fi
 
     if [[ -z "$STARSHIP_SHELL" ]]
     then
