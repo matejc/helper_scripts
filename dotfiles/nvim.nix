@@ -93,7 +93,7 @@ let
 
     set autoindent
     " set smartindent
-    " set nocopyindent
+    set nocopyindent
     " set tabstop=2 shiftwidth=2 expandtab softtabstop=2
     set nowrap
 
@@ -112,12 +112,17 @@ let
     nno <silent> <c-cr> o
     imap <silent> <c-cr> <esc>o
 
-    inoremap <C-u> <esc>u
+    inoremap <C-u> <esc>ui
     nnoremap <C-u> u
     "nno <C-r> <C-R>
     "ino <C-r> <esc><C-R>
     inoremap <C-z> <esc>ui
     nnoremap <C-z> u
+
+    inoremap <A-u> <esc>ui
+    nnoremap <A-u> u
+    inoremap <A-r> <C-R>i
+    nnoremap <A-r> <C-R>
 
     "nnoremap <C-U> <esc>:UndotreeToggle<CR>
 
@@ -592,6 +597,7 @@ let
           vimPlugins.python-mode
           #gv-vim
           #motpat-vim
+          vim-polyglot
         ];
         opt = [
           #nvim-lsp

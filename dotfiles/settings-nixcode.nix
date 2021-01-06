@@ -5,6 +5,7 @@ let
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/matejc";
+    locale.all = "en_US.UTF-8";
     monitors = [
       { name = "eDP-1"; mode = "1920x1080"; }
     ];
