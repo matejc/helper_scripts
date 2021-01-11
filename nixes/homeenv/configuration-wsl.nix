@@ -19,6 +19,8 @@ let
     ../../dotfiles/oath.nix
     ../../dotfiles/jstools.nix
     ../../dotfiles/superslicer.nix
+    ../../dotfiles/scan.nix
+    ../../dotfiles/keepassxc-browser.nix
   ];
   context.activationScript = "";
   context.variables = rec {
@@ -169,9 +171,13 @@ in
     home.packages = with pkgs; [
       font-awesome
       (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      corefonts
       xorg.xauth
       xfce.terminal
       git
+      keepassxc
+      nextcloud-client
+      qt5Full
     ];
     home.file.".var/rc.local".source = startScriptRoot;
     home.file.".var/bash".source = fakeBash;
@@ -196,6 +202,7 @@ in
       extensions = [
         "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+        "oboonakemofpalcgghocfoadofidjkkk" # keepassxc
       ];
     };
 
@@ -520,8 +527,6 @@ in
     };
   };
   systemd.user.services.dunst.Service.ExecStart = mkForce (exec "${dunst}/bin/dunst");
-
-  services.pulse.enable = false;
 
   home.activation.dotfiles = hm.dag.entryBefore ["writeBoundary"] ''
     $DRY_RUN_CMD ${dotfiles}

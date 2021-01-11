@@ -69,6 +69,12 @@ in
     # alt+r
     bindkey '^[r' redo
 
+    # home
+    bindkey '^[[H' beginning-of-line
+
+    # end
+    bindkey '^[[F' end-of-line
+
     WORDCHARS='*?_~=&;!#$%^{}<>'
     MOTION_WORDCHARS='*?_~=&;!#$%^{}<>'
     ""{back,for}ward-word() WORDCHARS=$MOTION_WORDCHARS zle .$WIDGET
