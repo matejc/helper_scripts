@@ -267,7 +267,70 @@ let
     let g:airline_powerline_fonts = 1
     let g:airline_theme='solarized'
 
-    map <C-o> <esc>:NERDTreeToggle<CR>
+    function! IsNTOpen()
+      return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+    endfunction
+    function! NTFindAndRevealPath() abort
+        let l:pathStr = expand('%:p')
+        let l:revealOpts = {}
+
+        if empty(l:pathStr)
+            NERDTreeCWD
+            return
+        endif
+
+        if !filereadable(l:pathStr)
+            let l:pathStr = fnamemodify(l:pathStr, ':h')
+            let l:revealOpts['open'] = 1
+        endif
+
+        try
+            let l:pathStr = g:NERDTreePath.Resolve(l:pathStr)
+            let l:pathObj = g:NERDTreePath.New(l:pathStr)
+        catch /^NERDTree.InvalidArgumentsError/
+            call nerdtree#echoWarning('invalid path')
+            return
+        endtry
+
+        if !g:NERDTree.ExistsForTab()
+            try
+                let l:cwd = g:NERDTreePath.New(getcwd())
+            catch /^NERDTree.InvalidArgumentsError/
+                call nerdtree#echo('current directory does not exist.')
+                let l:cwd = l:pathObj.getParent()
+            endtry
+
+            if l:pathObj.isUnder(l:cwd)
+                call g:NERDTreeCreator.CreateTabTree(l:cwd.str())
+            else
+                call g:NERDTreeCreator.CreateTabTree(l:pathObj.getParent().str())
+            endif
+        else
+            NERDTreeFocus
+
+            if !l:pathObj.isUnder(b:NERDTree.root.path)
+                call s:chRoot(g:NERDTreeDirNode.New(l:pathObj.getParent(), b:NERDTree))
+            endif
+        endif
+
+        if l:pathObj.isHiddenUnder(b:NERDTree.root.path)
+            call b:NERDTree.ui.setShowHidden(1)
+        endif
+
+        let l:node = b:NERDTree.root.reveal(l:pathObj, l:revealOpts)
+        call b:NERDTree.render()
+        call l:node.putCursorHere(1, 0)
+    endfunction
+    function! NTToggle()
+      if IsNTOpen()
+        NERDTreeClose
+      else
+        call NTFindAndRevealPath()
+      endif
+    endfunction
+    nnoremap <C-o> :call NTToggle()<CR>
+
+    autocmd VimLeave * NERDTreeClose
 
     let g:VM_mouse_mappings = 1
     let g:VM_maps = {}
