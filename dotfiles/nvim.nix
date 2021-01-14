@@ -593,7 +593,6 @@ let
       au BufNewFile,BufRead *.py set expandtab
       au BufNewFile,BufRead *.py set autoindent
       au BufNewFile,BufRead *.py set fileformat=unix
-      au BufRead *.py PymodeLint
     augroup END
 
     augroup web
@@ -610,7 +609,7 @@ let
       \'${pkgs.python3Packages.setuptools}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
     \]
     let g:pymode_lint_cwindow = 0
-
+    let g:pymode_lint_unmodified = 1
  '';
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
