@@ -48,11 +48,11 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    colorscheme NeoSolarized
-    set background=light
+    colorscheme monokai
+    " set background=light
     let g:gitgutter_override_sign_column_highlight = 0
-    let g:neosolarized_contrast = "high"
-    let g:neosolarized_visibility = "low"
+    " let g:neosolarized_contrast = "high"
+    " let g:neosolarized_visibility = "low"
 
     set title
     function! ProjectName()
@@ -265,7 +265,7 @@ let
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
-    let g:airline_theme='solarized'
+    let g:airline_theme='molokai'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -660,6 +660,7 @@ let
           #gv-vim
           #motpat-vim
           vim-polyglot
+          vim-monokai
         ];
         opt = [
           #nvim-lsp
