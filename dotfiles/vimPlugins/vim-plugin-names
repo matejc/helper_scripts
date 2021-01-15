@@ -4,6 +4,7 @@ hashivim/vim-hashicorp-tools
 Houl/motpat-vim
 neovim/nvim-lsp
 OmniSharp/omnisharp-vim
+patstockwell/vim-monokai-tasty
 prabirshrestha/asyncomplete-buffer.vim
 prabirshrestha/asyncomplete-file.vim
 prabirshrestha/asyncomplete-tags.vim
@@ -12,5 +13,7 @@ prabirshrestha/async.vim
 preservim/nerdtree
 python-mode/python-mode
 sickill/vim-pasta
+vim-ctrlspace/vim-ctrlspace
+vim-scripts/Workspace-Manager
 Xuyuanp/nerdtree-git-plugin
 yami-beta/asyncomplete-omni.vim

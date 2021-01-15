@@ -48,7 +48,7 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    colorscheme monokai
+    colorscheme vim-monokai-tasty
     " set background=light
     let g:gitgutter_override_sign_column_highlight = 0
     " let g:neosolarized_contrast = "high"
@@ -265,7 +265,7 @@ let
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
-    let g:airline_theme='molokai'
+    let g:airline_theme='monokai_tasty'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -657,10 +657,8 @@ let
           vimPlugins.nerdtree-git-plugin
           ansible-vim
           vimPlugins.python-mode
-          #gv-vim
-          #motpat-vim
           vim-polyglot
-          vim-monokai
+          vimPlugins.vim-monokai-tasty
         ];
         opt = [
           #nvim-lsp
