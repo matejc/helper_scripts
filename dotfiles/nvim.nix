@@ -48,12 +48,11 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    let g:vim_monokai_tasty_italic = 1
-    colorscheme vim-monokai-tasty
-    " set background=light
+    set background=dark
     let g:gitgutter_override_sign_column_highlight = 0
-    " let g:neosolarized_contrast = "high"
-    " let g:neosolarized_visibility = "low"
+    let g:neosolarized_contrast = "high"
+    let g:neosolarized_visibility = "high"
+    colorscheme NeoSolarized
 
     set title
     function! ProjectName()
@@ -266,7 +265,8 @@ let
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
-    let g:airline_theme='monokai_tasty'
+    let g:airline_theme='solarized'
+    let g:airline_solarized_bg='dark'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -659,7 +659,6 @@ let
           ansible-vim
           vimPlugins.python-mode
           vim-polyglot
-          vimPlugins.vim-monokai-tasty
         ];
         opt = [
           #nvim-lsp
