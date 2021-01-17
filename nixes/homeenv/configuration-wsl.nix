@@ -32,7 +32,7 @@ let
     ethernetInterfaces = [ "eth0" ];
     mounts = [ "/" ];
     font = {
-      family = "FiraCode Nerd Font Mono";
+      family = "Fira Mono Nerd Font";
       style = "Regular";
       size = "11";
     };
@@ -54,7 +54,6 @@ let
       i3-msg = "${i3}/bin/i3-msg";
       setup-systemd = setupSystemd;
       activate = activate;
-      "startwm.sh" = startwm;
     };
     shell = "${profileDir}/bin/zsh";
     sway.enable = false;
@@ -72,7 +71,6 @@ let
     #!${stdenv.shell}
 
     sysctl -w fs.inotify.max_user_watches=524288
-    systemctl start xrdp
 
     exit 0
   '';
@@ -83,7 +81,7 @@ let
     set -e
 
     apt-get update
-    apt-get install -y dbus policykit-1 daemonize xrdp wslu binfmt-support
+    apt-get install -y dbus policykit-1 daemonize wslu binfmt-support
     ln -sfv ${context.variables.homeDir}/.var/bash /usr/bin/bash
 
     echo "/bin/sh" > /etc/shells
@@ -96,13 +94,9 @@ let
 
     ln -svf ${context.variables.homeDir}/.var/rc.local /etc/rc.local
 
-    ln -svf ${context.variables.homeDir}/.var/startwm.sh /etc/xrdp/startwm.sh
-
-    sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
-
-    systemctl enable xrdp
-
     echo 1 > /proc/sys/fs/binfmt_misc/WSLInterop
+
+    loginctl enable-linger ${context.variables.user}
 
     echo -e "\nRun: wsl.exe --shutdown"
     echo -e "Run: ubuntu2004.exe config --default-user root\n"
@@ -146,18 +140,23 @@ let
     exec /usr/bin/nsenter -t "''${SYSTEMD_PID}" -m -p --wd="''${PWD}" /sbin/runuser -s "''${USHELL}" "''${UNAME}" -- "''${@}"
   '';
 
-  startwm = exec "${context.variables.profileDir}/bin/i3";
-
   exec = cmd: "${writeScript "exec.sh" ''
     #!${context.variables.shell}
     source "${context.variables.homeDir}/.zshrc"
     exec ${cmd}
   ''}";
 
+  nextcloudClientRestartScript = writeScript "nextcloud-client-restart.sh" ''
+    #!${context.variables.shell}
+    ${procps}/bin/pkill nextcloud
+    source "${context.variables.homeDir}/.zshrc"
+    exec ${nextcloud-client}/bin/nextcloud --background
+  '';
+
   # https://nix-community.github.io/home-manager/options.html
 in
   {
-    imports = [ ./pulse.nix ];
+    imports = [ ./vnc.nix ];
     nixpkgs.config = import "${builtins.toString ./.}/../../dotfiles/nixpkgs-config.nix";
     xdg = {
       enable = true;
@@ -170,18 +169,16 @@ in
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       font-awesome
-      (nerdfonts.override { fonts = [ "FiraCode" ]; })
+      (nerdfonts.override { fonts = [ "FiraMono" ]; })
       corefonts
       xorg.xauth
       xfce.terminal
       git
       keepassxc
-      nextcloud-client
       qt5Full
     ];
     home.file.".var/rc.local".source = startScriptRoot;
     home.file.".var/bash".source = fakeBash;
-    home.file.".var/startwm.sh".source = startwm;
 
     gtk = {
       enable = true;
@@ -265,6 +262,7 @@ in
             { command = "systemctl --user restart dunst"; always = true; }
             { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
             { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
+            { command = "${nextcloudClientRestartScript}"; always = true; }
             { command = "${context.variables.programs.browser}"; }
             { command = "${context.variables.programs.terminal}"; }
           ];
@@ -553,6 +551,11 @@ in
       character.success_symbol = "[❯](bold green) ";
       character.error_symbol = "[✗](bold red) ";
     };
+  };
+
+  services.vnc = {
+    enable = true;
+    startCmd = exec "${context.variables.profileDir}/bin/i3";
   };
 
   # TODO:
