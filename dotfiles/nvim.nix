@@ -419,6 +419,8 @@ let
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
+    set omnifunc=v:lua.vim.lsp.omnifunc
+
 lua << EOF
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
@@ -433,7 +435,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
@@ -467,14 +469,17 @@ local on_attach = function(client, bufnr)
   end
 end
 
--- Use a loop to conveniently both setup defined servers
--- and map buffer local keybindings when the language server attaches
-local servers = { }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup { on_attach = on_attach }
-end
-
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
+nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
+nvim_lsp["pyls"].setup { on_attach = on_attach; cmd = {"${pkgs.python3Packages.python-language-server}/bin/pyls"} }
+nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bashls", "start"} }
+nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
+nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
+nvim_lsp["tsserver"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"} }
+nvim_lsp["jsonls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"} }
+nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"} }
+nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
+nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
 EOF
 
 
@@ -724,7 +729,11 @@ in [{
       dockerfile-language-server-nodejs \
       typescript \
       typescript-language-server \
-      yaml-language-server
+      yaml-language-server \
+      vscode-json-languageserver \
+      vim-language-server \
+      vscode-html-languageserver-bin \
+      vscode-css-languageserver-bin
 
     function ensure_lsp_link() {
       local name="$1"
@@ -735,18 +744,16 @@ in [{
       ln -svf "$path" "$destination/$cmdbasename"
     }
 
-    ensure_lsp_link "rnix" "${pkgs.rnix-lsp}/bin/rnix-lsp"
+    #ensure_lsp_link "rnix" "${pkgs.rnix-lsp}/bin/rnix-lsp"
   '';
 } {
   target = "${variables.homeDir}/bin/nvim";
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
     export PATH="${lib.makeBinPath [ pkgs.python3Packages.python
-        pkgs.python3Packages.python-language-server
         /* omnisharp-roslyn hie */
         pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
-        kotlin-language-server
-    ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
+    ]}:$PATH"
     ${neovim}/bin/nvim "$@"
   '';
 } {
