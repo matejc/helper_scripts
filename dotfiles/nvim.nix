@@ -483,14 +483,13 @@ nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.n
 EOF
 
 
-    function! OpenCompletion()
-        if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
-            call feedkeys("\<C-x>\<C-o>", "n")
-        endif
-    endfunction
-
-    autocmd InsertCharPre * call OpenCompletion()
-    set completeopt+=menuone,noselect,noinsert
+    " function! OpenCompletion()
+    "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
+    "         call feedkeys("\<C-x>\<C-o>", "n")
+    "     endif
+    " endfunction
+    " autocmd InsertCharPre * call OpenCompletion()
+    " set completeopt+=menuone,noselect,noinsert
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages
@@ -620,7 +619,10 @@ EOF
     \]
     let g:pymode_lint_cwindow = 0
     let g:pymode_lint_unmodified = 1
- '';
+
+    let g:deoplete#enable_at_startup = 1
+    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+  '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
     pname = "kotlin-language-server";
@@ -705,6 +707,8 @@ EOF
           vim-polyglot
           #kotlin-vim
           vimPlugins.nvim-lspconfig
+          deoplete-nvim
+          deoplete-lsp
         ];
         opt = [
         ];
