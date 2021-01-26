@@ -105,12 +105,12 @@ let
 
   nerdtree = buildVimPluginFrom2Nix {
     pname = "nerdtree";
-    version = "2020-12-20";
+    version = "2021-01-20";
     src = fetchFromGitHub {
       owner = "preservim";
       repo = "nerdtree";
-      rev = "aaa946fb6bd79b9af86fbaf4b6b63fd81d839bd9";
-      sha256 = "1fhwfwqlvz0pm5qdpjbmjx4dqlnchbp170jw63dc5fxin90h4ivh";
+      rev = "b134f6518b902c7e0482ae770b804fd47c2d2426";
+      sha256 = "11gq7dcj8v6y1wlnyc6wfsh54qzd5am8lmjjk69jbbjsjzpb59xb";
     };
   };
 
@@ -125,14 +125,14 @@ let
     };
   };
 
-  nvim-lsp = buildVimPluginFrom2Nix {
-    pname = "nvim-lsp";
-    version = "2021-01-15";
+  nvim-lspconfig = buildVimPluginFrom2Nix {
+    pname = "nvim-lspconfig";
+    version = "2021-01-25";
     src = fetchFromGitHub {
       owner = "neovim";
-      repo = "nvim-lsp";
-      rev = "fb927a55db165c4d941528e37dac11bdfc239f7e";
-      sha256 = "1l6rkfygn8nq8zxxy3p7qkkcqxf1cxya0yx8lg24lrsfsm55zrv0";
+      repo = "nvim-lspconfig";
+      rev = "9f01a739b7ea8b500e67edc780181f2107257698";
+      sha256 = "0izgb2gv7bv9rfjh417hssdjdzj1hkbyvg2pf8cw10c19mkdnz98";
     };
   };
 

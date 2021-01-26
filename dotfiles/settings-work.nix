@@ -8,18 +8,19 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
-    editor = "${pkgs.nano}/bin/nano";
     font = {
-      family = "Consolas";
-      extra = "Semibold";
+      family = "FiraMono NF";
+      style = "Regular";
       size = "11";
     };
     term = null;
-    browser = programs.chromium;
     terminal = null;
     programs = {
-      chromium = "Chrome.exe";
+      browser = "Chrome.exe";
+      editor = "${pkgs.nano}/bin/nano";
+      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
     };
+    locale.all = "en_US.utf8";
   };
 
   dotFilePaths = [

@@ -48,7 +48,7 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    set background=dark
+    set background=light
     let g:gitgutter_override_sign_column_highlight = 0
     let g:neosolarized_contrast = "high"
     let g:neosolarized_visibility = "high"
@@ -266,7 +266,7 @@ let
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
     let g:airline_theme='solarized'
-    let g:airline_solarized_bg='dark'
+    " let g:airline_solarized_bg='dark'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -419,70 +419,73 @@ let
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
-" lua << EOF
-" package.path = '${vimPlugins.nvim-lsp.rtp}/lua/?.lua;' .. package.path
-" vim.cmd('packadd nvim-lsp')
-" local nvim_lsp = require'nvim_lsp'
-" nvim_lsp.pyls.setup{}
-" nvim_lsp.tsserver.setup{}
-" local configs = require'nvim_lsp/configs'
-" -- Check if it's already defined for when I reload this file.
-" -- if not nvim_lsp.omnisharp then
-" --   configs.omnisharp = {
-" --     default_config = {
-" --       cmd = {'omnisharp', '-lsp'};
-" --       filetypes = {'cs'};
-" --       root_dir = function(fname)
-" --         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-" --       end;
-" --       log_level = vim.lsp.protocol.MessageType.Warning;
-" --       settings = {};
-" --     };
-" --   }
-" -- end
-" -- nvim_lsp.omnisharp.setup{}
-" if not nvim_lsp.hie then
-"  #configs.hie = {
-"    #default_config = {
-"      #cmd = {'hie-wrapper', '--lsp'};
-"      #filetypes = {'haskell'};
-"      #root_dir = function(fname)
-"        #return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-"      #end;
-"      #log_level = vim.lsp.protocol.MessageType.Warning;
-"      #settings = {};
-"    #};
-"  #}
-" end
-" nvim_lsp.hie.setup{}
-" -- configs.rnix = {
-" --   default_config = {
-" --     cmd = {'${pkgs.rnix-lsp}/bin/rnix-lsp'};
-" --     filetypes = {'nix'};
-" --     root_dir = function(fname)
-" --       return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-" --     end;
-" --     log_level = vim.lsp.protocol.MessageType.Warning;
-" --     settings = {};
-" --   };
-" -- }
-" -- nvim_lsp.rnix.setup{}
-" -- if not nvim_lsp.robot then
-" --   configs.robot = {
-" --     default_config = {
-" --       cmd = {'robotframework_ls'};
-" --       filetypes = {'robot'};
-" --       root_dir = function(fname)
-" --         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-" --       end;
-" --       log_level = vim.lsp.protocol.MessageType.Warning;
-" --       settings = { };
-" --     };
-" --   }
-" -- end
-" -- nvim_lsp.robot.setup{}
-" EOF
-"     autocmd BufEnter * setlocal omnifunc=v:lua.vim.lsp.omnifunc
+lua << EOF
+local nvim_lsp = require('lspconfig')
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+
+  -- Set some keybinds conditional on server capabilities
+  if client.resolved_capabilities.document_formatting then
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  elseif client.resolved_capabilities.document_range_formatting then
+    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  end
+
+  -- Set autocommands conditional on server_capabilities
+  if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+      hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+      hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+      hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+      augroup lsp_document_highlight
+        autocmd!
+        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+      augroup END
+    ]], false)
+  end
+end
+
+-- Use a loop to conveniently both setup defined servers
+-- and map buffer local keybindings when the language server attaches
+local servers = { }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup { on_attach = on_attach }
+end
+
+nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
+EOF
+
+
+    function! OpenCompletion()
+        if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
+            call feedkeys("\<C-x>\<C-o>", "n")
+        endif
+    endfunction
+
+    autocmd InsertCharPre * call OpenCompletion()
+    set completeopt+=menuone,noselect,noinsert
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages
@@ -491,20 +494,21 @@ let
     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
     inoremap <c-c> <ESC>
 
-    imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
-    imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-    imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-    imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+    "imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
+    "imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+    "imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+    "imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+
     "imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
     "imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
     "imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
     "imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
     " Use <TAB> to select the popup menu:
-    inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
     "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-d>"
 
-    autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
+    "autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
     let g:ale_completion_enabled = 0
 
@@ -613,20 +617,55 @@ let
     let g:pymode_lint_unmodified = 1
  '';
 
+  kotlin-language-server = pkgs.stdenv.mkDerivation rec {
+    pname = "kotlin-language-server";
+    version = "0.7.0";
+
+    src = pkgs.fetchzip {
+      url = "https://github.com/fwcd/kotlin-language-server/releases/download/${version}/server.zip";
+      sha256 = "1nsfird6mxzi2cx6k2dlvlsn3ipdf4l1grd4iwz42y3ihm8drgpa";
+    };
+
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+
+    installPhase = ''
+      install -D $src/bin/kotlin-language-server -t $out/bin
+      cp -r $src/lib $out/lib
+      wrapProgram $out/bin/kotlin-language-server \
+        --prefix PATH : ${pkgs.jre}/bin
+    '';
+  };
+
+  treeSitter = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "tree-sitter";
+    version = "0.18.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "tree-sitter";
+      repo = pname;
+      rev = version;
+      sha256 = "0q4lrsr5az5w06q1q0ndqs21v993bclpxv3bjxzlmv9i7zrj5hs1";
+    };
+
+    cargoSha256 = "08zr74yb1vaja4k5lyvhyj7fyhvhskx9z8ngg0cd4yg7fkzglp0s";
+
+    doCheck = false;
+  };
+
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
     name = "neovim-unwrapped-0.5.0";
     version = "0.5.0";
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "1153ac9036ab62ee25078248a01dc56a2311b9a6";
-      sha256 = "1nq4b76x8z3prw3sbvf28vvq1g8ml0w42fmh9rrv76rcqfl6dj1q";
+      rev = "78f0f00cd5f6f09320851e51fe61eb818e595f39";
+      sha256 = "0hajmn9raga1mlahssw6njkq9wwjvl2grigi3a3byixd8ki53djh";
     };
-    buildInputs = old.buildInputs ++ [ pkgs.utf8proc ];
+    buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
 
-  #neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
-  neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
+  neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
+  #neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
@@ -643,11 +682,11 @@ let
           vim-airline vim-airline-themes
           vim-nix
           nerdcommenter
-          ale
-          YouCompleteMe
-          vimPlugins.omnisharp-vim
+          #ale
+          #YouCompleteMe
+          #vimPlugins.omnisharp-vim
           ctrlp-py-matcher
-          robotframework-vim
+          #robotframework-vim
           sleuth
           vimPlugins.vim-hashicorp-tools
           Jenkinsfile-vim-syntax
@@ -657,11 +696,12 @@ let
           vimPlugins.nerdtree
           vimPlugins.nerdtree-git-plugin
           ansible-vim
-          vimPlugins.python-mode
+          #vimPlugins.python-mode
           vim-polyglot
+          #kotlin-vim
+          vimPlugins.nvim-lspconfig
         ];
         opt = [
-          #nvim-lsp
         ];
       };
     };
@@ -701,6 +741,12 @@ in [{
   target = "${variables.homeDir}/bin/nvim";
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
+    export PATH="${lib.makeBinPath [ pkgs.python3Packages.python
+        pkgs.python3Packages.python-language-server
+        /* omnisharp-roslyn hie */
+        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
+        kotlin-language-server
+    ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
     ${neovim}/bin/nvim "$@"
   '';
 } {
@@ -725,10 +771,6 @@ in [{
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
     function open_nvim_qt {
-      export PATH="${lib.makeBinPath [ pkgs.python3Packages.python /*
-        pkgs.python3Packages.python-language-server
-        pkgs.python2Packages.robotframework-lsp omnisharp-roslyn hie */
-        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint ]}:${variables.homeDir}/.npm-packages/bin:$PATH"
       export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
       ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
     }
