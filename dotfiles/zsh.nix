@@ -168,7 +168,6 @@ in
     export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.bin}/bin/getent passwd "${variables.user}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
     export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
     export XAUTHORITY="${variables.homeDir}/.Xauthority"
-    export PULSE_SERVER="tcp:$(${pkgs.iproute}/bin/ip route | ${pkgs.gawk}/bin/awk '/default via / {print $3; exit}' 2>/dev/null)"
     display_no="$(${pkgs.coreutils}/bin/ls -1 /tmp/.X11-unix | ${pkgs.gawk}/bin/awk 'NR==1{if ($1 ~ /^X/) { gsub(/^X/,":",$1); printf $1; } }')"
     if [[ ! -z "$display_no" ]]
     then
