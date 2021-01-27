@@ -419,8 +419,6 @@ let
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
-    set omnifunc=v:lua.vim.lsp.omnifunc
-
 lua << EOF
 local nvim_lsp = require('lspconfig')
 local on_attach = function(client, bufnr)
