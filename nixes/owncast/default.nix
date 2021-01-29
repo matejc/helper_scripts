@@ -73,6 +73,12 @@ in {
         description = "Owncast data directory";
       };
 
+      nice = mkOption {
+        type = types.int;
+        default = 0;
+        description = "Set nice to owncast process.";
+      };
+
       config = mkOption {
         type = types.attrs;
         description = "Config attribute set";
@@ -107,6 +113,7 @@ in {
         Type = "simple";
         User  = "owncast";
         Group = "owncast";
+        Nice = cfg.nice;
         WorkingDirectory = cfg.homeDir;
         Environment = "PATH=${pkgs.bash}/bin:${pkgs.coreutils}/bin";
         ExecStartPre = pkgs.writeScript "owncast-init" ''
