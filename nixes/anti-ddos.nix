@@ -8,7 +8,7 @@
     }
 
     ### 1: Drop invalid packets ###
-    iptables_add PREROUTING -t mangle -m conntrack --ctstate INVALID -j DROP
+    #iptables_add PREROUTING -t mangle -m conntrack --ctstate INVALID -j DROP
 
     ### 2: Drop TCP packets that are new and are not SYN ###
     iptables_add PREROUTING -t mangle -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
