@@ -39,19 +39,19 @@ let
       streamQualities = [
         {
           low = null;
-          videoBitrate = 1000;
+          videoBitrate = 800;
           scaledWidth = 600;
           audioPassthrough = true;
           framerate = 20;
           encoderPreset = "superfast";
         } {
           medium = null;
-          videoBitrate = 2000;
+          videoBitrate = 1600;
           framerate = 24;
           encoderPreset = "veryfast";
         } {
           high = null;
-          videoBitrate = 3000;
+          videoBitrate = 3200;
           framerate = 24;
           encoderPreset = "veryfast";
         }
