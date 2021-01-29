@@ -34,26 +34,31 @@ let
       nsfw = false;
     };
     videoSettings = {
-      chunkLengthInSeconds = 4;
+      chunkLengthInSeconds = 3;
       streamingKey = "";
       streamQualities = [
         {
-          low = {
-            videoBitrate = 1000;
-            scaledWidth = 600;
-            audioPassthrough = true;
-            encoderPreset = "superfast";
-          };
+          low = null;
+          videoBitrate = 1000;
+          scaledWidth = 600;
+          audioPassthrough = true;
+          framerate = 20;
+          encoderPreset = "superfast";
         } {
-          medium = {
-            videoBitrate = 1800;
-            encoderPreset = "veryfast";
-          };
+          medium = null;
+          videoBitrate = 2000;
+          framerate = 24;
+          encoderPreset = "veryfast";
+        } {
+          high = null;
+          videoBitrate = 3000;
+          framerate = 24;
+          encoderPreset = "veryfast";
         }
       ];
     };
     files = {
-      maxNumberInPlaylist = 4;
+      maxNumberInPlaylist = 3;
     };
   };
 in {
