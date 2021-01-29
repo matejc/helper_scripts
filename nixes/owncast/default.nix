@@ -34,7 +34,7 @@ let
       nsfw = false;
     };
     videoSettings = {
-      chunkLengthInSeconds = 3;
+      chunkLengthInSeconds = 4;
       streamingKey = "";
       streamQualities = [
         {
@@ -58,7 +58,7 @@ let
       ];
     };
     files = {
-      maxNumberInPlaylist = 3;
+      maxNumberInPlaylist = 4;
     };
   };
 in {
