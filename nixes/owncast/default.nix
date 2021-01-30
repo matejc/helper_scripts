@@ -39,21 +39,22 @@ let
       streamQualities = [
         {
           low = null;
-          videoBitrate = 800;
-          scaledWidth = 600;
+          videoBitrate = 500;
+          scaledWidth = 540;
           audioPassthrough = true;
-          framerate = 20;
-          encoderPreset = "superfast";
+          framerate = 30;
+          encoderPreset = "slow";
         } {
           medium = null;
-          videoBitrate = 1600;
-          framerate = 24;
-          encoderPreset = "veryfast";
+          videoBitrate = 1500;
+          scaledWidth = 720;
+          framerate = 30;
+          encoderPreset = "medium";
         } {
           high = null;
-          videoBitrate = 3200;
-          framerate = 24;
-          encoderPreset = "veryfast";
+          videoBitrate = 10000;
+          framerate = 30;
+          encoderPreset = "ultrafast";
         }
       ];
     };
@@ -71,12 +72,6 @@ in {
         type = types.str;
         default = "/var/lib/owncast";
         description = "Owncast data directory";
-      };
-
-      nice = mkOption {
-        type = types.int;
-        default = 0;
-        description = "Set nice to owncast process.";
       };
 
       config = mkOption {
@@ -113,7 +108,6 @@ in {
         Type = "simple";
         User  = "owncast";
         Group = "owncast";
-        Nice = cfg.nice;
         WorkingDirectory = cfg.homeDir;
         Environment = "PATH=${pkgs.bash}/bin:${pkgs.coreutils}/bin";
         ExecStartPre = pkgs.writeScript "owncast-init" ''
