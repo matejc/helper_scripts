@@ -663,8 +663,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "78f0f00cd5f6f09320851e51fe61eb818e595f39";
-      sha256 = "0hajmn9raga1mlahssw6njkq9wwjvl2grigi3a3byixd8ki53djh";
+      rev = "94cf7bba008ff0c36828565a408b7ef79203e069";
+      sha256 = "1pm50y68kxiqq2s1f4safpl579q0ff002bnpwslc8mfmbg70dsb6";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
