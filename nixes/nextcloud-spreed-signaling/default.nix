@@ -29,6 +29,40 @@ let
     '';
   };
 
+  usrsctp = pkgs.stdenv.mkDerivation rec {
+    name = "usrsctp-${version}";
+    version = "20200525";
+    src = pkgs.fetchurl {
+      url = "https://github.com/sctplab/usrsctp/archive/a6647318b57c0a05d590c8c21fc22aba87f08749.tar.gz";
+      sha256 = "05za3bp26wyrkskdf5rmnbmi1657idvqpi3c0d8z108sf92xna8b";
+    };
+    buildInputs = with pkgs; [
+      which libtool automake autoconf cmake
+    ];
+    preConfigure = ''
+      ./bootstrap
+    '';
+  };
+  janus = pkgs.stdenv.mkDerivation rec {
+    name = "janus-gateway-${version}";
+    version = "0.9.2";
+    src = pkgs.fetchurl {
+      url = "https://github.com/meetecho/janus-gateway/archive/v${version}.tar.gz";
+      sha256 = "0ibjwgzan1ssjcdmvsmi1cy98addgjzd5hz22gvgnqjqybd9x0mn";
+    };
+    buildInputs = with pkgs; [
+      autogen autoconf automake libtool pkgconfig curl jansson libconfig glib
+      libnice srtp gengetopt libwebsockets libuv usrsctp
+    ];
+    preConfigure = ''
+      ./autogen.sh
+    '';
+    configureFlags = [ "--disable-rabbitmq" "--disable-mqtt" "--disable-boringssl" ];
+    preInstall = ''
+      make configs
+    '';
+  };
+
   cfg = config.services.nextcloud-spreed-signaling;
   gnatsdConf = pkgs.writeText "gnatsd.conf" ''
     cluster {
@@ -63,8 +97,8 @@ let
     #writetimeout = 15
 
     # Certificate / private key to use for the HTTPS server.
-    #certificate = /etc/nginx/ssl/server.crt
-    #key = /etc/nginx/ssl/server.key
+    certificate = ${cfg.certificate}
+    key = ${cfg.certificateKey}
 
     [app]
     # Set to "true" to install pprof debug handlers.
@@ -79,7 +113,7 @@ let
     # Optional key for encrypting data in the sessions. Must be either 16, 24 or
     # 32 bytes.
     # If no key is specified, data will not be encrypted (not recommended).
-    #blockkey =
+    blockkey = ${cfg.blockkey}
 
     [clients]
     # Shared secret for connections from internal clients. This must be the same
@@ -126,7 +160,7 @@ let
 
     # Limit the number of sessions that are allowed to connect to this backend.
     # Omit or set to 0 to not limit the number of sessions.
-    #sessionlimit = 10
+    sessionlimit = 10
 
     #[another-backend]
     # URL of the Nextcloud instance
@@ -146,11 +180,11 @@ let
     [mcu]
     # The type of the MCU to use. Currently only "janus" and "proxy" are supported.
     # Leave empty to disable MCU functionality.
-    #type =
+    type = janus
 
     # For type "janus": the URL to the websocket endpoint of the MCU server.
     # For type "proxy": a space-separated list of proxy URLs to connect to.
-    #url =
+    url = ws://localhost:8188
 
     # For type "janus": the maximum bitrate per publishing stream (in bits per
     # second).
@@ -212,15 +246,15 @@ let
 
     [turn]
     # API key that the MCU will need to send when requesting TURN credentials.
-    #apikey = the-api-key-for-the-rest-service
+    apikey = ${cfg.turnSecret}
 
     # The shared secret to use for generating TURN credentials. This must be the
     # same as on the TURN server.
-    #secret = 6d1c17a7-c736-4e22-b02c-e2955b7ecc64
+    secret = ${cfg.turnSecret}
 
     # A comma-separated list of TURN servers to use. Leave empty to disable the
     # TURN REST API.
-    #servers = turn:1.2.3.4:9991?transport=udp,turn:1.2.3.4:9991?transport=tcp
+    servers = turn:localhost:3478?transport=udp,turn:localhost:3478?transport=tcp
 
     [geoip]
     # License key to use when downloading the MaxMind GeoIP database. You can
@@ -276,9 +310,31 @@ in {
         description = "Nextcloud admin secret";
       };
 
+      certificate = mkOption {
+        type = types.str;
+        default = "/etc/nginx/ssl/server.crt";
+        description = "Path to certificate file";
+      };
+
+      certificateKey = mkOption {
+        type = types.str;
+        default = "/etc/nginx/ssl/server.key";
+        description = "Path to certificate key file";
+      };
+
       hashkey = mkOption {
         type = types.str;
         description = "Secret value used to generate checksums of sessions. This should be a random string of 32 or 64 bytes.";
+      };
+
+      blockkey = mkOption {
+        type = types.str;
+        description = "Optional key for encrypting data in the sessions. Must be either 16, 24 or 32 bytes";
+      };
+
+      turnSecret = mkOption {
+        type = types.str;
+        description = "Turn secret";
       };
     };
 
@@ -328,6 +384,40 @@ in {
         Group = "nats";
         ExecStart = "${pkgs.nats-server}/bin/nats-server --config=${gnatsdConf}";
       };
+    };
+
+    users.users.janus =
+      { description = "janus daemon user";
+        group = "janus";
+        isSystemUser = true;
+      };
+
+    users.groups.janus = { };
+
+    systemd.services.janus = {
+      description = "janus server";
+      wantedBy = [ "network.target" "multi-user.target" ];
+      after = [ "network.service" ];
+      serviceConfig = {
+        Type = "simple";
+        User  = "janus";
+        Group = "janus";
+        ExecStart = "${janus}/bin/janus --full-trickle";
+      };
+    };
+
+    services.coturn = {
+      enable = true;
+      static-auth-secret = cfg.turnSecret;
+      use-auth-secret = true;
+      realm = cfg.nextcloudUrl;
+      no-tls = true;
+      no-dtls = true;
+      extraConfig = ''
+        prod
+        fingerprint
+        no-multicast-peers
+      '';
     };
 
   };
