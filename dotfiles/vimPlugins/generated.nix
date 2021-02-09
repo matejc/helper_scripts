@@ -61,12 +61,12 @@ let
 
   asyncomplete-vim = buildVimPluginFrom2Nix {
     pname = "asyncomplete-vim";
-    version = "2020-12-23";
+    version = "2021-01-28";
     src = fetchFromGitHub {
       owner = "prabirshrestha";
       repo = "asyncomplete.vim";
-      rev = "e546095e4ac7a20d06bcf16d207275dd4d6b4115";
-      sha256 = "0jq5qrlijlqpfgi89249whvpmm140smflpprlq8as0pfyhpjn1d1";
+      rev = "4be3c16b33c27fce5372bf8bc74e42126c76fe61";
+      sha256 = "1y5xlisby7a41naas7r09ins3k9arn5xc5bb6w8k7am6xz3vc3r6";
     };
   };
 
@@ -92,6 +92,17 @@ let
     };
   };
 
+  neovim-auto-autoread = buildVimPluginFrom2Nix {
+    pname = "neovim-auto-autoread";
+    version = "2020-07-11";
+    src = fetchFromGitHub {
+      owner = "thezoq2";
+      repo = "neovim-auto-autoread";
+      rev = "21fc7d47eaaec03f4e5ab76abacc00d8702e4590";
+      sha256 = "0wyzzda5pc58xnq5rb1ik24gb5zvrzlblnb304wp7k6sqb2z21rk";
+    };
+  };
+
   neovim-gui-shim = buildVimPluginFrom2Nix {
     pname = "neovim-gui-shim";
     version = "2019-08-06";
@@ -105,12 +116,12 @@ let
 
   nerdtree = buildVimPluginFrom2Nix {
     pname = "nerdtree";
-    version = "2021-01-20";
+    version = "2021-01-31";
     src = fetchFromGitHub {
       owner = "preservim";
       repo = "nerdtree";
-      rev = "b134f6518b902c7e0482ae770b804fd47c2d2426";
-      sha256 = "11gq7dcj8v6y1wlnyc6wfsh54qzd5am8lmjjk69jbbjsjzpb59xb";
+      rev = "1b19089917cc3e0a81d3294fead2424c419d545c";
+      sha256 = "0zm60spnz4nsn0g9zsdiapygr2nwnkrqcz0w2pr37sp9i91nxxvb";
     };
   };
 
@@ -127,23 +138,23 @@ let
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-01-25";
+    version = "2021-02-06";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "9f01a739b7ea8b500e67edc780181f2107257698";
-      sha256 = "0izgb2gv7bv9rfjh417hssdjdzj1hkbyvg2pf8cw10c19mkdnz98";
+      rev = "041dfd7fb648d24c80cb8829dda2469f66f88490";
+      sha256 = "105xswyz91sphqr59kzg2df9dhs01d5g2nwmlnnbq0fpbdfjnylb";
     };
   };
 
   omnisharp-vim = buildVimPluginFrom2Nix {
     pname = "omnisharp-vim";
-    version = "2021-01-13";
+    version = "2021-02-04";
     src = fetchFromGitHub {
       owner = "OmniSharp";
       repo = "omnisharp-vim";
-      rev = "b232dea01a13c8d648af9438e52a489d94760d89";
-      sha256 = "04k305phjxrm1fgq2qxkq5z7hhc248ngcvp35ig5gfrfrjkadcq1";
+      rev = "1bd3dfb77055347d9048cb6661823e9139ac8ce7";
+      sha256 = "1d4nrwc3pxdiwisl2wprm0basl66v15kqmmiva68vxl4l46yca3f";
       fetchSubmodules = true;
     };
   };

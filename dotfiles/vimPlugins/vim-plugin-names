@@ -13,6 +13,7 @@ prabirshrestha/async.vim
 preservim/nerdtree
 python-mode/python-mode
 sickill/vim-pasta
+thezoq2/neovim-auto-autoread
 vim-ctrlspace/vim-ctrlspace
 vim-scripts/Workspace-Manager
 Xuyuanp/nerdtree-git-plugin

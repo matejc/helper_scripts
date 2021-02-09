@@ -351,7 +351,8 @@ let
     let g:VM_maps["Select h"]              = '<A-Left>'
 
     set autoread
-    au FocusGained,BufEnter * :checktime
+    " au FocusGained,BufEnter * :checktime
+    autocmd VimEnter * AutoreadLoop
 
     nmap <c-_> <leader>c<space>
     imap <c-_> <esc><leader>c<space>
@@ -707,6 +708,7 @@ EOF
           vimPlugins.nvim-lspconfig
           deoplete-nvim
           deoplete-lsp
+          vimPlugins.neovim-auto-autoread
         ];
         opt = [
         ];
