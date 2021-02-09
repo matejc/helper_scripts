@@ -166,9 +166,9 @@ let
     nmap <C-c> yy
     vmap <C-c> y
 
-    nmap <c-v> i<esc>p
-    imap <c-v> <esc>pi<right>
-    vmap <c-v> p
+    nnoremap <c-v> i<esc>p
+    inoremap <c-v> <esc>pi<right>
+    vnoremap <c-v> "_dhp
 
     " nmap <C-S-Up> :copy .-1<cr>
     " vmap <C-S-Up> :copy '>-1<cr>
@@ -408,10 +408,14 @@ let
     nnoremap <silent> <expr> <c-left> <sid>MyMotionDir('n', 1)
     vnoremap <silent> <expr> <c-right> <sid>MyMotionDir('v', 0)
     vnoremap <silent> <expr> <c-left> <sid>MyMotionDir('v', 1)
-    inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
-    inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
+    "inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
+    "inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
 
-    inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
+    " inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
+
+    inoremap <A-del> <esc>l"_dwi
+    inoremap <C-del> <esc>l"_dwi
+    inoremap <C-BS> <C-W>
 
     nnoremap d "_d
     nnoremap D "_D
@@ -709,6 +713,7 @@ EOF
           deoplete-nvim
           deoplete-lsp
           vimPlugins.neovim-auto-autoread
+          vim-rsi
         ];
         opt = [
         ];
