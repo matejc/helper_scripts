@@ -8,22 +8,21 @@ let
     binDir = "${variables.prefix}/bin";
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
-    editor = "${pkgs.nano}/bin/nano";
     font = {
       family = "Source Code Pro";
-      extra = "Semibold";
+      style = "Semibold";
       size = "10";
     };
     sway.enable = false;
     terminal = programs.terminal;
     dropDownTerminal = programs.dropdown;
     term = null;
-    browser = programs.chromium;
     programs = {
       filemanager = "${pkgs.dolphin}/bin/dolphin";
       terminal = "${pkgs.konsole}/bin/konsole";
+      editor = "${pkgs.nano}/bin/nano";
       dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
-      chromium = "${pkgs.chromium}/bin/chromium";
+      browser = "${pkgs.chromium}/bin/chromium";
       ff = "${pkgs.firefox}/bin/firefox";
       c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
@@ -33,6 +32,7 @@ let
         ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
       ''}";
     };
+    locale.all = "en_US.utf8";
     startup = [
       "${homeDir}/bin/nextcloud-client"
       "${homeDir}/bin/mykeepassxc"
