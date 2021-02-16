@@ -77,7 +77,10 @@ let
 
     set ignorecase
 
-    autocmd FileType * set spell spelllang=en_us
+    inoremap <C-A-s> <C-o>:setlocal spell! spelllang=en_us<CR>
+    nnoremap <C-A-s> :setlocal spell! spelllang=en_us<CR>
+
+    autocmd FileType markdown,textile,text set spell spelllang=en_us
 
     hi clear SpellBad
     hi SpellBad cterm=underline gui=undercurl
