@@ -681,7 +681,7 @@ EOF
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
           NeoSolarized
-          vim-gitgutter
+          #vim-gitgutter
           #undotree
           vim-better-whitespace
           vim-jsbeautify
@@ -714,6 +714,8 @@ EOF
           deoplete-lsp
           vimPlugins.neovim-auto-autoread
           vim-rsi
+          vim-signify
+          vimPlugins.vim-perforce
         ];
         opt = [
         ];

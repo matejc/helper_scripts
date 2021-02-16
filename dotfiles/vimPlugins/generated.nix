@@ -116,12 +116,12 @@ let
 
   nerdtree = buildVimPluginFrom2Nix {
     pname = "nerdtree";
-    version = "2021-01-31";
+    version = "2021-02-13";
     src = fetchFromGitHub {
       owner = "preservim";
       repo = "nerdtree";
-      rev = "1b19089917cc3e0a81d3294fead2424c419d545c";
-      sha256 = "0zm60spnz4nsn0g9zsdiapygr2nwnkrqcz0w2pr37sp9i91nxxvb";
+      rev = "a1fa4a33bf16b6661e502080fc97788bb98afd35";
+      sha256 = "1qi2jzrps2c2h8c91rxma445yj8knl41sb5yfg37wjnsbig6jcxl";
     };
   };
 
@@ -138,12 +138,12 @@ let
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-02-06";
+    version = "2021-02-16";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "041dfd7fb648d24c80cb8829dda2469f66f88490";
-      sha256 = "105xswyz91sphqr59kzg2df9dhs01d5g2nwmlnnbq0fpbdfjnylb";
+      rev = "0c8f28f7aa8ad5a2df9212a99c4c9921d2ec658c";
+      sha256 = "1jcf0iakzjldzxnww318jdc5d4cj1iplk3q97758idv267clk023";
     };
   };
 
@@ -183,12 +183,12 @@ let
 
   vim-hashicorp-tools = buildVimPluginFrom2Nix {
     pname = "vim-hashicorp-tools";
-    version = "2019-11-14";
+    version = "2021-02-11";
     src = fetchFromGitHub {
       owner = "hashivim";
       repo = "vim-hashicorp-tools";
-      rev = "d7710ecbcb726f09db3818e44959ea3b7fb5b821";
-      sha256 = "0rzxjw5myg0qzk34d32yl54ykaxpka48vmvzs5l9j30pkam9gpz9";
+      rev = "4a81618e15abe90448aa62284f71992135a98131";
+      sha256 = "1yad6spf0lidkgpxz8xf1xwgyar4w83qmb10yp1wprs8l8dyan04";
     };
   };
 
@@ -211,6 +211,17 @@ let
       repo = "vim-pasta";
       rev = "cb4501a123d74fc7d66ac9f10b80c9d393746c66";
       sha256 = "14rswwx24i75xzgkbx1hywan1msn2ki26353ly2pyvznnqss1pwq";
+    };
+  };
+
+  vim-perforce = buildVimPluginFrom2Nix {
+    pname = "vim-perforce";
+    version = "2020-02-05";
+    src = fetchFromGitHub {
+      owner = "nfvs";
+      repo = "vim-perforce";
+      rev = "d1dcbe8aca797976678200f42cc2994b7f6c86c2";
+      sha256 = "027qcj4y8iywy90izdwifk76rf2wsvhg2iv16f906ya6jxfmkd09";
     };
   };
 

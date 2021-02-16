@@ -3,6 +3,7 @@ equalsraf/neovim-gui-shim
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
 neovim/nvim-lspconfig
+nfvs/vim-perforce
 OmniSharp/omnisharp-vim
 patstockwell/vim-monokai-tasty
 prabirshrestha/asyncomplete-buffer.vim
