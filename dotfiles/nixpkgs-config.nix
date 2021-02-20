@@ -578,6 +578,8 @@
       ];
       ignoreCollisions = true;
     };
+
+    goneovim = pkgs.callPackage ../nixes/goneovim { };
   };
 
   allowUnfree = true;

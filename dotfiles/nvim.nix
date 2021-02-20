@@ -105,8 +105,8 @@ let
     set encoding=utf-8
 
     nno <silent> <c-m> :messages<cr>
-    nno <silent> <c-w> :bd<cr>
-    map <c-q> <esc>:qall
+    nno <silent> <C-S-W> :bd<cr>
+    map <C-S-Q> <esc>:qall
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
@@ -181,9 +181,12 @@ let
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
 
-    nmap <C-d> :copy .<cr>
-    vmap <C-d> :copy '><cr>
-    imap <C-d> <esc>:copy .<cr>i
+    nnoremap <C-S-D> :copy .<cr>
+    nnoremap <C-d> :copy .<cr>
+    vnoremap <C-S-D> :copy '><cr>
+    vnoremap <C-d> :copy '><cr>
+    inoremap <C-S-D> <c-o>:copy .<cr>
+    inoremap <C-d> <c-o>:copy .<cr>
 
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
@@ -416,9 +419,11 @@ let
 
     " inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
 
-    inoremap <A-del> <esc>l"_dwi
-    inoremap <C-del> <esc>l"_dwi
+    inoremap <A-del> <space><esc>ce
+    inoremap <C-del> <space><esc>ce
     inoremap <C-BS> <C-W>
+
+    nnoremap <C-del> "_dw
 
     nnoremap d "_d
     nnoremap D "_D
@@ -628,6 +633,9 @@ EOF
 
     let g:deoplete#enable_at_startup = 1
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+    nnoremap <C-S-N> :GonvimWorkspaceNext<cr>
+    nnoremap <C-S-P> :GonvimWorkspacePrevious<cr>
   '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
@@ -826,15 +834,12 @@ in [{
     fi
   '';
 } {
-  target = "${variables.homeDir}/bin/ldd-o";
-  source = pkgs.writeScript "open-nvim" "${goneovim}/bin/goneovim";
-} {
   target = "${variables.homeDir}/.config/goneovim/settings.toml";
   source = pkgs.writeText "goneovim.toml" ''
 ## Goneovim settings.toml
 ## All of the following commented configuration items have default values.
 
-# [Editor]
+[Editor]
 ## Makes the application window frameless.
 BorderlessWindow = true
 
@@ -843,7 +848,7 @@ BorderlessWindow = true
 ## Editor minimum window height (>= 300)
 # Height = 600
 ## Create a small margin on the left and right sides of the application window.
-# Gap = 2
+Gap = 0
 
 ## This option makes the whole GUI window in semi-transparent.
 ## This setting also implicitly enables the Drawborder setting
@@ -875,8 +880,8 @@ FontSize = ${variables.font.size}
 ## You can change the behavior of the GUI by changing the following boolean values.
 ## If you prefer the traditional Vim UI, set it to false for all.
 ## Also, `ExtMessages` is still experimental at this time and we don't recommend setting it to true if you want stability.
-# ExtCmdline   = false
-# ExtPopupmenu = false
+# ExtCmdline   = true
+# ExtPopupmenu = true
 # ExtTabline   = false
 # ExtMessages  = false
 
@@ -912,7 +917,7 @@ FontSize = ${variables.font.size}
 # IndentGuideIgnoreFtList = ["md"]
 
 ## Animates the scrolling behavior of Neovim when the scroll command is entered.
-# SmoothScroll = false
+SmoothScroll = true
 ## Disables horizontal scrolling for smooth scrolling with the touchpad.
 # DisableHorizontalScroll = true
 
@@ -965,7 +970,7 @@ FontSize = ${variables.font.size}
 
 
 ## The palette is used as an input UI for externalized command lines and the Fuzzy-Finder feature built into Goneovim.
-# [Palette]
+ [Palette]
 ## Specifies the proportion of the command line palette to the height of the entire window.
 # AreaRatio = 0.5
 ## Specifies the number of items to be displayed in the command line palette.
@@ -1056,37 +1061,37 @@ Visible = true
 
 ## Configure the markdown preview feature
 [Markdown]
-Disable = true
+Disable = false
 
 ## Specifying code highlighting styles
 # CodeHlStyle = "github"
 
 
-#[SideBar]
+[SideBar]
 ## Specifies whether to show the external sidebar or not.
-#Visible = false
+Visible = false
 
 ## Specify the sidebar width
-# Width = 200
+Width = 150
 
 ## Specify whether or not to draw a shadow under the sidebar.
-#DropShadow = true
+DropShadow = true
 
 ## Specify the color to use when selecting items in the sidebar or palette in hexadecimal format
 # AccentColor = "#5596ea"
 
 
-# [FileExplore]
+[FileExplore]
 ## Specify the maximum number of items to be displayed in the file explorer.
-# MaxDisplayItems = 30
+MaxDisplayItems = 30
 
 
-#[Workspace]
+[Workspace]
 ## This setting sets the format of the path string of CWD in the sidebar.
 ##  name: directoryname
 ##  full: /path/to/directoryname
 ##  minimum: /p/t/directoryname
-#PathStyle = "minimum"
+PathStyle = "minimum"
 
 ## Specifies whether the last exited session should be restored at the next startup.
 # RestoreSession = false
