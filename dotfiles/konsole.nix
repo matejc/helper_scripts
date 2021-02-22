@@ -73,7 +73,7 @@
   source = pkgs.writeText "TheProfile.profile" ''
   [Appearance]
   ColorScheme=Monokai
-  Font=Source Code Pro,11,-1,5,63,0,0,0,0,0,Semibold
+  Font=${variables.font.family},${variables.font.size},-1,5,63,0,0,0,0,0,${variables.font.style}
 
   [Cursor Options]
   CursorShape=1

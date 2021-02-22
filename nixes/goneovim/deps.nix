@@ -10,21 +10,23 @@
     };
   }
   {
-    goPackagePath  = "github.com/akiyosi/goqtframelesswindow";
+    goPackagePath = "github.com/akiyosi/goqtframelesswindow";
     fetch = {
       type = "git";
       url = "https://github.com/akiyosi/goqtframelesswindow";
-      rev =  "73953a19d773ed3e68fae11023b93ec102fba38d";
+      rev = "73953a19d773";
       sha256 = "13vj6n85ibvdpsirv8ial2y6hffj33ii2lksb3pk7j9370yrcgj8";
+      moduleDir = "";
     };
   }
   {
-    goPackagePath  = "github.com/akiyosi/short_path";
+    goPackagePath = "github.com/akiyosi/short_path";
     fetch = {
       type = "git";
       url = "https://github.com/akiyosi/short_path";
-      rev =  "b8a714169624a9d596fa62db7946caa5b8e9da4f";
-      sha256 = "09faar3p287crpl86fv88980j5zlzdjf2l152npkf15p8dm3f2k8";
+      rev = "68a4d8ef8723";
+      sha256 = "0j1d4qz1gdpmvmarb7qj8ikfx6wpiihax0w67wxv1qqd104vcqpi";
+      moduleDir = "";
     };
   }
   {

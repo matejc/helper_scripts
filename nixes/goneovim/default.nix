@@ -1,21 +1,24 @@
-{ buildGoPackage, fetchFromGitHub, go, libsForQt514, buildEnv
-, lib, callPackage, libglvnd }:
+{ buildGoPackage, fetchFromGitHub, go, libsForQt5, buildEnv
+, lib, callPackage, libglvnd, stdenv }:
 
 /*
-$ export GOPATH=$(pwd)
-$ mkdir -p $GOPATH/src/github.com/akiyosi/goneovim
-$ cd $GOPATH/src/github.com/akiyosi/goneovim
-$ dep init
-$ dep2nix
+export GOPATH=$(pwd)
+mkdir -p $GOPATH/src/github.com/akiyosi/goneovim
+cd $GOPATH/src/github.com/akiyosi/goneovim
+dep init
+dep2nix
 */
 let
+  version = "0.4.10";
 
   qtcmds = buildGoPackage {
     pname = "qt";
     version = "20200904";
 
     goPackagePath = "github.com/therecipe/qt";
-    subPackages = [ "cmd/qtmoc" "cmd/qtdeploy" "cmd/qtsetup" ];
+    subPackages = [
+      "cmd/qtmoc" "cmd/qtdeploy" "cmd/qtsetup" "cmd/qtminimal" "cmd/qtrcc"
+    ];
 
     src = fetchFromGitHub {
       owner = "therecipe";
@@ -26,8 +29,6 @@ let
 
     goDeps = ./qt-deps.nix;
   };
-
-  libsForQt5 = libsForQt514;
 
   qtVersion = libsForQt5.qt5.qtbase.version;
   qtEnv = callPackage <nixpkgs/pkgs/development/libraries/qt-5/qt-env.nix> {
@@ -58,22 +59,7 @@ let
     ];
   };
 
-in
-buildGoPackage rec {
-  pname = "goneovim";
-  version = "0.4.10";
-
-  goPackagePath = "github.com/akiyosi/goneovim";
-  subPackages = [ "cmd/goneovim" ];
-
-  src = fetchFromGitHub {
-    owner = "akiyosi";
-    repo = "goneovim";
-    rev = "v${version}";
-    sha256 = "1m9kacinw5rl6fkrqjdp7iz05ci2jwgjkwkbqpw0a90y44phhv5c";
-  };
-
-  buildPhase = ''
+  common = ''
     mkdir -p $TMPDIR/qt/${qtVersion}/gcc_64/
     ln -s ${qt}/* $TMPDIR/qt/${qtVersion}/gcc_64/
     export QT_API=5.13.0
@@ -81,17 +67,83 @@ buildGoPackage rec {
     export QT_DIR=$TMPDIR/qt
     export GO111MODULE=off
     export GOCACHE=$TMPDIR/go-cache
+    export GOPATH=$TMPDIR/go
+    mkdir -p $GOPATH/bin
+    ln -s ${qtcmds}/bin/* $GOPATH/bin/
+    export PATH="$PATH:$GOPATH/bin"
     export GOROOT=${go}/share/go
     export NIX_CFLAGS_COMPILE="-I${deps}/include"
-
-    ${qtcmds}/bin/qtsetup -test=false
-
-    cd ./go/src/github.com/akiyosi/goneovim
-    ${qtcmds}/bin/qtmoc
-
-    cd ./cmd/goneovim
-    ${qtcmds}/bin/qtdeploy build desktop
   '';
 
-  goDeps = ./deps.nix;
-}
+  qtsetup = buildGoPackage {
+    pname = "goneovim-qtsetup";
+    inherit version;
+
+    goPackagePath = "github.com/akiyosi/goneovim";
+    subPackages = [ "cmd/goneovim" ];
+
+    src = fetchFromGitHub {
+      owner = "akiyosi";
+      repo = "goneovim";
+      rev = "v${version}";
+      sha256 = "1m9kacinw5rl6fkrqjdp7iz05ci2jwgjkwkbqpw0a90y44phhv5c";
+    };
+
+    buildPhase = ''
+      ${common}
+
+      qtsetup -test=false
+
+      mkdir -p $out
+      cp -rv $TMPDIR/{go,go-cache} $out/
+    '';
+
+    allowGoReference = true;
+
+    goDeps = ./deps.nix;
+  };
+
+  goneovim = stdenv.mkDerivation {
+    pname = "goneovim";
+    inherit version;
+
+    dontUnpack = true;
+
+    buildInputs = [ go ];
+
+    buildPhase = ''
+      ${common}
+
+      cp -r ${qtsetup}/* $TMPDIR/
+      chmod -R +w $TMPDIR/{go,go-cache}
+
+      rm -rf $TMPDIR/go/src/github.com/akiyosi/short_path
+
+      cd ./go/src/github.com/akiyosi/goneovim
+      qtmoc
+
+      cd ./cmd/goneovim
+      qtdeploy build desktop
+
+      find $TMPDIR/go/src/github.com/akiyosi/goneovim
+    '';
+  };
+
+in
+  buildGoPackage {
+    pname = "goneovim-qtsetup";
+    inherit version;
+
+    goPackagePath = "github.com/akiyosi/goneovim";
+    subPackages = [ "cmd/goneovim" ];
+
+    src = fetchFromGitHub {
+      owner = "akiyosi";
+      repo = "goneovim";
+      rev = "v${version}";
+      sha256 = "1m9kacinw5rl6fkrqjdp7iz05ci2jwgjkwkbqpw0a90y44phhv5c";
+    };
+
+    goDeps = ./deps.nix;
+  }
+

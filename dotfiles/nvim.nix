@@ -106,7 +106,7 @@ let
 
     nno <silent> <c-m> :messages<cr>
     nno <silent> <C-S-W> :bd<cr>
-    map <C-S-Q> <esc>:qall
+    map <C-q> <esc>:qall
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
@@ -735,6 +735,7 @@ EOF
   };
 
   goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
+  fvim = pkgs.callPackage ../nixes/fvim.nix { };
 in [{
   target = "${variables.homeDir}/bin/nvim-lsp-install";
   source = pkgs.writeScript "nvim-lsp-install" ''
@@ -782,16 +783,37 @@ in [{
 } {
   target = "${variables.homeDir}/.config/nvim/after/ginit.vim";
   source = pkgs.writeText "ginit.vim" ''
-    GuiPopupmenu 0
-    GuiTabline 0
-    call GuiClipboard()
+    if exists('g:fvim_loaded')
+      " Font tweaks
+      FVimFontAntialias v:true
+      FVimFontAutohint v:true
+      FVimFontHintLevel 'full'
+      FVimFontLigature v:false
+      " can be 'default', '14.0', '-1.0' etc.
+      FVimFontLineHeight '+1.0'
+      FVimFontSubpixel v:true
+
+      " Try to snap the fonts to the pixels, reduces blur
+      " in some situations (e.g. 100% DPI).
+      FVimFontAutoSnap v:true
+
+      " Font weight tuning, possible valuaes are 100..900
+      FVimFontNormalWeight 400
+      FVimFontBoldWeight 700
+
+      nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
+      nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
+    else
+        GuiPopupmenu 0
+        GuiTabline 0
+        call GuiClipboard()
+    endif
   '';
 } {
   target = "${variables.homeDir}/bin/guinvim";
   source = pkgs.writeScript "guinvim.sh" ''
     #!${pkgs.stdenv.shell}
     set -e
-    export PWDHASH="$(${pkgs.coreutils}/bin/pwd | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}')"
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
     { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_QT_PATH} --server "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" &
@@ -821,6 +843,24 @@ in [{
     #!${pkgs.stdenv.shell}
     function open_nvim {
       ${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim "$@"
+    }
+    if [[ $@ == *" -g"* ]]
+    then
+      open_nvim $(${pkgs.git}/bin/git diff --name-only HEAD)
+    elif [ -d "$1" ]
+    then
+      cd "$1"
+      open_nvim "''${@:2}"
+    else
+      open_nvim "$@"
+    fi
+  '';
+} {
+  target = "${variables.homeDir}/bin/f";
+  source = pkgs.writeScript "open-nvim" ''
+    #!${pkgs.stdenv.shell}
+    function open_nvim {
+      ${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim "$@"
     }
     if [[ $@ == *" -g"* ]]
     then
@@ -887,10 +927,10 @@ FontSize = ${variables.font.size}
 
 ## Goneovim has a cached rendering feature enabled to speed up the process.
 ## If you want to disable it, set it to false
-# CachedDrawing = true
+CachedDrawing = true
 ## You can specify the cache size to be used by the cache rendering feature of goneovim.
 ## The default is 400.
-# CacheSize = 400
+CacheSize = 100
 
 ## Disables font ligatures.
 # DisableLigatures = true
@@ -917,7 +957,7 @@ FontSize = ${variables.font.size}
 # IndentGuideIgnoreFtList = ["md"]
 
 ## Animates the scrolling behavior of Neovim when the scroll command is entered.
-SmoothScroll = true
+SmoothScroll = false
 ## Disables horizontal scrolling for smooth scrolling with the touchpad.
 # DisableHorizontalScroll = true
 

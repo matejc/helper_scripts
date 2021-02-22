@@ -9,9 +9,9 @@ let
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     font = {
-      family = "Source Code Pro";
+      family = "SauceCodePro Nerd Font";
       style = "Semibold";
-      size = "10";
+      size = "11";
     };
     sway.enable = false;
     terminal = programs.terminal;
