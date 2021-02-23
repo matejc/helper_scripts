@@ -1,5 +1,9 @@
 { pkgs, lib ? pkgs.lib }:
 let
+
+  goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
+  fvim = pkgs.callPackage ../nixes/fvim.nix { };
+
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
@@ -38,6 +42,11 @@ let
       "${homeDir}/bin/mykeepassxc"
       "${homeDir}/bin/chromium"
     ];
+    vims = {
+      f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
+      o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
+      q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
+    };
   };
 
   dotFilePaths = [

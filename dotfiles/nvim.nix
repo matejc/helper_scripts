@@ -733,9 +733,6 @@ EOF
       };
     };
   };
-
-  goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
-  fvim = pkgs.callPackage ../nixes/fvim.nix { };
 in [{
   target = "${variables.homeDir}/bin/nvim-lsp-install";
   source = pkgs.writeScript "nvim-lsp-install" ''
@@ -800,9 +797,6 @@ in [{
       " Font weight tuning, possible valuaes are 100..900
       FVimFontNormalWeight 400
       FVimFontBoldWeight 700
-
-      nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
-      nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
     else
         GuiPopupmenu 0
         GuiTabline 0
@@ -815,63 +809,8 @@ in [{
     #!${pkgs.stdenv.shell}
     set -e
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
-    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_QT_PATH} --server "$NVIM_LISTEN"; } &
+    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" &
-  '';
-} {
-  target = "${variables.homeDir}/bin/q";
-  source = pkgs.writeScript "open-nvim" ''
-    #!${pkgs.stdenv.shell}
-    function open_nvim_qt {
-      export QT_PLUGIN_PATH="${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}"
-      ${pkgs.neovim-qt}/bin/nvim-qt --no-ext-tabline --nvim ${variables.homeDir}/bin/nvim "$@"
-    }
-    if [[ $@ == *" -g"* ]]
-    then
-      open_nvim_qt $(${pkgs.git}/bin/git diff --name-only HEAD)
-    elif [ -d "$1" ]
-    then
-      cd "$1"
-      open_nvim_qt "''${@:2}"
-    else
-      open_nvim_qt "$@"
-    fi
-  '';
-} {
-  target = "${variables.homeDir}/bin/o";
-  source = pkgs.writeScript "open-nvim" ''
-    #!${pkgs.stdenv.shell}
-    function open_nvim {
-      ${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim "$@"
-    }
-    if [[ $@ == *" -g"* ]]
-    then
-      open_nvim $(${pkgs.git}/bin/git diff --name-only HEAD)
-    elif [ -d "$1" ]
-    then
-      cd "$1"
-      open_nvim "''${@:2}"
-    else
-      open_nvim "$@"
-    fi
-  '';
-} {
-  target = "${variables.homeDir}/bin/f";
-  source = pkgs.writeScript "open-nvim" ''
-    #!${pkgs.stdenv.shell}
-    function open_nvim {
-      ${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim "$@"
-    }
-    if [[ $@ == *" -g"* ]]
-    then
-      open_nvim $(${pkgs.git}/bin/git diff --name-only HEAD)
-    elif [ -d "$1" ]
-    then
-      cd "$1"
-      open_nvim "''${@:2}"
-    else
-      open_nvim "$@"
-    fi
   '';
 } {
   target = "${variables.homeDir}/.config/goneovim/settings.toml";
@@ -1136,4 +1075,22 @@ PathStyle = "minimum"
 ## Specifies whether the last exited session should be restored at the next startup.
 # RestoreSession = false
   '';
-}]
+}] ++ (lib.mapAttrsToList (name: value: {
+  target = "${variables.homeDir}/bin/${name}";
+  source = pkgs.writeScript "open-nvim" ''
+    #!${pkgs.stdenv.shell}
+    function open_nvim {
+      ${value} "$@"
+    }
+    if [[ $1 == "-g" ]]
+    then
+      open_nvim $(${pkgs.git}/bin/git diff --name-only HEAD)
+    elif [ -d "$1" ]
+    then
+      cd "$1"
+      open_nvim "''${@:2}"
+    else
+      open_nvim "$@"
+    fi
+  '';
+}) (variables.vims or {}))
