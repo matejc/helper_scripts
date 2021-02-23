@@ -808,9 +808,11 @@ in [{
   source = pkgs.writeScript "guinvim.sh" ''
     #!${pkgs.stdenv.shell}
     set -e
+    trap "kill 0" EXIT
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
     { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" &
+    wait
   '';
 } {
   target = "${variables.homeDir}/.config/goneovim/settings.toml";
