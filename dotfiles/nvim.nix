@@ -797,6 +797,8 @@ in [{
       " Font weight tuning, possible valuaes are 100..900
       FVimFontNormalWeight 400
       FVimFontBoldWeight 700
+
+      FVimUIPopupMenu v:false
     else
         GuiPopupmenu 0
         GuiTabline 0
