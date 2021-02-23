@@ -1,5 +1,7 @@
 { pkgs, lib ? pkgs.lib }:
 let
+  fvim = pkgs.callPackage ../nixes/fvim.nix { };
+
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
@@ -19,9 +21,9 @@ let
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
     font = {
-      family = "Source Code Pro";
-      style = "Semibold";
-      size = "11";
+      family = "FiraMono Nerd Font";
+      style = "Regular";
+      size = "12";
     };
     wallpaper = "${variables.homeDir}/Pictures/arch-bridge.jpg";
     lockImage = "${variables.homeDir}/Pictures/arch-bridge-blur.png";
@@ -65,6 +67,7 @@ let
       editor = "${pkgs.nano}/bin/nano";
     };
     polybar.bars = [ "my" ];
+    vims.f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
   };
 
   dotFilePaths = [

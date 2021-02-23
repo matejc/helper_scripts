@@ -138,12 +138,12 @@ let
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-02-16";
+    version = "2021-02-20";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "0c8f28f7aa8ad5a2df9212a99c4c9921d2ec658c";
-      sha256 = "1jcf0iakzjldzxnww318jdc5d4cj1iplk3q97758idv267clk023";
+      rev = "a21a509417aa530fb7b54020f590fa5ccc67de77";
+      sha256 = "1xlksbcv6va3ih9zg6yw5x6q2d76pr5cs942lh5gcypkx9m2f6r5";
     };
   };
 
@@ -167,6 +167,17 @@ let
       repo = "python-mode";
       rev = "f94b0d7b21714f950f5878b430fbfde21c3b7ad9";
       sha256 = "0zxsa1agigzb9adrwq54pdyl984drdqzz3kkixaijkq77kkdvj0n";
+    };
+  };
+
+  vim-conque = buildVimPluginFrom2Nix {
+    pname = "vim-conque";
+    version = "2019-08-14";
+    src = fetchFromGitHub {
+      owner = "goballooning";
+      repo = "vim-conque";
+      rev = "d9b35abf0a6c16e93094e243487159fc25b66da4";
+      sha256 = "1dk7y1n9gmiwnjpm9k9l5nvjaz6nvinbf6r7w9jnrv20h1giqbdd";
     };
   };
 

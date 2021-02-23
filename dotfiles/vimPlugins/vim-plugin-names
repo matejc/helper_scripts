@@ -1,5 +1,6 @@
 dyng/ctrlsf.vim
 equalsraf/neovim-gui-shim
+goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
 neovim/nvim-lspconfig

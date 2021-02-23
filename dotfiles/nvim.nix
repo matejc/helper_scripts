@@ -634,8 +634,8 @@ EOF
     let g:deoplete#enable_at_startup = 1
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-    nnoremap <C-S-N> :GonvimWorkspaceNext<cr>
-    nnoremap <C-S-P> :GonvimWorkspacePrevious<cr>
+    tnoremap <silent> <C-[><C-[> <C-\><C-n>
+    nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
   '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
