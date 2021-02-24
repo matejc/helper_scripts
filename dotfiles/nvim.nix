@@ -635,6 +635,7 @@ EOF
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
     tnoremap <silent> <C-[><C-[> <C-\><C-n>
+    tnoremap <C-v> <C-\><C-N>"+pi
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
   '';
 

@@ -23,7 +23,7 @@ let
     font = {
       family = "FiraMono Nerd Font";
       style = "Regular";
-      size = "12";
+      size = "10";
     };
     wallpaper = "${variables.homeDir}/Pictures/arch-bridge.jpg";
     lockImage = "${variables.homeDir}/Pictures/arch-bridge-blur.png";
@@ -68,6 +68,7 @@ let
     };
     polybar.bars = [ "my" ];
     vims.f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
+    vims.q = "${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
   };
 
   dotFilePaths = [
