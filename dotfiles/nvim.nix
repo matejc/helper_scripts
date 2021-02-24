@@ -637,6 +637,7 @@ EOF
     tnoremap <silent> <C-[><C-[> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
+    let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
   '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
