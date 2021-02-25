@@ -174,11 +174,8 @@ in
       export DISPLAY="''${DISPLAY:-$display_no}"
     fi
 
-    if [[ -z "$STARSHIP_SHELL" ]]
-    then
-      export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
-      eval "$(${pkgs.starship}/bin/starship init zsh)"
-    fi
+    export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
+    eval "$(${pkgs.starship}/bin/starship init zsh)"
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
