@@ -111,6 +111,9 @@ let
     ino <silent> <c-s> <esc>:w<CR>
     nno <silent> <c-PageUp> :bprev<cr>
     nno <silent> <c-PageDown> :bnext<cr>
+    inoremap <silent> <c-PageUp> <esc>:bprev<cr>
+    inoremap <silent> <c-PageDown> <esc>:bnext<cr>
+
     nno <silent> <cr> o
     nno <silent> <c-cr> o
     imap <silent> <c-cr> <esc>o
@@ -636,6 +639,10 @@ EOF
 
     tnoremap <silent> <C-[><C-[> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
+
+    tnoremap <silent> <c-PageUp> <C-\><C-N>:bprev<cr>
+    tnoremap <silent> <c-PageDown> <C-\><C-N>:bnext<cr>
+
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
     let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
