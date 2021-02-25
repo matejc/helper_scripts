@@ -23,6 +23,34 @@ let
     sha256 = "16d2wa81v4kk46cyhi10vnrpgvc0abgzi997bv3yncd5y55psxzm";
   };
 
+  ginitVim = pkgs.writeText "ginit.vim" ''
+    if exists('g:fvim_loaded')
+      " Font tweaks
+      FVimFontAntialias v:true
+      FVimFontAutohint v:true
+      FVimFontHintLevel 'full'
+      FVimFontLigature v:false
+      " can be 'default', '14.0', '-1.0' etc.
+      FVimFontLineHeight '+1.0'
+      FVimFontSubpixel v:true
+
+      " Try to snap the fonts to the pixels, reduces blur
+      " in some situations (e.g. 100% DPI).
+      FVimFontAutoSnap v:true
+
+      " Font weight tuning, possible valuaes are 100..900
+      FVimFontNormalWeight 400
+      FVimFontBoldWeight 700
+
+      FVimUIPopupMenu v:false
+    else
+      GuiPopupmenu 0
+      GuiTabline 0
+      GuiFont ${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+      " call GuiClipboard()
+    endif
+  '';
+
   customRC = ''
     " if hidden is not set, TextEdit might fail.
     set hidden
@@ -647,6 +675,8 @@ EOF
     let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
     cnoremap <C-v> <C-r>"
+
+    autocmd UIEnter * source ${ginitVim}
   '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
@@ -787,34 +817,6 @@ in [{
         pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
     ]}:$PATH"
     ${neovim}/bin/nvim "$@"
-  '';
-} {
-  target = "${variables.homeDir}/.config/nvim/after/ginit.vim";
-  source = pkgs.writeText "ginit.vim" ''
-    if exists('g:fvim_loaded')
-      " Font tweaks
-      FVimFontAntialias v:true
-      FVimFontAutohint v:true
-      FVimFontHintLevel 'full'
-      FVimFontLigature v:false
-      " can be 'default', '14.0', '-1.0' etc.
-      FVimFontLineHeight '+1.0'
-      FVimFontSubpixel v:true
-
-      " Try to snap the fonts to the pixels, reduces blur
-      " in some situations (e.g. 100% DPI).
-      FVimFontAutoSnap v:true
-
-      " Font weight tuning, possible valuaes are 100..900
-      FVimFontNormalWeight 400
-      FVimFontBoldWeight 700
-
-      FVimUIPopupMenu v:false
-    else
-        GuiPopupmenu 0
-        GuiTabline 0
-        call GuiClipboard()
-    endif
   '';
 } {
   target = "${variables.homeDir}/bin/guinvim";
