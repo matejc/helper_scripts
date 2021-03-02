@@ -133,7 +133,8 @@ let
     set encoding=utf-8
 
     nno <silent> <c-m> :messages<cr>
-    nno <silent> <C-S-W> :bd<cr>
+    nno <silent> <C-S-W> :bd!<cr>
+    nno <silent> <C-w> :bd<cr>
     map <C-q> <esc>:qall
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
@@ -312,7 +313,7 @@ let
         let l:pathStr = expand('%:p')
         let l:revealOpts = {}
 
-        if empty(l:pathStr)
+        if empty(l:pathStr) || l:pathStr =~ '^term:'
             NERDTreeCWD
             return
         endif
@@ -514,7 +515,7 @@ end
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
 nvim_lsp["pyls"].setup { on_attach = on_attach; cmd = {"${pkgs.python3Packages.python-language-server}/bin/pyls"} }
-nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bashls", "start"} }
+nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
 nvim_lsp["tsserver"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"} }
