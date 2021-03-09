@@ -578,10 +578,6 @@
       ];
       ignoreCollisions = true;
     };
-
-    goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
-    goneovim-src = pkgs.callPackage ../nixes/goneovim { };
-    fvim = pkgs.callPackage ../nixes/fvim.nix { };
   };
 
   allowUnfree = true;
