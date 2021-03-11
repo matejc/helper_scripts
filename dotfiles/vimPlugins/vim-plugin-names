@@ -3,6 +3,7 @@ equalsraf/neovim-gui-shim
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
+lifepillar/vim-solarized8
 neovim/nvim-lspconfig
 nfvs/vim-perforce
 OmniSharp/omnisharp-vim

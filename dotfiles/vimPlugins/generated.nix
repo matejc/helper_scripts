@@ -61,12 +61,12 @@ let
 
   asyncomplete-vim = buildVimPluginFrom2Nix {
     pname = "asyncomplete-vim";
-    version = "2021-01-28";
+    version = "2021-03-03";
     src = fetchFromGitHub {
       owner = "prabirshrestha";
       repo = "asyncomplete.vim";
-      rev = "4be3c16b33c27fce5372bf8bc74e42126c76fe61";
-      sha256 = "1y5xlisby7a41naas7r09ins3k9arn5xc5bb6w8k7am6xz3vc3r6";
+      rev = "8e018dee9c5e2205288bda01be0de196b04b7cf2";
+      sha256 = "1ghv6zp3qajd4n9qv3mnxqhczi77qmds2b2iicbl252slvldr604";
     };
   };
 
@@ -116,12 +116,12 @@ let
 
   nerdtree = buildVimPluginFrom2Nix {
     pname = "nerdtree";
-    version = "2021-02-13";
+    version = "2021-03-01";
     src = fetchFromGitHub {
       owner = "preservim";
       repo = "nerdtree";
-      rev = "a1fa4a33bf16b6661e502080fc97788bb98afd35";
-      sha256 = "1qi2jzrps2c2h8c91rxma445yj8knl41sb5yfg37wjnsbig6jcxl";
+      rev = "f63fb6984f9cd07cf723c3e2e20f6ccc0aad48c2";
+      sha256 = "1lm4dqp8rxr5sl6faxyncz5jibkgzjwjxadvgcja81wnm71sr0xa";
     };
   };
 
@@ -138,12 +138,12 @@ let
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-02-20";
+    version = "2021-03-11";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "a21a509417aa530fb7b54020f590fa5ccc67de77";
-      sha256 = "1xlksbcv6va3ih9zg6yw5x6q2d76pr5cs942lh5gcypkx9m2f6r5";
+      rev = "18c18349ec4f41b77fdf4be0b0dec7c09294c7d6";
+      sha256 = "14xh688nglgwwdcfksnfrv83is8564cxnmfgylxpd3kbxpijd9r4";
     };
   };
 
@@ -233,6 +233,17 @@ let
       repo = "vim-perforce";
       rev = "d1dcbe8aca797976678200f42cc2994b7f6c86c2";
       sha256 = "027qcj4y8iywy90izdwifk76rf2wsvhg2iv16f906ya6jxfmkd09";
+    };
+  };
+
+  vim-solarized8 = buildVimPluginFrom2Nix {
+    pname = "vim-solarized8";
+    version = "2020-09-20";
+    src = fetchFromGitHub {
+      owner = "lifepillar";
+      repo = "vim-solarized8";
+      rev = "7b6399093c090ef931e9a4ba031bff90fb7c8de1";
+      sha256 = "0fg62v2svflr3x5jrvxiq63ca4wq07q9vad6acj42ddfsf439zz1";
     };
   };
 

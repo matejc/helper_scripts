@@ -77,9 +77,9 @@ let
 
     set background=light
     let g:gitgutter_override_sign_column_highlight = 0
-    let g:neosolarized_contrast = "high"
-    let g:neosolarized_visibility = "high"
-    colorscheme NeoSolarized
+    "let g:neosolarized_contrast = "high"
+    "let g:neosolarized_visibility = "high"
+    colorscheme solarized8_high
 
     set title
     function! ProjectName()
@@ -774,7 +774,7 @@ EOF
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
-          NeoSolarized
+          vimPlugins.vim-solarized8
           #vim-gitgutter
           #undotree
           vim-better-whitespace
