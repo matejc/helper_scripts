@@ -75,11 +75,11 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    set background=light
+    set background=dark
     let g:gitgutter_override_sign_column_highlight = 0
-    "let g:neosolarized_contrast = "high"
-    "let g:neosolarized_visibility = "high"
-    colorscheme solarized8_high
+    let g:neosolarized_contrast = "high"
+    let g:neosolarized_visibility = "high"
+    colorscheme NeoSolarized
 
     set title
     function! ProjectName()
@@ -303,7 +303,7 @@ let
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
     let g:airline_theme='solarized'
-    " let g:airline_solarized_bg='dark'
+    let g:airline_solarized_bg='dark'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -774,7 +774,7 @@ EOF
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
-          vimPlugins.vim-solarized8
+          NeoSolarized
           #vim-gitgutter
           #undotree
           vim-better-whitespace
