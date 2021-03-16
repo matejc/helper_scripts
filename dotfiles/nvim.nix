@@ -281,6 +281,7 @@ let
         endif
       endif
     endf
+    let g:ctrlsf_regex_pattern = 1
 
     map <C-f> <esc>:call CtrlSFIfOpen()<cr>
 
