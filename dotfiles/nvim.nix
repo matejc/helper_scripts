@@ -107,8 +107,6 @@ let
     inoremap <C-A-s> <C-o>:setlocal spell! spelllang=en_us<CR>
     nnoremap <C-A-s> :setlocal spell! spelllang=en_us<CR>
 
-    autocmd FileType markdown,textile,text set spell spelllang=en_us
-
     hi clear SpellBad
     hi SpellBad cterm=underline gui=undercurl
 
@@ -128,6 +126,8 @@ let
     set nowrap
 
     set virtualedit=onemore
+
+    set formatoptions-=t
 
     set encoding=utf-8
 
@@ -693,6 +693,11 @@ EOF
       au BufNewFile,BufRead *.js, *.html, *.css set tabstop=2
       au BufNewFile,BufRead *.js, *.html, *.css set softtabstop=2
       au BufNewFile,BufRead *.js, *.html, *.css set shiftwidth=2
+    augroup END
+
+    augroup markdown
+      au FileType markdown,textile,text set spell spelllang=en_us
+      au FileType markdown,textile,text set formatoptions+=t
     augroup END
 
     let g:pymode_lint_checkers = [ 'pylint', 'pyflakes', 'pep8', 'mccabe' ]
