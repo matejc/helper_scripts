@@ -27,6 +27,7 @@ let
       editor = "${pkgs.nano}/bin/nano";
       dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
       browser = "${pkgs.chromium}/bin/chromium";
+      google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
       ff = "${pkgs.firefox}/bin/firefox";
       c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
