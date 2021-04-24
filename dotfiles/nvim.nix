@@ -724,6 +724,9 @@ EOF
 
     cnoremap <C-v> <C-r>"
 
+    autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
+      \ let buf=bufnr() | buffer# | NERDTreeClose | execute 'buffer'.buf | endif
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
