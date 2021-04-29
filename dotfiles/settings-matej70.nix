@@ -13,8 +13,8 @@ let
     fullName = "Matej Cotman";
     email = "cotman.matej@gmail.com";
     font = {
-      family = "FiraMono Nerd Font";
-      style = "Semibold";
+      family = "SauceCodePro Nerd Font Mono";
+      style = "Regular";
       size = "10";
     };
     sway.enable = false;

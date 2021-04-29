@@ -268,6 +268,9 @@ let
       \ "normal" : 0,
       \ "compact": 0
       \}
+    let g:ctrlsf_extra_backend_args = {
+      \ 'ag': '--hidden',
+      \ }
     func! CtrlSFIfOpen()
       if ctrlsf#win#FindMainWindow() != -1
         call ctrlsf#StopSearch()
@@ -771,8 +774,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "c1fbc2ddf15b2f44b615f90b2511349ab974cb83";
-      sha256 = "0kvk3r4by8r3asmfl69iw93xnd8lwfr0pynynlhr5y8h5pjd3rfi";
+      rev = "fbe18d9ca41a419414cb112d0a426aa8803c6236";
+      sha256 = "sha256-mgMVMoLzulIubuHfQrlV5Iv8sHHbT23qgy1cJ/cYLzk=";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
