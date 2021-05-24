@@ -72,12 +72,12 @@ let
 
   ctrlsf-vim = buildVimPluginFrom2Nix {
     pname = "ctrlsf-vim";
-    version = "2020-12-19";
+    version = "2021-05-21";
     src = fetchFromGitHub {
       owner = "dyng";
       repo = "ctrlsf.vim";
-      rev = "c90632e6a27bfd525a2a4c6e108981d4558202c0";
-      sha256 = "0lala73xl4gm5nvrmyd2p6qjq8d3k3d28awn8byl7z1bdgii41c9";
+      rev = "51c5b285146f042bd2015278f9b8ad74ae915e00";
+      sha256 = "1901cr6sbaa8js4ylirz9p4m0r9q0a06gm71ghl6kp6pw7h5fgmq";
     };
   };
 
@@ -127,23 +127,23 @@ let
 
   nerdtree-git-plugin = buildVimPluginFrom2Nix {
     pname = "nerdtree-git-plugin";
-    version = "2021-04-02";
+    version = "2021-05-17";
     src = fetchFromGitHub {
       owner = "Xuyuanp";
       repo = "nerdtree-git-plugin";
-      rev = "73da0283ead8fa2bbce83d219fcab3ba1e8cf0dd";
-      sha256 = "17n79pmpnjnp6nirz4m4wwgfacrg26bdzjn4xj8i6ldkff5n20km";
+      rev = "4524fb465b11881409482636ae716b4965011550";
+      sha256 = "0cvb33drkv3rrgbniw9bz8xkxyr4cf0lyay9waw3lczpl2wmfwbm";
     };
   };
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-05-04";
+    version = "2021-05-23";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "746864bec9bae3136d59ab4b7a6188fc950b6e9a";
-      sha256 = "1xml2j1p3yrrgm9av8y33cqsgdfjvdn5wc246qqrgyiihqyb2dxl";
+      rev = "ab94420372ae29d97072051914e85be6a94e6736";
+      sha256 = "14kh31dvicdx69fggx2namgbfx8ba3g9f102ncdgla4ps3kgwrb3";
     };
   };
 
@@ -205,12 +205,12 @@ let
 
   vim-monokai-tasty = buildVimPluginFrom2Nix {
     pname = "vim-monokai-tasty";
-    version = "2020-12-02";
+    version = "2021-05-18";
     src = fetchFromGitHub {
       owner = "patstockwell";
       repo = "vim-monokai-tasty";
-      rev = "dd306b0007692f1c0726343ecc008d38b66a8c9b";
-      sha256 = "1ljhwi7l70yws1w9j1igdi8prd6z5zq2al8a1p0mix1l6a8pv94z";
+      rev = "12e02dc98d29bf2ce00522a27bbfebb99d2591ca";
+      sha256 = "1y18rq4cildv9sbpi004icgilai9lmr526dsgmbkaiyj4a85gmp6";
     };
   };
 
