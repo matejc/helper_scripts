@@ -1,0 +1,55 @@
+{
+  "nodes": {
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      },
+      "locked": {
+        "lastModified": 1621794721,
+        "narHash": "sha256-JXfTSZUu9EVbT9D/MFsx0cXfa8bw1NFCzIxZ7gO73Uo=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "90493027e33ba9eb3f50dc1da365d0e4ca31bf14",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1621896249,
+        "narHash": "sha256-HuRgOz0bY78RrvM2rRPbTRaxHNBMl+sImnA2YfPN6ac=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7cb8324a9124b0ee38c97d690e90d1ac571d8c69",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
+        "narHash": "sha256-5Vfvz3h66a+RyyxkIGizJ91np65P7EtYibs4R/biJyU=",
+        "path": "/home/matejc/workarea/nixpkgs",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/matejc/workarea/nixpkgs",
+        "type": "path"
+      }
+    },
+    "root": {
+      "inputs": {
+        "home-manager": "home-manager",
+        "nixpkgs": "nixpkgs_2"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

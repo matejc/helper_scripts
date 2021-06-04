@@ -3,16 +3,15 @@
 
   inputs = {
     home-manager.url = "github:nix-community/home-manager";
-    nixpkgs.url = "path:../../nixpkgs";
-    configuration.url = "path:/etc/nixos/configuration.nix";
+    nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
   };
 
-  outputs = { home-manager, nixpkgs, configuration, ... }: {
+  outputs = { home-manager, nixpkgs, ... }: {
     nixosConfigurations = {
-      hostname = nixpkgs.lib.nixosSystem {
+      homemanager = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          configuration
+          /etc/nixos/configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

@@ -53,7 +53,7 @@ let
   dotFilePaths = [
     ./gitconfig.nix
     ./gitignore.nix
-    ./thissession.nix
+   ./thissession.nix
     ./oath.nix
     ./httpserver.nix
     ./wcontrol.nix
