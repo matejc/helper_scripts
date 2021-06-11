@@ -75,7 +75,7 @@ let
     set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
 
-    set background=dark
+    set background=light
     let g:gitgutter_override_sign_column_highlight = 0
     let g:neosolarized_contrast = "high"
     let g:neosolarized_visibility = "high"
@@ -307,7 +307,7 @@ let
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
     let g:airline_theme='solarized'
-    let g:airline_solarized_bg='dark'
+    let g:airline_solarized_bg='light'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -391,10 +391,9 @@ let
     let g:VM_maps["Select l"]              = '<A-Right>'
     let g:VM_maps["Select h"]              = '<A-Left>'
 
-    " set autoread
-    " au FocusGained,BufEnter * :checktime
+    set autoread
     " autocmd VimEnter * AutoreadLoop
-    autocmd FocusGained * silent! checktime
+    autocmd FocusGained,BufEnter * silent! checktime
 
     nmap <c-_> <leader>c<space>
     imap <c-_> <esc><leader>c<space>
@@ -730,6 +729,8 @@ EOF
 
     autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
       \ let buf=bufnr() | buffer# | NERDTreeClose | execute 'buffer'.buf | endif
+
+    let g:NERDDefaultAlign = 'left'
 
     autocmd UIEnter * source ${ginitVim}
   '';
