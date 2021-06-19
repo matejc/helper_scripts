@@ -53,6 +53,8 @@ let
   '';
 
   customRC = ''
+    let mapleader=","
+
     " if hidden is not set, TextEdit might fail.
     set hidden
 
@@ -371,9 +373,8 @@ let
         call NTFindAndRevealPath()
       endif
     endfunction
-    nnoremap <C-o> :call NTToggle()<CR>
-
-    autocmd VimLeave * NERDTreeClose
+    " nnoremap <C-o> :call NTToggle()<CR>
+    " autocmd VimLeave * NERDTreeClose
 
     let g:VM_mouse_mappings = 1
     let g:VM_maps = {}
@@ -515,6 +516,31 @@ local on_attach = function(client, bufnr)
       augroup END
     ]], false)
   end
+
+  cfg = {
+    bind = true, -- This is mandatory, otherwise border config won't get registered.
+                 -- If you want to hook lspsaga or other signature handler, pls set to false
+    doc_lines = 2, -- will show two lines of comment/doc(if there are more than two lines in doc, will be truncated);
+                   -- set to 0 if you DO NOT want any API comments be shown
+                   -- This setting only take effect in insert mode, it does not affect signature help in normal
+                   -- mode, 10 by default
+
+    floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
+    hint_enable = true, -- virtual hint enable
+    hint_prefix = "",  -- Panda for parameter
+    hint_scheme = "String",
+    use_lspsaga = true,  -- set to true if you want to use lspsaga popup
+    hi_parameter = "Search", -- how your parameter will be highlight
+    max_height = 12, -- max height of signature floating_window, if content is more than max_height, you can scroll down
+                     -- to view the hiding contents
+    max_width = 120, -- max_width of signature floating_window, line will be wrapped if exceed max_width
+    handler_opts = {
+      border = "shadow"   -- double, single, shadow, none
+    },
+    extra_trigger_chars = {} -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
+  }
+  require'lsp_signature'.on_attach(cfg)
+
 end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
@@ -629,20 +655,30 @@ EOF
       return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . sha1#sha1( getcwd() ) . ".vim"
     endfunction
 
-    autocmd VimLeave * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
+    function! WipeAll()
+        let i = 0
+        let n = bufnr("$")
+        while i < n
+            let i = i + 1
+            if bufexists(i)
+                execute("bw " . i)
+            endif
+        endwhile
+    endfunction
+
+    autocmd VimLeavePre * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
         \ call mkdir("${variables.homeDir}/.vim-sessions") |
         \ endif |
         \ execute "mksession! " . SessionPath()
 
-    autocmd VimEnter * nested if argc() == 0 && filereadable(SessionPath()) |
-        \ execute "source " . SessionPath()
+    function! MySessionLoad()
+      if argc() == 0 && filereadable(SessionPath())
+        call WipeAll()
+        execute "source " . SessionPath()
+      endif
+    endfunction
 
-    let g:netrw_banner = 0
-    let g:netrw_liststyle = 3
-    " let g:netrw_browse_split = 4
-    " let g:netrw_altv = 1
-    " let g:netrw_winsize = 25
-    let g:netrw_keepdir = 0
+    autocmd VimEnter * nested call MySessionLoad()
 
     " CtrlP auto cache clearing.
     " ----------------------------------------------------------------------------
@@ -661,14 +697,6 @@ EOF
 
     tab sball
     set switchbuf=usetab,newtab
-
-    let g:NERDTreeDirArrowExpandable = '+'
-    let g:NERDTreeDirArrowCollapsible = '-'
-    " hide NERDTree on file open
-    let g:NERDTreeQuitOnOpen = 1
-    " do not display NERDTree help
-    let g:NERDTreeMinimalUI = 1
-    let g:NERDTreeGlyphReadOnly = "RO"
 
     augroup bufclosetrack
       au!
@@ -728,10 +756,32 @@ EOF
 
     cnoremap <C-v> <C-r>"
 
-    autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
-      \ let buf=bufnr() | buffer# | NERDTreeClose | execute 'buffer'.buf | endif
-
     let g:NERDDefaultAlign = 'left'
+
+    let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
+    let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+    let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+    let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+    let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
+    let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+    let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
+    let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
+    let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
+    let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
+    let g:nvim_tree_lsp_diagnostics = 1 "0 by default, will show lsp diagnostics in the signcolumn. See :help nvim_tree_lsp_diagnostics
+    " Dictionary of buffer option names mapped to a list of option values that
+    " indicates to the window picker that the buffer's window should not be
+    " selectable.
+    let g:nvim_tree_show_icons = {
+        \ 'git': 0,
+        \ 'folders': 0,
+        \ 'files': 0,
+        \ 'folder_arrows': 0,
+        \ }
+    nnoremap <C-o> :NvimTreeToggle<CR>
+    nnoremap <leader>r :NvimTreeRefresh<CR>
+    nnoremap <leader>n :NvimTreeFindFile<CR>
+    " NvimTreeOpen and NvimTreeClose are also available if you need them
 
     autocmd UIEnter * source ${ginitVim}
   '';
@@ -777,8 +827,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "1df8a34a7b91028413d6ac751b9dbf9fdcd6cda2";
-      sha256 = "0r3929c5n4n8cmjr4l3zaxnc2p4kgqaqx2ah11lncjqnc499ly0w";
+      rev = "96d83e2a66734b1bbbf863583e90a6fb6e646a67";
+      sha256 = "sha256-4OraH6sfL1+H+eFPles7sbvBnyjAHFO1nFwHKQEbKOA=";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
@@ -799,7 +849,7 @@ EOF
           vimPlugins.ctrlsf-vim
           ctrlp
           vim-airline vim-airline-themes
-          vim-nix
+          #vim-nix
           nerdcommenter
           #ale
           #YouCompleteMe
@@ -812,8 +862,8 @@ EOF
           vimPlugins.neovim-gui-shim
           vim-vinegar
           vim-fugitive
-          vimPlugins.nerdtree
-          vimPlugins.nerdtree-git-plugin
+          #vimPlugins.nerdtree
+          #vimPlugins.nerdtree-git-plugin
           ansible-vim
           #vimPlugins.python-mode
           vim-polyglot
@@ -825,6 +875,10 @@ EOF
           vim-rsi
           vim-signify
           vimPlugins.vim-perforce
+          vimPlugins.lsp_signature-nvim
+          vimPlugins.git-blame-nvim
+          #vimPlugins.nvim-web-devicons
+          vimPlugins.nvim-tree-lua
         ];
         opt = [
         ];
