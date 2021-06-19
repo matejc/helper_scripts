@@ -48,7 +48,6 @@ let
       GuiTabline 0
       GuiFont ${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
       " call GuiClipboard()
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     endif
   '';
 
@@ -75,14 +74,19 @@ let
     set cursorline
     set number
 
-    " set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
+    set guifont=${lib.escape [" "] "${variables.font.family}:h${variables.font.size}"}
     set termguicolors
+    " set background=light
 
-    set background=light
     let g:gitgutter_override_sign_column_highlight = 0
-    let g:neosolarized_contrast = "high"
-    let g:neosolarized_visibility = "high"
-    colorscheme NeoSolarized
+
+    " The configuration options should be placed before `colorscheme sonokai`.
+    let g:gruvbox_original_background = 'medium'
+    colorscheme gruvbox-material
+
+    " let g:neosolarized_contrast = "high"
+    " let g:neosolarized_visibility = "high"
+    " colorscheme NeoSolarized
 
     set title
     function! ProjectName()
@@ -309,8 +313,8 @@ let
 
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
-    let g:airline_theme='solarized'
-    let g:airline_solarized_bg='light'
+    let g:airline_theme='gruvbox_material'
+    " let g:airline_solarized_bg='light'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -879,6 +883,7 @@ EOF
           vimPlugins.git-blame-nvim
           #vimPlugins.nvim-web-devicons
           vimPlugins.nvim-tree-lua
+          vimPlugins.gruvbox-material
         ];
         opt = [
         ];

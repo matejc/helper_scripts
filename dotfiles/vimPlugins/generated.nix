@@ -92,6 +92,17 @@ let
     };
   };
 
+  gruvbox-material = buildVimPluginFrom2Nix {
+    pname = "gruvbox-material";
+    version = "2021-06-08";
+    src = fetchFromGitHub {
+      owner = "sainnhe";
+      repo = "gruvbox-material";
+      rev = "88373045e79dcb5565569113c570074ed85d1eea";
+      sha256 = "1mka2vm9kzq50sifp9bzaxsb0v7774pasfn4iy2wq732p0yn97qn";
+    };
+  };
+
   lsp_signature-nvim = buildVimPluginFrom2Nix {
     pname = "lsp_signature-nvim";
     version = "2021-06-19";
@@ -211,6 +222,17 @@ let
       repo = "python-mode";
       rev = "f94b0d7b21714f950f5878b430fbfde21c3b7ad9";
       sha256 = "0zxsa1agigzb9adrwq54pdyl984drdqzz3kkixaijkq77kkdvj0n";
+    };
+  };
+
+  sonokai = buildVimPluginFrom2Nix {
+    pname = "sonokai";
+    version = "2021-06-08";
+    src = fetchFromGitHub {
+      owner = "sainnhe";
+      repo = "sonokai";
+      rev = "5c1fc0452387cae323692e3345238a780a942056";
+      sha256 = "0j2bba7img06m6b7lzgw1q5r8g38cs70pynwisqdb34l5jbj0fqx";
     };
   };
 
