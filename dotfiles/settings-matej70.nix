@@ -15,7 +15,7 @@ let
     font = {
       family = "SauceCodePro Nerd Font Mono";
       style = "Regular";
-      size = "10";
+      size = "12";
     };
     sway.enable = false;
     terminal = programs.terminal;
@@ -23,7 +23,7 @@ let
     term = null;
     programs = {
       filemanager = "${pkgs.dolphin}/bin/dolphin";
-      terminal = "${pkgs.konsole}/bin/konsole";
+      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
       editor = "${pkgs.nano}/bin/nano";
       dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
       browser = "${pkgs.chromium}/bin/chromium";
@@ -47,13 +47,14 @@ let
       #f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
       #o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
       q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
+      n = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.neovide}/bin/neovide'';
     };
   };
 
   dotFilePaths = [
     ./gitconfig.nix
     ./gitignore.nix
-   ./thissession.nix
+    ./thissession.nix
     ./oath.nix
     ./httpserver.nix
     ./wcontrol.nix
@@ -89,6 +90,7 @@ let
     ./startup.nix
     ./trace2scad.nix
     ./superslicer.nix
+    ./glrnvim.nix
   ];
 
   activationScript = ''
