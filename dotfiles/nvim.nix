@@ -771,10 +771,13 @@ EOF
     tnoremap <silent> <c-PageUp> <C-\><C-N>:bprev<cr>
     tnoremap <silent> <c-PageDown> <C-\><C-N>:bnext<cr>
 
+    tnoremap <silent> <a-left> <C-left>
+    tnoremap <silent> <a-right> <C-right>
+
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
     let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
-    cnoremap <C-v> <C-r>"
+    cnoremap <C-v> <C-r>+
 
     let g:NERDDefaultAlign = 'left'
 
