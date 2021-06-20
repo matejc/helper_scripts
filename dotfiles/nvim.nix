@@ -139,13 +139,13 @@ let
     set encoding=utf-8
 
     nno <silent> <c-m> :messages<cr>
-    nno <silent> <C-S-W> :bd!<cr>
-    nno <silent> <C-w> :bd<cr>
+    nnoremap <silent> <C-S-W> :bd!<cr>
+    nnoremap <silent> <C-w> :bd<cr>
     map <C-q> <esc>:qall
     nno <silent> <c-s> :w<CR>
     ino <silent> <c-s> <esc>:w<CR>
-    nno <silent> <c-PageUp> :bprev<cr>
-    nno <silent> <c-PageDown> :bnext<cr>
+    nnoremap <silent> <c-PageUp> :bprev<cr>
+    nnoremap <silent> <c-PageDown> :bnext<cr>
     inoremap <silent> <c-PageUp> <esc>:bprev<cr>
     inoremap <silent> <c-PageDown> <esc>:bnext<cr>
 
@@ -312,7 +312,22 @@ let
     nnoremap <C-h> <leader>hu
 
     let g:airline#extensions#tabline#enabled = 1
-    let g:airline_powerline_fonts = 1
+    let g:airline_powerline_fonts = 0
+    if !exists('g:airline_symbols')
+      let g:airline_symbols = {}
+    endif
+    let g:airline_symbols.branch = ''
+    let g:airline_symbols.readonly = ''
+
+    let g:airline_symbols.colnr = ' ℅:'
+    let g:airline_symbols.crypt = '🔒'
+    let g:airline_symbols.linenr = '¶'
+    let g:airline_symbols.maxlinenr = ""
+    let g:airline_symbols.paste = 'ρ'
+    let g:airline_symbols.spell = 'Ꞩ'
+    let g:airline_symbols.notexists = 'Ɇ'
+    let g:airline_symbols.whitespace = 'Ξ'
+
     let g:airline_theme='gruvbox_material'
     " let g:airline_solarized_bg='light'
 
@@ -677,7 +692,7 @@ EOF
 
     function! MySessionLoad()
       if argc() == 0 && filereadable(SessionPath())
-        call WipeAll()
+        " call WipeAll()
         execute "source " . SessionPath()
       endif
     endfunction
@@ -699,8 +714,9 @@ EOF
       autocmd VimEnter * :call SetupCtrlP()
     endif
 
-    tab sball
-    set switchbuf=usetab,newtab
+    " tab sball
+    " set switchbuf=usetab,newtab
+    " au BufAdd,BufNewFile,BufRead * nested tab sball
 
     augroup bufclosetrack
       au!
