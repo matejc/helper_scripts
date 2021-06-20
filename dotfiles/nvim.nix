@@ -297,7 +297,7 @@ let
 
     vmap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
 
-    let g:ctrlp_cmd = 'CtrlPMixed'
+    let g:ctrlp_cmd = 'CtrlP'
     let g:ctrlp_custom_ignore = {
       \ 'dir':  '\v[\/](\.git|\.hg|\.svn|node_modules)$',
       \ 'file': '\v\.(exe|so|dll)$',
@@ -305,8 +305,6 @@ let
       \ }
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_user_command = ['.git', 'cd %s && ${pkgs.git}/bin/git ls-files . -co --exclude-standard', '${pkgs.findutils}/bin/find %s -type f']
-
-    imap <C-p> <esc>:CtrlPMixed<Return>
 
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
     nnoremap <C-h> <leader>hu
@@ -699,20 +697,11 @@ EOF
 
     autocmd VimEnter * nested call MySessionLoad()
 
-    " CtrlP auto cache clearing.
-    " ----------------------------------------------------------------------------
-    function! SetupCtrlP()
-      if exists("g:loaded_ctrlp") && g:loaded_ctrlp
-        augroup CtrlPExtension
-          autocmd!
-          autocmd FocusGained  * CtrlPClearCache
-          autocmd BufWritePost * CtrlPClearCache
-        augroup END
-      endif
-    endfunction
-    if has("autocmd")
-      autocmd VimEnter * :call SetupCtrlP()
-    endif
+    augroup CtrlPExtension
+      autocmd!
+      autocmd FocusGained  * CtrlPClearCache
+      autocmd BufWritePost * CtrlPClearCache
+    augroup END
 
     " tab sball
     " set switchbuf=usetab,newtab
