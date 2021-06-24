@@ -11,7 +11,7 @@ let
     font = {
       family = "FiraMono NF";
       style = "Regular";
-      size = "11";
+      size = "13";
     };
     term = null;
     terminal = null;
@@ -19,8 +19,14 @@ let
       browser = "Chrome.exe";
       editor = "${pkgs.nano}/bin/nano";
       terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      shell = "${pkgs.zsh}/bin/zsh";
     };
     locale.all = "en_US.utf8";
+    alacritty.path = "/mnt/c/Program\\ Files/Alacritty/alacritty.exe";
+    alacritty.args = ''-o "shell.program='wsl.exe'" -o "shell.args=['-d Ubuntu-20.04 /home/matejc/bin/shell']"'';
+    vims.n-dev = "/mnt/c/tools/neovide.exe --wsl";
+    vims.n = "/mnt/c/ProgramData/chocolatey/bin/neovide.exe --wsl";
+    vims.q = "env NVIM_FRONTEND_PATH=/mnt/c/tools/neovim-qt/bin/nvim-qt.exe ${homeDir}/bin/guinvim";
   };
 
   dotFilePaths = [

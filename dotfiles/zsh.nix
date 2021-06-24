@@ -159,20 +159,20 @@ in
     export LANG="${variables.locale.all}"
     export LANGUAGE="${variables.locale.all}"
 
-    set_oldpwd() {
-      echo "$PWD" >${variables.homeDir}/.oldpwd
-    }
+    #set_oldpwd() {
+    #  echo "$PWD" >${variables.homeDir}/.oldpwd
+    #}
 
     #trap set_oldpwd EXIT
 
-    export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.bin}/bin/getent passwd "${variables.user}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
-    export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
-    export XAUTHORITY="${variables.homeDir}/.Xauthority"
-    display_no="$(${pkgs.coreutils}/bin/ls -1 /tmp/.X11-unix | ${pkgs.gawk}/bin/awk 'NR==1{if ($1 ~ /^X/) { gsub(/^X/,":",$1); printf $1; } }')"
-    if [[ ! -z "$display_no" ]]
-    then
-      export DISPLAY="''${DISPLAY:-$display_no}"
-    fi
+    #export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.bin}/bin/getent passwd "${variables.user}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
+    #export DBUS_SESSION_BUS_ADDRESS=''${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNTIME_DIR/bus}
+    #export XAUTHORITY="${variables.homeDir}/.Xauthority"
+    #display_no="$(${pkgs.coreutils}/bin/ls -1 /tmp/.X11-unix | ${pkgs.gawk}/bin/awk 'NR==1{if ($1 ~ /^X/) { gsub(/^X/,":",$1); printf $1; } }')"
+    #if [[ ! -z "$display_no" ]]
+    #then
+    #  export DISPLAY="''${DISPLAY:-$display_no}"
+    #fi
 
     export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
     eval "$(${pkgs.starship}/bin/starship init zsh)"
