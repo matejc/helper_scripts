@@ -1,6 +1,7 @@
 dyng/ctrlsf.vim
 equalsraf/neovim-gui-shim
 f-person/git-blame.nvim
+glepnir/lspsaga.nvim@main
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
@@ -11,11 +12,11 @@ neovim/nvim-lspconfig
 nfvs/vim-perforce
 OmniSharp/omnisharp-vim
 patstockwell/vim-monokai-tasty
+prabirshrestha/async.vim
 prabirshrestha/asyncomplete-buffer.vim
 prabirshrestha/asyncomplete-file.vim
 prabirshrestha/asyncomplete-tags.vim
 prabirshrestha/asyncomplete.vim
-prabirshrestha/async.vim
 preservim/nerdtree
 python-mode/python-mode
 ray-x/lsp_signature.nvim

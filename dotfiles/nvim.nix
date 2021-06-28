@@ -612,8 +612,22 @@ if not nvim_lsp["pwsh"] then
 end
 nvim_lsp["pwsh"].setup { on_attach = on_attach; }
 
-EOF
+local saga = require 'lspsaga'
+saga.init_lsp_saga()
 
+EOF
+    nnoremap <silent> gh :Lspsaga lsp_finder<CR>
+    nnoremap <silent><leader>ca :Lspsaga code_action<CR>
+    vnoremap <silent><leader>ca :<C-U>Lspsaga range_code_action<CR>
+    nnoremap <silent>K :Lspsaga hover_doc<CR>
+    nnoremap <silent> gs :Lspsaga signature_help<CR>
+    nnoremap <silent>gr :Lspsaga rename<CR>
+    nnoremap <silent> gd :Lspsaga preview_definition<CR>
+    nnoremap <silent> <leader>cd :Lspsaga show_line_diagnostics<CR>
+    nnoremap <silent> [e :Lspsaga diagnostic_jump_next<CR>
+    nnoremap <silent> ]e :Lspsaga diagnostic_jump_prev<CR>
+    nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
+    tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
     " function! OpenCompletion()
     "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
@@ -851,7 +865,7 @@ EOF
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
         start = [
-          NeoSolarized
+          #NeoSolarized
           #vim-gitgutter
           #undotree
           vim-better-whitespace
@@ -892,6 +906,7 @@ EOF
           #vimPlugins.nvim-web-devicons
           vimPlugins.nvim-tree-lua
           vimPlugins.gruvbox-material
+          vimPlugins.lspsaga-nvim
         ];
         opt = [
         ];
