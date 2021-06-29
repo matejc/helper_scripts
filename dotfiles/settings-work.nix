@@ -15,11 +15,13 @@ let
     };
     term = null;
     terminal = null;
+    sway.enable = false;
     programs = {
       browser = "Chrome.exe";
       editor = "${pkgs.nano}/bin/nano";
       terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
       shell = "${pkgs.zsh}/bin/zsh";
+      zsh = "${pkgs.zsh}/bin/zsh";
     };
     locale.all = "en_US.utf8";
     alacritty.path = "/mnt/c/Program\\ Files/Alacritty/alacritty.exe";
@@ -37,6 +39,7 @@ let
     ./programs.nix
     ./starship.nix
     ./nvim.nix
+    ./oath.nix
   ];
 
   activationScript = ''
