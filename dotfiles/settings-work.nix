@@ -9,9 +9,9 @@ let
     fullName = "Matej Cotman";
     email = "matej.cotman@eficode.com";
     font = {
-      family = "FiraMono NF";
+      family = "SauceCodePro NF Mono";
       style = "Regular";
-      size = "13";
+      size = "11";
     };
     term = null;
     terminal = null;
@@ -40,6 +40,8 @@ let
     ./starship.nix
     ./nvim.nix
     ./oath.nix
+    ./mypassgen.nix
+    ./keepassxc-oath.nix
   ];
 
   activationScript = ''

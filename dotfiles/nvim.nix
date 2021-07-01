@@ -735,24 +735,24 @@ EOF
 
     augroup python
       au!
-      au BufNewFile,BufRead *.py set tabstop=4
-      au BufNewFile,BufRead *.py set softtabstop=4
-      au BufNewFile,BufRead *.py set shiftwidth=4
-      au BufNewFile,BufRead *.py set textwidth=79
-      au BufNewFile,BufRead *.py set expandtab
-      au BufNewFile,BufRead *.py set autoindent
-      au BufNewFile,BufRead *.py set fileformat=unix
+      au BufNewFile,BufRead *.py setlocal tabstop=4
+      au BufNewFile,BufRead *.py setlocal softtabstop=4
+      au BufNewFile,BufRead *.py setlocal shiftwidth=4
+      au BufNewFile,BufRead *.py setlocal textwidth=79
+      au BufNewFile,BufRead *.py setlocal expandtab
+      au BufNewFile,BufRead *.py setlocal autoindent
+      au BufNewFile,BufRead *.py setlocal fileformat=unix
     augroup END
 
     augroup web
-      au BufNewFile,BufRead *.js, *.html, *.css set tabstop=2
-      au BufNewFile,BufRead *.js, *.html, *.css set softtabstop=2
-      au BufNewFile,BufRead *.js, *.html, *.css set shiftwidth=2
+      au BufNewFile,BufRead *.js, *.html, *.css setlocal tabstop=2
+      au BufNewFile,BufRead *.js, *.html, *.css setlocal softtabstop=2
+      au BufNewFile,BufRead *.js, *.html, *.css setlocal shiftwidth=2
     augroup END
 
     augroup markdown
-      au FileType markdown,textile,text set spell spelllang=en_us
-      au FileType markdown,textile,text set formatoptions+=t
+      au FileType markdown,textile,text setlocal spell spelllang=en_us
+      au FileType markdown,textile,text setlocal formatoptions+=t
     augroup END
 
     let g:pymode_lint_checkers = [ 'pylint', 'pyflakes', 'pep8', 'mccabe' ]
