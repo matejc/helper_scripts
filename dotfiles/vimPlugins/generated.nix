@@ -113,12 +113,12 @@ final: prev:
 
   lsp_signature-nvim = buildVimPluginFrom2Nix {
     pname = "lsp_signature-nvim";
-    version = "2021-06-22";
+    version = "2021-06-29";
     src = fetchFromGitHub {
       owner = "ray-x";
       repo = "lsp_signature.nvim";
-      rev = "8cef9c8fd4f2937e6144b37e38138796cef07539";
-      sha256 = "1zyfrihlbrfhgbiclb5x1cb6cpc7fgv057p29s00ykgdp7qi60r8";
+      rev = "ef20fad69270f4d3df356be3c01bd079739e72c4";
+      sha256 = "0whmqkz6k27hrsjmbw841bsdg8xkiv8gj01sw40cg99mcdyags70";
     };
     meta.homepage = "https://github.com/ray-x/lsp_signature.nvim/";
   };
@@ -197,24 +197,24 @@ final: prev:
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2021-06-20";
+    version = "2021-06-29";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "48e47b4d26e45977d27c06dc1bc116416ca9276d";
-      sha256 = "1zf4sv91i3qkr9d8cbn9vzk2sc5bknjsjdhzvpf1zjr72bxx3q37";
+      rev = "234a8cdad1104dd562796e6ca2c6c41e22e5f77a";
+      sha256 = "0w10mx66p9sil1aa6jhkfb7k2p4m2vwjbyr8f1dr2apn07cr72w8";
     };
     meta.homepage = "https://github.com/neovim/nvim-lspconfig/";
   };
 
   nvim-tree-lua = buildVimPluginFrom2Nix {
     pname = "nvim-tree-lua";
-    version = "2021-06-15";
+    version = "2021-06-29";
     src = fetchFromGitHub {
       owner = "kyazdani42";
       repo = "nvim-tree.lua";
-      rev = "bfeaf4c8ef5ff24e93005da2561407a13ba69d4d";
-      sha256 = "0sqydjvcjrqzw91b7sk7y9rrcs0l2j34hshcbwwwz8nrilfk6ak7";
+      rev = "a80ea23b4c765efe3b6eaa9440d19d298e4c709b";
+      sha256 = "11m62asv3qrv5kh4gb8xvhjmxwbzxf26902cxn8gncclc79cr42i";
     };
     meta.homepage = "https://github.com/kyazdani42/nvim-tree.lua/";
   };
@@ -270,12 +270,12 @@ final: prev:
 
   vim-conque = buildVimPluginFrom2Nix {
     pname = "vim-conque";
-    version = "2019-08-14";
+    version = "2021-06-25";
     src = fetchFromGitHub {
       owner = "goballooning";
       repo = "vim-conque";
-      rev = "d9b35abf0a6c16e93094e243487159fc25b66da4";
-      sha256 = "1dk7y1n9gmiwnjpm9k9l5nvjaz6nvinbf6r7w9jnrv20h1giqbdd";
+      rev = "a9a9186899974d8aa13732a544322b55aef00cf1";
+      sha256 = "0qmvj8mlyvnmm3fzqk7v8nfs5gil9alnmx2i3c63y0w4gyr5axi0";
     };
     meta.homepage = "https://github.com/goballooning/vim-conque/";
   };
@@ -290,6 +290,18 @@ final: prev:
       sha256 = "1yjx79yj21dbf746mmw6y3mf9j20yar7vww1isyhi3a3pb4l7wsl";
     };
     meta.homepage = "https://github.com/vim-ctrlspace/vim-ctrlspace/";
+  };
+
+  vim-fakeclip = buildVimPluginFrom2Nix {
+    pname = "vim-fakeclip";
+    version = "2020-05-19";
+    src = fetchFromGitHub {
+      owner = "kana";
+      repo = "vim-fakeclip";
+      rev = "59858dabdb55787d7f047c4ab26b45f11ebb533b";
+      sha256 = "1jrfi1vc7svhypvg2gizx40vracr91m9d912b61j0c7z8swix908";
+    };
+    meta.homepage = "https://github.com/kana/vim-fakeclip/";
   };
 
   vim-hashicorp-tools = buildVimPluginFrom2Nix {

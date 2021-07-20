@@ -1,8 +1,8 @@
 { pkgs, lib ? pkgs.lib }:
 let
 
-  goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
-  fvim = pkgs.callPackage ../nixes/fvim.nix { };
+  #goneovim = pkgs.callPackage ../nixes/goneovim.nix { };
+  #fvim = pkgs.callPackage ../nixes/fvim.nix { };
 
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
@@ -15,9 +15,23 @@ let
     font = {
       family = "SauceCodePro Nerd Font Mono";
       style = "Regular";
-      size = "12";
+      size = "10";
     };
-    sway.enable = false;
+    sway = {
+      enable = false;
+      disabledInputs = [];
+      trackpoint = {
+        identifier = "";
+        accel = "-0.3";
+      };
+    };
+    i3-msg = "swaymsg";
+    i3BarEnable = false;
+    lockscreen = "${homeDir}/bin/lockscreen";
+    monitors = [ ];
+    temperatureFiles = [ "/sys/devices/virtual/thermal/thermal_zone1/temp" ];
+    wallpaper = "${variables.homeDir}/Pictures/blade-of-grass.jpg";
+    lockImage = "${variables.homeDir}/Pictures/blade-of-grass-blur.png";
     terminal = programs.terminal;
     dropDownTerminal = programs.dropdown;
     term = null;
@@ -25,13 +39,15 @@ let
       filemanager = "${pkgs.dolphin}/bin/dolphin";
       terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
       editor = "${pkgs.nano}/bin/nano";
-      dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% terminal";
+      #dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% ${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      dropdown = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
       browser = "${pkgs.chromium}/bin/chromium";
-      google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
-      ff = "${pkgs.firefox}/bin/firefox";
-      c = "${pkgs.vscodium}/bin/codium";
+      #google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
+      #ff = "${pkgs.firefox}/bin/firefox";
+      #c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
+      launcher = "${homeDir}/bin/terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''
         #!${pkgs.stdenv.shell}
         ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
@@ -41,8 +57,10 @@ let
     startup = [
       "${homeDir}/bin/nextcloud-client"
       "${homeDir}/bin/mykeepassxc"
-      "${homeDir}/bin/chromium"
+      "${homeDir}/bin/browser"
     ];
+    inherit startScript;
+    inherit restartScript;
     vims = {
       #f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
       #o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
@@ -81,7 +99,7 @@ let
     ./scan.nix
     ./screenshooter.nix
     ./xfce-terminal-dropdown.nix
-    ./launcher.nix
+    #./launcher.nix
     ./bemenu.nix
     ./kitty.nix
     ./bash.nix
@@ -91,7 +109,34 @@ let
     ./trace2scad.nix
     ./superslicer.nix
     ./glrnvim.nix
+    ./look.nix
+    ./i3config.nix
+    ./i3_workspace.nix
+    ./waybar.nix
+    ./swaylockscreen.nix
+    ./sway-launcher-desktop.nix
   ];
+
+    #${pkgs.procps}/bin/pkill dunst
+    #${pkgs.dunst}/bin/dunst &
+
+  restartScript = pkgs.writeScript "restart-script.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    echo "DONE"
+  '';
+
+  startScript = pkgs.writeScript "start-script.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    systemctl --user start waybar
+
+    ${variables.programs.mykeepassxc} &
+    ${variables.programs.nextcloud-client} &
+    ${variables.programs.browser} &
+
+    echo "DONE"
+  '';
 
   activationScript = ''
     mkdir -p ${variables.homeDir}/.nixpkgs

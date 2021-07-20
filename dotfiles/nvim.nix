@@ -745,9 +745,9 @@ EOF
     augroup END
 
     augroup web
-      au BufNewFile,BufRead *.js, *.html, *.css setlocal tabstop=2
-      au BufNewFile,BufRead *.js, *.html, *.css setlocal softtabstop=2
-      au BufNewFile,BufRead *.js, *.html, *.css setlocal shiftwidth=2
+      au BufNewFile,BufRead *.js,*.html,*.css set tabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css set softtabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css set shiftwidth=2
     augroup END
 
     augroup markdown
@@ -809,6 +809,7 @@ EOF
     nnoremap <leader>n :NvimTreeFindFile<CR>
     " NvimTreeOpen and NvimTreeClose are also available if you need them
 
+    " let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
 
     if exists("g:neovide")
       let g:neovide_cursor_animation_length=0.1
@@ -859,8 +860,8 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "96d83e2a66734b1bbbf863583e90a6fb6e646a67";
-      sha256 = "sha256-4OraH6sfL1+H+eFPles7sbvBnyjAHFO1nFwHKQEbKOA=";
+      rev = "a5ac2f45ff84a688a09479f357a9909d5b914294";
+      sha256 = "sha256-0aXo8f1YGEI8PkLDOSgxqQy7qK031R+eapCppUFy61E=";
     };
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
@@ -913,6 +914,7 @@ EOF
           vimPlugins.nvim-tree-lua
           vimPlugins.gruvbox-material
           vimPlugins.lspsaga-nvim
+          vimPlugins.vim-fakeclip
         ];
         opt = [
         ];

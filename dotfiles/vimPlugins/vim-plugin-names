@@ -5,6 +5,7 @@ glepnir/lspsaga.nvim@main
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
+kana/vim-fakeclip
 kyazdani42/nvim-tree.lua
 kyazdani42/nvim-web-devicons
 lifepillar/vim-solarized8

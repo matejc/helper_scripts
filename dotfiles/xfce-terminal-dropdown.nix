@@ -4,7 +4,7 @@
   source = pkgs.writeScript "dropdown-terminal.sh" ''
     #!${pkgs.stdenv.shell}
     ${if variables.sway.enable then ''
-      ${variables.homeDir}/bin/xfce-terminal-dropdown
+      ${variables.homeDir}/bin/i3-terminal-dropdown
     '' else ''
       ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal --drop-down
     ''}

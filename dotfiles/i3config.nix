@@ -10,7 +10,6 @@
 
   # monitors
   # LVDS1
-  set $snd_card ${variables.soundCard}
 
   # colors
   # set $dark     #262a33
@@ -148,7 +147,8 @@
   bindsym $mod+Shift+parenleft move workspace $w9
   bindsym $mod+Shift+parenright move workspace $w10
 
-  bindsym $mod+Tab workspace back_and_forth
+  bindsym $mod+tab workspace next_on_output
+  bindsym $mod+Shift+tab workspace prev_on_output
 
   bindsym $mod+grave workspace prev
   bindsym $mod+minus workspace prev
@@ -424,7 +424,11 @@
 
   bindcode 233 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight inc
   bindcode 232 exec --no-startup-id ${variables.homeDir}/bin/setxbacklight dec
-  bindsym Ctrl+Mod1+space exec --no-startup-id "${variables.homeDir}/bin/launcher"
+  #bindsym Ctrl+Mod1+space exec --no-startup-id "${variables.homeDir}/bin/launcher"
+
+  for_window [app_id="^launcher$"] floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10
+  bindsym Ctrl+$mod+space exec ${pkgs.alacritty}/bin/alacritty --class=launcher -e ${variables.homeDir}/bin/sway-launcher-desktop
+
   bindsym Ctrl+Mod1+b exec --no-startup-id "${variables.homeDir}/bin/bluetooth-connect"
   bindsym Ctrl+Mod1+a exec --no-startup-id "${pkgs.pavucontrol}/bin/pavucontrol"
   bindsym Ctrl+Mod1+0 exec --no-startup-id "${variables.homeDir}/bin/monitor"
@@ -535,7 +539,7 @@
   #for_window [con_mark="I3WM_SCRATCHPAD"] exec "${variables.i3-msg} resize set $(${variables.homeDir}/bin/window-size width 90) px $(${variables.homeDir}/bin/window-size height 90) px, move position center", move scratchpad, border pixel 1, sticky enable, focus
   '';
 } {
-  target = "${variables.homeDir}/bin/terminal-dropdown";
+  target = "${variables.homeDir}/bin/i3-terminal-dropdown";
   source = pkgs.writeScript "terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
