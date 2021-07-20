@@ -30,7 +30,7 @@ let
       nixGL = "${nixGL.nixGLDefault}/bin/nixGL";
     };
     locale.all = "en_US.utf8";
-    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide";
+    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --frameless --multiGrid";
     vims.q = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
     startup = [
       "${homeDir}/bin/browser"

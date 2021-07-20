@@ -809,6 +809,8 @@ EOF
     nnoremap <leader>n :NvimTreeFindFile<CR>
     " NvimTreeOpen and NvimTreeClose are also available if you need them
 
+    let g:neovide_cursor_animation_length=0.1
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
