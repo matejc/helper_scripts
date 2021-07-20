@@ -14,7 +14,7 @@ let
     font = {
       family = "SauceCodePro Nerd Font Mono";
       style = "Regular";
-      size = "11";
+      size = 10;
     };
     term = null;
     terminal = null;
