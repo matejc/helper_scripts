@@ -61,7 +61,7 @@ let
     set nobackup
     set nowritebackup
 
-    set cmdheight=2
+    set cmdheight=1
 
     " You will have bad experience for diagnostic messages when it's default 4000.
     set updatetime=300
