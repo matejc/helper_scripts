@@ -28,7 +28,7 @@
 
     # The font size to be used.
     #
-    font_size: ${variables.font.size}
+    font_size: ${toString variables.font.size}
 
     # Set to true if the terminal's default configuration should be loaded
     # first. Other glrnvim configurations will overwrite the terminal settings

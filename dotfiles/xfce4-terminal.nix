@@ -32,7 +32,7 @@
     MiscShowUnsafePasteDialog=TRUE
     TitleMode=TERMINAL_TITLE_REPLACE
     ScrollingLines=10000
-    FontName=${variables.font.family} ${variables.font.style} ${variables.font.size}
+    FontName=${variables.font.family} ${variables.font.style} ${toString variables.font.size}
     ColorForeground=#dcdcdc
     ColorBackground=#2c2c2c
     ColorCursor=#dcdcdc

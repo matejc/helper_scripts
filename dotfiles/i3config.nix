@@ -97,7 +97,7 @@
   # font -*-terminus-medium-r-normal-*-12-120-72-72-c-60-iso10646-1
   #font pango:DejaVu Sans Mono 9
   #font pango:Bitstream Vera Sans Mono Roman 9
-  font pango:${variables.font.family} ${variables.font.style} ${variables.font.size}
+  font pango:${variables.font.family} ${variables.font.style} ${toString variables.font.size}
 
   #}}}
   #{{{ Workspaces

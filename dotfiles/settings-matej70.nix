@@ -15,7 +15,7 @@ let
     font = {
       family = "SauceCodePro Nerd Font Mono";
       style = "Regular";
-      size = "10";
+      size = 10;
     };
     sway = {
       enable = false;
@@ -65,7 +65,7 @@ let
       #f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
       #o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
       q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
-      n = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.neovide}/bin/neovide'';
+      n = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.neovide}/bin/neovide --frameless --multiGrid'';
     };
   };
 
