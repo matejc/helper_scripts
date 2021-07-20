@@ -232,7 +232,7 @@
 #: The color and style for highlighting URLs on mouse-over. url_style
 #: can be one of: none, single, double, curly
 
-  open_url_modifiers kitty_mod
+#  open_url_modifiers kitty_mod
 
 #: The modifier keys to press when clicking with the mouse on URLs to
 #: open the URL
@@ -265,12 +265,12 @@
 #: value of smart will do it when using normal selections, but not
 #: rectangle selections. always will always do it.
 
-  rectangle_select_modifiers ctrl+alt
+#  rectangle_select_modifiers ctrl+alt
 
 #: The modifiers to use rectangular selection (i.e. to select text in
 #: a rectangular block with the mouse)
 
-  terminal_select_modifiers shift
+#  terminal_select_modifiers shift
 
 #: The modifiers to override mouse selection even when a terminal
 #: application has grabbed the mouse
@@ -557,7 +557,7 @@
 
 #: The foreground and background colors
 
-  background_opacity 0.9
+  background_opacity 0.95
 
 #: The opacity of the background. A number between 0 and 1, where 1 is
 #: opaque and 0 is fully transparent.  This will only work if
