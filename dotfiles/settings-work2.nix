@@ -22,7 +22,7 @@ let
     programs = {
       browser = "google-chrome";
       editor = "${pkgs.nano}/bin/nano";
-      terminal = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      terminal = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
       kitty = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
       shell = "${pkgs.zsh}/bin/zsh";
       zsh = "${pkgs.zsh}/bin/zsh";

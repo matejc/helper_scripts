@@ -1,4 +1,5 @@
-{
+{ pkgs, ... }:
+rec {
   packageOverrides = pkgs:
   rec {
     mypidgin = pkgs.pidgin-with-plugins.override {
@@ -578,6 +579,8 @@
       ];
       ignoreCollisions = true;
     };
+
+    nixmy-package = pkgs.callPackage /home/matejc/workarea/nixmy { config.nixpkgs.config.nixmy = nixmy; };
   };
 
   allowUnfree = true;
@@ -589,6 +592,7 @@
     NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
     NIX_MY_GITHUB = "git://github.com/matejc/nixpkgs.git";
     NIX_MY_BACKUP = "git@github.com:matejc/configurations.git";
+    nix = pkgs.nix;
   };
   android_sdk.accept_license = true;
   permittedInsecurePackages = [
