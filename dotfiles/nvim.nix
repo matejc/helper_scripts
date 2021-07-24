@@ -612,6 +612,20 @@ if not nvim_lsp["pwsh"] then
 end
 nvim_lsp["pwsh"].setup { on_attach = on_attach; }
 
+if not nvim_lsp["robotframeworklsp"] then
+  nvim_lsp_configs.robotframeworklsp = {
+    default_config = {
+      cmd = {"${variables.homeDir}/.py-packages/bin/robotframework_ls"};
+      filetypes = {'robot'};
+      root_dir = function(fname)
+        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      settings = {};
+    };
+  }
+end
+nvim_lsp["robotframeworklsp"].setup { on_attach = on_attach; }
+
 local saga = require 'lspsaga'
 saga.init_lsp_saga()
 
@@ -816,6 +830,8 @@ EOF
       set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 3)}"}
     endif
 
+    au BufNewFile,BufRead *.robot setlocal filetype=robot
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -888,7 +904,7 @@ EOF
           #YouCompleteMe
           #vimPlugins.omnisharp-vim
           ctrlp-py-matcher
-          #robotframework-vim
+          robotframework-vim
           sleuth
           vimPlugins.vim-hashicorp-tools
           Jenkinsfile-vim-syntax
@@ -927,10 +943,19 @@ in [{
     #!${pkgs.stdenv.shell}
 
     export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
+    export PY_PACKAGES="${variables.homeDir}/.py-packages"
 
     npm_global_install() {
       mkdir -p $NPM_PACKAGES
       ${pkgs.nodejs}/bin/npm install -g --prefix="$NPM_PACKAGES" "$@"
+    }
+
+    pip_install() {
+      if [ ! -d "$PY_PACKAGES" ]
+      then
+        ${pkgs.python3Packages.python}/bin/python -m venv "$PY_PACKAGES"
+      fi
+      $PY_PACKAGES/bin/pip install "$@"
     }
 
     npm_global_install \
@@ -944,6 +969,9 @@ in [{
       vscode-html-languageserver-bin \
       vscode-css-languageserver-bin \
       coc-powershell
+
+    pip_install \
+      robotframework-lsp
 
     function ensure_lsp_link() {
       local name="$1"
