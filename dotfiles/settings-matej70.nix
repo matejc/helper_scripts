@@ -37,21 +37,22 @@ let
     term = null;
     programs = {
       filemanager = "${pkgs.dolphin}/bin/dolphin";
-      terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
+      terminal = "${pkgs.kitty}/bin/kitty";
       editor = "${pkgs.nano}/bin/nano";
-      #dropdown = "${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% ${pkgs.xfce.terminal}/bin/xfce4-terminal";
-      dropdown = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
+      dropdown = "env PATH=${pkgs.kitty}/bin:${pkgs.xorg.xrandr}/bin ${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% kitty";
+      #dropdown = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
       browser = "${pkgs.chromium}/bin/chromium";
       #google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
       #ff = "${pkgs.firefox}/bin/firefox";
       #c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
-      launcher = "${homeDir}/bin/terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
+      launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''
         #!${pkgs.stdenv.shell}
         ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
       ''}";
+      tug = "${pkgs.turbogit}/bin/tug";
     };
     locale.all = "en_US.utf8";
     startup = [
