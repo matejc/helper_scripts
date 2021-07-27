@@ -637,8 +637,8 @@ EOF
     nnoremap <silent>gr :Lspsaga rename<CR>
     nnoremap <silent> gd :Lspsaga preview_definition<CR>
     nnoremap <silent> <leader>cd :Lspsaga show_line_diagnostics<CR>
-    nnoremap <silent> <C-]> :Lspsaga diagnostic_jump_next<CR>
-    nnoremap <silent> <C-[> :Lspsaga diagnostic_jump_prev<CR>
+    nnoremap <silent> } :Lspsaga diagnostic_jump_next<CR>
+    nnoremap <silent> { :Lspsaga diagnostic_jump_prev<CR>
     nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
     tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
