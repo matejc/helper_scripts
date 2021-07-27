@@ -138,7 +138,6 @@ let
 
     set encoding=utf-8
 
-    nno <silent> <c-m> :messages<cr>
     nnoremap <silent> <C-S-W> :bd!<cr>
     nnoremap <silent> <C-w> :bd<cr>
     map <C-q> <esc>:qall
@@ -638,8 +637,8 @@ EOF
     nnoremap <silent>gr :Lspsaga rename<CR>
     nnoremap <silent> gd :Lspsaga preview_definition<CR>
     nnoremap <silent> <leader>cd :Lspsaga show_line_diagnostics<CR>
-    nnoremap <silent> [e :Lspsaga diagnostic_jump_next<CR>
-    nnoremap <silent> ]e :Lspsaga diagnostic_jump_prev<CR>
+    nnoremap <silent> <C-]> :Lspsaga diagnostic_jump_next<CR>
+    nnoremap <silent> <C-[> :Lspsaga diagnostic_jump_prev<CR>
     nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
     tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
@@ -931,6 +930,7 @@ EOF
           vimPlugins.gruvbox-material
           vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
+          vim-matchup
         ];
         opt = [
         ];
