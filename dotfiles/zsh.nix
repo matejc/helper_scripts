@@ -180,7 +180,7 @@ in
     fpath=(${pkgs.turbogit}/share/zsh/site-functions $fpath)
 
     autoload -U compinit
-    compinit
+    compinit -i
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
