@@ -127,9 +127,6 @@ in
 
     DISABLE_AUTO_TITLE="true"
 
-    autoload -Uz compinit
-    compinit
-
     fpath=(${gitrootSrc}(N-/) $fpath)
     autoload -Uz cd-gitroot
     alias cdu='cd-gitroot'
@@ -176,6 +173,14 @@ in
 
     export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
     eval "$(${pkgs.starship}/bin/starship init zsh)"
+
+    fpath=(${pkgs.zsh-completions}/share/zsh/site-functions $fpath)
+    source ${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh
+    fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)
+    fpath=(${pkgs.turbogit}/share/zsh/site-functions $fpath)
+
+    autoload -U compinit
+    compinit
   '';
 } {
   target = "${variables.homeDir}/.zlogin";
@@ -200,10 +205,5 @@ in
       # zcompile .zshrc
       zcompare ${variables.homeDir}/.zshrc
     ) &!
-    if [[ -f "${variables.homeDir}/.oldpwd" ]]
-    then
-      cd "$(cat ${variables.homeDir}/.oldpwd)"
-      rm "${variables.homeDir}/.oldpwd"
-    fi
   '';
 }]

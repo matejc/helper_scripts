@@ -562,7 +562,7 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["pyls"].setup { on_attach = on_attach; cmd = {"${pkgs.python3Packages.python-language-server}/bin/pyls"} }
+nvim_lsp["pyls"].setup { on_attach = on_attach; cmd = {"${pkgs.python38Packages.python-language-server}/bin/pyls"} }
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
@@ -882,7 +882,7 @@ EOF
     buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
 
-  neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
+  neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
   #neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
