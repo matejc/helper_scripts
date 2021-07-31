@@ -16,12 +16,10 @@ let
   all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/d98bdbff3ebdab408a12a9b7890d4cf400180839") {};
   hie = (all-hies.selection { selector = p: { inherit (p) ghc865; }; });
 
-  sha1Vim = pkgs.fetchFromGitHub {
-    owner = "vim-scripts";
-    repo = "sha1.vim";
-    rev = "40b3bb60d0bda010531422b948ff30bd4fa6b959";
-    sha256 = "16d2wa81v4kk46cyhi10vnrpgvc0abgzi997bv3yncd5y55psxzm";
-  };
+  sha1Cmd = pkgs.writeScript "sha1.sh" ''
+    #!${pkgs.stdenv.shell}
+    echo -n "$@" | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}'
+   '';
 
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')
@@ -701,10 +699,13 @@ EOF
 
     set sessionoptions-=options
 
-    source ${sha1Vim}/plugin/sha1.vim
+    function! Sha1(text)
+      let hash = system('${sha1Cmd} "' . a:text . '"')
+      return hash
+    endfunction
 
     function! SessionPath()
-      return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . sha1#sha1( getcwd() ) . ".vim"
+      return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . Sha1( getcwd() ) . ".vim"
     endfunction
 
     function! WipeAll()
@@ -724,9 +725,10 @@ EOF
         \ execute "mksession! " . SessionPath()
 
     function! MySessionLoad()
-      if argc() == 0 && filereadable(SessionPath())
+      let l:sessionPath = SessionPath()
+      if argc() == 0 && filereadable(l:sessionPath)
         " call WipeAll()
-        execute "source " . SessionPath()
+        execute "source " . l:sessionPath
       endif
     endfunction
 
