@@ -277,24 +277,32 @@ let
     let g:ctrlsf_extra_backend_args = {
       \ 'ag': '--hidden',
       \ }
-    func! CtrlSFIfOpen()
+    func! CtrlSFIfOpen(defaultText)
       if ctrlsf#win#FindMainWindow() != -1
         call ctrlsf#StopSearch()
         call ctrlsf#Quit()
       else
         call inputsave()
-        let text = input('Search: ', s:get_visual_selection())
+        let text = input('Search: ', a:defaultText)
         call inputrestore()
         if !empty(text)
-          call ctrlsf#Search(text)
+          call inputsave()
+          let l:filePattern = input('File pattern: ', '\.' . expand('%:e') . '$')
+          call inputrestore()
+          if empty(l:filePattern)
+            let l:filePattern = '.*'
+          endif
+          call ctrlsf#Search('-I -G "' . l:filePattern . '" ' . text)
         endif
       endif
     endf
     let g:ctrlsf_regex_pattern = 1
 
-    map <C-f> <esc>:call CtrlSFIfOpen()<cr>
+    vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
+    nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
-    vmap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
+    vnoremap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
+    nnoremap // :call feedkeys("/" . expand("<cword>"))<cr>
 
     let g:ctrlp_cmd = 'CtrlP'
     let g:ctrlp_custom_ignore = {
@@ -652,7 +660,7 @@ EOF
 
     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
     " found' messages
-    set shortmess+=c
+    " set shortmess+=c
 
     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
     inoremap <c-c> <ESC>
