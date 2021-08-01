@@ -567,7 +567,7 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["pyls"].setup { on_attach = on_attach; cmd = {"${pkgs.python38Packages.python-language-server}/bin/pyls"} }
+nvim_lsp["pylsp"].setup { on_attach = on_attach; cmd = {"${pkgs.python3Packages.python-lsp-server}/bin/pylsp"} }
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
@@ -841,6 +841,11 @@ EOF
 
     au BufNewFile,BufRead *.robot setlocal filetype=robot
 
+    let g:blamer_enabled = 1
+    let g:blamer_show_in_visual_modes = 0
+    let g:blamer_show_in_insert_modes = 0
+    let g:blamer_relative_time = 1
+
     nnoremap <C-S-P> <C-o>
     inoremap <C-S-P> <esc><C-o>
     nnoremap <C-S-N> <C-i>
@@ -939,7 +944,7 @@ EOF
           vim-signify
           vimPlugins.vim-perforce
           vimPlugins.lsp_signature-nvim
-          vimPlugins.git-blame-nvim
+          vimPlugins.blamer-nvim
           #vimPlugins.nvim-web-devicons
           vimPlugins.nvim-tree-lua
           vimPlugins.gruvbox-material
