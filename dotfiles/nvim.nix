@@ -841,10 +841,7 @@ EOF
 
     au BufNewFile,BufRead *.robot setlocal filetype=robot
 
-    let g:blamer_enabled = 1
-    let g:blamer_show_in_visual_modes = 0
-    let g:blamer_show_in_insert_modes = 0
-    let g:blamer_relative_time = 1
+    let g:gitblame_date_format = '%r'
 
     nnoremap <C-S-P> <C-o>
     inoremap <C-S-P> <esc><C-o>
@@ -944,7 +941,7 @@ EOF
           vim-signify
           vimPlugins.vim-perforce
           vimPlugins.lsp_signature-nvim
-          vimPlugins.blamer-nvim
+          vimPlugins.git-blame-nvim
           #vimPlugins.nvim-web-devicons
           vimPlugins.nvim-tree-lua
           vimPlugins.gruvbox-material
