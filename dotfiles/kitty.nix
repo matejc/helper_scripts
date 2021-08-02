@@ -956,7 +956,7 @@
 #: example, the following opens the scrollback buffer in less in an
 #: overlay window::
 
-  map kitty_mod+f launch --stdin-source=@screen_scrollback --stdin-add-formatting --type=overlay ${pkgs.less}/bin/less +G -R
+  map kitty_mod+f launch --stdin-source=@screen_scrollback --stdin-add-formatting --type=overlay ${pkgs.less}/bin/less +G -r
 
 #: For more details on piping screen and buffer contents to external
 #: programs, see launch.
