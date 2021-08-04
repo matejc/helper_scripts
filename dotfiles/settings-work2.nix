@@ -52,6 +52,7 @@ let
     ./keepassxc-oath.nix
     ./startup.nix
     ./kitty.nix
+    ./httpserver.nix
   ];
 
   activationScript = ''
