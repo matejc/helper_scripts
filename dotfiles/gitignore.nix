@@ -63,5 +63,7 @@
   .tern-port
 
   /.gtm/
+
+  /myreadme.md
   '';
 }
