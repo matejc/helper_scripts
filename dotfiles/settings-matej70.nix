@@ -116,6 +116,7 @@ let
     ./waybar.nix
     ./swaylockscreen.nix
     ./sway-launcher-desktop.nix
+    ./clearprimary.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst
