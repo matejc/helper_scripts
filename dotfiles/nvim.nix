@@ -41,11 +41,18 @@ let
       FVimFontBoldWeight 700
 
       FVimUIPopupMenu v:false
-    else
+    endif
+
+    if exists('g:GuiLoaded')
       GuiPopupmenu 0
       GuiTabline 0
       GuiFont ${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
       " call GuiClipboard()
+    endif
+
+    if exists("g:neovide")
+      let g:neovide_cursor_animation_length=0.1
+      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 3)}"}
     endif
   '';
 
@@ -834,11 +841,6 @@ EOF
     " NvimTreeOpen and NvimTreeClose are also available if you need them
 
     " let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
-
-    if exists("g:neovide")
-      let g:neovide_cursor_animation_length=0.1
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 3)}"}
-    endif
 
     au BufNewFile,BufRead *.robot setlocal filetype=robot
 

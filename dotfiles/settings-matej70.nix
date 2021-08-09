@@ -109,7 +109,6 @@ let
     ./startup.nix
     ./trace2scad.nix
     ./superslicer.nix
-    ./glrnvim.nix
     ./look.nix
     ./i3config.nix
     ./i3_workspace.nix
