@@ -576,6 +576,7 @@ nvim_lsp["jsonls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.
 nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"} }
 nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
 nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
+nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
 
 nvim_lsp["sumneko_lua"].setup {
   on_attach = on_attach;
