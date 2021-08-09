@@ -21,6 +21,7 @@ let
     sway.enable = false;
     programs = {
       browser = "google-chrome";
+      slack = "flatpak run com.slack.Slack --enable-features=WebRTCPipeWireCapturer";
       editor = "${pkgs.nano}/bin/nano";
       terminal = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
       kitty = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
@@ -36,6 +37,8 @@ let
     startup = [
       "${homeDir}/bin/browser"
       "${homeDir}/bin/keepassxc"
+      "${homeDir}/bin/clearprimary"
+      "${homeDir}/bin/slack"
     ];
   };
 
@@ -53,6 +56,7 @@ let
     ./startup.nix
     ./kitty.nix
     ./httpserver.nix
+    ./clearprimary.nix
   ];
 
   activationScript = ''
