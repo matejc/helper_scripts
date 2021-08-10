@@ -3,10 +3,14 @@ with pkgs;
 stdenv.mkDerivation {
   name = "lemminx";
   # https://github.com/redhat-developer/vscode-xml/blob/master/package.json
-  src = fetchTarball "https://download.jboss.org/jbosstools/vscode/snapshots/lemminx-binary/LATEST/lemminx-linux.zip";
-  phases = "installPhase";
+  src = builtins.fetchurl "https://download.jboss.org/jbosstools/vscode/snapshots/lemminx-binary/LATEST/lemminx-linux.zip";
+  nativeBuildInputs = [ unzip ];
+  phases = "unpackPhase installPhase";
+  unpackPhase = ''
+    unzip $src -d .
+  '';
   installPhase = ''
     mkdir -p $out/bin
-    cp $src $out/bin/lemminx
+    cp lemminx-linux $out/bin/lemminx
   '';
 }
