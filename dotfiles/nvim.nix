@@ -21,6 +21,8 @@ let
     echo -n "$@" | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}'
    '';
 
+  lemminx = import ../nixes/lemminx.nix { inherit pkgs; };
+
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')
       " Font tweaks
@@ -638,6 +640,22 @@ if not nvim_lsp["robotframeworklsp"] then
   }
 end
 nvim_lsp["robotframeworklsp"].setup { on_attach = on_attach; }
+
+if not nvim_lsp["lemminx"] then
+  nvim_lsp_configs.lemminx = {
+    default_config = {
+      cmd = {"${lemminx}/bin/lemminx"};
+      filetypes = {'xml'};
+      root_dir = function(fname)
+        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+      end;
+      settings = {};
+    };
+  }
+end
+nvim_lsp["lemminx"].setup { on_attach = on_attach; }
+
+
 
 local saga = require 'lspsaga'
 saga.init_lsp_saga()
