@@ -578,7 +578,6 @@ nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} 
 nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
 nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
 nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
-nvim_lsp["ansiblels"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/ansible-language-server", "--stdio"} }
 
 nvim_lsp["sumneko_lua"].setup {
   on_attach = on_attach;
@@ -648,7 +647,32 @@ if not nvim_lsp["lemminx"] then
 end
 nvim_lsp["lemminx"].setup { on_attach = on_attach; }
 
-
+if not nvim_lsp["ansiblels"] then
+  nvim_lsp_configs.ansiblels = {
+    default_config = {
+      cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+      settings = {
+        ansible = {
+          python = {
+            interpreterPath = '${pkgs.python3Packages.python}/bin/python',
+          },
+          ansibleLint = {
+            path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
+            enabled = true,
+          },
+          ansible = {
+            path = '${pkgs.python3Packages.ansible}/bin/ansible',
+          },
+        },
+      },
+      filetypes = { 'yaml' },
+      root_dir = function(fname)
+        return util.root_pattern { '*.yml', '*.yaml' }(fname)
+      end,
+    };
+  }
+end
+nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
 
 local saga = require 'lspsaga'
 saga.init_lsp_saga()
@@ -943,7 +967,7 @@ EOF
           vim-fugitive
           #vimPlugins.nerdtree
           #vimPlugins.nerdtree-git-plugin
-          ansible-vim
+          #ansible-vim
           #vimPlugins.python-mode
           vim-polyglot
           #kotlin-vim
@@ -1026,7 +1050,6 @@ in [{
       pkgs.nodejs
       pkgs.gnugrep
       pkgs.python3Packages.yamllint
-      pkgs.python3Packages.ansible-lint
     ]}:$PATH"
     ${neovim}/bin/nvim "$@"
   '';
