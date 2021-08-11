@@ -5,17 +5,6 @@ let
     llvmPackages = pkgs.llvmPackages_6;
   });
 
-  omnisharp-roslyn = pkgs.omnisharp-roslyn.overrideDerivation (old: rec {
-    name = "omnisharp-roslyn-1.34.9";
-    src = pkgs.fetchurl {
-      url = "https://github.com/OmniSharp/omnisharp-roslyn/releases/download/v1.34.9/omnisharp-mono.tar.gz";
-      sha256 = "1b5jzc7dj9hhddrr73hhpq95h8vabkd6xac1bwq05lb24m0jsrp9";
-    };
-  });
-
-  all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/d98bdbff3ebdab408a12a9b7890d4cf400180839") {};
-  hie = (all-hies.selection { selector = p: { inherit (p) ghc865; }; });
-
   sha1Cmd = pkgs.writeScript "sha1.sh" ''
     #!${pkgs.stdenv.shell}
     echo -n "$@" | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}'
@@ -586,6 +575,10 @@ nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.n
 nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
 nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
 nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
+nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
+nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
+nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
+nvim_lsp["ansiblels"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/ansible-language-server", "--stdio"} }
 
 nvim_lsp["sumneko_lua"].setup {
   on_attach = on_attach;
@@ -662,8 +655,8 @@ saga.init_lsp_saga()
 
 EOF
     nnoremap <silent> gh :Lspsaga lsp_finder<CR>
-    nnoremap <silent> <leader>ca :Lspsaga code_action<CR>
-    vnoremap <silent> <leader>ca :<C-U>Lspsaga range_code_action<CR>
+    nnoremap <silent> ca :Lspsaga code_action<CR>
+    vnoremap <silent> ca :<C-U>Lspsaga range_code_action<CR>
     nnoremap <silent> K :Lspsaga hover_doc<CR>
     nnoremap <silent> gs :Lspsaga signature_help<CR>
     nnoremap <silent> gr :Lspsaga rename<CR>
@@ -1006,7 +999,8 @@ in [{
       vim-language-server \
       vscode-html-languageserver-bin \
       vscode-css-languageserver-bin \
-      coc-powershell
+      coc-powershell \
+      ansible-language-server
 
     pip_install \
       robotframework-lsp
@@ -1026,9 +1020,13 @@ in [{
   target = "${variables.homeDir}/bin/nvim";
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
-    export PATH="${lib.makeBinPath [ pkgs.python3Packages.python
-        /* omnisharp-roslyn hie */
-        pkgs.nodejs pkgs.gnugrep pkgs.python3Packages.yamllint
+    export PATH="${lib.makeBinPath [
+      pkgs.python3Packages.python
+      pkgs.perl
+      pkgs.nodejs
+      pkgs.gnugrep
+      pkgs.python3Packages.yamllint
+      pkgs.python3Packages.ansible-lint
     ]}:$PATH"
     ${neovim}/bin/nvim "$@"
   '';
