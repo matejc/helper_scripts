@@ -565,7 +565,7 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["pylsp"].setup { on_attach = on_attach; cmd = {"${pkgs.python3Packages.python-lsp-server}/bin/pylsp"} }
+nvim_lsp["pyright"].setup { on_attach = on_attach; cmd = {"${pkgs.pyright}/bin/pyright-langserver", "--stdio"} }
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
