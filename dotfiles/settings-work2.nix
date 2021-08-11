@@ -57,6 +57,7 @@ let
     ./kitty.nix
     ./httpserver.nix
     ./clearprimary.nix
+    ./py3-venv.nix
   ];
 
   activationScript = ''

@@ -722,21 +722,6 @@ EOF
 
     "autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
-    let g:ale_completion_enabled = 0
-
-    " Do not lint or fix minified files.
-    let g:ale_pattern_options = {
-      \ '\.min\.js$': {'ale_linters': [], 'ale_fixers': []},
-      \ '\.min\.css$': {'ale_linters': [], 'ale_fixers': []},
-      \ '\.cs$': {'ale_linters': [], 'ale_fixers': []},
-      \ '\.py$': {'ale_linters': [], 'ale_fixers': []},
-      \}
-    " If you configure g:ale_pattern_options outside of vimrc, you need this.
-    let g:ale_pattern_options_enabled = 1
-
-    let g:OmniSharp_server_stdio = 1
-    let g:OmniSharp_server_path = 'omnisharp'
-
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     let g:airline#extensions#tabline#enabled = 1
 
@@ -820,16 +805,6 @@ EOF
       au FileType markdown,textile,text setlocal spell spelllang=en_us
       au FileType markdown,textile,text setlocal formatoptions+=t
     augroup END
-
-    let g:pymode_lint_checkers = [ 'pylint', 'pyflakes', 'pep8', 'mccabe' ]
-    let g:pymode_paths = [
-      \'${pkgs.python3Packages.isort}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
-      \'${pkgs.python3Packages.lazy-object-proxy}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
-      \'${pkgs.python3Packages.wrapt}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
-      \'${pkgs.python3Packages.setuptools}/lib/${pkgs.python3Packages.python.libPrefix}/site-packages',
-    \]
-    let g:pymode_lint_cwindow = 0
-    let g:pymode_lint_unmodified = 1
 
     let g:deoplete#enable_at_startup = 1
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
