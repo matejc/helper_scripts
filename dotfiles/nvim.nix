@@ -23,6 +23,14 @@ let
     };
   });
 
+  pyright = pkgs.pyright.overrideDerivation (old: rec {
+    version = "1.1.161";
+    src = pkgs.fetchurl {
+      url = "https://registry.npmjs.org/pyright/-/pyright-${version}.tgz";
+      sha256 = "sha256-wmek3/DSJm9j7CsK/LVNdOG6zj3AP47funm8r8eDmSA=";
+    };
+  });
+
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')
       " Font tweaks
@@ -507,24 +515,24 @@ local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
   -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   -- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  -- buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  -- buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', 'rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  -- buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  -- buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  -- buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', 'cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '{', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', '}', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
@@ -560,7 +568,7 @@ local on_attach = function(client, bufnr)
     hint_enable = true, -- virtual hint enable
     hint_prefix = "",  -- Panda for parameter
     hint_scheme = "String",
-    use_lspsaga = true,  -- set to true if you want to use lspsaga popup
+    use_lspsaga = false,  -- set to true if you want to use lspsaga popup
     hi_parameter = "Search", -- how your parameter will be highlight
     max_height = 12, -- max height of signature floating_window, if content is more than max_height, you can scroll down
                      -- to view the hiding contents
@@ -576,22 +584,50 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
--- nvim_lsp["pyright"].setup {
---   on_attach = on_attach;
---   cmd = {"{pkgs.pyright}/bin/pyright-langserver", "--stdio"};
---   settings = {
---     python = {
---       analysis = {
---         autoSearchPaths = true,
---         useLibraryCodeForTypes = true,
---         diagnosticMode = 'workspace',
---       },
---     },
---   };
--- }
+nvim_lsp["pyright"].setup {
+  on_attach = on_attach;
+  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'workspace',
+        typeCheckingMode = 'off',
+      },
+    },
+  };
+}
 nvim_lsp["pylsp"].setup {
   on_attach = on_attach;
   cmd = {"${python-lsp-server}/bin/pylsp"};
+  settings = {
+    pylsp = {
+      plugins = {
+        rope_completion = {
+          enabled = false,
+        },
+        jedi_symbols = {
+          enabled = false,
+        },
+        jedi_signature_help = {
+          enabled = false,
+        },
+        jedi_references = {
+          enabled = false,
+        },
+        jedi_hover = {
+          enabled = false,
+        },
+        jedi_definition = {
+          enabled = false,
+        },
+        jedi_completion = {
+          enabled = false,
+        },
+      },
+    },
+  };
 }
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
@@ -721,22 +757,70 @@ nvim_lsp["lemminx"].setup { on_attach = on_attach; }
 -- end
 -- nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
 
-local saga = require 'lspsaga'
-saga.init_lsp_saga()
+-- local saga = require 'lspsaga'
+-- saga.init_lsp_saga()
+
+
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  resolve_timeout = 800;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = {
+    border = { ''', ''' ,''', ' ', ''', ''', ''', ' ' }, -- the border option is the same as `|help nvim_open_win|`
+    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
+    max_width = 60,
+    min_width = 30,
+    max_height = math.floor(vim.o.lines * 0.3),
+    min_height = 1,
+  };
+
+  source = {
+    buffer = true;
+    path = true;
+    tags = true;
+    spell = true;
+    calc = true;
+    nvim_lsp = true;
+    nvim_lua = true;
+    omni = false;
+    -- vsnip = true;
+    -- ultisnips = true;
+    -- luasnip = true;
+  };
+}
 
 EOF
-    nnoremap <silent> gh :Lspsaga lsp_finder<CR>
-    nnoremap <silent> ca :Lspsaga code_action<CR>
-    vnoremap <silent> ca :<C-U>Lspsaga range_code_action<CR>
-    nnoremap <silent> K :Lspsaga hover_doc<CR>
-    nnoremap <silent> gs :Lspsaga signature_help<CR>
-    nnoremap <silent> gr :Lspsaga rename<CR>
-    nnoremap <silent> gd :Lspsaga preview_definition<CR>
-    nnoremap <silent> cd :Lspsaga show_line_diagnostics<CR>
-    nnoremap <silent> } :Lspsaga diagnostic_jump_next<CR>
-    nnoremap <silent> { :Lspsaga diagnostic_jump_prev<CR>
-    nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
-    tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
+    " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
+    " nnoremap <silent> ca :Lspsaga code_action<CR>
+    " vnoremap <silent> ca :<C-U>Lspsaga range_code_action<CR>
+    " nnoremap <silent> K :Lspsaga hover_doc<CR>
+    " nnoremap <silent> gs :Lspsaga signature_help<CR>
+    " nnoremap <silent> rn :Lspsaga rename<CR>
+    " nnoremap <silent> gd :Lspsaga preview_definition<CR>
+    " nnoremap <silent> cd :Lspsaga show_line_diagnostics<CR>
+    " nnoremap <silent> } :Lspsaga diagnostic_jump_next<CR>
+    " nnoremap <silent> { :Lspsaga diagnostic_jump_prev<CR>
+    " nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
+    " tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
+
+    set completeopt=menuone,noselect
+    inoremap <silent><expr> <C-Space> compe#complete()
+    inoremap <silent><expr> <CR>      compe#confirm('<CR>')
+    inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+
+    nnoremap gd :lua require'telescope.builtin'.lsp_definitions{}<cr>
+    nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
+    nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
+    vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
     " function! OpenCompletion()
     "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
@@ -994,8 +1078,8 @@ EOF
           vim-polyglot
           #kotlin-vim
           vimPlugins.nvim-lspconfig
-          deoplete-nvim
-          deoplete-lsp
+          #deoplete-nvim
+          #deoplete-lsp
           #vimPlugins.neovim-auto-autoread
           vim-rsi
           vim-signify
@@ -1005,9 +1089,12 @@ EOF
           #vimPlugins.nvim-web-devicons
           vimPlugins.nvim-tree-lua
           vimPlugins.gruvbox-material
-          vimPlugins.lspsaga-nvim
+          #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
           vim-matchup
+          nvim-compe
+          plenary-nvim
+          telescope-nvim
         ];
         opt = [
         ];
