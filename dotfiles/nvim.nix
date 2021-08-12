@@ -12,6 +12,17 @@ let
 
   lemminx = import ../nixes/lemminx.nix { inherit pkgs; };
 
+  python-lsp-server = pkgs.python3Packages.python-lsp-server.overrideDerivation (old: rec {
+    pname = "python-lsp-server";
+    version = "1.2.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "python-lsp";
+      repo = pname;
+      rev = "v${version}";
+      sha256 = "028zaf6hrridjjam63i1n3x9cayiwq09xg8adnz2lcwpfyawl9ag";
+    };
+  });
+
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')
       " Font tweaks
@@ -565,7 +576,23 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["pyright"].setup { on_attach = on_attach; cmd = {"${pkgs.pyright}/bin/pyright-langserver", "--stdio"} }
+-- nvim_lsp["pyright"].setup {
+--   on_attach = on_attach;
+--   cmd = {"{pkgs.pyright}/bin/pyright-langserver", "--stdio"};
+--   settings = {
+--     python = {
+--       analysis = {
+--         autoSearchPaths = true,
+--         useLibraryCodeForTypes = true,
+--         diagnosticMode = 'workspace',
+--       },
+--     },
+--   };
+-- }
+nvim_lsp["pylsp"].setup {
+  on_attach = on_attach;
+  cmd = {"${python-lsp-server}/bin/pylsp"};
+}
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
@@ -647,32 +674,52 @@ if not nvim_lsp["lemminx"] then
 end
 nvim_lsp["lemminx"].setup { on_attach = on_attach; }
 
-if not nvim_lsp["ansiblels"] then
-  nvim_lsp_configs.ansiblels = {
-    default_config = {
-      cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
-      settings = {
-        ansible = {
-          python = {
-            interpreterPath = '${pkgs.python3Packages.python}/bin/python',
-          },
-          ansibleLint = {
-            path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
-            enabled = true,
-          },
-          ansible = {
-            path = '${pkgs.python3Packages.ansible}/bin/ansible',
-          },
-        },
-      },
-      filetypes = { 'yaml' },
-      root_dir = function(fname)
-        return util.root_pattern { '*.yml', '*.yaml' }(fname)
-      end,
-    };
-  }
-end
-nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
+-- if not nvim_lsp["python_language_server"] then
+--   nvim_lsp_configs.python_language_server = {
+--     default_config = {
+--       cmd = { '{pkgs.python-language-server}/bin/python-language-server' };
+--       filetypes = { 'python' };
+--       root_dir = function(fname)
+--         local root_files = {
+--           'pyproject.toml',
+--           'setup.py',
+--           'setup.cfg',
+--           'requirements.txt',
+--           'Pipfile',
+--         }
+--         return nvim_lsp.util.root_pattern(unpack(root_files))(fname) or nvim_lsp.util.find_git_ancestor(fname) or nvim_lsp.util.path.dirname(fname)
+--       end;
+--     };
+--   }
+-- end
+-- nvim_lsp["python_language_server"].setup { on_attach = on_attach; }
+
+-- if not nvim_lsp["ansiblels"] then
+--   nvim_lsp_configs.ansiblels = {
+--     default_config = {
+--       cmd = { '{variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+--       settings = {
+--         ansible = {
+--           python = {
+--             interpreterPath = '{pkgs.python3Packages.python}/bin/python',
+--           },
+--           ansibleLint = {
+--             path = '{pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
+--             enabled = true,
+--           },
+--           ansible = {
+--             path = '{pkgs.python3Packages.ansible}/bin/ansible',
+--           },
+--         },
+--       },
+--       filetypes = { 'yaml' },
+--       root_dir = function(fname)
+--         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+--       end,
+--     };
+--   }
+-- end
+-- nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
 
 local saga = require 'lspsaga'
 saga.init_lsp_saga()
@@ -998,8 +1045,7 @@ in [{
       vim-language-server \
       vscode-html-languageserver-bin \
       vscode-css-languageserver-bin \
-      coc-powershell \
-      ansible-language-server
+      coc-powershell
 
     pip_install \
       robotframework-lsp
