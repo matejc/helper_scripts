@@ -116,6 +116,7 @@ let
     ./swaylockscreen.nix
     ./sway-launcher-desktop.nix
     ./clearprimary.nix
+    ./py3-venv.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst
