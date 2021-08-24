@@ -416,21 +416,22 @@ let
     " autocmd VimLeave * NERDTreeClose
 
     let g:VM_mouse_mappings = 1
+    let g:VM_default_mappings = 0
     let g:VM_maps = {}
     let g:VM_maps['Find Under']                  = '<C-n>'
     let g:VM_maps['Find Subword Under']          = '<C-n>'
-    let g:VM_maps["Select All"]                  = '<leader>A'
-    let g:VM_maps["Start Regex Search"]          = 'g/'
+    let g:VM_maps["Select All"]                  = '<C-S-N>'
+    " let g:VM_maps["Start Regex Search"]          = 'g/'
     let g:VM_maps["Add Cursor Down"]             = '<C-Down>'
     let g:VM_maps["Add Cursor Up"]               = '<C-Up>'
-    let g:VM_maps["Add Cursor At Pos"]           = 'g<space>'
-    let g:VM_maps["Visual Regex"]                = 'g/'
-    let g:VM_maps["Visual All"]                  = '<leader>A'
-    let g:VM_maps["Visual Add"]                  = '<A-a>'
-    let g:VM_maps["Visual Find"]                 = '<A-f>'
-    let g:VM_maps["Visual Cursors"]              = '<A-c>'
-    let g:VM_maps["Select l"]              = '<A-Right>'
-    let g:VM_maps["Select h"]              = '<A-Left>'
+    let g:VM_maps["Add Cursor At Pos"]           = '<C-g>'
+    " let g:VM_maps["Visual Regex"]                = 'g/'
+    " let g:VM_maps["Visual All"]                  = '<leader>A'
+    " let g:VM_maps["Visual Add"]                  = '<A-a>'
+    " let g:VM_maps["Visual Find"]                 = '<A-f>'
+    " let g:VM_maps["Visual Cursors"]              = '<A-c>'
+    " let g:VM_maps["Select l"]              = '<A-Right>'
+    " let g:VM_maps["Select h"]              = '<A-Left>'
 
     set autoread
     " autocmd VimEnter * AutoreadLoop
@@ -556,6 +557,15 @@ local on_attach = function(client, bufnr)
   --   ]], false)
   -- end
 
+  -- if client.resolved_capabilities.signature_help then
+  --   vim.api.nvim_exec([[
+  --     augroup lsp_signature_help
+  --       autocmd!
+  --       autocmd CursorHold <buffer> lua vim.lsp.buf.signature_help()
+  --     augroup END
+  --   ]], false)
+  -- end
+
   cfg = {
     bind = true, -- This is mandatory, otherwise border config won't get registered.
                  -- If you want to hook lspsaga or other signature handler, pls set to false
@@ -565,8 +575,9 @@ local on_attach = function(client, bufnr)
                    -- mode, 10 by default
 
     floating_window = true, -- show hint in a floating window, set to false for virtual text only mode
-    hint_enable = true, -- virtual hint enable
-    hint_prefix = "",  -- Panda for parameter
+    fix_pos = false,  -- set to true, the floating window will not auto-close until finish all parameters
+    hint_enable = false, -- virtual hint enable
+    hint_prefix = "🐼 ",  -- Panda for parameter
     hint_scheme = "String",
     use_lspsaga = false,  -- set to true if you want to use lspsaga popup
     hi_parameter = "Search", -- how your parameter will be highlight
@@ -574,9 +585,22 @@ local on_attach = function(client, bufnr)
                      -- to view the hiding contents
     max_width = 120, -- max_width of signature floating_window, line will be wrapped if exceed max_width
     handler_opts = {
-      border = "shadow"   -- double, single, shadow, none
+      border = "single"   -- double, single, shadow, none
     },
-    extra_trigger_chars = {} -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
+
+    trigger_on_newline = false, -- sometime show signature on new line can be confusing, set it to false for #58
+    extra_trigger_chars = {}, -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
+    -- deprecate !!
+    -- decorator = {"`", "`"}  -- this is no longer needed as nvim give me a handler and it allow me to highlight active parameter in floating_window
+    zindex = 200, -- by default it will be on top of all floating windows, set to 50 send it to bottom
+    debug = false, -- set to true to enable debug logging
+    log_path = "debug_log_file_path", -- debug log path
+
+    padding = "", -- character to pad on left and right of signature can be ' ', or '|'  etc
+
+    shadow_blend = 36, -- if you using shadow as border use this set the opacity
+    shadow_guibg = 'Black', -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
+    toggle_key = nil -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
   }
   require'lsp_signature'.on_attach(cfg)
 
@@ -584,51 +608,6 @@ end
 
 nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
 nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["pyright"].setup {
-  on_attach = on_attach;
-  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
-  settings = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'workspace',
-        typeCheckingMode = 'off',
-      },
-    },
-  };
-}
-nvim_lsp["pylsp"].setup {
-  on_attach = on_attach;
-  cmd = {"${python-lsp-server}/bin/pylsp"};
-  settings = {
-    pylsp = {
-      plugins = {
-        rope_completion = {
-          enabled = false,
-        },
-        jedi_symbols = {
-          enabled = false,
-        },
-        jedi_signature_help = {
-          enabled = false,
-        },
-        jedi_references = {
-          enabled = false,
-        },
-        jedi_hover = {
-          enabled = false,
-        },
-        jedi_definition = {
-          enabled = false,
-        },
-        jedi_completion = {
-          enabled = false,
-        },
-      },
-    },
-  };
-}
 nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
 nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
 nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
@@ -710,6 +689,51 @@ if not nvim_lsp["lemminx"] then
 end
 nvim_lsp["lemminx"].setup { on_attach = on_attach; }
 
+nvim_lsp["pyright"].setup {
+  on_attach = on_attach;
+  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'workspace',
+        typeCheckingMode = 'off',
+      },
+    },
+  };
+}
+nvim_lsp["pylsp"].setup {
+  on_attach = on_attach;
+  cmd = {"${python-lsp-server}/bin/pylsp"};
+  settings = {
+    pylsp = {
+      plugins = {
+        rope_completion = {
+          enabled = false,
+        },
+        jedi_symbols = {
+          enabled = false,
+        },
+        jedi_signature_help = {
+          enabled = false,
+        },
+        jedi_references = {
+          enabled = false,
+        },
+        jedi_hover = {
+          enabled = false,
+        },
+        jedi_definition = {
+          enabled = false,
+        },
+        jedi_completion = {
+          enabled = false,
+        },
+      },
+    },
+  };
+}
 -- if not nvim_lsp["python_language_server"] then
 --   nvim_lsp_configs.python_language_server = {
 --     default_config = {
@@ -991,6 +1015,17 @@ EOF
     inoremap <C-S-P> <esc><C-o>
     nnoremap <C-S-N> <C-i>
     inoremap <C-S-N> <esc><C-i>
+
+    set splitbelow
+    set splitright
+    nnoremap <A-h> :sp<cr>
+    nnoremap <A-v> :vsp<cr>
+    nnoremap <A-c> :close<cr>
+    nnoremap <silent> <A-c> :close<cr>
+    nnoremap <A-Down> <C-W><C-J>
+    nnoremap <A-Up> <C-W><C-K>
+    nnoremap <A-Right> <C-W><C-L>
+    nnoremap <A-Left> <C-W><C-H>
 
     autocmd UIEnter * source ${ginitVim}
   '';

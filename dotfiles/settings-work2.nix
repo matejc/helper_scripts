@@ -1,7 +1,7 @@
 { pkgs, lib ? pkgs.lib }:
 let
 
-  nixGL = import (builtins.fetchGit git://github.com/guibou/nixGL) {};
+  nixGL = (import (builtins.fetchGit git://github.com/guibou/nixGL) {}).auto;
 
   variables = rec {
     prefix = "${variables.homeDir}/workarea/helper_scripts";
@@ -21,7 +21,7 @@ let
     sway.enable = false;
     programs = {
       browser = "google-chrome";
-      slack = "flatpak run com.slack.Slack --enable-features=WebRTCPipeWireCapturer";
+      #slack = "flatpak run com.slack.Slack --enable-features=WebRTCPipeWireCapturer";
       editor = "${pkgs.nano}/bin/nano";
       terminal = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
       kitty = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
@@ -38,7 +38,7 @@ let
       "${homeDir}/bin/browser"
       "${homeDir}/bin/keepassxc"
       "${homeDir}/bin/clearprimary"
-      "${homeDir}/bin/slack"
+      #"${homeDir}/bin/slack"
     ];
   };
 
