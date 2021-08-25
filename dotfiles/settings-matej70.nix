@@ -117,6 +117,7 @@ let
     ./sway-launcher-desktop.nix
     ./clearprimary.nix
     ./py3-venv.nix
+    ./keepassxc-oath.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst

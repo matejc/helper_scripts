@@ -17,7 +17,11 @@ let
 in
 [{
   target = "${variables.homeDir}/bin/sway-launcher-desktop";
-  source = "${launcher}/bin/sway-launcher-desktop";
+  source = pkgs.writeScript "sway-launcher-desktop.sh" ''
+    #!${pkgs.stdenv.shell}
+    export PATH="${variables.homeDir}/bin:$PATH"
+    exec ${launcher}/bin/sway-launcher-desktop
+  '';
 } /*{
   target = "${variables.homeDir}/.config/sway-launcher-desktop/providers.conf";
   source = pkgs.writeText "providers.conf" ''
