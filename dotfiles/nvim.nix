@@ -156,16 +156,16 @@ let
     nnoremap <silent> <C-S-W> :bd!<cr>
     nnoremap <silent> <C-w> :bd<cr>
     map <C-q> <esc>:qall
-    nno <silent> <c-s> :w<CR>
-    ino <silent> <c-s> <esc>:w<CR>
+    nnoremap <silent> <c-s> :w<CR>
+    inoremap <silent> <c-s> <C-o>:w<CR>
     nnoremap <silent> <c-PageUp> :bprev<cr>
     nnoremap <silent> <c-PageDown> :bnext<cr>
-    inoremap <silent> <c-PageUp> <esc>:bprev<cr>
-    inoremap <silent> <c-PageDown> <esc>:bnext<cr>
+    inoremap <silent> <c-PageUp> <C-o>:bprev<cr>
+    inoremap <silent> <c-PageDown> <C-o>:bnext<cr>
 
-    nno <silent> <cr> o
-    nno <silent> <c-cr> o
-    imap <silent> <c-cr> <esc>o
+    nnoremap <silent> <cr> o
+    nnoremap <silent> <c-cr> o
+    inoremap <silent> <c-cr> <C-o>o
 
     inoremap <C-u> <esc>ui
     nnoremap <C-u> u
@@ -257,8 +257,8 @@ let
 
     nmap <C-S-Down> :m .+1<CR>==
     nmap <C-S-Up> :m .-2<CR>==
-    imap <C-S-Down> <Esc>:m .+1<CR>==gi
-    imap <C-S-Up> <Esc>:m .-2<CR>==gi
+    inoremap <C-S-Down> <C-o>:m .+1<CR>
+    inoremap <C-S-Up> <C-o>:m .-2<CR>
     vmap <C-S-Down> :m '>+1<CR>gv=gv
     vmap <C-S-Up> :m '<-2<CR>gv=gv
 
@@ -496,11 +496,11 @@ let
 
     " inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
 
-    inoremap <A-del> <space><esc>ce
-    inoremap <C-del> <space><esc>ce
-    inoremap <C-BS> <C-W>
+    inoremap <silent> <A-del> <C-o>ce
+    inoremap <silent> <C-del> <C-o>ce
+    inoremap <silent> <C-BS> <C-W>
 
-    nnoremap <C-del> "_dw
+    nnoremap <silent> <C-del> "_dw
 
     nnoremap d "_d
     nnoremap D "_D
@@ -689,49 +689,11 @@ if not nvim_lsp["lemminx"] then
 end
 nvim_lsp["lemminx"].setup { on_attach = on_attach; }
 
-nvim_lsp["pyright"].setup {
-  on_attach = on_attach;
-  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
-  settings = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'workspace',
-        typeCheckingMode = 'off',
-      },
-    },
-  };
-}
 nvim_lsp["pylsp"].setup {
   on_attach = on_attach;
   cmd = {"${python-lsp-server}/bin/pylsp"};
+  filetypes = { 'python' };
   settings = {
-    pylsp = {
-      plugins = {
-        rope_completion = {
-          enabled = false,
-        },
-        jedi_symbols = {
-          enabled = false,
-        },
-        jedi_signature_help = {
-          enabled = false,
-        },
-        jedi_references = {
-          enabled = false,
-        },
-        jedi_hover = {
-          enabled = false,
-        },
-        jedi_definition = {
-          enabled = false,
-        },
-        jedi_completion = {
-          enabled = false,
-        },
-      },
-    },
   };
 }
 -- if not nvim_lsp["python_language_server"] then

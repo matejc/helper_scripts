@@ -18,6 +18,7 @@ let
     };
     term = null;
     terminal = null;
+    timeZone = "Europe/Helsinki";
     sway.enable = false;
     programs = {
       browser = "google-chrome";

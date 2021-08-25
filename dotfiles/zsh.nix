@@ -27,6 +27,9 @@ in
     ${lib.optionalString (variables.programs.terminal != null) ''
       export TERMINAL="${variables.programs.terminal}"
     ''}
+    ${lib.optionalString (variables ? timeZone) ''
+      export TZ="${variables.timeZone}"
+    ''}
 
     #. ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
     #if [[ $TERM == xterm-termite ]]; then
@@ -88,6 +91,12 @@ in
     # alt + left/right
     bindkey "^[[1;3C" forward-word
     bindkey "^[[1;3D" backward-word
+
+    if [[ -t 0 && $- = *i* ]]
+    then
+      stty -ixon
+      bindkey -r '^S'
+    fi
 
     export HISTFILESIZE=10000000
     export HISTSIZE=10000000
