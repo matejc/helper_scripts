@@ -156,6 +156,7 @@ let
     nnoremap <silent> <C-S-W> :bd!<cr>
     nnoremap <silent> <C-w> :bd<cr>
     map <C-q> <esc>:qall
+    inoremap <C-q> <esc>:qall
     nnoremap <silent> <c-s> :w<CR>
     inoremap <silent> <c-s> <C-o>:w<CR>
     nnoremap <silent> <c-PageUp> :bprev<cr>
@@ -181,11 +182,12 @@ let
 
     "nnoremap <C-U> <esc>:UndotreeToggle<CR>
 
-    imap <C-b> <esc>mzgg=G`zi
-    nmap <C-b> mzgg=G`z
+    function! PyBeautify()
+      :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
+    endfunction
 
     autocmd FileType javascript nmap <buffer> <C-b> :call JsBeautify()<cr>
-    autocmd FileType javascript imap <buffer> <C-b> <esc>:call JsBeautify()<cr>i
+    autocmd FileType python nnoremap <buffer> <C-b> :call PyBeautify()<cr>
 
     nmap <PageUp> 10<up>
     nmap <PageDown> 10<down>
@@ -434,7 +436,6 @@ let
     " let g:VM_maps["Select h"]              = '<A-Left>'
 
     set autoread
-    " autocmd VimEnter * AutoreadLoop
     autocmd FocusGained,BufEnter * silent! checktime
 
     nmap <c-_> <leader>c<space>
@@ -694,8 +695,41 @@ nvim_lsp["pylsp"].setup {
   cmd = {"${python-lsp-server}/bin/pylsp"};
   filetypes = { 'python' };
   settings = {
+    pylsp = {
+      configurationSources = { 'pylint' };
+      plugins = {
+        pylint = {
+          enabled = true;
+          args = { "--enable=imports", "--disable=line-too-long,missing-function-docstring,missing-module-docstring,missing-class-docstring,protected-access" };
+          executable = "${pkgs.python3Packages.pylint}/bin/pylint";
+        };
+      };
+    };
   };
 }
+-- nvim_lsp["pyright"].setup {
+--   on_attach = on_attach;
+--   cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+--   settings = {
+--     python = {
+--       analysis = {
+--         autoSearchPaths = true,
+--         useLibraryCodeForTypes = true,
+--         diagnosticMode = 'workspace',
+--         typeCheckingMode = 'strict',
+--         diagnosticSeverityOverrides = {
+--           reportMissingTypeStubs = 'none',
+--           reportPrivateUsage = 'none',
+--           reportUnknownParameterType = "none",
+--           reportUnknownArgumentType = "none",
+--           reportUnknownLambdaType = "none",
+--           reportUnknownVariableType = "none",
+--           reportUnknownMemberType = "none",
+--         },
+--       },
+--     },
+--   };
+-- }
 -- if not nvim_lsp["python_language_server"] then
 --   nvim_lsp_configs.python_language_server = {
 --     default_config = {
@@ -783,6 +817,15 @@ require'compe'.setup {
     -- luasnip = true;
   };
 }
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    underline = true,
+    virtual_text = true,
+    signs = true,
+    update_in_insert = true
+  }
+)
 
 EOF
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -913,12 +956,14 @@ EOF
     augroup END
 
     augroup web
-      au BufNewFile,BufRead *.js,*.html,*.css set tabstop=2
-      au BufNewFile,BufRead *.js,*.html,*.css set softtabstop=2
-      au BufNewFile,BufRead *.js,*.html,*.css set shiftwidth=2
+      au!
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal tabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal softtabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal shiftwidth=2
     augroup END
 
     augroup markdown
+      au!
       au FileType markdown,textile,text setlocal spell spelllang=en_us
       au FileType markdown,textile,text setlocal formatoptions+=t
     augroup END
@@ -1033,14 +1078,13 @@ EOF
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "a5ac2f45ff84a688a09479f357a9909d5b914294";
-      sha256 = "sha256-0aXo8f1YGEI8PkLDOSgxqQy7qK031R+eapCppUFy61E=";
+      rev = "a373ca1d826b1386f1fa291de70ee5d6bb81ec9b";
+      sha256 = "1llaszrgfxkp9d53mwsrxhi898yg5vcnq1sxasbavc0hzdjn8rwr";
     };
-    buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
+    #buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
 
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
-  #neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
