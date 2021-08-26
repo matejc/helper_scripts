@@ -1,7 +1,10 @@
+akinsho/bufferline.nvim
 APZelos/blamer.nvim
 dyng/ctrlsf.vim
+ellisonleao/gruvbox.nvim@main
 equalsraf/neovim-gui-shim
 f-person/git-blame.nvim
+glepnir/galaxyline.nvim@main
 glepnir/lspsaga.nvim@main
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
@@ -22,6 +25,7 @@ prabirshrestha/asyncomplete.vim
 preservim/nerdtree
 python-mode/python-mode
 ray-x/lsp_signature.nvim
+rktjmp/lush.nvim@main
 sainnhe/gruvbox-material
 sainnhe/sonokai
 sickill/vim-pasta

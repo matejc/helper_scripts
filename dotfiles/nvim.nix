@@ -91,13 +91,13 @@ let
 
     set guifont=${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
     set termguicolors
-    " set background=light
+    set background=dark
 
     let g:gitgutter_override_sign_column_highlight = 0
 
-    " The configuration options should be placed before `colorscheme sonokai`.
-    let g:gruvbox_original_background = 'medium'
-    colorscheme gruvbox-material
+    " let g:gruvbox_original_background = 'medium'
+    " colorscheme gruvbox-material
+    colorscheme gruvbox
 
     " let g:neosolarized_contrast = "high"
     " let g:neosolarized_visibility = "high"
@@ -154,15 +154,22 @@ let
     set encoding=utf-8
 
     nnoremap <silent> <C-S-W> :bd!<cr>
+    inoremap <silent> <C-S-W> <C-o>:bd!<cr>
     nnoremap <silent> <C-w> :bd<cr>
+    inoremap <silent> <C-w> <C-o>:bd<cr>
     map <C-q> <esc>:qall
     inoremap <C-q> <esc>:qall
     nnoremap <silent> <c-s> :w<CR>
     inoremap <silent> <c-s> <C-o>:w<CR>
-    nnoremap <silent> <c-PageUp> :bprev<cr>
-    nnoremap <silent> <c-PageDown> :bnext<cr>
-    inoremap <silent> <c-PageUp> <C-o>:bprev<cr>
-    inoremap <silent> <c-PageDown> <C-o>:bnext<cr>
+    nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
+    nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
+    inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
+    inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR>
+
+    nnoremap <silent><C-S-PageDown> :BufferLineMoveNext<CR>
+    nnoremap <silent><C-S-PageUp> :BufferLineMovePrev<CR>
+    inoremap <silent><C-S-PageDown> <C-o>:BufferLineMoveNext<CR>
+    inoremap <silent><C-S-PageUp> <C-o>:BufferLineMovePrev<CR>
 
     nnoremap <silent> <cr> o
     nnoremap <silent> <c-cr> o
@@ -333,25 +340,25 @@ let
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
     nnoremap <C-h> <leader>hu
 
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline_powerline_fonts = 0
-    if !exists('g:airline_symbols')
-      let g:airline_symbols = {}
-    endif
-    let g:airline_symbols.branch = ''
-    let g:airline_symbols.readonly = ''
+    " let g:airline#extensions#tabline#enabled = 1
+    " let g:airline_powerline_fonts = 0
+    " if !exists('g:airline_symbols')
+    "   let g:airline_symbols = {}
+    " endif
+    " let g:airline_symbols.branch = ''
+    " let g:airline_symbols.readonly = ''
 
-    let g:airline_symbols.colnr = ' ℅:'
-    let g:airline_symbols.crypt = '🔒'
-    let g:airline_symbols.linenr = '¶'
-    let g:airline_symbols.maxlinenr = ""
-    let g:airline_symbols.paste = 'ρ'
-    let g:airline_symbols.spell = 'Ꞩ'
-    let g:airline_symbols.notexists = 'Ɇ'
-    let g:airline_symbols.whitespace = 'Ξ'
+    " let g:airline_symbols.colnr = ' ℅:'
+    " let g:airline_symbols.crypt = '🔒'
+    " let g:airline_symbols.linenr = '¶'
+    " let g:airline_symbols.maxlinenr = ""
+    " let g:airline_symbols.paste = 'ρ'
+    " let g:airline_symbols.spell = 'Ꞩ'
+    " let g:airline_symbols.notexists = 'Ɇ'
+    " let g:airline_symbols.whitespace = 'Ξ'
 
-    let g:airline_theme='gruvbox_material'
-    " let g:airline_solarized_bg='light'
+    " let g:airline_theme='gruvbox_material'
+    " " let g:airline_solarized_bg='light'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -827,7 +834,704 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
+require("bufferline").setup{
+  options = {
+    numbers = "none",
+    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
+    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
+    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
+    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
+    -- NOTE: this plugin is designed with this icon in mind,
+    -- and so changing this is NOT recommended, this is intended
+    -- as an escape hatch for people who cannot bear it for whatever reason
+    indicator_icon = '',
+    buffer_close_icon = '',
+    modified_icon = '●',
+    close_icon = '',
+    left_trunc_marker = '',
+    right_trunc_marker = '',
+    max_name_length = 18,
+    max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
+    tab_size = 18,
+    diagnostics = "nvim_lsp",
+    diagnostics_indicator = function(count, level, diagnostics_dict, context)
+      return "("..count..")"
+    end,
+    offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "center"}},
+    separator_style = { "", "" },
+    show_buffer_icons = true, -- disable filetype icons for buffers
+    show_buffer_close_icons = true,
+    show_close_icon = false,
+    show_tab_indicators = true,
+    always_show_bufferline = true,
+    custom_areas = {
+      right = function()
+        local result = {}
+        local error = vim.lsp.diagnostic.get_count(0, [[Error]])
+        local warning = vim.lsp.diagnostic.get_count(0, [[Warning]])
+        local info = vim.lsp.diagnostic.get_count(0, [[Information]])
+        local hint = vim.lsp.diagnostic.get_count(0, [[Hint]])
+
+        if error ~= 0 then
+          table.insert(result, {text = "  " .. error, guifg = "#EC5241"})
+        end
+
+        if warning ~= 0 then
+          table.insert(result, {text = "  " .. warning, guifg = "#EFB839"})
+        end
+
+        if hint ~= 0 then
+          table.insert(result, {text = "  " .. hint, guifg = "#A3BA5E"})
+        end
+
+        if info ~= 0 then
+          table.insert(result, {text = "  " .. info, guifg = "#7EA9A7"})
+        end
+        return result
+      end,
+    }
+  }
+}
+
+function _G.self_color_gruvbox_dark()
+  vim.g.gruvbox_invert_selection = 0
+  vim.g.gruvbox_italic = 1
+  vim.g.gruvbox_sign_column = 'bg0'
+
+  vim.cmd('set background=dark')
+  vim.cmd('colorscheme gruvbox')
+
+  vim.cmd('highlight StatusLine                                                                                                guifg=#3c3836')
+
+  vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#3c3836 guifg=#27b31a')
+  vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#3c3836 guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#3c3836 guifg=#fe811b')
+  vim.cmd('highlight GalaxyLeftGitDiffRemoveActive                                                               guibg=#3c3836 guifg=#fb4632')
+  vim.cmd('highlight GalaxyLeftLspInactive                                                                       guibg=#3c3836 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyMapperCommon1                                                                         guibg=#3c3836 guifg=#504945')
+  vim.cmd('highlight GalaxyMapperCommon2                                                                         guibg=#bdae93 guifg=#504945')
+  vim.cmd('highlight GalaxyMapperCommon3                                                                         guibg=#3c3836 guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyMapperCommon4                                                                         guibg=#504945 guifg=#ebdbb2')
+  vim.cmd('highlight GalaxyMapperCommon5                                                                         guibg=#3c3836 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyMapperCommon6                                                                         guibg=#504945 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyMapperCommon7                                                                         guibg=#504945 guifg=#bdae93')
+  vim.cmd('highlight GalaxyMapperCommon8                                                                         guibg=#504945 guifg=#91a6ba')
+  vim.cmd('highlight GalaxyMidFileStatusModified                                                                 guibg=#3c3836 guifg=#8ec07c')
+  vim.cmd('highlight GalaxyMidFileStatusReadonly                                                                 guibg=#3c3836 guifg=#fe811b')
+  vim.cmd('highlight GalaxyMidFileStatusRestricted                                                               guibg=#3c3836 guifg=#fb4632')
+  vim.cmd('highlight GalaxyMidFileStatusUnmodified                                                               guibg=#3c3836 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyRightLspErrorActive                                                                   guibg=#3c3836 guifg=#fb4632')
+  vim.cmd('highlight GalaxyRightLspHintActive                                                                    guibg=#3c3836 guifg=#27b31a')
+  vim.cmd('highlight GalaxyRightLspInformationActive                                                             guibg=#3c3836 guifg=#127fff')
+  vim.cmd('highlight GalaxyRightLspWarningActive                                                                 guibg=#3c3836 guifg=#fe811b')
+  vim.cmd('highlight GalaxyViModeCommandInverted                                                                 guibg=#504945 guifg=#fabd2f')
+  vim.cmd('highlight GalaxyViModeCommandUnturned                                                                 guibg=#fabd2f guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeCommonVisualInverted                                                            guibg=#504945 guifg=#fe811b')
+  vim.cmd('highlight GalaxyViModeCommonVisualUnturned                                                            guibg=#fe811b guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeEmptyInverted                                                                   guibg=#504945 guifg=#bdae93')
+  vim.cmd('highlight GalaxyViModeEmptyUnturned                                                                   guibg=#bdae93 guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeInsertInverted                                                                  guibg=#504945 guifg=#83a598')
+  vim.cmd('highlight GalaxyViModeInsertUnturned                                                                  guibg=#83a598 guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeNormalInverted                                                                  guibg=#504945 guifg=#bdae93')
+  vim.cmd('highlight GalaxyViModeNormalUnturned                                                                  guibg=#bdae93 guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeReplaceInverted                                                                 guibg=#504945 guifg=#8ec07c')
+  vim.cmd('highlight GalaxyViModeReplaceUnturned                                                                 guibg=#8ec07c guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeShellInverted                                                                   guibg=#504945 guifg=#d3869b')
+  vim.cmd('highlight GalaxyViModeShellUnturned                                                                   guibg=#d3869b guifg=#3c3836')
+  vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#504945 guifg=#d3869b')
+  vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#3c3836')
+end
+
+function _G.self_color_gruvbox_light()
+  vim.g.gruvbox_contrast_light = 'medium'
+  vim.g.gruvbox_invert_selection = 0
+  vim.g.gruvbox_italic = 1
+  vim.g.gruvbox_sign_column = 'bg0'
+
+  vim.cmd('set background=light')
+  vim.cmd('colorscheme gruvbox')
+
+  vim.cmd('highlight StatusLine                                                                                                guifg=#ebdbb2')
+
+  vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#ebdbb2 guifg=#27b31a')
+  vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#ebdbb2 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#ebdbb2 guifg=#dc7f27')
+  vim.cmd('highlight GalaxyLeftGitDiffRemoveActive                                                               guibg=#ebdbb2 guifg=#d83a03')
+  vim.cmd('highlight GalaxyLeftLspInactive                                                                       guibg=#ebdbb2 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon1                                                                         guibg=#ebdbb2 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyMapperCommon2                                                                         guibg=#bdae93 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon3                                                                         guibg=#ebdbb2 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon4                                                                         guibg=#d5c4a1 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon5                                                                         guibg=#ebdbb2 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon6                                                                         guibg=#d5c4a1 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyMapperCommon7                                                                         guibg=#d5c4a1 guifg=#bdae93')
+  vim.cmd('highlight GalaxyMapperCommon8                                                                         guibg=#d5c4a1 guifg=#fbf0c9')
+  vim.cmd('highlight GalaxyMidFileStatusModified                                                                 guibg=#ebdbb2 guifg=#27b31a')
+  vim.cmd('highlight GalaxyMidFileStatusReadonly                                                                 guibg=#ebdbb2 guifg=#dc7f27')
+  vim.cmd('highlight GalaxyMidFileStatusRestricted                                                               guibg=#ebdbb2 guifg=#d83a03')
+  vim.cmd('highlight GalaxyMidFileStatusUnmodified                                                               guibg=#ebdbb2 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyRightLspErrorActive                                                                   guibg=#ebdbb2 guifg=#d83a03')
+  vim.cmd('highlight GalaxyRightLspHintActive                                                                    guibg=#ebdbb2 guifg=#27b31a')
+  vim.cmd('highlight GalaxyRightLspInformationActive                                                             guibg=#ebdbb2 guifg=#127efc')
+  vim.cmd('highlight GalaxyRightLspWarningActive                                                                 guibg=#ebdbb2 guifg=#dc7f27')
+  vim.cmd('highlight GalaxyViModeCommandInverted                                                                 guibg=#d5c4a1 guifg=#dc7f27')
+  vim.cmd('highlight GalaxyViModeCommandUnturned                                                                 guibg=#dc7f27 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeCommonVisualInverted                                                            guibg=#d5c4a1 guifg=#ad3b14')
+  vim.cmd('highlight GalaxyViModeCommonVisualUnturned                                                            guibg=#ad3b14 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeEmptyInverted                                                                   guibg=#d5c4a1 guifg=#bdae93')
+  vim.cmd('highlight GalaxyViModeEmptyUnturned                                                                   guibg=#bdae93 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeInsertInverted                                                                  guibg=#d5c4a1 guifg=#076678')
+  vim.cmd('highlight GalaxyViModeInsertUnturned                                                                  guibg=#076678 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeNormalInverted                                                                  guibg=#d5c4a1 guifg=#bdae93')
+  vim.cmd('highlight GalaxyViModeNormalUnturned                                                                  guibg=#bdae93 guifg=#7c6f64')
+  vim.cmd('highlight GalaxyViModeReplaceInverted                                                                 guibg=#d5c4a1 guifg=#447a59')
+  vim.cmd('highlight GalaxyViModeReplaceUnturned                                                                 guibg=#447a59 guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeShellInverted                                                                   guibg=#d5c4a1 guifg=#d3869b')
+  vim.cmd('highlight GalaxyViModeShellUnturned                                                                   guibg=#d3869b guifg=#d5c4a1')
+  vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#d5c4a1 guifg=#d3869b')
+  vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#d5c4a1')
+end
+
+
+require ('galaxyline').short_line_list = {
+  'Mundo',
+  'MundoDiff',
+  'NvimTree',
+  'fugitive',
+  'fugitiveblame',
+  'help',
+  'minimap',
+  'qf',
+  'tabman',
+  'tagbar',
+  'toggleterm'
+}
+
+local vi_mode_mapping = {
+  [""]   = {'Empty',        '-'},
+  ['!']  = {'Shell',        '-'},
+  ['^V'] = {'CommonVisual', 'B'}, -- NOTE: You'll have to remove '^V' and input a 'real' '^V' sequence. You can do that with the following key sequence: <SHIFT-i> + <CTRL-v> + <CTRL-v> (don't be slow with the double <CTRL-v>)
+  ['R']  = {'Replace',      'R'},
+  ['Rv'] = {'Normal',       '-'},
+  ['S']  = {'Normal',       '-'},
+  ['V']  = {'CommonVisual', 'L'},
+  ['c']  = {'Command',      'C'},
+  ['ce'] = {'Normal',       '-'},
+  ['cv'] = {'Normal',       '-'},
+  ['i']  = {'Insert',       'I'},
+  ['ic'] = {'Normal',       '-'},
+  ['n']  = {'Normal',       'N'},
+  ['no'] = {'Normal',       '-'},
+  ['r']  = {'Normal',       '-'},
+  ['r?'] = {'Normal',       '-'},
+  ['rm'] = {'Normal',       '-'},
+  ['s']  = {'Normal',       '-'},
+  ['t']  = {'Terminal',     'T'},
+  ['v']  = {'CommonVisual', 'V'}
+}
+
+require ('galaxyline').section.left = {
+  {
+    LeftViModeColourSet = {
+      provider = function()
+        if vi_mode_mapping[vim.fn.mode()] == nil then
+          vim.api.nvim_command("highlight link GalaxyViModeColourUnturned GalaxyViModeEmptyUnturned")
+          vim.api.nvim_command("highlight link GalaxyViModeColourInverted GalaxyViModeEmptyInverted")
+        else
+          vim.api.nvim_command("highlight link GalaxyViModeColourUnturned GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Unturned")
+          vim.api.nvim_command("highlight link GalaxyViModeColourInverted GalaxyViMode" .. vi_mode_mapping[vim.fn.mode()][1] .. "Inverted")
+        end
+      end
+    }
+  },
+  {
+    LeftViModeSeparator = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        return ' '
+      end
+    }
+  },
+  {
+    LeftViMode = {
+      highlight = 'GalaxyViModeColourUnturned',
+      provider = function()
+        if vi_mode_mapping[vim.fn.mode()] == nil then
+          return ' -'
+        else
+          return ' ' .. string.format('%s', vi_mode_mapping[vim.fn.mode()][2])
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourUnturned'
+    }
+  },
+  -- {
+  --   LeftWindowNumberSeparator = {
+  --     highlight = 'GalaxyViModeColourUnturned',
+  --     provider = function()
+  --       return ''
+  --     end,
+  --     separator = ' ',
+  --     separator_highlight = 'GalaxyViModeColourUnturned'
+  --   }
+  -- },
+  -- {
+  --   LeftWindowNumber = {
+  --     highlight = 'GalaxyViModeColourUnturned',
+  --     provider = function()
+  --       return '  ' .. vim.api.nvim_win_get_number(vim.api.nvim_get_current_win())
+  --     end,
+  --     separator = ' ',
+  --     separator_highlight = 'GalaxyViModeColourUnturned'
+  --   }
+  -- },
+  {
+    LeftStatusSeparator = {
+      highlight = 'GalaxyViModeColourInverted',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyViModeColourInverted'
+    }
+  },
+  {
+    LeftStatusPaste = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.o.paste then
+          return ''
+        else
+          return ''
+        end
+      end,
+      separator = '  ',
+      separator_highlight = 'GalaxyMapperCommon6',
+    }
+  },
+  {
+    LeftStatusSpell = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.wo.spell then
+          return '暈'
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftStatusMixedIndentWhiteSpace = {
+      provider = function()
+        vim.cmd('match none /\t/')
+
+        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 and vim.fn.search([[\v(^ +)]], 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+          vim.cmd('match ErrorMsg /\t/')
+          return ' '
+        end
+
+        if vim.fn.search('\\s$', 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+          return 'ﲕ '
+        end
+
+        if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 then
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon8')
+        else
+          vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
+        end
+
+        return ' '
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitSeparator = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitBranch = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if require('galaxyline.condition').check_git_workspace() then
+          return ' ' .. require('galaxyline.provider_vcs').get_git_branch()
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon6'
+    }
+  },
+  {
+    LeftGitDiffSeparator = {
+      highlight = 'GalaxyMapperCommon1',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon1',
+    }
+  },
+  {
+    LeftGitDiffAdd = {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_add() then
+          vim.cmd('highlight link GalaxyLeftGitDiffAdd GalaxyLeftGitDiffAddActive')
+          return '+' .. require('galaxyline.provider_vcs').diff_add()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffAdd GalaxyLeftGitDiffInactive')
+          return '+0 '
+        end
+      end
+    }
+  },
+  {
+    LeftGitDiffModified= {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_modified() then
+          vim.cmd('highlight link GalaxyLeftGitDiffModified GalaxyLeftGitDiffModifiedActive')
+          return '~' .. require('galaxyline.provider_vcs').diff_modified()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffModified GalaxyLeftGitDiffInactive')
+          return '~0 '
+        end
+      end
+    }
+  },
+  {
+    LeftGitDiffRemove = {
+      condition = require("galaxyline.condition").check_git_workspace,
+      provider = function()
+        if require('galaxyline.provider_vcs').diff_remove() then
+          vim.cmd('highlight link GalaxyLeftGitDiffRemove GalaxyLeftGitDiffRemoveActive')
+          return '-' .. require('galaxyline.provider_vcs').diff_remove()
+        else
+          vim.cmd('highlight link GalaxyLeftGitDiffRemove GalaxyLeftGitDiffInactive')
+          return '-0 '
+        end
+      end
+    }
+  },
+}
+
+require ('galaxyline').section.mid = {
+  {
+    MidFileStatus = {
+      provider = function()
+        if vim.bo.modified then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusModified')
+        elseif not vim.bo.modifiable then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusRestricted')
+        elseif vim.bo.readonly then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusReadonly')
+        elseif not vim.bo.modified then
+          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusUnmodified')
+        end
+
+        if require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) then
+          return require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) .. ' '
+        elseif not vim.bo.modified then
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon5'
+    }
+  },
+  {
+    MidFileName = {
+      highlight = 'GalaxyMapperCommon5',
+      provider = function()
+        if #vim.fn.expand '%:p' == 0 then
+          return '-'
+        end
+        if vim.fn.winwidth(0) > 150 then
+          return vim.fn.expand '%:~'
+        else
+          return vim.fn.expand '%:t'
+        end
+      end
+    }
+  }
+}
+
+require ('galaxyline').section.right = {
+  {
+    RightLspError = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Error') == 0 then
+          vim.cmd('highlight link GalaxyRightLspError GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspError GalaxyRightLspErrorActive')
+        end
+
+        return '!' .. vim.lsp.diagnostic.get_count(0, 'Error') .. ' '
+      end
+    }
+  },
+  {
+    RightLspWarning = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Warning') == 0 then
+          vim.cmd('highlight link GalaxyRightLspWarning GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspWarning GalaxyRightLspWarningActive')
+        end
+
+        return '?' .. vim.lsp.diagnostic.get_count(0, 'Warning') .. ' '
+      end
+    }
+  },
+  {
+    RightLspInformation = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Information') == 0 then
+          vim.cmd('highlight link GalaxyRightLspInformation GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspInformation GalaxyRightLspInformationActive')
+        end
+
+        return '+' .. vim.lsp.diagnostic.get_count(0, 'Information') .. ' '
+      end
+    }
+  },
+  {
+    RightLspHint = {
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) <= 0 then
+           return
+        end
+
+        if vim.lsp.diagnostic.get_count(0, 'Hint') == 0 then
+          vim.cmd('highlight link GalaxyRightLspHint GalaxyLeftLspInactive')
+        else
+          vim.cmd('highlight link GalaxyRightLspHint GalaxyRightLspHintActive')
+        end
+
+        return '-' .. vim.lsp.diagnostic.get_count(0, 'Hint') .. ' '
+      end
+    }
+  },
+  {
+    RightLspHintSeparator = {
+      highlight = 'GalaxyMapperCommon1',
+      provider = function()
+        return ''
+      end,
+    }
+  },
+  {
+    RightLspClient = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        if #vim.tbl_keys(vim.lsp.buf_get_clients()) >= 1 then
+          local lsp_client_name_first = vim.lsp.get_client_by_id(tonumber(vim.inspect(vim.tbl_keys(vim.lsp.buf_get_clients())):match('%d+'))).name:match('%l+')
+
+          if lsp_client_name_first == nil then
+            return #vim.tbl_keys(vim.lsp.buf_get_clients()) .. ': '
+          else
+            return #vim.tbl_keys(vim.lsp.buf_get_clients()) .. ':' .. lsp_client_name_first .. ' '
+          end
+        else
+          return ' '
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightLspClientSeparator = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightFileSize = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = 'FileSize',
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightTabStop = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        return string.format('%s', vim.bo.tabstop) .. ':'
+      end,
+    }
+  },
+  {
+    RightFileType = {
+      provider = function()
+        if vim.bo.fileencoding == 'utf-8' then
+          vim.cmd('highlight link GalaxyRightFileType GalaxyMapperCommon4')
+        else
+          vim.cmd('highlight link GalaxyRightFileType GalaxyMapperCommon8')
+        end
+
+        return string.format('%s', vim.bo.filetype)
+      end,
+    }
+  },
+  {
+    RightFileEncoding = {
+      highlight = 'GalaxyMapperCommon4',
+      provider = function()
+        local icons = {
+          dos = '',
+          mac  = '',
+          unix = ''
+        }
+        if icons[vim.bo.fileformat] then
+          return icons[vim.bo.fileformat]
+        else
+          return ''
+        end
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon4'
+    }
+  },
+  {
+    RightFileEncodingSeparator = {
+      highlight = 'GalaxyMapperCommon7',
+      provider = function()
+        return ''
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
+  },
+  {
+    RightPositionNumerical = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return string.format('%s:%s  ', vim.fn.line('.'), vim.fn.col('.'))
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon2'
+    }
+  },
+  {
+    RightPositionPercentage = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function ()
+        local percent = math.floor(100 * vim.fn.line('.') / vim.fn.line('$'))
+        return string.format('%s%s ☰', percent, '%')
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon2'
+    }
+  },
+  {
+    RightPositionSeparator = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return '  '
+      end
+    }
+  }
+}
+
+require ('galaxyline').section.short_line_left = {
+  {
+    ShortLineLeftBufferType = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function ()
+        local BufferTypeMap = {
+          ['Mundo'] = 'Mundo History',
+          ['MundoDiff'] = 'Mundo Diff',
+          ['NvimTree'] = 'Nvim Tree',
+          ['fugitive'] = 'Fugitive',
+          ['fugitiveblame'] = 'Fugitive Blame',
+          ['help'] = 'Help',
+          ['minimap'] = 'Minimap',
+          ['qf'] = 'Quick Fix',
+          ['tabman'] = 'Tab Manager',
+          ['tagbar'] = 'Tagbar',
+          ['toggleterm'] = 'Terminal'
+        }
+        local name = BufferTypeMap[vim.bo.filetype] or 'Editor'
+        return string.format('  %s ', name)
+      end,
+      separator = ' ',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
+  },
+  {
+    ShortLineLeftWindowNumber = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        return '  ' .. vim.api.nvim_win_get_number(vim.api.nvim_get_current_win()) .. ' '
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon1'
+    }
+  }
+}
+
+require ('galaxyline').section.short_line_right = {
+  {
+    ShortLineRightBlank = {
+      highlight = 'GalaxyMapperCommon6',
+      provider = function()
+        if vim.bo.filetype == 'toggleterm' then
+          return ' ' .. vim.api.nvim_buf_get_var(0, 'toggle_number') .. ' '
+        else
+          return '  '
+        end
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon1'
+    }
+  },
+  {
+    ShortLineRightInformational = {
+      highlight = 'GalaxyMapperCommon2',
+      provider = function()
+        return ' Neovim '
+      end,
+      separator = '',
+      separator_highlight = 'GalaxyMapperCommon7'
+    }
+  }
+}
 EOF
+    au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
     " nnoremap <silent> ca :Lspsaga code_action<CR>
     " vnoremap <silent> ca :<C-U>Lspsaga range_code_action<CR>
@@ -883,9 +1587,10 @@ EOF
     "autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
 
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-    let g:airline#extensions#tabline#enabled = 1
+    " let g:airline#extensions#tabline#enabled = 1
 
     set sessionoptions-=options
+    set sessionoptions+=globals
 
     function! Sha1(text)
       let hash = system('${sha1Cmd} "' . a:text . '"')
@@ -981,7 +1686,7 @@ EOF
     tnoremap <silent> <a-right> <C-right>
 
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
-    let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
+    " let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
     cnoremap <C-v> <C-r>+
 
@@ -1098,7 +1803,7 @@ EOF
           vim-pasta
           vimPlugins.ctrlsf-vim
           ctrlp
-          vim-airline vim-airline-themes
+          #vim-airline vim-airline-themes
           #vim-nix
           nerdcommenter
           #ale
@@ -1136,6 +1841,11 @@ EOF
           nvim-compe
           plenary-nvim
           telescope-nvim
+          vimPlugins.bufferline-nvim
+          vimPlugins.galaxyline-nvim
+          vimPlugins.nvim-web-devicons
+          vimPlugins.lush-nvim
+          vimPlugins.gruvbox-nvim
         ];
         opt = [
         ];
