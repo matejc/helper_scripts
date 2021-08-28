@@ -834,72 +834,13 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
-require("bufferline").setup{
-  options = {
-    numbers = "none",
-    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
-    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
-    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
-    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
-    -- NOTE: this plugin is designed with this icon in mind,
-    -- and so changing this is NOT recommended, this is intended
-    -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = '',
-    buffer_close_icon = '',
-    modified_icon = '●',
-    close_icon = '',
-    left_trunc_marker = '',
-    right_trunc_marker = '',
-    max_name_length = 18,
-    max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
-    tab_size = 18,
-    diagnostics = "nvim_lsp",
-    diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      return "("..count..")"
-    end,
-    offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "center"}},
-    separator_style = { "", "" },
-    show_buffer_icons = true, -- disable filetype icons for buffers
-    show_buffer_close_icons = true,
-    show_close_icon = false,
-    show_tab_indicators = true,
-    always_show_bufferline = true,
-    custom_areas = {
-      right = function()
-        local result = {}
-        local error = vim.lsp.diagnostic.get_count(0, [[Error]])
-        local warning = vim.lsp.diagnostic.get_count(0, [[Warning]])
-        local info = vim.lsp.diagnostic.get_count(0, [[Information]])
-        local hint = vim.lsp.diagnostic.get_count(0, [[Hint]])
-
-        if error ~= 0 then
-          table.insert(result, {text = "  " .. error, guifg = "#EC5241"})
-        end
-
-        if warning ~= 0 then
-          table.insert(result, {text = "  " .. warning, guifg = "#EFB839"})
-        end
-
-        if hint ~= 0 then
-          table.insert(result, {text = "  " .. hint, guifg = "#A3BA5E"})
-        end
-
-        if info ~= 0 then
-          table.insert(result, {text = "  " .. info, guifg = "#7EA9A7"})
-        end
-        return result
-      end,
-    }
-  }
-}
-
 function _G.self_color_gruvbox_dark()
-  vim.g.gruvbox_invert_selection = 0
-  vim.g.gruvbox_italic = 1
-  vim.g.gruvbox_sign_column = 'bg0'
+  -- vim.g.gruvbox_invert_selection = 0
+  -- vim.g.gruvbox_italic = 1
+  -- vim.g.gruvbox_sign_column = 'bg0'
 
-  vim.cmd('set background=dark')
-  vim.cmd('colorscheme gruvbox')
+  -- vim.cmd('set background=dark')
+  -- vim.cmd('colorscheme gruvbox')
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#3c3836')
 
@@ -943,13 +884,13 @@ function _G.self_color_gruvbox_dark()
 end
 
 function _G.self_color_gruvbox_light()
-  vim.g.gruvbox_contrast_light = 'medium'
-  vim.g.gruvbox_invert_selection = 0
-  vim.g.gruvbox_italic = 1
-  vim.g.gruvbox_sign_column = 'bg0'
+  -- vim.g.gruvbox_contrast_light = 'medium'
+  -- vim.g.gruvbox_invert_selection = 0
+  -- vim.g.gruvbox_italic = 1
+  -- vim.g.gruvbox_sign_column = 'bg0'
 
-  vim.cmd('set background=light')
-  vim.cmd('colorscheme gruvbox')
+  -- vim.cmd('set background=light')
+  -- vim.cmd('colorscheme gruvbox')
 
   vim.cmd('highlight StatusLine                                                                                                guifg=#ebdbb2')
 
@@ -992,6 +933,35 @@ function _G.self_color_gruvbox_light()
   vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#d5c4a1')
 end
 
+require("bufferline").setup{
+  options = {
+    numbers = "none",
+    close_command = "bdelete! %d",       -- can be a string | function, see "Mouse actions"
+    right_mouse_command = "bdelete! %d", -- can be a string | function, see "Mouse actions"
+    left_mouse_command = "buffer %d",    -- can be a string | function, see "Mouse actions"
+    middle_mouse_command = nil,          -- can be a string | function, see "Mouse actions"
+    -- NOTE: this plugin is designed with this icon in mind,
+    -- and so changing this is NOT recommended, this is intended
+    -- as an escape hatch for people who cannot bear it for whatever reason
+    indicator_icon = '',
+    buffer_close_icon = '',
+    modified_icon = '●',
+    close_icon = '',
+    left_trunc_marker = '',
+    right_trunc_marker = '',
+    max_name_length = 18,
+    max_prefix_length = 15, -- prefix used when a buffer is de-duplicated
+    tab_size = 18,
+    diagnostics = "nvim_lsp",
+    offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "center"}},
+    separator_style = { "", "" },
+    show_buffer_icons = true, -- disable filetype icons for buffers
+    show_buffer_close_icons = true,
+    show_close_icon = false,
+    show_tab_indicators = true,
+    always_show_bufferline = true,
+  }
+}
 
 require ('galaxyline').short_line_list = {
   'Mundo',
@@ -1285,7 +1255,7 @@ require ('galaxyline').section.right = {
           vim.cmd('highlight link GalaxyRightLspError GalaxyRightLspErrorActive')
         end
 
-        return '!' .. vim.lsp.diagnostic.get_count(0, 'Error') .. ' '
+        return '' .. vim.lsp.diagnostic.get_count(0, 'Error') .. ' '
       end
     }
   },
@@ -1302,7 +1272,7 @@ require ('galaxyline').section.right = {
           vim.cmd('highlight link GalaxyRightLspWarning GalaxyRightLspWarningActive')
         end
 
-        return '?' .. vim.lsp.diagnostic.get_count(0, 'Warning') .. ' '
+        return '' .. vim.lsp.diagnostic.get_count(0, 'Warning') .. ' '
       end
     }
   },
@@ -1319,7 +1289,7 @@ require ('galaxyline').section.right = {
           vim.cmd('highlight link GalaxyRightLspInformation GalaxyRightLspInformationActive')
         end
 
-        return '+' .. vim.lsp.diagnostic.get_count(0, 'Information') .. ' '
+        return '' .. vim.lsp.diagnostic.get_count(0, 'Information') .. ' '
       end
     }
   },
@@ -1336,7 +1306,7 @@ require ('galaxyline').section.right = {
           vim.cmd('highlight link GalaxyRightLspHint GalaxyRightLspHintActive')
         end
 
-        return '-' .. vim.lsp.diagnostic.get_count(0, 'Hint') .. ' '
+        return '' .. vim.lsp.diagnostic.get_count(0, 'Hint') .. ' '
       end
     }
   },
