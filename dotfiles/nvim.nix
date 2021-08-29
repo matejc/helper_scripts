@@ -703,11 +703,17 @@ nvim_lsp["pylsp"].setup {
   filetypes = { 'python' };
   settings = {
     pylsp = {
-      configurationSources = { 'pylint' };
       plugins = {
+        pycodestyle = {
+          enabled = true;
+          select = { 'E', 'W' };
+        };
+        pyflakes = {
+          enabled = false;
+        };
         pylint = {
           enabled = true;
-          args = { "--enable=imports", "--disable=line-too-long,missing-function-docstring,missing-module-docstring,missing-class-docstring,protected-access" };
+          args = { "--disable=all", "--enable=wrong-import-order" };
           executable = "${pkgs.python3Packages.pylint}/bin/pylint";
         };
       };
@@ -716,7 +722,7 @@ nvim_lsp["pylsp"].setup {
 }
 -- nvim_lsp["pyright"].setup {
 --   on_attach = on_attach;
---   cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+--   cmd = {"{pyright}/bin/pyright-langserver", "--stdio"};
 --   settings = {
 --     python = {
 --       analysis = {
@@ -943,7 +949,7 @@ require("bufferline").setup{
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = '',
+    indicator_icon = "",
     buffer_close_icon = '',
     modified_icon = '●',
     close_icon = '',
@@ -956,7 +962,7 @@ require("bufferline").setup{
     offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "center"}},
     separator_style = { "", "" },
     show_buffer_icons = true, -- disable filetype icons for buffers
-    show_buffer_close_icons = true,
+    show_buffer_close_icons = false,
     show_close_icon = false,
     show_tab_indicators = true,
     always_show_bufferline = true,
@@ -1709,6 +1715,8 @@ EOF
     nnoremap <A-Right> <C-W><C-L>
     nnoremap <A-Left> <C-W><C-H>
 
+    nnoremap <C-U> :MundoToggle<CR>
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -1816,6 +1824,7 @@ EOF
           vimPlugins.nvim-web-devicons
           vimPlugins.lush-nvim
           vimPlugins.gruvbox-nvim
+          vim-mundo
         ];
         opt = [
         ];
