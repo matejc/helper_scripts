@@ -226,12 +226,12 @@ let
     nmap <C-a> gg0vG$
     imap <C-a> <esc>gg0vG$
 
-    imap <C-c> <C-o>yy
-    nmap <C-c> yy
-    vmap <C-c> y
+    inoremap <C-c> <C-o>yy
+    nnoremap <C-c> yy
+    vnoremap <C-c> y
 
-    nnoremap <c-v> i<esc>p
-    inoremap <c-v> <esc>pi<right>
+    nnoremap <c-v> "+p
+    inoremap <c-v> <C-R>+
     vnoremap <c-v> "_dhp
 
     " nmap <C-S-Up> :copy .-1<cr>
@@ -1206,46 +1206,45 @@ require ('galaxyline').section.left = {
   },
 }
 
-require ('galaxyline').section.mid = {
-  {
-    MidFileStatus = {
-      provider = function()
-        if vim.bo.modified then
-          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusModified')
-        elseif not vim.bo.modifiable then
-          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusRestricted')
-        elseif vim.bo.readonly then
-          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusReadonly')
-        elseif not vim.bo.modified then
-          vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusUnmodified')
-        end
-
-        if require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) then
-          return require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) .. ' '
-        elseif not vim.bo.modified then
-          return ' '
-        end
-      end,
-      separator = ' ',
-      separator_highlight = 'GalaxyMapperCommon5'
-    }
-  },
-  {
-    MidFileName = {
-      highlight = 'GalaxyMapperCommon5',
-      provider = function()
-        if #vim.fn.expand '%:p' == 0 then
-          return '-'
-        end
-        if vim.fn.winwidth(0) > 150 then
-          return vim.fn.expand '%:~'
-        else
-          return vim.fn.expand '%:t'
-        end
-      end
-    }
-  }
-}
+-- require ('galaxyline').section.mid = {
+--   {
+--     MidFileStatus = {
+--       provider = function()
+--         if vim.bo.modified then
+--           vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusModified')
+--         elseif not vim.bo.modifiable then
+--           vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusRestricted')
+--         elseif vim.bo.readonly then
+--           vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusReadonly')
+--         elseif not vim.bo.modified then
+--           vim.cmd('highlight link GalaxyMidFileStatus GalaxyMidFileStatusUnmodified')
+--         end
+--         if require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) then
+--           return require('nvim-web-devicons').get_icon(vim.fn.expand('%:e')) .. ' '
+--         elseif not vim.bo.modified then
+--           return ' '
+--         end
+--       end,
+--       separator = ' ',
+--       separator_highlight = 'GalaxyMapperCommon5'
+--     }
+--   },
+--   {
+--     MidFileName = {
+--       highlight = 'GalaxyMapperCommon5',
+--       provider = function()
+--         if #vim.fn.expand '%:p' == 0 then
+--           return '-'
+--         end
+--         if vim.fn.winwidth(0) > 150 then
+--           return vim.fn.expand '%:~'
+--         else
+--           return vim.fn.expand '%:t'
+--         end
+--       end
+--     }
+--   }
+-- }
 
 require ('galaxyline').section.right = {
   {
