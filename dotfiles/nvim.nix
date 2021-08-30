@@ -231,7 +231,7 @@ let
     vnoremap <C-c> y
 
     nnoremap <c-v> "+p
-    inoremap <c-v> <C-R>+
+    inoremap <c-v> <C-R><C-O>+
     vnoremap <c-v> "_dhp
 
     " nmap <C-S-Up> :copy .-1<cr>
@@ -1687,6 +1687,7 @@ EOF
         \ 'files': 0,
         \ 'folder_arrows': 0,
         \ }
+    let g:nvim_tree_disable_netrw = 0
     nnoremap <C-o> :NvimTreeToggle<CR>
     nnoremap <leader>r :NvimTreeRefresh<CR>
     nnoremap <leader>n :NvimTreeFindFile<CR>
