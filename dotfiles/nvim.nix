@@ -193,13 +193,13 @@ let
       :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
     endfunction
 
-    autocmd FileType javascript nmap <buffer> <C-b> :call JsBeautify()<cr>
+    autocmd FileType javascript nnoremap <buffer> <C-b> :call JsBeautify()<cr>
     autocmd FileType python nnoremap <buffer> <C-b> :call PyBeautify()<cr>
 
     nmap <PageUp> 10<up>
     nmap <PageDown> 10<down>
-    imap <PageUp> <esc>10<up>i
-    imap <PageDown> <esc>10<down>i
+    inoremap <PageUp> <C-o>10<up>
+    inoremap <PageDown> <C-o>10<down>
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
     vmap <S-PageUp> 10<up>
@@ -627,7 +627,7 @@ nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.n
 nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
 nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
 nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
-nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
+-- nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"{pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
 
 nvim_lsp["sumneko_lua"].setup {
   on_attach = on_attach;
@@ -706,9 +706,14 @@ nvim_lsp["pylsp"].setup {
       plugins = {
         pycodestyle = {
           enabled = true;
-          select = { 'E', 'W' };
         };
         pyflakes = {
+          enabled = false;
+        };
+        jedi_completion = {
+          enabled = false;
+        };
+        jedi_definition = {
           enabled = false;
         };
         pylint = {
@@ -720,29 +725,29 @@ nvim_lsp["pylsp"].setup {
     };
   };
 }
--- nvim_lsp["pyright"].setup {
---   on_attach = on_attach;
---   cmd = {"{pyright}/bin/pyright-langserver", "--stdio"};
---   settings = {
---     python = {
---       analysis = {
---         autoSearchPaths = true,
---         useLibraryCodeForTypes = true,
---         diagnosticMode = 'workspace',
---         typeCheckingMode = 'strict',
---         diagnosticSeverityOverrides = {
---           reportMissingTypeStubs = 'none',
---           reportPrivateUsage = 'none',
---           reportUnknownParameterType = "none",
---           reportUnknownArgumentType = "none",
---           reportUnknownLambdaType = "none",
---           reportUnknownVariableType = "none",
---           reportUnknownMemberType = "none",
---         },
---       },
---     },
---   };
--- }
+nvim_lsp["pyright"].setup {
+  on_attach = on_attach;
+  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+  settings = {
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'workspace',
+        typeCheckingMode = 'basic',
+        diagnosticSeverityOverrides = {
+          reportMissingTypeStubs = 'none',
+          reportPrivateUsage = 'none',
+          reportUnknownParameterType = "none",
+          reportUnknownArgumentType = "none",
+          reportUnknownLambdaType = "none",
+          reportUnknownVariableType = "none",
+          reportUnknownMemberType = "none",
+        },
+      },
+    },
+  };
+}
 -- if not nvim_lsp["python_language_server"] then
 --   nvim_lsp_configs.python_language_server = {
 --     default_config = {
@@ -1079,10 +1084,10 @@ require ('galaxyline').section.left = {
         if vim.o.paste then
           return ''
         else
-          return ''
+          return ""
         end
       end,
-      separator = '  ',
+      separator = "",
       separator_highlight = 'GalaxyMapperCommon6',
     }
   },
@@ -1093,10 +1098,10 @@ require ('galaxyline').section.left = {
         if vim.wo.spell then
           return '暈'
         else
-          return ' '
+          return ""
         end
       end,
-      separator = ' ',
+      separator = "",
       separator_highlight = 'GalaxyMapperCommon6'
     }
   },
@@ -1108,12 +1113,12 @@ require ('galaxyline').section.left = {
         if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 and vim.fn.search([[\v(^ +)]], 'nw') ~= 0 then
           vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
           vim.cmd('match ErrorMsg /\t/')
-          return ' '
+          return ''
         end
 
         if vim.fn.search('\\s$', 'nw') ~= 0 then
           vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
-          return 'ﲕ '
+          return 'ﲕ'
         end
 
         if vim.fn.search([[\v(^\t+)]], 'nw') ~= 0 then
@@ -1122,9 +1127,9 @@ require ('galaxyline').section.left = {
           vim.cmd('highlight link GalaxyLeftStatusMixedIndentWhiteSpace GalaxyMapperCommon6')
         end
 
-        return ' '
+        return ""
       end,
-      separator = ' ',
+      separator = "",
       separator_highlight = 'GalaxyMapperCommon6'
     }
   },
@@ -1689,6 +1694,7 @@ EOF
         \ }
     let g:nvim_tree_disable_netrw = 0
     nnoremap <C-o> :NvimTreeToggle<CR>
+    inoremap <C-o> <esc>:NvimTreeToggle<CR>
     nnoremap <leader>r :NvimTreeRefresh<CR>
     nnoremap <leader>n :NvimTreeFindFile<CR>
     " NvimTreeOpen and NvimTreeClose are also available if you need them

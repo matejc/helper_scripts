@@ -1,12 +1,13 @@
 { variables, config, pkgs, lib }:
 let
-  dsf = pkgs.gitAndTools.diff-so-fancy.overrideDerivation (old: {
-    name = "diff-so-fancy-20201228";
+  dsf = pkgs.gitAndTools.diff-so-fancy.overrideDerivation (old: rec {
+    version = "1.4.3";
+    name = "diff-so-fancy-${version}";
     src = pkgs.fetchFromGitHub {
       owner = "so-fancy";
       repo = "diff-so-fancy";
-      rev = "7792d3f1cf9368a6e7ee68068c30a8c4775d7ea3";
-      sha256 = "1bn6ljrbkxx0f61iid52ximvp23iypp3wq3c7mzf086ba7kl87d4";
+      rev = "refs/tags/v${version}";
+      sha256 = "11vkq5njjlvjipic7db44ga875n61drszw1qrdzwxmmfmnz425zz";
     };
   });
 in
@@ -31,5 +32,7 @@ in
         lol = log --graph --decorate --pretty=oneline --abbrev-commit --branches --remotes --tags
         l = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s\n%Cgreen(%cr) %C(bold blue)<%an>%Creset\n' --abbrev-commit --branches --remotes --tags
         car = !git checkout $1 && git rebase $2 && git checkout - && echo
+    [pull]
+        rebase = true
   '';
 }
