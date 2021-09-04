@@ -2,6 +2,8 @@
 [{
   target = "${variables.homeDir}/.config/starship.toml";
   source = pkgs.writeText "starship" ''
+    command_timeout = 1000
+
     [aws]
     disabled = true
 

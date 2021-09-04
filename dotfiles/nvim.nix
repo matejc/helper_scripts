@@ -31,6 +31,255 @@ let
     };
   });
 
+  enabledNvimLsp = mkNvimLsp [
+    #"kotlin_language_server"
+    "rnix"
+    "bashls"
+    "dockerls"
+    "yamlls"
+    "tsserver"
+    "jsonls"
+    "vimls"
+    "html"
+    "cssls"
+    "ccls"
+    #"omnisharp"
+    "gopls"
+    #"hls"
+    "sumneko_lua"
+    "pwsh"
+    "robotframeworklsp"
+    "lemminx"
+    "pylsp"
+    "pyright"
+    #"python_language_server"
+    #"ansiblels"
+  ];
+
+  mkNvimLsp = enabled:
+    lib.concatMapStringsSep "\n" (name: nvimLsp."${name}") enabled;
+
+  nvimLsp = {
+    kotlin_language_server = ''
+      nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
+    '';
+    rnix = ''
+      nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
+    '';
+    bashls = ''
+      nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
+    '';
+    dockerls = ''
+      nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
+    '';
+    yamlls = ''
+      nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
+    '';
+    tsserver = ''
+      nvim_lsp["tsserver"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"} }
+    '';
+    jsonls = ''
+      nvim_lsp["jsonls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"} }
+    '';
+    vimls = ''
+      nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"} }
+    '';
+    html = ''
+      nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
+    '';
+    cssls = ''
+      nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
+    '';
+    ccls = ''
+      nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
+    '';
+    omnisharp = ''
+      nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
+    '';
+    gopls = ''
+      nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
+    '';
+    hls = ''
+      nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
+    '';
+    sumneko_lua = ''
+      nvim_lsp["sumneko_lua"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.sumneko-lua-language-server}/bin/lsp-language-server", "-E", "${pkgs.sumneko-lua-language-server}/extras/main.lua"};
+        settings = {
+          Lua = {
+            runtime = {
+              -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+              version = 'LuaJIT',
+              -- Setup your lua path
+              path = vim.split(package.path, ';'),
+            },
+            diagnostics = {
+              -- Get the language server to recognize the `vim` global
+              globals = {'vim'},
+            },
+            workspace = {
+              -- Make the server aware of Neovim runtime files
+              library = {
+                [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
+              },
+            },
+          },
+        },
+      }
+    '';
+    pwsh = ''
+      if not nvim_lsp["pwsh"] then
+        nvim_lsp_configs.pwsh = {
+          default_config = {
+            cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
+            filetypes = {'ps1'};
+            root_dir = function(fname)
+            return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+            end;
+            settings = {};
+          };
+        }
+      end
+      nvim_lsp["pwsh"].setup { on_attach = on_attach; }
+    '';
+    robotframeworklsp = ''
+      if not nvim_lsp["robotframeworklsp"] then
+        nvim_lsp_configs.robotframeworklsp = {
+          default_config = {
+            cmd = {"${variables.homeDir}/.py-packages/bin/robotframework_ls"};
+            filetypes = {'robot'};
+            root_dir = function(fname)
+            return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+            end;
+            settings = {};
+          };
+        }
+      end
+      nvim_lsp["robotframeworklsp"].setup { on_attach = on_attach; }
+    '';
+    lemminx = ''
+      if not nvim_lsp["lemminx"] then
+        nvim_lsp_configs.lemminx = {
+          default_config = {
+            cmd = {"${lemminx}/bin/lemminx"};
+            filetypes = {'xml'};
+            root_dir = function(fname)
+            return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+            end;
+            settings = {};
+          };
+        }
+      end
+      nvim_lsp["lemminx"].setup { on_attach = on_attach; }
+    '';
+    pylsp = ''
+      nvim_lsp["pylsp"].setup {
+        on_attach = on_attach;
+        cmd = {"${python-lsp-server}/bin/pylsp"};
+        filetypes = { 'python' };
+        settings = {
+          pylsp = {
+            plugins = {
+              pycodestyle = {
+                enabled = true;
+              };
+              pyflakes = {
+                enabled = false;
+              };
+              jedi_completion = {
+                enabled = false;
+              };
+              jedi_definition = {
+                enabled = false;
+              };
+              pylint = {
+                enabled = true;
+                args = { "--disable=all", "--enable=wrong-import-order" };
+                executable = "${pkgs.python3Packages.pylint}/bin/pylint";
+              };
+            };
+          };
+        };
+      }
+    '';
+    pyright = ''
+      nvim_lsp["pyright"].setup {
+        on_attach = on_attach;
+        cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+        settings = {
+          python = {
+            analysis = {
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
+              diagnosticMode = 'workspace',
+              typeCheckingMode = 'basic',
+              diagnosticSeverityOverrides = {
+                reportMissingTypeStubs = 'none',
+                reportPrivateUsage = 'none',
+                reportUnknownParameterType = "none",
+                reportUnknownArgumentType = "none",
+                reportUnknownLambdaType = "none",
+                reportUnknownVariableType = "none",
+                reportUnknownMemberType = "none",
+              },
+            },
+          },
+        };
+      }
+    '';
+    python_language_server = ''
+      if not nvim_lsp["python_language_server"] then
+        nvim_lsp_configs.python_language_server = {
+          default_config = {
+            cmd = { '${pkgs.python-language-server}/bin/python-language-server' };
+            filetypes = { 'python' };
+            root_dir = function(fname)
+              local root_files = {
+                'pyproject.toml',
+                'setup.py',
+                'setup.cfg',
+                'requirements.txt',
+                'Pipfile',
+              }
+              return nvim_lsp.util.root_pattern(unpack(root_files))(fname) or nvim_lsp.util.find_git_ancestor(fname) or nvim_lsp.util.path.dirname(fname)
+            end;
+          };
+        }
+      end
+      nvim_lsp["python_language_server"].setup { on_attach = on_attach; }
+    '';
+    ansiblels = ''
+      if not nvim_lsp["ansiblels"] then
+        nvim_lsp_configs.ansiblels = {
+          default_config = {
+            cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+            settings = {
+              ansible = {
+                python = {
+                  interpreterPath = '${pkgs.python3Packages.python}/bin/python',
+                },
+                ansibleLint = {
+                  path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
+                  enabled = true,
+                },
+                ansible = {
+                  path = '${pkgs.python3Packages.ansible}/bin/ansible',
+                },
+              },
+            },
+            filetypes = { 'yaml' },
+            root_dir = function(fname)
+              return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+            end,
+          };
+        }
+      end
+      nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
+    '';
+  };
+
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')
       " Font tweaks
@@ -614,190 +863,7 @@ local on_attach = function(client, bufnr)
 
 end
 
-nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
-nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
-nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
-nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
-nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
-nvim_lsp["tsserver"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"} }
-nvim_lsp["jsonls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"} }
-nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"} }
-nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
-nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
-nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
-nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
-nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
--- nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"{pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
-
-nvim_lsp["sumneko_lua"].setup {
-  on_attach = on_attach;
-  cmd = {"${pkgs.sumneko-lua-language-server}/bin/lsp-language-server", "-E", "${pkgs.sumneko-lua-language-server}/extras/main.lua"};
-  settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-        -- Setup your lua path
-        path = vim.split(package.path, ';'),
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = {'vim'},
-      },
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = {
-          [vim.fn.expand('$VIMRUNTIME/lua')] = true,
-          [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true,
-        },
-      },
-    },
-  },
-}
-
-if not nvim_lsp["pwsh"] then
-  nvim_lsp_configs.pwsh = {
-    default_config = {
-      cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
-      filetypes = {'ps1'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      settings = {};
-    };
-  }
-end
-nvim_lsp["pwsh"].setup { on_attach = on_attach; }
-
-if not nvim_lsp["robotframeworklsp"] then
-  nvim_lsp_configs.robotframeworklsp = {
-    default_config = {
-      cmd = {"${variables.homeDir}/.py-packages/bin/robotframework_ls"};
-      filetypes = {'robot'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      settings = {};
-    };
-  }
-end
-nvim_lsp["robotframeworklsp"].setup { on_attach = on_attach; }
-
-if not nvim_lsp["lemminx"] then
-  nvim_lsp_configs.lemminx = {
-    default_config = {
-      cmd = {"${lemminx}/bin/lemminx"};
-      filetypes = {'xml'};
-      root_dir = function(fname)
-        return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-      end;
-      settings = {};
-    };
-  }
-end
-nvim_lsp["lemminx"].setup { on_attach = on_attach; }
-
-nvim_lsp["pylsp"].setup {
-  on_attach = on_attach;
-  cmd = {"${python-lsp-server}/bin/pylsp"};
-  filetypes = { 'python' };
-  settings = {
-    pylsp = {
-      plugins = {
-        pycodestyle = {
-          enabled = true;
-        };
-        pyflakes = {
-          enabled = false;
-        };
-        jedi_completion = {
-          enabled = false;
-        };
-        jedi_definition = {
-          enabled = false;
-        };
-        pylint = {
-          enabled = true;
-          args = { "--disable=all", "--enable=wrong-import-order" };
-          executable = "${pkgs.python3Packages.pylint}/bin/pylint";
-        };
-      };
-    };
-  };
-}
-nvim_lsp["pyright"].setup {
-  on_attach = on_attach;
-  cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
-  settings = {
-    python = {
-      analysis = {
-        autoSearchPaths = true,
-        useLibraryCodeForTypes = true,
-        diagnosticMode = 'workspace',
-        typeCheckingMode = 'basic',
-        diagnosticSeverityOverrides = {
-          reportMissingTypeStubs = 'none',
-          reportPrivateUsage = 'none',
-          reportUnknownParameterType = "none",
-          reportUnknownArgumentType = "none",
-          reportUnknownLambdaType = "none",
-          reportUnknownVariableType = "none",
-          reportUnknownMemberType = "none",
-        },
-      },
-    },
-  };
-}
--- if not nvim_lsp["python_language_server"] then
---   nvim_lsp_configs.python_language_server = {
---     default_config = {
---       cmd = { '{pkgs.python-language-server}/bin/python-language-server' };
---       filetypes = { 'python' };
---       root_dir = function(fname)
---         local root_files = {
---           'pyproject.toml',
---           'setup.py',
---           'setup.cfg',
---           'requirements.txt',
---           'Pipfile',
---         }
---         return nvim_lsp.util.root_pattern(unpack(root_files))(fname) or nvim_lsp.util.find_git_ancestor(fname) or nvim_lsp.util.path.dirname(fname)
---       end;
---     };
---   }
--- end
--- nvim_lsp["python_language_server"].setup { on_attach = on_attach; }
-
--- if not nvim_lsp["ansiblels"] then
---   nvim_lsp_configs.ansiblels = {
---     default_config = {
---       cmd = { '{variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
---       settings = {
---         ansible = {
---           python = {
---             interpreterPath = '{pkgs.python3Packages.python}/bin/python',
---           },
---           ansibleLint = {
---             path = '{pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
---             enabled = true,
---           },
---           ansible = {
---             path = '{pkgs.python3Packages.ansible}/bin/ansible',
---           },
---         },
---       },
---       filetypes = { 'yaml' },
---       root_dir = function(fname)
---         return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
---       end,
---     };
---   }
--- end
--- nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
-
--- local saga = require 'lspsaga'
--- saga.init_lsp_saga()
-
+${enabledNvimLsp}
 
 require'compe'.setup {
   enabled = true;
