@@ -25,7 +25,7 @@ let
     fakeroot protonvpn connect --fastest
 
     ${transmission}/bin/transmission-daemon --no-portmap --foreground --no-dht -g /home/${user}/.transmission -w /home/${user}/Downloads &
-    nixGL ${firefox}/bin/firefox --no-remote --private-window http://localhost:9091/transmission/web/
+    ${firefox}/bin/firefox --no-remote --private-window http://localhost:9091/transmission/web/
   '';
 
   script = writeScript "script.sh" ''
@@ -48,11 +48,9 @@ let
 
     unshare --net --map-root-user ${unshareCmd}
   '';
-
-  nixGL = (import (builtins.fetchGit {url = git://github.com/guibou/nixGL; ref = "main";}) {}).auto;
 in
   mkShell {
-    buildInputs = [ bwrap iproute2 shadow slirp4netns curl protonvpn-cli fakeroot which sysctl procps kmod openvpn pstree utillinux nixGL.nixGLDefault ];
+    buildInputs = [ bwrap iproute2 shadow slirp4netns curl protonvpn-cli fakeroot which sysctl procps kmod openvpn pstree utillinux ];
     shellHook = ''
       set -e
 
