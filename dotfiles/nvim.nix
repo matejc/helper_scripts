@@ -1214,7 +1214,7 @@ require ('galaxyline').section.left = {
       highlight = 'GalaxyMapperCommon6',
       provider = function()
         if require('galaxyline.condition').check_git_workspace() then
-          return ' ' .. require('galaxyline.provider_vcs').get_git_branch()
+          return ' ' .. (require('galaxyline.provider_vcs').get_git_branch() or 'HEAD')
         else
           return ' '
         end
