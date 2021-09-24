@@ -47,13 +47,13 @@ let
     "gopls"
     #"hls"
     "sumneko_lua"
-    "pwsh"
+    #"pwsh"
     "robotframeworklsp"
     "lemminx"
     "pylsp"
     "pyright"
     #"python_language_server"
-    #"ansiblels"
+    "ansiblels"
   ];
 
   mkNvimLsp = enabled:
@@ -251,34 +251,44 @@ let
       nvim_lsp["python_language_server"].setup { on_attach = on_attach; }
     '';
     ansiblels = ''
-      if not nvim_lsp["ansiblels"] then
-        nvim_lsp_configs.ansiblels = {
-          default_config = {
-            cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
-            settings = {
-              ansible = {
-                python = {
-                  interpreterPath = '${pkgs.python3Packages.python}/bin/python',
-                },
-                ansibleLint = {
-                  path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
-                  enabled = true,
-                },
-                ansible = {
-                  path = '${pkgs.python3Packages.ansible}/bin/ansible',
-                },
-              },
+      nvim_lsp["ansiblels"].setup {
+        cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+        settings = {
+          ansible = {
+            python = {
+              interpreterPath = '${execCommand}',
             },
-            filetypes = { 'yaml' },
-            root_dir = function(fname)
-              return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-            end,
-          };
-        }
-      end
-      nvim_lsp["ansiblels"].setup { on_attach = on_attach; }
+            ansibleLint = {
+              path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
+              enabled = true,
+              arguments = "",
+            },
+            ansible = {
+              path = '${pkgs.python3Packages.ansible}/bin/ansible',
+            },
+          },
+        },
+        filetypes = { 'yaml.ansible' },
+        root_dir = function(fname)
+          return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+        end,
+      };
     '';
   };
+
+  execCommand = pkgs.writeScript "exec" ''
+    #!${pkgs.stdenv.shell}
+    exec "$@"
+  '';
+
+  ansibleLintPy = pkgs.writeScript "ansible-lint.py" ''
+    import sys
+    from subprocess import run, PIPE
+
+    run(
+      [ '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint' ] + sys.argv[1:],
+      shell=True, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    '';
 
   ginitVim = pkgs.writeText "ginit.vim" ''
     if exists('g:fvim_loaded')

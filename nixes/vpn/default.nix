@@ -1,5 +1,10 @@
-{ pkgs ? import <nixpkgs> {}, user ? "matejc", uid ? "1000", gid ? "1000" }:
+{ pkgs ? import <nixpkgs> {}
+, user ? "matejc"
+, uid ? "1000"
+, gid ? "1000"
+, nameservers ? [ "1.1.1.1" ] }:
 with pkgs;
+with lib;
 let
   bwrap = stdenv.mkDerivation rec {
     pname = "bubblewrap";
@@ -22,6 +27,10 @@ let
 
     sysctl net.ipv6.conf.all.disable_ipv6=1
 
+    sleep 1
+
+    trap "fakeroot protonvpn disconnect" EXIT
+
     fakeroot protonvpn connect --fastest
 
     ${transmission}/bin/transmission-daemon --no-portmap --foreground --no-dht -g /home/${user}/.transmission -w /home/${user}/Downloads &
@@ -30,10 +39,7 @@ let
 
   script = writeScript "script.sh" ''
     #!${stdenv.shell}
-
     set -e
-
-    trap "fakeroot protonvpn disconnect" EXIT
 
     for i in {1..50}
     do
@@ -48,9 +54,13 @@ let
 
     unshare --net --map-root-user ${unshareCmd}
   '';
+
+  resolvConf = writeText "resolv.conf" ''
+    ${concatMapStringsSep "\n" (i: "nameserver ${i}") nameservers}
+  '';
 in
   mkShell {
-    buildInputs = [ bwrap iproute2 shadow slirp4netns curl protonvpn-cli fakeroot which sysctl procps kmod openvpn pstree utillinux ];
+    buildInputs = [ bwrap iproute2 shadow slirp4netns curl protonvpn-cli fakeroot which sysctl procps kmod openvpn pstree utillinux unixtools.ping ];
     shellHook = ''
       set -e
 
@@ -58,7 +68,6 @@ in
       echo 'root:!:0:0::/root:${stdenv.shell}' > /home/${user}/.vpn/passwd
       echo '${user}:!:${uid}:${gid}::/home/${user}:${stdenv.shell}' >> /home/${user}/.vpn/passwd
       echo > /home/${user}/.vpn/pid
-      cp /etc/resolv.conf /home/${user}/.vpn/resolv.conf
       echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/hosts
 
       bwrap --ro-bind /nix /nix \
@@ -78,7 +87,7 @@ in
           --bind /home/${user}/.vpn/Downloads /home/${user}/Downloads \
           --bind /home/${user}/.vpn/pid /home/${user}/.pid \
           --bind /home/${user}/.vpn/.pvpn-cli /home/${user}/.pvpn-cli \
-          --bind /home/${user}/.vpn/resolv.conf /etc/resolv.conf \
+          --bind ${resolvConf} /etc/resolv.conf \
           --ro-bind /home/${user}/.vpn/hosts /etc/hosts \
           --ro-bind /home/${user}/.vpn/passwd /etc/passwd \
           --unshare-all \
