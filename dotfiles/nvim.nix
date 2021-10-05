@@ -596,6 +596,7 @@ let
       \ }
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_user_command = ['.git', 'cd %s && ${pkgs.git}/bin/git ls-files . -co --exclude-standard', '${pkgs.findutils}/bin/find %s -type f']
+    inoremap <silent> <c-p> <c-o>:CtrlP<cr>
 
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
     nnoremap <C-h> <leader>hu

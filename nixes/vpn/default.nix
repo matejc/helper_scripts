@@ -101,7 +101,7 @@ in
       ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
 
       echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/passwd
-      echo '${user}:!:${uid}:${gid}::/home/${user}:${stdenv.shell}' >> /home/${user}/.vpn/passwd
+      echo '${user}:!:${uid}:${gid}::/home/${user}:${interactiveShell}' >> /home/${user}/.vpn/passwd
       echo > /home/${user}/.vpn/pid
       echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/hosts
 
