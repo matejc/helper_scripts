@@ -61,6 +61,7 @@ let
     ./py3-venv.nix
     ./sync.nix
     ./dd.nix
+    ./xfce4-terminal.nix
   ];
 
   activationScript = ''

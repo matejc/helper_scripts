@@ -15,7 +15,9 @@
   { from = "/home/${user}/.vpn/transmission"; to = "/home/${user}/.config/transmission"; }
   { from = "/home/${user}/.vpn/Downloads"; to = "/home/${user}/Downloads"; }
   { from = "/home/${user}/.vpn/.pvpn-cli"; to = "/home/${user}/.pvpn-cli"; }
-] }:
+  { from = "${pkgs.dejavu_fonts}/share/fonts/truetype"; to = "/home/${user}/.local/share/fonts"; }
+]
+, interactiveShell ? "${pkgs.stdenv.shell}" }:
 with pkgs;
 with lib;
 let
@@ -94,9 +96,9 @@ in
     shellHook = ''
       set -e
 
-      ${concatMapStringsSep "\n" (m: "mkdir -p ${m.from}") mounts}
+      ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
 
-      echo 'root:!:0:0::/root:${stdenv.shell}' > /home/${user}/.vpn/passwd
+      echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/passwd
       echo '${user}:!:${uid}:${gid}::/home/${user}:${stdenv.shell}' >> /home/${user}/.vpn/passwd
       echo > /home/${user}/.vpn/pid
       echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/hosts
@@ -115,7 +117,6 @@ in
           --tmpfs /tmp \
           --bind /home/${user}/.vpn/pid /home/${user}/.pid \
           ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
-          --ro-bind ${dejavu_fonts}/share/fonts/truetype /home/${user}/.local/share/fonts \
           --bind ${resolvConf} /etc/resolv.conf \
           --ro-bind /home/${user}/.vpn/hosts /etc/hosts \
           --ro-bind /home/${user}/.vpn/passwd /etc/passwd \
