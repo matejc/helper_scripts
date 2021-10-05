@@ -128,6 +128,7 @@ in
           --setenv MOZ_ENABLE_WAYLAND 1 \
           --setenv FAKEROOTDONTTRYCHOWN 1 \
           --setenv FONTCONFIG_FILE ${fontconfig.out}/etc/fonts/fonts.conf \
+          --setenv XCURSOR_PATH ${gnome.adwaita-icon-theme}/share/icons \
           --die-with-parent \
           --new-session \
           ${script}
