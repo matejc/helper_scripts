@@ -73,6 +73,8 @@ let
     #!${stdenv.shell}
     set -e
 
+    cat ${resolvConf} >/etc/resolv.conf
+
     for i in {1..50}
     do
       vpnnspid="$(cat /home/${user}/.pid)"
@@ -117,7 +119,6 @@ in
           --tmpfs /tmp \
           --bind /home/${user}/.vpn/pid /home/${user}/.pid \
           ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
-          --bind ${resolvConf} /etc/resolv.conf \
           --ro-bind /home/${user}/.vpn/hosts /etc/hosts \
           --ro-bind /home/${user}/.vpn/passwd /etc/passwd \
           --unshare-all \

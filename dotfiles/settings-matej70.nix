@@ -46,7 +46,7 @@ let
       #ff = "${pkgs.firefox}/bin/firefox";
       #c = "${pkgs.vscodium}/bin/codium";
       mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
-      nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
+      #nextcloud = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.nextcloud-client}/bin/nextcloud";
       launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''
         #!${pkgs.stdenv.shell}
@@ -56,7 +56,7 @@ let
     };
     locale.all = "en_US.utf8";
     startup = [
-      "${homeDir}/bin/nextcloud-client"
+      #"${homeDir}/bin/nextcloud"
       "${homeDir}/bin/mykeepassxc"
       "${homeDir}/bin/browser"
     ];
@@ -135,7 +135,6 @@ let
     systemctl --user start waybar
 
     ${variables.programs.mykeepassxc} &
-    ${variables.programs.nextcloud-client} &
     ${variables.programs.browser} &
 
     echo "DONE"

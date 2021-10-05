@@ -36,7 +36,7 @@ let
     "rnix"
     "bashls"
     "dockerls"
-    "yamlls"
+    #"yamlls"
     "tsserver"
     "jsonls"
     "vimls"
@@ -252,6 +252,7 @@ let
     '';
     ansiblels = ''
       nvim_lsp["ansiblels"].setup {
+        on_attach = on_attach;
         cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
         settings = {
           ansible = {
@@ -268,7 +269,7 @@ let
             },
           },
         },
-        filetypes = { 'yaml.ansible' },
+        filetypes = { 'yaml.ansible', 'yaml' },
         root_dir = function(fname)
           return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
         end,
