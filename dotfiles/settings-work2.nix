@@ -59,6 +59,8 @@ let
     ./httpserver.nix
     ./clearprimary.nix
     ./py3-venv.nix
+    ./sync.nix
+    ./dd.nix
   ];
 
   activationScript = ''

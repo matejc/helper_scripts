@@ -2,7 +2,20 @@
 , user ? "matejc"
 , uid ? "1000"
 , gid ? "1000"
-, nameservers ? [ "1.1.1.1" ] }:
+, nameservers ? [ "1.1.1.1" ]
+, startCmds ? [ "fakeroot protonvpn connect --fastest" ]
+, stopCmds ? [ "fakeroot protonvpn disconnect" ]
+, runCmds ? [
+  "transmission-daemon --no-portmap --foreground --no-dht -g /home/${user}/.transmission -w /home/${user}/Downloads &"
+  "firefox --no-remote --private-window http://localhost:9091/transmission/web/"
+]
+, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox ]
+, mounts ? [
+  { from = "/home/${user}/.vpn/mozilla"; to = "/home/${user}/.mozilla"; }
+  { from = "/home/${user}/.vpn/transmission"; to = "/home/${user}/.config/transmission"; }
+  { from = "/home/${user}/.vpn/Downloads"; to = "/home/${user}/Downloads"; }
+  { from = "/home/${user}/.vpn/.pvpn-cli"; to = "/home/${user}/.pvpn-cli"; }
+] }:
 with pkgs;
 with lib;
 let
@@ -19,6 +32,24 @@ let
     buildInputs = [ libcap ];
   };
 
+  startCmd = writeScript "" ''
+    #!${stdenv.shell}
+    set -e
+    ${concatMapStringsSep "\n" (c: "${c}") startCmds}
+  '';
+
+  stopCmd = writeScript "" ''
+    #!${stdenv.shell}
+    set -e
+    ${concatMapStringsSep "\n" (c: "${c}") stopCmds}
+  '';
+
+  runCmd = writeScript "" ''
+    #!${stdenv.shell}
+    set -e
+    ${concatMapStringsSep "\n" (c: "${c}") runCmds}
+  '';
+
   unshareCmd = writeScript "script.sh" ''
     #!${stdenv.shell}
     set -e
@@ -29,12 +60,11 @@ let
 
     sleep 1
 
-    trap "fakeroot protonvpn disconnect" EXIT
+    trap "${stopCmd}" EXIT
 
-    fakeroot protonvpn connect --fastest
+    ${startCmd}
 
-    ${transmission}/bin/transmission-daemon --no-portmap --foreground --no-dht -g /home/${user}/.transmission -w /home/${user}/Downloads &
-    ${firefox}/bin/firefox --no-remote --private-window http://localhost:9091/transmission/web/
+    ${runCmd}
   '';
 
   script = writeScript "script.sh" ''
@@ -60,11 +90,12 @@ let
   '';
 in
   mkShell {
-    buildInputs = [ bwrap iproute2 shadow slirp4netns curl protonvpn-cli fakeroot which sysctl procps kmod openvpn pstree utillinux unixtools.ping ];
+    buildInputs = [ bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree utillinux fontconfig ] ++ packages;
     shellHook = ''
       set -e
 
-      mkdir -p /home/${user}/.vpn/{mozilla,transmission,Downloads}
+      ${concatMapStringsSep "\n" (m: "mkdir -p ${m.from}") mounts}
+
       echo 'root:!:0:0::/root:${stdenv.shell}' > /home/${user}/.vpn/passwd
       echo '${user}:!:${uid}:${gid}::/home/${user}:${stdenv.shell}' >> /home/${user}/.vpn/passwd
       echo > /home/${user}/.vpn/pid
@@ -82,11 +113,9 @@ in
           --ro-bind /sys/dev/char /sys/dev/char \
           --proc /proc \
           --tmpfs /tmp \
-          --bind /home/${user}/.vpn/mozilla /home/${user}/.mozilla \
-          --bind /home/${user}/.vpn/transmission /home/${user}/.config/transmission \
-          --bind /home/${user}/.vpn/Downloads /home/${user}/Downloads \
           --bind /home/${user}/.vpn/pid /home/${user}/.pid \
-          --bind /home/${user}/.vpn/.pvpn-cli /home/${user}/.pvpn-cli \
+          ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
+          --ro-bind ${dejavu_fonts}/share/fonts/truetype /home/${user}/.local/share/fonts \
           --bind ${resolvConf} /etc/resolv.conf \
           --ro-bind /home/${user}/.vpn/hosts /etc/hosts \
           --ro-bind /home/${user}/.vpn/passwd /etc/passwd \
@@ -96,6 +125,7 @@ in
           --setenv HOME /home/${user} \
           --setenv MOZ_ENABLE_WAYLAND 1 \
           --setenv FAKEROOTDONTTRYCHOWN 1 \
+          --setenv FONTCONFIG_FILE ${fontconfig.out}/etc/fonts/fonts.conf \
           --die-with-parent \
           --new-session \
           ${script}
