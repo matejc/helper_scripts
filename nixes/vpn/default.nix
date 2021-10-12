@@ -1,4 +1,5 @@
 { pkgs ? import <nixpkgs> {}
+, name ? "default"
 , user ? "matejc"
 , uid ? "1000"
 , gid ? "1000"
@@ -11,10 +12,10 @@
 ]
 , packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox ]
 , mounts ? [
-  { from = "/home/${user}/.vpn/mozilla"; to = "/home/${user}/.mozilla"; }
-  { from = "/home/${user}/.vpn/transmission"; to = "/home/${user}/.config/transmission"; }
-  { from = "/home/${user}/.vpn/Downloads"; to = "/home/${user}/Downloads"; }
-  { from = "/home/${user}/.vpn/.pvpn-cli"; to = "/home/${user}/.pvpn-cli"; }
+  { from = "/home/${user}/.vpn/${name}/mozilla"; to = "/home/${user}/.mozilla"; }
+  { from = "/home/${user}/.vpn/${name}/transmission"; to = "/home/${user}/.config/transmission"; }
+  { from = "/home/${user}/.vpn/${name}/Downloads"; to = "/home/${user}/Downloads"; }
+  { from = "/home/${user}/.vpn/${name}/.pvpn-cli"; to = "/home/${user}/.pvpn-cli"; }
   { from = "${pkgs.dejavu_fonts}/share/fonts/truetype"; to = "/home/${user}/.local/share/fonts"; }
 ]
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
@@ -94,16 +95,17 @@ let
   '';
 in
   mkShell {
-    buildInputs = [ bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree utillinux fontconfig ] ++ packages;
+    name = "${user}-${name}";
+    buildInputs = [ bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree utillinux fontconfig coreutils libcap strace ] ++ packages;
     shellHook = ''
       set -e
 
       ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
 
-      echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/passwd
-      echo '${user}:!:${uid}:${gid}::/home/${user}:${interactiveShell}' >> /home/${user}/.vpn/passwd
-      echo > /home/${user}/.vpn/pid
-      echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/hosts
+      echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/${name}/passwd
+      echo '${user}:!:${uid}:${gid}::/home/${user}:${interactiveShell}' >> /home/${user}/.vpn/${name}/passwd
+      echo > /home/${user}/.vpn/${name}/pid
+      echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/${name}/hosts
 
       bwrap --ro-bind /nix /nix \
           --bind /tmp/.X11-unix/X0 /tmp/.X11-unix/X0 --setenv DISPLAY :0 \
@@ -117,10 +119,10 @@ in
           --ro-bind /sys/dev/char /sys/dev/char \
           --proc /proc \
           --tmpfs /tmp \
-          --bind /home/${user}/.vpn/pid /home/${user}/.pid \
+          --bind /home/${user}/.vpn/${name}/pid /home/${user}/.pid \
           ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
-          --ro-bind /home/${user}/.vpn/hosts /etc/hosts \
-          --ro-bind /home/${user}/.vpn/passwd /etc/passwd \
+          --ro-bind /home/${user}/.vpn/${name}/hosts /etc/hosts \
+          --ro-bind /home/${user}/.vpn/${name}/passwd /etc/passwd \
           --unshare-all \
           --share-net \
           --hostname RESTRICTED \

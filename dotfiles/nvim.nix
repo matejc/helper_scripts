@@ -54,6 +54,7 @@ let
     "pyright"
     #"python_language_server"
     "ansiblels"
+    "solargraph"
   ];
 
   mkNvimLsp = enabled:
@@ -275,6 +276,9 @@ let
         end,
       };
     '';
+    solargraph = ''
+      nvim_lsp["solargraph"].setup { on_attach = on_attach; cmd = {"${pkgs.solargraph}/bin/solargraph", "stdio"} }
+    '';
   };
 
   execCommand = pkgs.writeScript "exec" ''
@@ -322,7 +326,7 @@ let
 
     if exists("g:neovide")
       let g:neovide_cursor_animation_length=0.1
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 3)}"}
+      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 1)}"}
     endif
   '';
 
@@ -571,7 +575,14 @@ let
         call inputrestore()
         if !empty(text)
           call inputsave()
-          let l:filePattern = input('File pattern: ', '\.' . expand('%:e') . '$')
+
+          let l:fileExt = expand('%:e')
+          if empty(l:fileExt)
+            let l:filePattern = input('File pattern: ', '.*')
+          else
+            let l:filePattern = input('File pattern: ', '\.' . l:fileExt . '$')
+          endif
+
           call inputrestore()
           if empty(l:filePattern)
             let l:filePattern = '.*'
@@ -582,8 +593,8 @@ let
     endf
     let g:ctrlsf_regex_pattern = 1
 
-    vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
-    nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
+    " vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
+    " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
     vnoremap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
     nnoremap // :call feedkeys("/" . expand("<cword>"))<cr>
@@ -596,7 +607,7 @@ let
       \ }
     let g:ctrlp_show_hidden = 1
     let g:ctrlp_user_command = ['.git', 'cd %s && ${pkgs.git}/bin/git ls-files . -co --exclude-standard', '${pkgs.findutils}/bin/find %s -type f']
-    inoremap <silent> <c-p> <c-o>:CtrlP<cr>
+    " inoremap <silent> <c-p> <c-o>:CtrlP<cr>
 
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
     nnoremap <C-h> <leader>hu
@@ -871,7 +882,7 @@ local on_attach = function(client, bufnr)
     shadow_guibg = 'Black', -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
     toggle_key = nil -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
   }
-  require'lsp_signature'.on_attach(cfg)
+  require'lsp_signature'.on_attach(cfg, bufnr)
 
 end
 
@@ -1588,6 +1599,10 @@ require ('galaxyline').section.short_line_right = {
     }
   }
 }
+
+
+require('telescope').setup {}
+require('telescope').load_extension('fzf')
 EOF
     au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1612,6 +1627,12 @@ EOF
     nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
+
+    nnoremap <C-f> :lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
+    vnoremap <C-f> <esc>:lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
+
+    nnoremap <C-p> :lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
+    vnoremap <C-p> <esc>:lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
 
     " function! OpenCompletion()
     "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
@@ -1685,24 +1706,24 @@ EOF
 
     autocmd VimEnter * nested call MySessionLoad()
 
-    augroup CtrlPExtension
-      autocmd!
-      autocmd FocusGained  * CtrlPClearCache
-      autocmd BufWritePost * CtrlPClearCache
-    augroup END
+    "augroup CtrlPExtension
+    "  autocmd!
+    "  autocmd FocusGained  * CtrlPClearCache
+    "  autocmd BufWritePost * CtrlPClearCache
+    "augroup END
 
     " tab sball
     " set switchbuf=usetab,newtab
     " au BufAdd,BufNewFile,BufRead * nested tab sball
 
-    augroup bufclosetrack
-      au!
-      autocmd BufLeave * let g:lastWinName = @%
-    augroup END
-    function! LastWindow()
-      exe "edit " . g:lastWinName
-    endfunction
-    command -nargs=0 LastWindow call LastWindow()
+    "augroup bufclosetrack
+    "  au!
+    "  autocmd BufLeave * let g:lastWinName = @%
+    "augroup END
+    "function! LastWindow()
+    "  exe "edit " . g:lastWinName
+    "endfunction
+    "command -nargs=0 LastWindow call LastWindow()
 
     set list
     set listchars=tab:▸\ ,trail:×,nbsp:⎵
@@ -1801,6 +1822,8 @@ EOF
 
     nnoremap <C-U> :MundoToggle<CR>
 
+    set redrawtime=3000
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -1840,18 +1863,18 @@ EOF
   };
 
   neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
-    name = "neovim-unwrapped-0.5.0";
-    version = "0.5.0";
+    name = "neovim-unwrapped-nightly";
+    version = "nightly";
     src = pkgs.fetchFromGitHub {
       owner = "neovim";
       repo = "neovim";
-      rev = "a373ca1d826b1386f1fa291de70ee5d6bb81ec9b";
-      sha256 = "1llaszrgfxkp9d53mwsrxhi898yg5vcnq1sxasbavc0hzdjn8rwr";
+      rev = "b3e0d6708eca3cd22695d364ba2aca7401cc0f8c";
+      sha256 = "0mxv7hmj1ni904nhbijimg65bybgzd3y468g9rjn3rgzi4bk4q53";
     };
     #buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
 
-  neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
+  neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
@@ -1863,15 +1886,15 @@ EOF
           vim-jsbeautify
           vim-visual-multi
           vim-pasta
-          vimPlugins.ctrlsf-vim
-          ctrlp
+          #vimPlugins.ctrlsf-vim
+          #ctrlp
+          #ctrlp-py-matcher
           #vim-airline vim-airline-themes
           #vim-nix
           nerdcommenter
           #ale
           #YouCompleteMe
           #vimPlugins.omnisharp-vim
-          ctrlp-py-matcher
           robotframework-vim
           sleuth
           vimPlugins.vim-hashicorp-tools
@@ -1895,7 +1918,7 @@ EOF
           vimPlugins.lsp_signature-nvim
           vimPlugins.git-blame-nvim
           #vimPlugins.nvim-web-devicons
-          vimPlugins.nvim-tree-lua
+          nvim-tree-lua
           vimPlugins.gruvbox-material
           #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
@@ -1909,6 +1932,7 @@ EOF
           vimPlugins.lush-nvim
           vimPlugins.gruvbox-nvim
           vim-mundo
+          telescope-fzf-native-nvim
         ];
         opt = [
         ];
@@ -1972,6 +1996,7 @@ in [{
       pkgs.nodejs
       pkgs.gnugrep
       pkgs.python3Packages.yamllint
+      pkgs.ripgrep
     ]}:$PATH"
     ${neovim}/bin/nvim "$@"
   '';

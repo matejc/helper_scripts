@@ -33,7 +33,7 @@ let
       tug = "${pkgs.turbogit}/bin/tug";
     };
     locale.all = "en_US.utf8";
-    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --frameless --multiGrid";
+    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --multigrid";
     vims.q = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
     startup = [
       "${homeDir}/bin/browser"
