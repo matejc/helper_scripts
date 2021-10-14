@@ -35,6 +35,7 @@ let
     locale.all = "en_US.utf8";
     vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --multigrid";
     vims.q = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
+    vims.g = "${variables.homeDir}/bin/glrnvim";
     startup = [
       "${homeDir}/bin/browser"
       "${homeDir}/bin/keepassxc"
@@ -62,6 +63,7 @@ let
     ./sync.nix
     ./dd.nix
     ./xfce4-terminal.nix
+    ./glrnvim.nix
   ];
 
   activationScript = ''

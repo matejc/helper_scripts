@@ -55,6 +55,7 @@ let
     #"python_language_server"
     "ansiblels"
     "solargraph"
+    "groovyls"
   ];
 
   mkNvimLsp = enabled:
@@ -278,6 +279,9 @@ let
     '';
     solargraph = ''
       nvim_lsp["solargraph"].setup { on_attach = on_attach; cmd = {"${pkgs.solargraph}/bin/solargraph", "stdio"} }
+    '';
+    groovyls = ''
+      nvim_lsp["groovyls"].setup { on_attach = on_attach; cmd = {"${import ../nixes/groovy-language-server.nix { inherit pkgs; }}/bin/groovy-language-server"} }
     '';
   };
 
@@ -1802,6 +1806,8 @@ EOF
 
     au BufNewFile,BufRead *.robot setlocal filetype=robot
 
+    au BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
+
     let g:gitblame_date_format = '%r'
 
     nnoremap <C-S-P> <C-o>
@@ -1874,7 +1880,7 @@ EOF
     #buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
   });
 
-  neovim = (pkgs.wrapNeovim neovim-unwrapped { }).override {
+  neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
       packages.myVimPackage = with pkgs.vimPlugins; {
@@ -1898,7 +1904,7 @@ EOF
           robotframework-vim
           sleuth
           vimPlugins.vim-hashicorp-tools
-          Jenkinsfile-vim-syntax
+          #Jenkinsfile-vim-syntax
           vimPlugins.neovim-gui-shim
           vim-vinegar
           vim-fugitive
