@@ -8,11 +8,11 @@
 , stopCmds ? [ "fakeroot protonvpn disconnect" ]
 , runCmds ? [
   "transmission-daemon --no-portmap --foreground --no-dht -g /home/${user}/.transmission -w /home/${user}/Downloads &"
-  "firefox --no-remote --private-window http://localhost:9091/transmission/web/"
+  "nixGL chromium --no-sandbox --incognito --enable-features=UseOzonePlatform --ozone-platform=wayland http://localhost:9091/transmission/web/"
 ]
-, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox ]
+, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.chromium ]
 , mounts ? [
-  { from = "/home/${user}/.vpn/${name}/mozilla"; to = "/home/${user}/.mozilla"; }
+  { from = "/home/${user}/.vpn/${name}/chromium"; to = "/home/${user}/.config/chromium"; }
   { from = "/home/${user}/.vpn/${name}/transmission"; to = "/home/${user}/.config/transmission"; }
   { from = "/home/${user}/.vpn/${name}/Downloads"; to = "/home/${user}/Downloads"; }
   { from = "/home/${user}/.vpn/${name}/.pvpn-cli"; to = "/home/${user}/.pvpn-cli"; }
@@ -59,9 +59,18 @@ let
 
     echo $$ >/home/${user}/.pid
 
+    cat ${resolvConf} >/etc/resolv.conf
+    echo 10000000000000000000000000000000 > /etc/machine-id
     sysctl net.ipv6.conf.all.disable_ipv6=1
 
-    sleep 1
+    for i in {1..50}
+    do
+      if ip addr show dev tap0
+      then
+        break
+      fi
+      sleep 0.1
+    done
 
     trap "${stopCmd}" EXIT
 
@@ -70,24 +79,69 @@ let
     ${runCmd}
   '';
 
+  nixGL = (import (builtins.fetchGit {
+    url = git://github.com/guibou/nixGL; ref = "refs/heads/main";
+  }) { enable32bits = false; }).auto;
+
   script = writeScript "script.sh" ''
     #!${stdenv.shell}
     set -e
 
-    cat ${resolvConf} >/etc/resolv.conf
+    mkdir -p /home/${user}/.vpn/${name}/
+
+    ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
+
+    echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/${name}/passwd
+    echo '${user}:!:${uid}:${gid}::/home/${user}:${interactiveShell}' >> /home/${user}/.vpn/${name}/passwd
+    echo > /home/${user}/.vpn/${name}/.pid
+    echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/${name}/hosts
 
     for i in {1..50}
     do
-      vpnnspid="$(cat /home/${user}/.pid)"
+      vpnnspid="$(cat /home/${user}/.vpn/${name}/.pid)"
       if [ ! -z "$vpnnspid" ] && [ -f "/proc/$vpnnspid/cmdline" ]
       then
-        slirp4netns --configure --mtu=65520 --disable-host-loopback $vpnnspid tap0
+        slirp4netns --configure --mtu=65520 --disable-host-loopback --disable-dns $vpnnspid tap0
         break
       fi
       sleep 0.1
     done &
 
-    unshare --net --map-root-user ${unshareCmd}
+    bwrap --ro-bind /nix /nix \
+          --bind /tmp/.X11-unix/X0 /tmp/.X11-unix/X0 --setenv DISPLAY :0 \
+          --dir /run/user/${uid} \
+          --ro-bind /run/user/${uid}/pulse /run/user/${uid}/pulse \
+          --ro-bind /run/user/${uid}/dbus-1 /run/user/${uid}/dbus \
+          --ro-bind /run/user/${uid}/wayland-0 /run/user/${uid}/wayland-0 \
+          --ro-bind "/run/user/${uid}/pipewire-0" "/run/user/${uid}/pipewire-0" \
+          --ro-bind /run/opengl-driver/lib/dri /run/opengl-driver/lib/dri \
+          --dev /dev \
+          --dev-bind /dev/dri /dev/dri \
+          --dev-bind /dev/net/tun /dev/net/tun \
+          --ro-bind /sys/dev/char /sys/dev/char \
+          --ro-bind /sys/devices /sys/devices \
+          --proc /proc \
+          --tmpfs /tmp \
+          --bind /home/${user}/.vpn/${name}/.pid /home/${user}/.pid \
+          ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
+          --ro-bind /home/${user}/.vpn/${name}/hosts /etc/hosts \
+          --ro-bind /home/${user}/.vpn/${name}/passwd /etc/passwd \
+          --ro-bind ${cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt \
+          --unshare-user-try --unshare-ipc --unshare-net --unshare-uts --unshare-cgroup-try \
+          --hostname RESTRICTED \
+          --setenv HOME /home/${user} \
+          --setenv MOZ_ENABLE_WAYLAND 1 \
+          --setenv MOZ_X11_EGL 1 \
+          --setenv FAKEROOTDONTTRYCHOWN 1 \
+          --setenv FONTCONFIG_FILE ${fontconfig.out}/etc/fonts/fonts.conf \
+          --setenv XCURSOR_PATH ${gnome.adwaita-icon-theme}/share/icons \
+          --setenv XDG_RUNTIME_DIR "/run/user/${uid}" \
+          --setenv DBUS_SESSION_BUS_ADDRESS "unix:path=/run/user/${uid}/bus" \
+          --die-with-parent \
+          --new-session \
+          --uid 0 --gid 0 \
+          --cap-add CAP_NET_ADMIN \
+          ${unshareCmd}
   '';
 
   resolvConf = writeText "resolv.conf" ''
@@ -96,44 +150,12 @@ let
 in
   mkShell {
     name = "${user}-${name}";
-    buildInputs = [ bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree utillinux fontconfig coreutils libcap strace ] ++ packages;
+    buildInputs = [
+      bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod
+      openvpn pstree utillinux fontconfig coreutils libcap strace nixGL.nixGLDefault
+    ] ++ packages;
     shellHook = ''
-      set -e
-
-      ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
-
-      echo 'root:!:0:0::/root:${interactiveShell}' > /home/${user}/.vpn/${name}/passwd
-      echo '${user}:!:${uid}:${gid}::/home/${user}:${interactiveShell}' >> /home/${user}/.vpn/${name}/passwd
-      echo > /home/${user}/.vpn/${name}/pid
-      echo "127.0.0.1 RESTRICTED" > /home/${user}/.vpn/${name}/hosts
-
-      bwrap --ro-bind /nix /nix \
-          --bind /tmp/.X11-unix/X0 /tmp/.X11-unix/X0 --setenv DISPLAY :0 \
-          --ro-bind /etc/machine-id /etc/machine-id \
-          --dir /run/user/${uid} \
-          --ro-bind /run/user/${uid}/pulse /run/user/${uid}/pulse \
-          --ro-bind /run/user/${uid}/wayland-0 /run/user/${uid}/wayland-0 \
-          --dev /dev \
-          --dev-bind /dev/dri /dev/dri \
-          --dev-bind /dev/net/tun /dev/net/tun \
-          --ro-bind /sys/dev/char /sys/dev/char \
-          --proc /proc \
-          --tmpfs /tmp \
-          --bind /home/${user}/.vpn/${name}/pid /home/${user}/.pid \
-          ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
-          --ro-bind /home/${user}/.vpn/${name}/hosts /etc/hosts \
-          --ro-bind /home/${user}/.vpn/${name}/passwd /etc/passwd \
-          --unshare-all \
-          --share-net \
-          --hostname RESTRICTED \
-          --setenv HOME /home/${user} \
-          --setenv MOZ_ENABLE_WAYLAND 1 \
-          --setenv FAKEROOTDONTTRYCHOWN 1 \
-          --setenv FONTCONFIG_FILE ${fontconfig.out}/etc/fonts/fonts.conf \
-          --setenv XCURSOR_PATH ${gnome.adwaita-icon-theme}/share/icons \
-          --die-with-parent \
-          --new-session \
-          ${script}
+      ${script}
       exit $?
     '';
   }
