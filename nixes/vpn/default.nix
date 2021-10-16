@@ -114,7 +114,14 @@ let
           --ro-bind /run/user/${uid}/dbus-1 /run/user/${uid}/dbus \
           --ro-bind /run/user/${uid}/wayland-0 /run/user/${uid}/wayland-0 \
           --ro-bind "/run/user/${uid}/pipewire-0" "/run/user/${uid}/pipewire-0" \
-          --ro-bind /run/opengl-driver/lib/dri /run/opengl-driver/lib/dri \
+          --ro-bind-try /run/opengl-driver/lib/dri /run/opengl-driver/lib/dri \
+          --symlink usr/lib /lib \
+          --symlink usr/lib64 /lib64 \
+          --ro-bind-try /usr/lib /usr/lib \
+          --ro-bind-try /usr/lib64 /usr/lib64 \
+          --ro-bind-try /usr/share /usr/share \
+          --ro-bind-try /run/dbus /run/dbus \
+          --ro-bind-try $XAUTHORITY $XAUTHORITY \
           --dev /dev \
           --dev-bind /dev/dri /dev/dri \
           --dev-bind /dev/net/tun /dev/net/tun \
@@ -122,6 +129,7 @@ let
           --ro-bind /sys/devices /sys/devices \
           --proc /proc \
           --tmpfs /tmp \
+          --ro-bind-try /tmp/.ICE-unix /tmp/.ICE-unix \
           --bind /home/${user}/.vpn/${name}/.pid /home/${user}/.pid \
           ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
           --ro-bind /home/${user}/.vpn/${name}/hosts /etc/hosts \
