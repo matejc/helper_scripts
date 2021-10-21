@@ -9,6 +9,11 @@ glepnir/lspsaga.nvim@main
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
+hrsh7th/cmp-buffer@main
+hrsh7th/cmp-nvim-lsp@main
+hrsh7th/cmp-vsnip@main
+hrsh7th/nvim-cmp@main
+hrsh7th/vim-vsnip
 kana/vim-fakeclip
 kyazdani42/nvim-tree.lua
 kyazdani42/nvim-web-devicons

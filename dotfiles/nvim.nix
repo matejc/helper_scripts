@@ -150,10 +150,10 @@ let
       if not nvim_lsp["robotframeworklsp"] then
         nvim_lsp_configs.robotframeworklsp = {
           default_config = {
-            cmd = {"${variables.homeDir}/.py-packages/bin/robotframework_ls"};
+            cmd = {"robotframework_ls"};
             filetypes = {'robot'};
             root_dir = function(fname)
-            return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+              return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
             end;
             settings = {};
           };
@@ -464,12 +464,12 @@ let
     autocmd FileType javascript nnoremap <buffer> <C-b> :call JsBeautify()<cr>
     autocmd FileType python nnoremap <buffer> <C-b> :call PyBeautify()<cr>
 
-    nmap <PageUp> 10<up>
-    nmap <PageDown> 10<down>
-    inoremap <PageUp> <C-o>10<up>
-    inoremap <PageDown> <C-o>10<down>
-    vmap <PageUp> 10<up>
-    vmap <PageDown> 10<down>
+    nnoremap <silent> <PageUp> 10<up>
+    nnoremap <silent> <PageDown> 10<down>
+    inoremap <silent> <PageUp> <C-o>10<up>
+    inoremap <silent> <PageDown> <C-o>10<down>
+    vnoremap <silent> <PageUp> 10<up>
+    vnoremap <silent> <PageDown> 10<down>
     vmap <S-PageUp> 10<up>
     vmap <S-PageDown> 10<down>
     nmap <S-PageUp> v10<up>
@@ -793,6 +793,8 @@ let
     nnoremap <del> "_dl
     vnoremap <del> "_d
 
+    set completeopt=menu,menuone,noselect
+
 lua << EOF
 local nvim_lsp = require('lspconfig')
 local nvim_lsp_configs = require('lspconfig/configs')
@@ -887,47 +889,30 @@ local on_attach = function(client, bufnr)
     toggle_key = nil -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
   }
   require'lsp_signature'.on_attach(cfg, bufnr)
-
 end
 
+local cmp = require'cmp'
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.close(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+  },
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+  }
+})
+
 ${enabledNvimLsp}
-
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  resolve_timeout = 800;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = {
-    border = { ''', ''' ,''', ' ', ''', ''', ''', ' ' }, -- the border option is the same as `|help nvim_open_win|`
-    winhighlight = "NormalFloat:CompeDocumentation,FloatBorder:CompeDocumentationBorder",
-    max_width = 60,
-    min_width = 30,
-    max_height = math.floor(vim.o.lines * 0.3),
-    min_height = 1,
-  };
-
-  source = {
-    buffer = true;
-    path = true;
-    tags = true;
-    spell = true;
-    calc = true;
-    nvim_lsp = true;
-    nvim_lua = true;
-    omni = false;
-    -- vsnip = true;
-    -- ultisnips = true;
-    -- luasnip = true;
-  };
-}
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -1622,11 +1607,6 @@ EOF
     " nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
     " tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
-    set completeopt=menuone,noselect
-    inoremap <silent><expr> <C-Space> compe#complete()
-    inoremap <silent><expr> <CR>      compe#confirm('<CR>')
-    inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-
     nnoremap gd :lua require'telescope.builtin'.lsp_definitions{}<cr>
     nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
@@ -1830,6 +1810,8 @@ EOF
 
     set redrawtime=3000
 
+    set re=1
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -1929,7 +1911,7 @@ EOF
           #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
           vim-matchup
-          nvim-compe
+          #nvim-compe
           plenary-nvim
           telescope-nvim
           vimPlugins.bufferline-nvim
@@ -1939,6 +1921,11 @@ EOF
           vimPlugins.gruvbox-nvim
           vim-mundo
           telescope-fzf-native-nvim
+          vimPlugins.nvim-cmp
+          vimPlugins.cmp-buffer
+          vimPlugins.cmp-nvim-lsp
+          vimPlugins.cmp-vsnip
+          vimPlugins.vim-vsnip
         ];
         opt = [
         ];
