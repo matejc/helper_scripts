@@ -64,6 +64,7 @@ let
     ./dd.nix
     ./xfce4-terminal.nix
     ./glrnvim.nix
+    ./fonts.nix
   ];
 
   activationScript = ''
