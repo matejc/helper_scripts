@@ -1,9 +1,7 @@
 akinsho/bufferline.nvim
-APZelos/blamer.nvim
 dyng/ctrlsf.vim
 ellisonleao/gruvbox.nvim@main
 equalsraf/neovim-gui-shim
-f-person/git-blame.nvim
 glepnir/galaxyline.nvim@main
 glepnir/lspsaga.nvim@main
 goballooning/vim-conque
@@ -39,3 +37,4 @@ vim-ctrlspace/vim-ctrlspace
 vim-scripts/Workspace-Manager
 Xuyuanp/nerdtree-git-plugin
 yami-beta/asyncomplete-omni.vim
+zivyangll/git-blame.vim

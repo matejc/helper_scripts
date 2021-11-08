@@ -344,7 +344,7 @@ let
     set nobackup
     set nowritebackup
 
-    set cmdheight=1
+    set cmdheight=2
 
     " You will have bad experience for diagnostic messages when it's default 4000.
     set updatetime=300
@@ -363,8 +363,6 @@ let
 
     let g:gitgutter_override_sign_column_highlight = 0
 
-    " let g:gruvbox_original_background = 'medium'
-    " colorscheme gruvbox-material
     colorscheme gruvbox
 
     " let g:neosolarized_contrast = "high"
@@ -412,7 +410,7 @@ let
     set autoindent
     " set smartindent
     set nocopyindent
-    " set tabstop=2 shiftwidth=2 expandtab softtabstop=2
+    set tabstop=2 shiftwidth=2 expandtab softtabstop=2
     set nowrap
 
     set virtualedit=onemore
@@ -633,8 +631,6 @@ let
     " let g:airline_symbols.notexists = 'Ɇ'
     " let g:airline_symbols.whitespace = 'Ξ'
 
-    " let g:airline_theme='gruvbox_material'
-    " " let g:airline_solarized_bg='light'
 
     function! IsNTOpen()
       return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -709,7 +705,7 @@ let
     " let g:VM_maps["Start Regex Search"]          = 'g/'
     let g:VM_maps["Add Cursor Down"]             = '<C-Down>'
     let g:VM_maps["Add Cursor Up"]               = '<C-Up>'
-    let g:VM_maps["Add Cursor At Pos"]           = '<C-g>'
+    let g:VM_maps["Add Cursor At Pos"]           = '<C-t>'
     " let g:VM_maps["Visual Regex"]                = 'g/'
     " let g:VM_maps["Visual All"]                  = '<leader>A'
     " let g:VM_maps["Visual Add"]                  = '<A-a>'
@@ -1694,6 +1690,8 @@ EOF
     nnoremap <C-p> :lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
     vnoremap <C-p> <esc>:lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
 
+    nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
+
     " function! OpenCompletion()
     "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
     "         call feedkeys("\<C-x>\<C-o>", "n")
@@ -1864,7 +1862,12 @@ EOF
 
     au BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
 
-    let g:gitblame_date_format = '%r'
+    " let g:gitblame_date_format = '%r'
+    " let g:blamer_enabled = 1
+    " let g:blamer_show_in_visual_modes = 0
+    " let g:blamer_show_in_insert_modes = 0
+    " let g:blamer_relative_time = 1
+    " let g:blamer_template = '<committer> • <committer-time> • <summary>'
 
     nnoremap <C-S-P> <C-o>
     inoremap <C-S-P> <esc><C-o>
@@ -1873,9 +1876,8 @@ EOF
 
     set splitbelow
     set splitright
-    nnoremap <A-h> :sp<cr>
-    nnoremap <A-v> :vsp<cr>
-    nnoremap <A-c> :close<cr>
+    nnoremap <silent> <A-h> :sp<cr>
+    nnoremap <silent> <A-v> :vsp<cr>
     nnoremap <silent> <A-c> :close<cr>
     nnoremap <A-Down> <C-W><C-J>
     nnoremap <A-Up> <C-W><C-K>
@@ -1980,10 +1982,9 @@ EOF
           vim-signify
           vimPlugins.vim-perforce
           vimPlugins.lsp_signature-nvim
-          vimPlugins.git-blame-nvim
+          vimPlugins.git-blame-vim
           #vimPlugins.nvim-web-devicons
           nvim-tree-lua
-          vimPlugins.gruvbox-material
           #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
           vim-matchup
