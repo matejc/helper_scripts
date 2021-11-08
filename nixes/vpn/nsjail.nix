@@ -208,8 +208,6 @@ let
       --gid_mapping 100:100:1 \
       --keep_caps \
       --rlimit_nofile 64000 \
-      --rlimit_as 64000 \
-      --rlimit_cpu 64000 \
       --rlimit_fsize 64000 \
       --keep_env \
       ${unshareCmd}
