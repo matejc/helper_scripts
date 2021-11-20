@@ -8,7 +8,9 @@ goballooning/vim-conque
 hashivim/vim-hashicorp-tools
 Houl/motpat-vim
 hrsh7th/cmp-buffer@main
+hrsh7th/cmp-cmdline@main
 hrsh7th/cmp-nvim-lsp@main
+hrsh7th/cmp-path@main
 hrsh7th/cmp-vsnip@main
 hrsh7th/nvim-cmp@main
 hrsh7th/vim-vsnip

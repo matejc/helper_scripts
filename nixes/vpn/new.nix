@@ -132,7 +132,7 @@ let
       vpnnspid="$(cat ${homeDir}/.vpn/${name}/pid)"
       if [ ! -z "$vpnnspid" ] && [ -f "/proc/$vpnnspid/cmdline" ]
       then
-        slirp4netns --configure --mtu=65520 --disable-host-loopback --disable-dns $vpnnspid tap0
+        slirp4netns --configure --mtu=65520 --disable-dns --disable-host-loopback $vpnnspid tap0
         break
       fi
       sleep 0.1
@@ -148,11 +148,11 @@ let
 
     bwrap \
       --tmpfs / \
-      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | xargs -i sh -c "test -r '{}' && basename '{}'" | awk '{printf "--bind /"$1" /"$1" "}') \
-      --bind ${homeDir}/.vpn/${name}/resolve /run/systemd/resolve \
+      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /dev | xargs -i sh -c "test -r '{}' && basename '{}'" | awk '{printf "--bind /"$1" /"$1" "}') \
       --dev /dev \
       --dev-bind /dev/dri /dev/dri \
       --dev-bind /dev/net/tun /dev/net/tun \
+      --dev-bind /dev/shm /dev/shm \
       --bind ${homeDir}/.vpn/${name}/pid /tmp/pid \
       --ro-bind ${homeDir}/.vpn/${name}/hosts /etc/hosts \
       --ro-bind ${homeDir}/.vpn/${name}/passwd /etc/passwd \
@@ -167,6 +167,7 @@ let
       ${concatMapStringsSep " " (m: "--bind ${m.from} ${m.to}") mounts} \
       ${concatMapStringsSep " " (m: "--symlink ${m.from} ${m.to}") symlinks} \
       ${concatMapStringsSep " " (m: "--setenv ${m.name} ${m.value}") variables} \
+      --bind ${homeDir}/.vpn/${name}/resolve/stub-resolv.conf /run/systemd/resolve/stub-resolv.conf \
       --die-with-parent \
       --new-session \
       --uid 0 --gid 0 \

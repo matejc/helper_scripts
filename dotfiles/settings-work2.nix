@@ -31,6 +31,7 @@ let
       keepassxc = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.keepassx-community}/bin/keepassxc";
       nixGL = "${nixGL.nixGLDefault}/bin/nixGL";
       tug = "${pkgs.turbogit}/bin/tug";
+      nextcloud = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.nextcloud-client}/bin/nextcloud";
     };
     locale.all = "en_US.utf8";
     vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --multigrid";
@@ -40,8 +41,10 @@ let
       "${homeDir}/bin/browser"
       "${homeDir}/bin/keepassxc"
       "${homeDir}/bin/clearprimary"
+      "${homeDir}/bin/nextcloud"
       #"${homeDir}/bin/slack"
     ];
+    dbus = [ "${pkgs.nextcloud-client}/share/dbus-1/service" ];
   };
 
   dotFilePaths = [
@@ -65,6 +68,9 @@ let
     ./xfce4-terminal.nix
     ./glrnvim.nix
     ./fonts.nix
+    ./applications.nix
+    ./dbus.nix
+    ./nixmy.nix
   ];
 
   activationScript = ''

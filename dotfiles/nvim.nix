@@ -64,51 +64,107 @@ let
 
   nvimLsp = {
     kotlin_language_server = ''
-      nvim_lsp["kotlin_language_server"].setup { on_attach = on_attach; cmd = {"${kotlin-language-server}/bin/kotlin-language-server"} }
+      nvim_lsp["kotlin_language_server"].setup {
+        on_attach = on_attach;
+        cmd = {"${kotlin-language-server}/bin/kotlin-language-server"};
+        capabilities = capabilities;
+      }
     '';
     rnix = ''
-      nvim_lsp["rnix"].setup { on_attach = on_attach; cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"} }
+      nvim_lsp["rnix"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"};
+        capabilities = capabilities;
+      }
     '';
     bashls = ''
-      nvim_lsp["bashls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"} }
+      nvim_lsp["bashls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"};
+        capabilities = capabilities;
+      }
     '';
     dockerls = ''
-      nvim_lsp["dockerls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"} }
+      nvim_lsp["dockerls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     yamlls = ''
-      nvim_lsp["yamlls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"} }
+      nvim_lsp["yamlls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     tsserver = ''
-      nvim_lsp["tsserver"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"} }
+      nvim_lsp["tsserver"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     jsonls = ''
-      nvim_lsp["jsonls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"} }
+      nvim_lsp["jsonls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     vimls = ''
-      nvim_lsp["vimls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"} }
+      nvim_lsp["vimls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     html = ''
-      nvim_lsp["html"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"} }
+      nvim_lsp["html"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     cssls = ''
-      nvim_lsp["cssls"].setup { on_attach = on_attach; cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"} }
+      nvim_lsp["cssls"].setup {
+        on_attach = on_attach;
+        cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"};
+        capabilities = capabilities;
+      }
     '';
     ccls = ''
-      nvim_lsp["ccls"].setup { on_attach = on_attach; cmd = {"${pkgs.ccls}/bin/ccls"} }
+      nvim_lsp["ccls"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.ccls}/bin/ccls"};
+        capabilities = capabilities;
+      }
     '';
     omnisharp = ''
-      nvim_lsp["omnisharp"].setup { on_attach = on_attach; cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) } }
+      nvim_lsp["omnisharp"].setup {
+        on_attach = on_attach;
+        cmd = { "${pkgs.omnisharp-roslyn}/bin/omnisharp", "--languageserver" , "--hostPID", tostring(pid) };
+        capabilities = capabilities;
+      }
     '';
     gopls = ''
-      nvim_lsp["gopls"].setup { on_attach = on_attach; cmd = {"${pkgs.gopls}/bin/gopls"} }
+      nvim_lsp["gopls"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.gopls}/bin/gopls"};
+        capabilities = capabilities;
+      }
     '';
     hls = ''
-      nvim_lsp["hls"].setup { on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"} }
+      nvim_lsp["hls"].setup {
+        on_attach = on_attach; cmd = {"${pkgs.haskell-language-server}/bin/haskell-language-server-wrapper", "--lsp"};
+        capabilities = capabilities;
+      }
     '';
     sumneko_lua = ''
       nvim_lsp["sumneko_lua"].setup {
         on_attach = on_attach;
         cmd = {"${pkgs.sumneko-lua-language-server}/bin/lsp-language-server", "-E", "${pkgs.sumneko-lua-language-server}/extras/main.lua"};
+        capabilities = capabilities;
         settings = {
           Lua = {
             runtime = {
@@ -145,7 +201,10 @@ let
           };
         }
       end
-      nvim_lsp["pwsh"].setup { on_attach = on_attach; }
+      nvim_lsp["pwsh"].setup {
+        on_attach = on_attach;
+        capabilities = capabilities;
+      }
     '';
     robotframeworklsp = ''
       if not nvim_lsp["robotframeworklsp"] then
@@ -160,12 +219,16 @@ let
           };
         }
       end
-      nvim_lsp["robotframeworklsp"].setup { on_attach = on_attach; }
+      nvim_lsp["robotframeworklsp"].setup {
+        on_attach = on_attach;
+        capabilities = capabilities;
+      }
     '';
     lemminx = ''
       nvim_lsp["lemminx"].setup {
         on_attach = on_attach;
         cmd = {"${lemminx}/bin/lemminx"};
+        capabilities = capabilities;
         filetypes = {'xml'};
         root_dir = function(fname)
           return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
@@ -177,6 +240,7 @@ let
       nvim_lsp["pylsp"].setup {
         on_attach = on_attach;
         cmd = {"${python-lsp-server}/bin/pylsp"};
+        capabilities = capabilities;
         filetypes = { 'python' };
         settings = {
           pylsp = {
@@ -207,6 +271,7 @@ let
       nvim_lsp["pyright"].setup {
         on_attach = on_attach;
         cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+        capabilities = capabilities;
         settings = {
           python = {
             analysis = {
@@ -233,6 +298,7 @@ let
         nvim_lsp_configs.python_language_server = {
           default_config = {
             cmd = { '${pkgs.python-language-server}/bin/python-language-server' };
+            capabilities = capabilities;
             filetypes = { 'python' };
             root_dir = function(fname)
               local root_files = {
@@ -253,6 +319,7 @@ let
       nvim_lsp["ansiblels"].setup {
         on_attach = on_attach;
         cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+        capabilities = capabilities;
         settings = {
           ansible = {
             python = {
@@ -275,13 +342,25 @@ let
       };
     '';
     solargraph = ''
-      nvim_lsp["solargraph"].setup { on_attach = on_attach; cmd = {"${pkgs.solargraph}/bin/solargraph", "stdio"} }
+      nvim_lsp["solargraph"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.solargraph}/bin/solargraph", "stdio"};
+        capabilities = capabilities;
+      }
     '';
     groovyls = ''
-      nvim_lsp["groovyls"].setup { on_attach = on_attach; cmd = {"${import ../nixes/groovy-language-server.nix { inherit pkgs; }}/bin/groovy-language-server"} }
+      nvim_lsp["groovyls"].setup {
+        on_attach = on_attach;
+        cmd = {"${import ../nixes/groovy-language-server.nix { inherit pkgs; }}/bin/groovy-language-server"};
+        capabilities = capabilities;
+      }
     '';
     rust_analyzer = ''
-      nvim_lsp["rust_analyzer"].setup { on_attach = on_attach; cmd = {"${pkgs.rust-analyzer}/bin/rust-analyzer"} }
+      nvim_lsp["rust_analyzer"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.rust-analyzer}/bin/rust-analyzer"};
+        capabilities = capabilities;
+      }
     '';
   };
 
@@ -889,24 +968,77 @@ end
 
 local cmp = require'cmp'
 
+-- cmp.setup({
+--   snippet = {
+--     expand = function(args)
+--       vim.fn["vsnip#anonymous"](args.body)
+--     end,
+--   },
+--   mapping = {
+--     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+--     ['<C-f>'] = cmp.mapping.scroll_docs(4),
+--     ['<C-Space>'] = cmp.mapping.complete(),
+--     ['<C-e>'] = cmp.mapping.close(),
+--     ['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+--   },
+--   sources = {
+--     { name = 'nvim_lsp' },
+--     { name = 'buffer' },
+--     { name = 'vsnip' },
+--   }
+-- })
+
 cmp.setup({
   snippet = {
+    -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
     end,
   },
   mapping = {
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
+    ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+    ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+    ['<C-e>'] = cmp.mapping({
+      i = cmp.mapping.abort(),
+      c = cmp.mapping.close(),
+    }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
   },
-  sources = {
+  sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    { name = 'vsnip' }, -- For vsnip users.
+    -- { name = 'luasnip' }, -- For luasnip users.
+    -- { name = 'ultisnips' }, -- For ultisnips users.
+    -- { name = 'snippy' }, -- For snippy users.
+  }, {
     { name = 'buffer' },
+    { name = 'path' },
+  })
+})
+
+-- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline('/', {
+  sources = {
+    { name = 'buffer' }
   }
 })
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  })
+})
+
+-- Setup lspconfig.
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 ${enabledNvimLsp}
 
@@ -969,7 +1101,7 @@ require'nvim-tree'.setup {
     width = 30,
     -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
     height = 30,
-    -- Hide the root path of the current folder on top of the tree 
+    -- Hide the root path of the current folder on top of the tree
     hide_root_folder = true,
     -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
     side = 'left',
@@ -2001,6 +2133,8 @@ EOF
           vimPlugins.cmp-buffer
           vimPlugins.cmp-nvim-lsp
           vimPlugins.cmp-vsnip
+          vimPlugins.cmp-path
+          vimPlugins.cmp-cmdline
           vimPlugins.vim-vsnip
         ];
         opt = [

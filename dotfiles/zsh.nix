@@ -180,6 +180,18 @@ in
     #  export DISPLAY="''${DISPLAY:-$display_no}"
     #fi
 
+    first-tab() {
+        if [[ $#BUFFER == 0 ]]; then
+            BUFFER="cd "
+            CURSOR=3
+            zle list-choices
+        else
+            zle expand-or-complete
+        fi
+    }
+    zle -N first-tab
+    bindkey '^I' first-tab
+
     export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
     eval "$(${pkgs.starship}/bin/starship init zsh)"
 

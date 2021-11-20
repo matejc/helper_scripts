@@ -18,12 +18,12 @@ let
       target = nix.target;
     }) nixes;
   dotAttrs = lib.flatten (map dotFileFun dotFilePaths);
-  dotFilesScript = pkgs.writeScript "dot-files-script-${name}.sh" ''
+  dotFilesScript = pkgs.writeScriptBin "dot-files-apply-${name}" ''
     #!${pkgs.stdenv.shell}
 
     ${lib.concatMapStringsSep "\n" (d: ''
       if [[ -L "${d.target}" ]]; then
-        rm "${d.target}"
+        rm -v "${d.target}"
       elif [[ -f "${d.target}" ]]; then
         mv -v "${d.target}" "${d.target}.backup.`date --iso-8601=seconds`"
       fi
@@ -35,6 +35,6 @@ let
   '';
 in if exposeScript then dotFilesScript else {
   system.activationScripts."dotfiles-${name}" = ''
-    ${dotFilesScript} || true
+    ${dotFilesScript}/bin/dot-files-apply-${name} || true
   '';
 }

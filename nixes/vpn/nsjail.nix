@@ -12,11 +12,12 @@
 ]
 , packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox ]
 , preCmds ? [ ]
+, chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
+, romounts ? [ { from = "/run/opengl-driver"; to = "/run/opengl-driver"; } ]
+, symlinks ? [ ]
 , variables ? [ ]
 , tmpfs ? [ ]
-, symlinks ? [ ]
-, tmpMounts ? [ ]
 , homeDir ? "/var/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
@@ -149,6 +150,7 @@ let
   script = writeScript "script.sh" ''
     #!${stdenv.shell}
     set -e
+    mkdir -p ${homeDir}/.vpn/${name}/chroot/run/user/1000
     mkdir -p ${homeDir}/.vpn/${name}/home
     mkdir -p ${homeDir}/.vpn/${name}/root
     mkdir -p ${homeDir}/.vpn/${name}/etc
@@ -181,35 +183,40 @@ let
     trap 'exit 0' SIGINT SIGTERM
 
     nsjail \
-      -Mo \
-      --chroot / \
+      -Mr \
+      --chroot ${chroot} \
       --rw \
+      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /run | xargs -i sh -c "test -w '{}' && echo '{}'" | awk '{printf "--bindmount "$1":"$1" "}') \
+      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /run | xargs -i sh -c "test ! -w '{}' && echo '{}'" | awk '{printf "--bindmount_ro "$1":"$1" "}') \
       --disable_proc \
       --bindmount ${homeDir}/.vpn/${name}:/tmp/.vpn \
       --bindmount ${homeDir}/.vpn/${name}/home:${homeDir} \
       --bindmount ${homeDir}/.vpn/${name}/root:/root \
-      --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/hosts:$(realpath /etc/hosts) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/passwd:$(realpath /etc/passwd) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/group:$(realpath /etc/group) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/hostname:$(realpath /etc/hostname) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/machine-id:$(realpath /etc/machine-id) \
-      --tmpfsmount /etc/ssl/certs \
+      --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
-      --mount none:/run:tmpfs:uid=0,gid=0 \
-      --bindmount_ro /run/opengl-driver:/run/opengl-driver \
       --bindmount /run/user/${uid}:/run/user/${uid} \
+      --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
       --disable_clone_newpid \
       --hostname RESTRICTED \
       --cwd ${homeDir} \
       --uid_mapping 0:101000:1 \
       --gid_mapping 0:100100:1 \
-      --uid_mapping 1000:1000:1 \
-      --gid_mapping 100:100:1 \
+      --uid_mapping ${uid}:${uid}:1 \
+      --gid_mapping ${gid}:${gid}:1 \
       --keep_caps \
       --rlimit_nofile 64000 \
       --rlimit_fsize 64000 \
       --keep_env \
+      ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
+      ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
+      ${concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
+      ${concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
+      ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
       ${unshareCmd}
   '';
 
