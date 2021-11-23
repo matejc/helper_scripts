@@ -183,11 +183,9 @@ let
     trap 'exit 0' SIGINT SIGTERM
 
     nsjail \
-      -Mr \
-      --chroot ${chroot} \
+      -Mo \
+      --chroot / \
       --rw \
-      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /run | xargs -i sh -c "test -w '{}' && echo '{}'" | awk '{printf "--bindmount "$1":"$1" "}') \
-      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /run | xargs -i sh -c "test ! -w '{}' && echo '{}'" | awk '{printf "--bindmount_ro "$1":"$1" "}') \
       --disable_proc \
       --bindmount ${homeDir}/.vpn/${name}:/tmp/.vpn \
       --bindmount ${homeDir}/.vpn/${name}/home:${homeDir} \
@@ -199,6 +197,7 @@ let
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/machine-id:$(realpath /etc/machine-id) \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
+      --tmpfsmount /run \
       --bindmount /run/user/${uid}:/run/user/${uid} \
       --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
       --disable_clone_newpid \
