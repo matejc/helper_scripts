@@ -677,8 +677,10 @@ let
     " vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
     " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
-    vnoremap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
-    nnoremap // :call feedkeys("/" . expand("<cword>"))<cr>
+    nnoremap <C-f> <cmd>lua require('searchbox').incsearch()<CR>
+
+    " vnoremap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
+    " nnoremap // :call feedkeys("/" . expand("<cword>"))<cr>
 
     let g:ctrlp_cmd = 'CtrlP'
     let g:ctrlp_custom_ignore = {
@@ -869,6 +871,28 @@ let
     vnoremap <del> "_d
 
     set completeopt=menu,menuone,noselect
+
+    let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
+    " let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
+    let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+    let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+    let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
+    let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+    " let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
+    let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
+    let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
+    let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
+    " let g:nvim_tree_lsp_diagnostics = 1 "0 by default, will show lsp diagnostics in the signcolumn. See :help nvim_tree_lsp_diagnostics
+    " Dictionary of buffer option names mapped to a list of option values that
+    " indicates to the window picker that the buffer's window should not be
+    " selectable.
+    let g:nvim_tree_show_icons = {
+        \ 'git': 0,
+        \ 'folders': 0,
+        \ 'files': 0,
+        \ 'folder_arrows': 0,
+        \ }
+    " let g:nvim_tree_disable_netrw = 0
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
@@ -1816,8 +1840,8 @@ EOF
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
-    nnoremap <C-f> :lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
-    vnoremap <C-f> <esc>:lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
+    nnoremap <C-S-f> :lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
+    vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
 
     nnoremap <C-p> :lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
     vnoremap <C-p> <esc>:lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
@@ -1961,27 +1985,6 @@ EOF
 
     let g:NERDDefaultAlign = 'left'
 
-    let g:nvim_tree_quit_on_open = 1 "0 by default, closes the tree when you open a file
-    " let g:nvim_tree_follow = 1 "0 by default, this option allows the cursor to be updated when entering a buffer
-    let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
-    let g:nvim_tree_git_hl = 1 "0 by default, will enable file highlight for git attributes (can be used without the icons).
-    let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
-    let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
-    " let g:nvim_tree_tab_open = 1 "0 by default, will open the tree when entering a new tab and the tree was previously open
-    let g:nvim_tree_width_allow_resize  = 1 "0 by default, will not resize the tree when opening a file
-    let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
-    let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
-    " let g:nvim_tree_lsp_diagnostics = 1 "0 by default, will show lsp diagnostics in the signcolumn. See :help nvim_tree_lsp_diagnostics
-    " Dictionary of buffer option names mapped to a list of option values that
-    " indicates to the window picker that the buffer's window should not be
-    " selectable.
-    let g:nvim_tree_show_icons = {
-        \ 'git': 0,
-        \ 'folders': 0,
-        \ 'files': 0,
-        \ 'folder_arrows': 0,
-        \ }
-    " let g:nvim_tree_disable_netrw = 0
     nnoremap <C-o> :NvimTreeToggle<CR>
     inoremap <C-o> <esc>:NvimTreeToggle<CR>
     nnoremap <leader>r :NvimTreeRefresh<CR>
@@ -2136,6 +2139,8 @@ EOF
           vimPlugins.cmp-path
           vimPlugins.cmp-cmdline
           vimPlugins.vim-vsnip
+          vimPlugins.nui-nvim
+          vimPlugins.searchbox-nvim
         ];
         opt = [
         ];
