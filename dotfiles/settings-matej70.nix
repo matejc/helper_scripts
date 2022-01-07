@@ -118,6 +118,7 @@ let
     ./clearprimary.nix
     ./py3-venv.nix
     ./keepassxc-oath.nix
+    ./dd.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst
