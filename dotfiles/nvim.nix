@@ -1716,6 +1716,15 @@ gls.right[1] = { -- filetype (eg. python)
 		separator_highlight = "GalaxySection2Edge",
 	},
 }
+
+function getTableSize(t)
+    local count = 0
+    for _, __ in pairs(t) do
+        count = count + 1
+    end
+    return count
+end
+
 require("bufferline").setup{
   options = {
     numbers = "none",
@@ -1726,7 +1735,7 @@ require("bufferline").setup{
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = "",
+    indicator_icon = '▎',
     buffer_close_icon = '',
     modified_icon = '●',
     close_icon = '',
@@ -1737,8 +1746,18 @@ require("bufferline").setup{
     tab_size = 18,
     diagnostics = "nvim_lsp",
     diagnostics_update_in_insert = false,
-    diagnostics_indicator = function(count, level, diagnostics_dict, context)
-      return "("..count..")"
+    diagnostics_indicator = function(_, _, diagnostics_dict, _)
+      local s = " "
+      for err_type, count in pairs(diagnostics_dict) do
+        if err_type == "error" then
+          s = s .. count .. " "
+        elseif err_type == "warning" then
+          s = s .. count .. " "
+        else
+          s = s .. count .. " "
+        end
+      end
+      return s
     end,
     offsets = {{filetype = "NvimTree", text = "File Explorer", text_align = "center"}},
     separator_style = { "", "" },
