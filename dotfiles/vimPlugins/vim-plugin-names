@@ -15,6 +15,7 @@ hrsh7th/cmp-vsnip@main
 hrsh7th/nvim-cmp@main
 hrsh7th/vim-vsnip
 kana/vim-fakeclip
+kevinhwang91/nvim-hlslens@main
 kyazdani42/nvim-tree.lua
 kyazdani42/nvim-web-devicons
 lifepillar/vim-solarized8
@@ -22,6 +23,7 @@ MunifTanjim/nui.nvim@main
 neovim/nvim-lspconfig
 nfvs/vim-perforce
 OmniSharp/omnisharp-vim
+petertriho/nvim-scrollbar@main
 ray-x/lsp_signature.nvim
 rktjmp/lush.nvim@main
 sainnhe/sonokai
