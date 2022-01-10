@@ -1,7 +1,10 @@
 { pkgs, lib ? pkgs.lib }:
 let
 
-  nixGL = (import (builtins.fetchGit git://github.com/guibou/nixGL) { enable32bits = false; }).auto;
+  nixGL = (import (builtins.fetchGit {
+    url = git://github.com/guibou/nixGL;
+    ref = "refs/heads/main";
+  }) { enable32bits = false; }).auto;
 
   variables = rec {
     prefix = "${variables.homeDir}/workarea/helper_scripts";
