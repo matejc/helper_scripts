@@ -239,7 +239,7 @@ let
     pylsp = ''
       nvim_lsp["pylsp"].setup {
         on_attach = on_attach;
-        cmd = {"${python-lsp-server}/bin/pylsp"};
+        cmd = {"${pkgs.python3Packages.python-lsp-server}/bin/pylsp"};
         capabilities = capabilities;
         filetypes = { 'python' };
         settings = {
@@ -1808,18 +1808,9 @@ require("scrollbar").setup({
         search = true,
     },
 })
-require("hlslens").setup({
-    build_position_cb = function(plist, bufnr, changedtick, pattern)
-        require('scrollbar').search_handler.show(plist.start_pos)
-    end
-})
+require("hlslens").setup()
+require("scrollbar.handlers.search").setup()
 
-vim.cmd([[
-    augroup scrollbar_search_hide
-      autocmd!
-      autocmd CmdlineLeave : lua require('scrollbar').search_handler.hide()
-    augroup END
-]])
 EOF
     au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
