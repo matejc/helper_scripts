@@ -1042,6 +1042,8 @@ cmp.setup({
   }, {
     { name = 'buffer' },
     { name = 'path' },
+  }, {
+    { name = 'spell' },
   })
 })
 
@@ -1810,7 +1812,6 @@ require("scrollbar").setup({
 })
 require("hlslens").setup()
 require("scrollbar.handlers.search").setup()
-
 EOF
     au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -2134,6 +2135,7 @@ EOF
           #vimPlugins.searchbox-nvim
           vimPlugins.nvim-hlslens
           vimPlugins.nvim-scrollbar
+          vimPlugins.cmp-spell
         ];
         opt = [
         ];

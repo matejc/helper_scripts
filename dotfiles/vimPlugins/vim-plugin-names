@@ -2,6 +2,7 @@ akinsho/bufferline.nvim
 dyng/ctrlsf.vim
 ellisonleao/gruvbox.nvim@main
 equalsraf/neovim-gui-shim
+f3fora/cmp-spell
 glepnir/galaxyline.nvim@main
 glepnir/lspsaga.nvim@main
 goballooning/vim-conque
