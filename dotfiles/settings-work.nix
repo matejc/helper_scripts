@@ -22,6 +22,7 @@ let
       terminal = "${pkgs.xfce.terminal}/bin/xfce4-terminal";
       shell = "${pkgs.zsh}/bin/zsh";
       zsh = "${pkgs.zsh}/bin/zsh";
+      tug = "${pkgs.turbogit}/bin/tug";
     };
     locale.all = "en_US.utf8";
     alacritty.path = "/mnt/c/Program\\ Files/Alacritty/alacritty.exe";
