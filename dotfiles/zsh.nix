@@ -31,10 +31,6 @@ in
       export TZ="${variables.timeZone}"
     ''}
 
-    #. ${pkgs.gnome3.vte}/etc/profile.d/vte.sh
-    #if [[ $TERM == xterm-termite ]]; then
-      #__vte_osc7
-    #fi
     ${lib.optionalString (variables.term != null) ''
       export TERM="${variables.term}"
     ''}

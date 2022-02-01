@@ -23,6 +23,8 @@ lifepillar/vim-solarized8
 MunifTanjim/nui.nvim@main
 neovim/nvim-lspconfig
 nfvs/vim-perforce
+nvim-lua/plenary.nvim
+nvim-telescope/telescope.nvim
 OmniSharp/omnisharp-vim
 petertriho/nvim-scrollbar@main
 ray-x/lsp_signature.nvim
