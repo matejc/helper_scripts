@@ -29,6 +29,7 @@ ray-x/lsp_signature.nvim
 rktjmp/lush.nvim@main
 sainnhe/sonokai
 sickill/vim-pasta
+themercorp/themer.lua@main
 thezoq2/neovim-auto-autoread
 vim-ctrlspace/vim-ctrlspace
 VonHeikemen/searchbox.nvim@main

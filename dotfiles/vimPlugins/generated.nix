@@ -306,12 +306,12 @@ final: prev:
 
   searchbox-nvim = buildVimPluginFrom2Nix {
     pname = "searchbox.nvim";
-    version = "2022-01-15";
+    version = "2022-01-31";
     src = fetchFromGitHub {
       owner = "VonHeikemen";
       repo = "searchbox.nvim";
-      rev = "7acd43d00d52cbe5ea9869c97e87e08357745c93";
-      sha256 = "1qgcid2advkzg3gjf3wap3ygykv76w05nd0dlanarb0vagz2g2js";
+      rev = "e576743d422c006ecd494f8901d86590d2906a81";
+      sha256 = "11xl969dnk20kx4lvhh7kj70q6g4inrscs2r7i0pbv9qarlwn8rh";
     };
     meta.homepage = "https://github.com/VonHeikemen/searchbox.nvim/";
   };
@@ -326,6 +326,18 @@ final: prev:
       sha256 = "09qn6f898qvpxpn3xy0z4l7j5b84v7pd1b237g1xh3lkyy3xvmzg";
     };
     meta.homepage = "https://github.com/sainnhe/sonokai/";
+  };
+
+  themer-lua = buildVimPluginFrom2Nix {
+    pname = "themer.lua";
+    version = "2022-01-31";
+    src = fetchFromGitHub {
+      owner = "themercorp";
+      repo = "themer.lua";
+      rev = "d760c5f758a8bc16859cc838cbe6c476ea834fdb";
+      sha256 = "0glyghq3z337673wczbcp7baq9by0qr2bjdz4l4x5gscmcby92pi";
+    };
+    meta.homepage = "https://github.com/themercorp/themer.lua/";
   };
 
   vim-conque = buildVimPluginFrom2Nix {
