@@ -1562,7 +1562,6 @@ require("bufferline").setup{
 }
 
 require('telescope').setup {}
-require('telescope').load_extension('fzf')
 
 require("scrollbar").setup({
     handle = {
@@ -1625,8 +1624,8 @@ EOF
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
-    nnoremap <C-S-f> :lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
-    vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.grep_string{ disable_devicons = true }<cr>
+    nnoremap <C-S-f> :lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
+    vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
 
     nnoremap <C-p> :lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
     vnoremap <C-p> <esc>:lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
