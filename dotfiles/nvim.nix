@@ -1561,7 +1561,19 @@ require("bufferline").setup{
   }
 }
 
-require('telescope').setup {}
+require("telescope").setup {
+  defaults = {
+    vimgrep_arguments = {
+      "${pkgs.ripgrep}/bin/rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+    }
+  }
+}
 
 require("scrollbar").setup({
     handle = {
