@@ -1930,7 +1930,7 @@ EOF
           vimPlugins.lush-nvim
           #vimPlugins.gruvbox-nvim
           vim-mundo
-          telescope-fzf-native-nvim
+          telescope-fzy-native-nvim
           vimPlugins.nvim-cmp
           vimPlugins.cmp-buffer
           vimPlugins.cmp-nvim-lsp
