@@ -1616,6 +1616,8 @@ require("scrollbar.handlers.search").setup()
 require("themer").setup({
   colorscheme = colorscheme,
 })
+
+vim.cmd("highlight MatchParen  guifg="..colours.bg.." guibg="..colours.fg)
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>

@@ -8,5 +8,5 @@ runCommand "groovy-language-server" {
   ln -s $src $out/share/groovy-language-server/groovy-language-server-all.jar
   makeWrapper ${jre}/bin/java $out/bin/groovy-language-server \
     --argv0 crowdin \
-    --add-flags "-jar $out/share/groovy-language-server-all.jar"
+    --add-flags "-jar $out/share/groovy-language-server/groovy-language-server-all.jar"
 ''
