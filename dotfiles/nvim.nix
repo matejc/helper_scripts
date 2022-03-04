@@ -36,7 +36,7 @@ let
     "rnix"
     "bashls"
     "dockerls"
-    #"yamlls"
+    "yamlls"
     "tsserver"
     "jsonls"
     "vimls"
@@ -53,7 +53,7 @@ let
     "pylsp"
     #"pyright"
     #"python_language_server"
-    "ansiblels"
+    #"ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
@@ -242,29 +242,6 @@ let
         cmd = {"${pkgs.python3Packages.python-lsp-server}/bin/pylsp"};
         capabilities = capabilities;
         filetypes = { 'python' };
-        settings = {
-          pylsp = {
-            plugins = {
-              pycodestyle = {
-                enabled = true;
-              };
-              pyflakes = {
-                enabled = true;
-              };
-              jedi_completion = {
-                enabled = true;
-              };
-              jedi_definition = {
-                enabled = true;
-              };
-              pylint = {
-                enabled = true;
-                args = { "--disable=all", "--enable=wrong-import-order" };
-                executable = "${pkgs.python3Packages.pylint}/bin/pylint";
-              };
-            };
-          };
-        };
       }
     '';
     pyright = ''
