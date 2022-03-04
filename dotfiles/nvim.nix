@@ -1826,6 +1826,15 @@ EOF
 
     set re=1
 
+    hi BlackBg guibg=black
+
+    augroup term
+      au!
+      au TermOpen * :setlocal winhighlight=Normal:BlackBg
+      au TermOpen * :setlocal nonumber
+      au TermOpen * :setlocal signcolumn=no
+    augroup END
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
