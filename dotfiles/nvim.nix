@@ -51,7 +51,7 @@ let
     "robotframeworklsp"
     "lemminx"
     "pylsp"
-    "pyright"
+    #"pyright"
     #"python_language_server"
     "ansiblels"
     "solargraph"
@@ -249,13 +249,13 @@ let
                 enabled = true;
               };
               pyflakes = {
-                enabled = false;
+                enabled = true;
               };
               jedi_completion = {
-                enabled = false;
+                enabled = true;
               };
               jedi_definition = {
-                enabled = false;
+                enabled = true;
               };
               pylint = {
                 enabled = true;
