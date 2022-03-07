@@ -12,5 +12,7 @@ stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out/bin
     cp lemminx-linux $out/bin/lemminx
+    patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+      $out/bin/lemminx
   '';
 }
