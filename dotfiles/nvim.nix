@@ -1810,7 +1810,7 @@ EOF
       au TermOpen * :setlocal signcolumn=no
     augroup END
 
-    highlight CursorLine guibg=Grey25
+    highlight CursorLine guibg=Grey22
     highlight MatchParen guibg=Grey40
 
     autocmd UIEnter * source ${ginitVim}
