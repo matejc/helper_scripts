@@ -50,8 +50,8 @@ let
     #"pwsh"
     "robotframeworklsp"
     "lemminx"
-    "pylsp"
-    #"pyright"
+    #"pylsp"
+    "pyright"
     #"python_language_server"
     #"ansiblels"
     "solargraph"
@@ -249,25 +249,7 @@ let
         on_attach = on_attach;
         cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
         capabilities = capabilities;
-        settings = {
-          python = {
-            analysis = {
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = 'workspace',
-              typeCheckingMode = 'basic',
-              diagnosticSeverityOverrides = {
-                reportMissingTypeStubs = 'none',
-                reportPrivateUsage = 'none',
-                reportUnknownParameterType = "none",
-                reportUnknownArgumentType = "none",
-                reportUnknownLambdaType = "none",
-                reportUnknownVariableType = "none",
-                reportUnknownMemberType = "none",
-              },
-            },
-          },
-        };
+        filetypes = { 'python' };
       }
     '';
     python_language_server = ''
@@ -1120,7 +1102,6 @@ require'nvim-tree'.setup {
   }
 }
 
-
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
     underline = true,
@@ -1130,153 +1111,10 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
-function _G.self_color_gruvbox_dark()
-  -- vim.g.gruvbox_invert_selection = 0
-  -- vim.g.gruvbox_italic = 1
-  -- vim.g.gruvbox_sign_column = 'bg0'
-
-  -- vim.cmd('set background=dark')
-  -- vim.cmd('colorscheme gruvbox')
-
-  vim.cmd('highlight StatusLine                                                                                                guifg=#3c3836')
-
-  vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#3c3836 guifg=#27b31a')
-  vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#3c3836 guifg=#ebdbb2')
-  vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#3c3836 guifg=#fe811b')
-  vim.cmd('highlight GalaxyLeftGitDiffRemoveActive                                                               guibg=#3c3836 guifg=#fb4632')
-  vim.cmd('highlight GalaxyLeftLspInactive                                                                       guibg=#3c3836 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyMapperCommon1                                                                         guibg=#3c3836 guifg=#504945')
-  vim.cmd('highlight GalaxyMapperCommon2                                                                         guibg=#bdae93 guifg=#504945')
-  vim.cmd('highlight GalaxyMapperCommon3                                                                         guibg=#3c3836 guifg=#ebdbb2')
-  vim.cmd('highlight GalaxyMapperCommon4                                                                         guibg=#504945 guifg=#ebdbb2')
-  vim.cmd('highlight GalaxyMapperCommon5                                                                         guibg=#3c3836 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyMapperCommon6                                                                         guibg=#504945 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyMapperCommon7                                                                         guibg=#504945 guifg=#bdae93')
-  vim.cmd('highlight GalaxyMapperCommon8                                                                         guibg=#504945 guifg=#91a6ba')
-  vim.cmd('highlight GalaxyMidFileStatusModified                                                                 guibg=#3c3836 guifg=#8ec07c')
-  vim.cmd('highlight GalaxyMidFileStatusReadonly                                                                 guibg=#3c3836 guifg=#fe811b')
-  vim.cmd('highlight GalaxyMidFileStatusRestricted                                                               guibg=#3c3836 guifg=#fb4632')
-  vim.cmd('highlight GalaxyMidFileStatusUnmodified                                                               guibg=#3c3836 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyRightLspErrorActive                                                                   guibg=#3c3836 guifg=#fb4632')
-  vim.cmd('highlight GalaxyRightLspHintActive                                                                    guibg=#3c3836 guifg=#27b31a')
-  vim.cmd('highlight GalaxyRightLspInformationActive                                                             guibg=#3c3836 guifg=#127fff')
-  vim.cmd('highlight GalaxyRightLspWarningActive                                                                 guibg=#3c3836 guifg=#fe811b')
-  vim.cmd('highlight GalaxyViModeCommandInverted                                                                 guibg=#504945 guifg=#fabd2f')
-  vim.cmd('highlight GalaxyViModeCommandUnturned                                                                 guibg=#fabd2f guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeCommonVisualInverted                                                            guibg=#504945 guifg=#fe811b')
-  vim.cmd('highlight GalaxyViModeCommonVisualUnturned                                                            guibg=#fe811b guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeEmptyInverted                                                                   guibg=#504945 guifg=#bdae93')
-  vim.cmd('highlight GalaxyViModeEmptyUnturned                                                                   guibg=#bdae93 guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeInsertInverted                                                                  guibg=#504945 guifg=#83a598')
-  vim.cmd('highlight GalaxyViModeInsertUnturned                                                                  guibg=#83a598 guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeNormalInverted                                                                  guibg=#504945 guifg=#bdae93')
-  vim.cmd('highlight GalaxyViModeNormalUnturned                                                                  guibg=#bdae93 guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeReplaceInverted                                                                 guibg=#504945 guifg=#8ec07c')
-  vim.cmd('highlight GalaxyViModeReplaceUnturned                                                                 guibg=#8ec07c guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeShellInverted                                                                   guibg=#504945 guifg=#d3869b')
-  vim.cmd('highlight GalaxyViModeShellUnturned                                                                   guibg=#d3869b guifg=#3c3836')
-  vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#504945 guifg=#d3869b')
-  vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#3c3836')
-end
-
-function _G.self_color_gruvbox_light()
-  -- vim.g.gruvbox_contrast_light = 'medium'
-  -- vim.g.gruvbox_invert_selection = 0
-  -- vim.g.gruvbox_italic = 1
-  -- vim.g.gruvbox_sign_column = 'bg0'
-
-  -- vim.cmd('set background=light')
-  -- vim.cmd('colorscheme gruvbox')
-
-  vim.cmd('highlight StatusLine                                                                                                guifg=#ebdbb2')
-
-  vim.cmd('highlight GalaxyLeftGitDiffAddActive                                                                  guibg=#ebdbb2 guifg=#27b31a')
-  vim.cmd('highlight GalaxyLeftGitDiffInactive                                                                   guibg=#ebdbb2 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyLeftGitDiffModifiedActive                                                             guibg=#ebdbb2 guifg=#dc7f27')
-  vim.cmd('highlight GalaxyLeftGitDiffRemoveActive                                                               guibg=#ebdbb2 guifg=#d83a03')
-  vim.cmd('highlight GalaxyLeftLspInactive                                                                       guibg=#ebdbb2 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon1                                                                         guibg=#ebdbb2 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyMapperCommon2                                                                         guibg=#bdae93 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon3                                                                         guibg=#ebdbb2 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon4                                                                         guibg=#d5c4a1 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon5                                                                         guibg=#ebdbb2 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon6                                                                         guibg=#d5c4a1 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyMapperCommon7                                                                         guibg=#d5c4a1 guifg=#bdae93')
-  vim.cmd('highlight GalaxyMapperCommon8                                                                         guibg=#d5c4a1 guifg=#fbf0c9')
-  vim.cmd('highlight GalaxyMidFileStatusModified                                                                 guibg=#ebdbb2 guifg=#27b31a')
-  vim.cmd('highlight GalaxyMidFileStatusReadonly                                                                 guibg=#ebdbb2 guifg=#dc7f27')
-  vim.cmd('highlight GalaxyMidFileStatusRestricted                                                               guibg=#ebdbb2 guifg=#d83a03')
-  vim.cmd('highlight GalaxyMidFileStatusUnmodified                                                               guibg=#ebdbb2 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyRightLspErrorActive                                                                   guibg=#ebdbb2 guifg=#d83a03')
-  vim.cmd('highlight GalaxyRightLspHintActive                                                                    guibg=#ebdbb2 guifg=#27b31a')
-  vim.cmd('highlight GalaxyRightLspInformationActive                                                             guibg=#ebdbb2 guifg=#127efc')
-  vim.cmd('highlight GalaxyRightLspWarningActive                                                                 guibg=#ebdbb2 guifg=#dc7f27')
-  vim.cmd('highlight GalaxyViModeCommandInverted                                                                 guibg=#d5c4a1 guifg=#dc7f27')
-  vim.cmd('highlight GalaxyViModeCommandUnturned                                                                 guibg=#dc7f27 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeCommonVisualInverted                                                            guibg=#d5c4a1 guifg=#ad3b14')
-  vim.cmd('highlight GalaxyViModeCommonVisualUnturned                                                            guibg=#ad3b14 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeEmptyInverted                                                                   guibg=#d5c4a1 guifg=#bdae93')
-  vim.cmd('highlight GalaxyViModeEmptyUnturned                                                                   guibg=#bdae93 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeInsertInverted                                                                  guibg=#d5c4a1 guifg=#076678')
-  vim.cmd('highlight GalaxyViModeInsertUnturned                                                                  guibg=#076678 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeNormalInverted                                                                  guibg=#d5c4a1 guifg=#bdae93')
-  vim.cmd('highlight GalaxyViModeNormalUnturned                                                                  guibg=#bdae93 guifg=#7c6f64')
-  vim.cmd('highlight GalaxyViModeReplaceInverted                                                                 guibg=#d5c4a1 guifg=#447a59')
-  vim.cmd('highlight GalaxyViModeReplaceUnturned                                                                 guibg=#447a59 guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeShellInverted                                                                   guibg=#d5c4a1 guifg=#d3869b')
-  vim.cmd('highlight GalaxyViModeShellUnturned                                                                   guibg=#d3869b guifg=#d5c4a1')
-  vim.cmd('highlight GalaxyViModeTerminalInverted                                                                guibg=#d5c4a1 guifg=#d3869b')
-  vim.cmd('highlight GalaxyViModeTerminalUnturned                                                                guibg=#d3869b guifg=#d5c4a1')
-end
-
-local gl = require("galaxyline")
-local gls = gl.section
-
-local fileinfo = require("galaxyline.provider_fileinfo")
-local lspclient = require("galaxyline.provider_lsp")
-
-local colours_bak = {
-	bg = "#222222",
-	black = "#000000",
-	white = "#ffffff",
-	accent_light = "#c2d5ff",
-	accent = "#5f87d7",
-	accent_dark = "#00236e",
-	alternate = "#8fbcbb",
-	alternate_dark = "#005f5f",
-	yellow = "#fabd2f",
-	cyan = "#008080",
-	darkblue = "#081633",
-	green = "#afd700",
-	orange = "#FF8800",
-	purple = "#5d4d7a",
-	magenta = "#d16d9e",
-	grey = "#555555",
-	blue = "#0087d7",
-	red = "#ec5f67",
-	pink = "#e6a1e2",
-}
-local colorscheme = "gruvbox"
-local galaxyline_colors = require("galaxyline.theme")
-local colorpalette = require("themer.modules.core.api").get_cp(colorscheme)
-galaxyline_colors["default"] = {
-    bg = colorpalette.bg.alt,
-    fg = colorpalette.fg,
-    fg_alt = colorpalette.dimmed.subtle,
-    yellow = colorpalette.yellow,
-    cyan = colorpalette.cyan,
-    green = colorpalette.green,
-    orange = colorpalette.orange,
-    magenta = colorpalette.magenta,
-    blue = colorpalette.blue,
-    red = colorpalette.red,
-    accent = colorpalette.accent,
-    violet = '#a9a1e1',
-}
-local colours = galaxyline_colors["default"]
-
+local fileinfo = require("galaxyline.providers.fileinfo")
+local lspclient = require("galaxyline.providers.lsp")
 local gl = require('galaxyline')
-local colors = require('galaxyline.theme').default
+local colors = require('galaxyline.themes.colors').gruvbox
 local condition = require('galaxyline.condition')
 local gls = gl.section
 gl.short_line_list = {'NvimTree','vista','dbui','packer'}
@@ -1316,7 +1154,7 @@ gls.left[4] ={
   FileIcon = {
     provider = 'FileIcon',
     condition = condition.buffer_not_empty,
-    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
+    highlight = {require('galaxyline.providers.fileinfo').get_file_icon_color,colors.bg},
   },
 }
 
@@ -1588,11 +1426,24 @@ require("scrollbar").setup({
         search = true,
     },
 })
-require("hlslens").setup()
-require("scrollbar.handlers.search").setup()
+-- require("hlslens").setup()
+-- require("scrollbar.handlers.search").setup()
 require("themer").setup({
-  colorscheme = colorscheme,
+  colorscheme = "gruvbox",
 })
+
+-- require("regexplainer").setup({
+--   mode = "narrative",
+--   auto = false,
+--   debug = false,
+--   display = "popup",
+--   mappings = {
+--     show = "cr",
+--   },
+--   narrative = {
+--     separator = "\n",
+--   },
+-- })
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1799,7 +1650,7 @@ EOF
 
     set redrawtime=3000
 
-    set re=1
+    set re=2
 
     hi BlackBg guibg=black
 
@@ -1812,6 +1663,7 @@ EOF
 
     highlight CursorLine guibg=Grey22
     highlight MatchParen guibg=Grey40
+    highlight GalaxyLineFillSection guibg=#32302f
 
     autocmd UIEnter * source ${ginitVim}
   '';
@@ -1927,12 +1779,14 @@ EOF
           vimPlugins.cmp-path
           vimPlugins.cmp-cmdline
           vimPlugins.vim-vsnip
-          #vimPlugins.nui-nvim
           #vimPlugins.searchbox-nvim
           vimPlugins.nvim-hlslens
           vimPlugins.nvim-scrollbar
           vimPlugins.cmp-spell
           vimPlugins.themer-lua
+          #nui-nvim
+          #nvim-treesitter
+          #vimPlugins.nvim-regexplainer
         ];
         opt = [
         ];

@@ -24,10 +24,14 @@
 , gnome3
 
 , python3Packages
+, tree-sitter
 }:
 
 self: super: {
 
+  regexplainer = super.regexplainer.overrideAttrs (old: {
+    buildInputs = old.buildInputs ++ [ tree-sitter ];
+  });
 
   omnisharp-vim = super.omnisharp-vim.overrideAttrs (old: {
     preFixup = ''

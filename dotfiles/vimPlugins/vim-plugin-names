@@ -1,9 +1,9 @@
 akinsho/bufferline.nvim
+bennypowers/nvim-regexplainer@main
 dyng/ctrlsf.vim
 ellisonleao/gruvbox.nvim@main
 equalsraf/neovim-gui-shim
 f3fora/cmp-spell
-glepnir/galaxyline.nvim@main
 glepnir/lspsaga.nvim@main
 goballooning/vim-conque
 hashivim/vim-hashicorp-tools
@@ -23,6 +23,7 @@ lifepillar/vim-solarized8
 MunifTanjim/nui.nvim@main
 neovim/nvim-lspconfig
 nfvs/vim-perforce
+NTBBloodbath/galaxyline.nvim@main
 nvim-lua/plenary.nvim
 nvim-telescope/telescope.nvim
 OmniSharp/omnisharp-vim
