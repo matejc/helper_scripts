@@ -888,18 +888,18 @@ local on_attach = function(client, bufnr)
   end
 
   -- Set autocommands conditional on server_capabilities
-  -- if client.resolved_capabilities.document_highlight then
-  --   vim.api.nvim_exec([[
-  --     hi LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-  --     hi LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-  --     hi LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-  --     augroup lsp_document_highlight
-  --       autocmd!
-  --       autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-  --       autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-  --     augroup END
-  --   ]], false)
-  -- end
+  if client.resolved_capabilities.document_highlight then
+    vim.api.nvim_exec([[
+      hi LspReferenceRead cterm=bold ctermbg=red guibg=Grey50
+      hi LspReferenceText cterm=bold ctermbg=red guibg=Grey50
+      hi LspReferenceWrite cterm=bold ctermbg=red guibg=Grey50
+      augroup lsp_document_highlight
+        autocmd!
+        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+      augroup END
+    ]], false)
+  end
 
   -- if client.resolved_capabilities.signature_help then
   --   vim.api.nvim_exec([[
@@ -1432,18 +1432,18 @@ require("themer").setup({
   colorscheme = "gruvbox",
 })
 
--- require("regexplainer").setup({
---   mode = "narrative",
---   auto = false,
---   debug = false,
---   display = "popup",
---   mappings = {
---     show = "cr",
---   },
---   narrative = {
---     separator = "\n",
---   },
--- })
+require("regexplainer").setup({
+  mode = "narrative",
+  auto = false,
+  debug = false,
+  display = "popup",
+  mappings = {
+    show = "cr",
+  },
+  narrative = {
+    separator = "\n",
+  },
+})
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1784,9 +1784,9 @@ EOF
           vimPlugins.nvim-scrollbar
           vimPlugins.cmp-spell
           vimPlugins.themer-lua
-          #nui-nvim
-          #nvim-treesitter
-          #vimPlugins.nvim-regexplainer
+          nui-nvim
+          nvim-treesitter
+          vimPlugins.nvim-regexplainer
         ];
         opt = [
         ];
