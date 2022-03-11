@@ -1599,8 +1599,8 @@ EOF
     tnoremap <silent> <C-[><C-[> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
 
-    tnoremap <silent> <c-PageUp> <esc><C-\><C-N>:bprev<cr>
-    tnoremap <silent> <c-PageDown> <esc><C-\><C-N>:bnext<cr>
+    tnoremap <silent> <c-PageUp> <C-\><C-N>:bprev<cr>
+    tnoremap <silent> <c-PageDown> <C-\><C-N>:bnext<cr>
 
     tnoremap <silent> <a-left> <C-left>
     tnoremap <silent> <a-right> <C-right>
@@ -1660,6 +1660,7 @@ EOF
       au TermOpen * :setlocal nonumber
       au TermOpen * :setlocal nocursorline
       au TermOpen * :setlocal signcolumn=no
+      au TermOpen * :nnoremap <buffer><cr> i
     augroup END
 
     highlight CursorLine guibg=Grey22
