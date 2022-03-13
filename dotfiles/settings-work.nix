@@ -27,8 +27,7 @@ let
     locale.all = "en_US.utf8";
     alacritty.path = "/mnt/c/Program\\ Files/Alacritty/alacritty.exe";
     alacritty.args = ''-o "shell.program='wsl.exe'" -o "shell.args=['-d Ubuntu-20.04 /home/matejc/bin/shell']"'';
-    vims.n-dev = "/mnt/c/tools/neovide.exe --wsl";
-    vims.n = "/mnt/c/ProgramData/chocolatey/bin/neovide.exe --wsl";
+    vims.n = "env NVIM_FRONTEND_PATH=/mnt/c/ProgramData/chocolatey/bin/neovide.exe NVIM_FRONTEND_ARGS='--frame None --multigrid --remote-tcp' ${homeDir}/bin/guinvim";
     vims.q = "env NVIM_FRONTEND_PATH=/mnt/c/tools/neovim-qt/bin/nvim-qt.exe ${homeDir}/bin/guinvim";
   };
 

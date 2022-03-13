@@ -66,7 +66,7 @@ let
       #f = "${fvim}/bin/fvim --nvim ${variables.homeDir}/bin/nvim";
       #o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
       q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
-      n = ''env PATH="${variables.homeDir}/bin:$PATH" ${pkgs.neovide}/bin/neovide --frameless --multiGrid'';
+      n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
     };
   };
 
@@ -119,6 +119,7 @@ let
     ./py3-venv.nix
     ./keepassxc-oath.nix
     ./dd.nix
+    ./devenv.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst

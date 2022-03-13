@@ -37,7 +37,7 @@ let
       nextcloud = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.nextcloud-client}/bin/nextcloud";
     };
     locale.all = "en_US.utf8";
-    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --multigrid";
+    vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --neovim-bin '${homeDir}/bin/nvim' --frame None --multigrid";
     vims.q = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
     startup = [
       "${homeDir}/bin/browser"

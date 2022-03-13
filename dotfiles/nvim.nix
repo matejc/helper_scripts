@@ -53,7 +53,7 @@ let
     #"pylsp"
     "pyright"
     #"python_language_server"
-    #"ansiblels"
+    "ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
@@ -96,6 +96,20 @@ let
         on_attach = on_attach;
         cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"};
         capabilities = capabilities;
+        filetypes = { 'yaml', 'yaml.docker-compose' };
+        root_dir = function(fname)
+          return nvim_lsp.util.find_git_ancestor(fname);
+        end;
+        settings = {
+          -- https://github.com/redhat-developer/vscode-redhat-telemetry#how-to-disable-telemetry-reporting
+          redhat = { telemetry = { enabled = false } };
+          yaml = {
+            schemas = {
+              ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*";
+              ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json"] = "/*.k8s.yaml";
+            };
+          };
+        };
       }
     '';
     tsserver = ''
@@ -195,7 +209,7 @@ let
             cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
             filetypes = {'ps1'};
             root_dir = function(fname)
-            return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
+              return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
             end;
             settings = {};
           };
@@ -277,28 +291,29 @@ let
     ansiblels = ''
       nvim_lsp["ansiblels"].setup {
         on_attach = on_attach;
-        cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' },
+        cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' };
         capabilities = capabilities;
         settings = {
           ansible = {
             python = {
-              interpreterPath = '${execCommand}',
-            },
+              interpreterPath = '${execCommand}';
+            };
             ansibleLint = {
-              path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint',
-              enabled = true,
-              arguments = "",
+              path = '${pkgs.python3Packages.ansible-lint}/bin/ansible-lint';
+              enabled = true;
+              arguments = "";
             },
             ansible = {
-              path = '${pkgs.python3Packages.ansible}/bin/ansible',
-            },
-          },
-        },
-        filetypes = { 'yaml.ansible', 'yaml' },
-        root_dir = function(fname)
-          return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-        end,
-      };
+              path = '${pkgs.python3Packages.ansible}/bin/ansible';
+            };
+            executionEnvironment = {
+              enabled = false;
+            };
+          };
+        };
+        filetypes = { 'yaml.ansible', 'yaml' };
+        root_dir = nvim_lsp.util.root_pattern('ansible.cfg', '.ansible-lint');
+      }
     '';
     solargraph = ''
       nvim_lsp["solargraph"].setup {
@@ -368,7 +383,7 @@ let
 
     if exists("g:neovide")
       let g:neovide_cursor_animation_length=0.1
-      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString (variables.font.size + 1)}"}
+      set guifont=${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
     endif
   '';
 
