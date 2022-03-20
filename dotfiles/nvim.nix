@@ -607,7 +607,7 @@ let
         return join(lines, "\n")
     endfunction
 
-    let g:ctrlsf_ackprg='${pkgs.ag}/bin/ag'
+    let g:ctrlsf_ackprg='${pkgs.silver-searcher}/bin/ag'
     let g:ctrlsf_search_mode = 'async'
     let g:ctrlsf_default_view_mode = 'compact'
     let g:ctrlsf_auto_focus = {

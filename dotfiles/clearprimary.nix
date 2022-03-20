@@ -1,7 +1,7 @@
 { variables, config, pkgs, lib }:
 let
   app = import "${builtins.fetchGit {
-    url = "git://github.com/matejc/clearprimary";
+    url = "https://github.com/matejc/clearprimary";
     ref = "main";
   }}" { inherit pkgs; };
 in {

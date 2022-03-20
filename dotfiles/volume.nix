@@ -4,7 +4,7 @@
   source = pkgs.writeScript "volume.sh" ''
     #!${pkgs.stdenv.shell}
     # Usage: volume <card> {increase|decrease|toggle}
-    export PATH="${pkgs.pulseaudioLight}/bin:${pkgs.busybox}/bin"
+    export PATH="${pkgs.pulseaudio}/bin:${pkgs.busybox}/bin"
     pulsefolder="/tmp/pulse"
     mkdir -p $pulsefolder
 

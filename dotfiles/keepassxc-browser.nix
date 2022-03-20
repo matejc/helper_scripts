@@ -5,7 +5,7 @@
     {
         "name": "org.keepassxc.keepassxc_browser",
         "description": "KeePassXC integration with native messaging support",
-        "path": "${pkgs.keepassx-community}/bin/keepassxc-proxy",
+        "path": "${pkgs.keepassxc}/bin/keepassxc-proxy",
         "type": "stdio",
         "allowed_origins": [
             "chrome-extension://iopaggbpplllidnfmcghoonnokmjoicf/",
@@ -19,7 +19,7 @@
     {
         "name": "org.keepassxc.keepassxc_browser",
         "description": "KeePassXC integration with native messaging support",
-        "path": "${pkgs.keepassx-community}/bin/keepassxc-proxy",
+        "path": "${pkgs.keepassxc}/bin/keepassxc-proxy",
         "type": "stdio",
         "allowed_extensions": [
             "keepassxc-browser@keepassxc.org"

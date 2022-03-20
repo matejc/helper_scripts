@@ -58,7 +58,7 @@ let
       ff = "${pkgs.firefox}/bin/firefox";
       c = "${pkgs.vscodium}/bin/codium";
       s = "${pkgs.sublime3}/bin/sublime3 --new-window";
-      mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+      mykeepassxc = "${pkgs.keepassxc}/bin/keepassxc";
       nextcloud-client = "${pkgs.nextcloud-client}/bin/nextcloud";
       riot = "${pkgs.element-desktop}/bin/element-desktop";
       signal = "${pkgs.signal-desktop}/bin/signal-desktop";

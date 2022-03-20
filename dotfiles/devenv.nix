@@ -1,6 +1,6 @@
 { variables, config, pkgs, lib }:
 let
-  src = builtins.fetchGit git://github.com/matejc/devenv;
+  src = builtins.fetchGit https://github.com/matejc/devenv;
   package = import src { inherit pkgs; };
 in
 {

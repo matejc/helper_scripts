@@ -62,7 +62,7 @@ let
       code = "${pkgs.vscodium}/bin/codium";
       s = "${pkgs.sublime3}/bin/sublime3 --new-window";
       slack = "${pkgs.slack}/bin/slack";
-      mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+      mykeepassxc = "${pkgs.keepassxc}/bin/keepassxc";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat";
       editor = "${pkgs.nano}/bin/nano";
     };

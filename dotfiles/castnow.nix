@@ -7,7 +7,7 @@
         ${variables.homeDir}/bin/nodeenv castnow $CASTARGS --quiet --exit --command s
     }
     trap "exitcast" EXIT
-    ${pkgs.youtubeDL}/bin/youtube-dl -o - -- "$1" | ${variables.homeDir}/bin/nodeenv castnow --quiet ''${@:2} -
+    ${pkgs.youtube-dl}/bin/youtube-dl -o - -- "$1" | ${variables.homeDir}/bin/nodeenv castnow --quiet ''${@:2} -
   '';
 } {
   target = "${variables.homeDir}/bin/cast-yt-pl";
@@ -37,7 +37,7 @@
         exit 1
     fi
 
-    mapfile -t urls_array < <(${pkgs.youtubeDL}/bin/youtube-dl --flat-playlist --print-json $ytdlargs "$URLARG" | ${pkgs.jq}/bin/jq -r '.url')
+    mapfile -t urls_array < <(${pkgs.youtube-dl}/bin/youtube-dl --flat-playlist --print-json $ytdlargs "$URLARG" | ${pkgs.jq}/bin/jq -r '.url')
     length="''${#urls_array[@]}"
 
     echo "[starting] playlist of $length entries, from $index"
@@ -46,7 +46,7 @@
     do
         url="https://www.youtube.com/watch?v=''${urls_array[$i]}"
         echo "[start][$i] $url ..."
-        ${pkgs.youtubeDL}/bin/youtube-dl -o - -- "$url" | ${variables.homeDir}/bin/nodeenv castnow --quiet $CASTARGS -
+        ${pkgs.youtube-dl}/bin/youtube-dl -o - -- "$url" | ${variables.homeDir}/bin/nodeenv castnow --quiet $CASTARGS -
         echo "[stop][$i] $url"
     done
   '';

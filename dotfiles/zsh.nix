@@ -178,8 +178,8 @@ in
 
     first-tab() {
         if [[ $#BUFFER == 0 ]]; then
-            BUFFER="cd "
-            CURSOR=3
+            BUFFER="cd ~/"
+            CURSOR=5
             zle list-choices
         else
             zle expand-or-complete

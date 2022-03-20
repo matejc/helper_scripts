@@ -6,19 +6,24 @@
 , nameservers ? [ "1.1.1.1" ]
 , vpnStart ? "fakeroot protonvpn connect --fastest"
 , vpnStop ? "fakeroot protonvpn disconnect"
+, run ? null
+, runAsUser ? null
 , cmds ? [
   { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
   { start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
 ]
-, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox ]
+, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.chromium ]
 , preCmds ? [ ]
 , chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
 , romounts ? [ { from = "/run/opengl-driver"; to = "/run/opengl-driver"; } ]
 , symlinks ? [ ]
-, variables ? [ ]
+, variables ? [
+  { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
+]
+, waylandDisplay ? "wayland-0"
 , tmpfs ? [ ]
-, homeDir ? "/var/home/${user}"
+, homeDir ? "/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
@@ -129,7 +134,7 @@ let
   unshareCmd = writeScript "unshare.sh" ''
     #!${stdenv.shell}
     set -e
-    echo $$ > /tmp/.vpn/home/ns.pid
+    echo $$ > ${homeDir}/ns.pid
 
     #sysctl net.ipv6.conf.all.disable_ipv6=1
 
@@ -144,7 +149,8 @@ let
     ip addr show dev tap0 || exit 1
 
     mkdir -p /root/.supervisord
-    supervisord --configuration=${supervisorConf}
+
+    ${if run != null then run else if runAsUser != null then "ns_su_user ${runAsUser}" else "supervisord --configuration=${supervisorConf}"}
   '';
 
   script = writeScript "script.sh" ''
@@ -184,12 +190,18 @@ let
 
     nsjail \
       -Mo \
-      --chroot / \
+      --chroot ${chroot} \
       --rw \
       --disable_proc \
-      --bindmount ${homeDir}/.vpn/${name}:/tmp/.vpn \
       --bindmount ${homeDir}/.vpn/${name}/home:${homeDir} \
       --bindmount ${homeDir}/.vpn/${name}/root:/root \
+      --bindmount /sys:/sys \
+      --bindmount /dev/null:/dev/null \
+      --bindmount /dev/urandom:/dev/urandom \
+      --bindmount /dev/net/tun:/dev/net/tun \
+      --mount none:/dev/shm:tmpfs:rw \
+      --mount none:/tmp:tmpfs:rw \
+      --bindmount_ro /nix:/nix \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/hosts:$(realpath /etc/hosts) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/passwd:$(realpath /etc/passwd) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/group:$(realpath /etc/group) \
@@ -198,9 +210,11 @@ let
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
       --tmpfsmount /run \
-      --bindmount /run/user/${uid}:/run/user/${uid} \
+      --mount none:/run/user/${uid}:tmpfs:rw \
+      --bindmount /run/user/${uid}/${waylandDisplay}:/run/user/${uid}/${waylandDisplay} \
       --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
       --disable_clone_newpid \
+      --bindmount /proc:/proc \
       --hostname RESTRICTED \
       --cwd ${homeDir} \
       --uid_mapping 0:101000:1 \
@@ -208,9 +222,18 @@ let
       --uid_mapping ${uid}:${uid}:1 \
       --gid_mapping ${gid}:${gid}:1 \
       --keep_caps \
-      --rlimit_nofile 64000 \
-      --rlimit_fsize 64000 \
-      --keep_env \
+      --rlimit_as 40960 \
+      --rlimit_cpu 10000 \
+      --rlimit_nofile 5120 \
+      --rlimit_fsize 10240 \
+      --bindmount_ro /etc/fonts:/etc/fonts \
+      --env FONTCONFIG_FILE=/etc/fonts/fonts.conf \
+      --env FC_CONFIG_FILE=/etc/fonts/fonts.conf \
+      --env XDG_RUNTIME_DIR=/run/user/${uid} \
+      --env HOME=${homeDir} \
+      --env USER=${user} \
+      --env PATH=${binPaths} \
+      --env WAYLAND_DISPLAY=${waylandDisplay} \
       ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
       ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
       ${concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
@@ -242,14 +265,18 @@ let
   '';
 
   hostnameFile = writeText "hostname" ''RESTRICTED'';
+
+  buildInputs = [
+      iproute2 slirp4netns curl fakeroot which sysctl procps kmod
+      openvpn pstree utillinux fontconfig coreutils libcap strace less
+      python39Packages.supervisor gawk dnsutils iptables nsjail gnugrep
+  ] ++ packages;
+
+  binPaths = makeBinPath buildInputs;
 in
   mkShell {
     name = "${user}-${name}";
-    buildInputs = [
-      iproute2 slirp4netns curl fakeroot which sysctl procps kmod
-      openvpn pstree utillinux fontconfig coreutils libcap strace less
-      python39Packages.supervisor gawk dnsutils iptables nsjail
-    ] ++ packages;
+    inherit buildInputs;
     shellHook = ''
       exec ${script}
     '';

@@ -63,7 +63,7 @@
         exit 1
     fi
 
-    mapfile -t urls_array < <(${pkgs.youtubeDL}/bin/youtube-dl --flat-playlist --print-json $ytdlargs "$URLARG" | ${pkgs.jq}/bin/jq -r '.url')
+    mapfile -t urls_array < <(${pkgs.youtube-dl}/bin/youtube-dl --flat-playlist --print-json $ytdlargs "$URLARG" | ${pkgs.jq}/bin/jq -r '.url')
     length="''${#urls_array[@]}"
 
     echo "[starting] playlist of $length entries, from $index"

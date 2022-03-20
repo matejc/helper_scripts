@@ -45,7 +45,7 @@ let
       #google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
       #ff = "${pkgs.firefox}/bin/firefox";
       #c = "${pkgs.vscodium}/bin/codium";
-      mykeepassxc = "${pkgs.keepassx-community}/bin/keepassxc ${homeDir}/.secure/p.kdbx";
+      mykeepassxc = "${pkgs.keepassxc}/bin/keepassxc";
       #nextcloud = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.nextcloud-client}/bin/nextcloud";
       launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
       myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''

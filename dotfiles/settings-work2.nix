@@ -31,7 +31,7 @@ let
       kitty = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.kitty}/bin/kitty";
       shell = "${pkgs.zsh}/bin/zsh";
       zsh = "${pkgs.zsh}/bin/zsh";
-      keepassxc = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.keepassx-community}/bin/keepassxc";
+      keepassxc = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.keepassxc}/bin/keepassxc";
       nixGL = "${nixGL.nixGLDefault}/bin/nixGL";
       tug = "${pkgs.turbogit}/bin/tug";
       nextcloud = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.nextcloud-client}/bin/nextcloud";
