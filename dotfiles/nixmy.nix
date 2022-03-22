@@ -10,5 +10,5 @@ let
 in
 [{
   target = "${variables.homeDir}/bin/nixmy";
-  source = "${pkgs.callPackage (builtins.fetchGit git://github.com/matejc/nixmy) { config = cfg; }}/bin/nixmy";
+  source = "${pkgs.callPackage (builtins.fetchGit https://github.com/matejc/nixmy) { config = cfg; }}/bin/nixmy";
 }]

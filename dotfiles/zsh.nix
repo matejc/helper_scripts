@@ -176,10 +176,11 @@ in
     #  export DISPLAY="''${DISPLAY:-$display_no}"
     #fi
 
+    setopt autocd
     first-tab() {
         if [[ $#BUFFER == 0 ]]; then
-            BUFFER="cd ~/"
-            CURSOR=5
+            BUFFER="./"
+            CURSOR=2
             zle list-choices
         else
             zle expand-or-complete
@@ -187,6 +188,7 @@ in
     }
     zle -N first-tab
     bindkey '^I' first-tab
+    .{1..9} (){ local d=.; repeat ''${0:1} d+=/..; cd $d;}
 
     export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
     eval "$(${pkgs.starship}/bin/starship init zsh)"
