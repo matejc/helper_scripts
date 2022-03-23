@@ -9,14 +9,20 @@
 , run ? null
 , runAsUser ? null
 , cmds ? [
+  { start = "kitty zsh"; }
   { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
   { start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
 ]
-, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.chromium ]
+, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.zsh pkgs.kitty (import ../we-get.nix {}) ]
 , preCmds ? [ ]
 , chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
-, romounts ? [ { from = "/run/opengl-driver"; to = "/run/opengl-driver"; } ]
+, romounts ? [
+  { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
+  { from = "${homeDir}/.config/kitty"; to = "${homeDir}/.config/kitty"; }
+  { from = "${homeDir}/.zshrc"; to = "${homeDir}/.zshrc"; }
+  { from = "${homeDir}/.zlogin"; to = "${homeDir}/.zlogin"; }
+]
 , symlinks ? [ ]
 , variables ? [
   { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
@@ -133,7 +139,7 @@ let
 
   unshareCmd = writeScript "unshare.sh" ''
     #!${stdenv.shell}
-    set -e
+    set -ex
     echo $$ > ${homeDir}/ns.pid
 
     #sysctl net.ipv6.conf.all.disable_ipv6=1
@@ -196,10 +202,7 @@ let
       --bindmount ${homeDir}/.vpn/${name}/home:${homeDir} \
       --bindmount ${homeDir}/.vpn/${name}/root:/root \
       --bindmount /sys:/sys \
-      --bindmount /dev/null:/dev/null \
-      --bindmount /dev/urandom:/dev/urandom \
-      --bindmount /dev/net/tun:/dev/net/tun \
-      --mount none:/dev/shm:tmpfs:rw \
+      --bindmount /dev:/dev \
       --mount none:/tmp:tmpfs:rw \
       --bindmount_ro /nix:/nix \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/hosts:$(realpath /etc/hosts) \
