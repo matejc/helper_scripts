@@ -1009,80 +1009,209 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protoco
 
 ${enabledNvimLsp}
 
-
-require'nvim-tree'.setup {
-  -- disables netrw completely
-  disable_netrw       = true,
-  -- hijack netrw window on startup
-  hijack_netrw        = true,
-  -- open the tree when running this setup function
-  open_on_setup       = false,
-  -- will not open on setup if the filetype is in this list
-  ignore_ft_on_setup  = {},
-  -- closes neovim automatically when the tree is the last **WINDOW** in the view
-  auto_close          = false,
-  -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
-  open_on_tab         = false,
-  -- hijacks new directory buffers when they are opened.
-  update_to_buf_dir   = {
-    -- enable the feature
-    enable = true,
-    -- allow to open the tree if it was previously closed
-    auto_open = true,
+require("neo-tree").setup({
+  close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
+  popup_border_style = "rounded",
+  enable_git_status = true,
+  enable_diagnostics = true,
+  default_component_configs = {
+    indent = {
+      indent_size = 2,
+      padding = 1, -- extra padding on left hand side
+      -- indent guides
+      with_markers = true,
+      indent_marker = "│",
+      last_indent_marker = "└",
+      highlight = "NeoTreeIndentMarker",
+      -- expander config, needed for nesting files
+      with_expanders = nil, -- if nil and file nesting is enabled, will enable expanders
+      expander_collapsed = "",
+      expander_expanded = "",
+      expander_highlight = "NeoTreeExpander",
+    },
+    icon = {
+      folder_closed = "",
+      folder_open = "",
+      folder_empty = "ﰊ",
+      default = "*",
+    },
+    name = {
+      trailing_slash = false,
+      use_git_status_colors = true,
+    },
+    git_status = {
+      symbols = {
+        -- Change type
+        added     = "✚",
+        deleted   = "✖",
+        modified  = "",
+        renamed   = "",
+        -- Status type
+        untracked = "",
+        ignored   = "",
+        unstaged  = "",
+        staged    = "",
+        conflict  = "",
+      }
+    },
   },
-  -- hijack the cursor in the tree to put it at the start of the filename
-  hijack_cursor       = false,
-  -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
-  update_cwd          = false,
-  -- show lsp diagnostics in the signcolumn
-  diagnostics = {
-    enable = true,
-    icons = {
-      hint = "",
-      info = "",
-      warning = "",
-      error = "",
+  window = {
+    position = "left",
+    width = 40,
+    mappings = {
+      ["<cr>"] = "open",
+      ["S"] = "open_split",
+      ["s"] = "open_vsplit",
+      ["C"] = "close_node",
+      ["<bs>"] = "navigate_up",
+      ["."] = "set_root",
+      ["H"] = "toggle_hidden",
+      ["R"] = "refresh",
+      ["/"] = "fuzzy_finder",
+      ["f"] = "filter_on_submit",
+      ["<c-x>"] = "clear_filter",
+      ["a"] = "add",
+      ["d"] = "delete",
+      ["r"] = "rename",
+      ["y"] = "copy_to_clipboard",
+      ["x"] = "cut_to_clipboard",
+      ["p"] = "paste_from_clipboard",
+      ["c"] = "copy", -- takes text input for destination
+      ["m"] = "move", -- takes text input for destination
+      ["q"] = "close_window",
     }
   },
-  -- update the focused file on `BufEnter`, un-collapses the folders recursively until it finds the file
-  update_focused_file = {
-    -- enables the feature
-    enable      = true,
-    -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
-    -- only relevant when `update_focused_file.enable` is true
-    update_cwd  = false,
-    -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
-    -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
-    ignore_list = {}
+  nesting_rules = {},
+  filesystem = {
+    filtered_items = {
+      visible = false, -- when true, they will just be displayed differently than normal items
+      hide_dotfiles = true,
+      hide_gitignored = true,
+      hide_by_name = {
+        ".DS_Store",
+        "thumbs.db"
+        --"node_modules"
+      },
+      never_show = { -- remains hidden even if visible is toggled to true
+        --".DS_Store",
+        --"thumbs.db"
+      },
+    },
+    follow_current_file = true, -- This will find and focus the file in the active buffer every
+                                 -- time the current file is changed while the tree is open.
+    hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
+                                            -- in whatever position is specified in window.position
+                          -- "open_current",  -- netrw disabled, opening a directory opens within the
+                                            -- window like netrw would, regardless of window.position
+                          -- "disabled",    -- netrw left alone, neo-tree does not handle opening dirs
+    use_libuv_file_watcher = false, -- This will use the OS level file watchers to detect changes
+                                    -- instead of relying on nvim autocmd events.
   },
-  -- configuration options for the system open command (`s` in the tree by default)
-  system_open = {
-    -- the command to run this, leaving nil should work in most cases
-    cmd  = nil,
-    -- the command arguments as a list
-    args = {}
+  buffers = {
+    show_unloaded = true,
+    window = {
+      mappings = {
+        ["bd"] = "buffer_delete",
+      }
+    },
   },
-
-  view = {
-    -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
-    width = 30,
-    -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
-    height = 30,
-    -- Hide the root path of the current folder on top of the tree
-    hide_root_folder = true,
-    -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
-    side = 'left',
-    -- if true the tree will resize itself after opening a file
-    auto_resize = true,
-    mappings = {
-      -- custom only false will merge the list with the default mappings
-      -- if true, it will only use your list to set the mappings
-      custom_only = false,
-      -- list of mappings to set on the tree manually
-      list = {}
+  git_status = {
+    window = {
+      position = "float",
+      mappings = {
+        ["A"]  = "git_add_all",
+        ["gu"] = "git_unstage_file",
+        ["ga"] = "git_add_file",
+        ["gr"] = "git_revert_file",
+        ["gc"] = "git_commit",
+        ["gp"] = "git_push",
+        ["gg"] = "git_commit_and_push",
+      }
+    }
+  },
+  event_handlers = {
+    {
+      event = "file_opened",
+      handler = function(arg)
+        require("neo-tree").close_all()
+      end,
     }
   }
-}
+})
+
+-- require'nvim-tree'.setup {
+--   -- disables netrw completely
+--   disable_netrw       = true,
+--   -- hijack netrw window on startup
+--   hijack_netrw        = true,
+--   -- open the tree when running this setup function
+--   open_on_setup       = false,
+--   -- will not open on setup if the filetype is in this list
+--   ignore_ft_on_setup  = {},
+--   -- closes neovim automatically when the tree is the last **WINDOW** in the view
+--   auto_close          = false,
+--   -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
+--   open_on_tab         = false,
+--   -- hijacks new directory buffers when they are opened.
+--   update_to_buf_dir   = {
+--     -- enable the feature
+--     enable = true,
+--     -- allow to open the tree if it was previously closed
+--     auto_open = true,
+--   },
+--   -- hijack the cursor in the tree to put it at the start of the filename
+--   hijack_cursor       = false,
+--   -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
+--   update_cwd          = false,
+--   -- show lsp diagnostics in the signcolumn
+--   diagnostics = {
+--     enable = true,
+--     icons = {
+--       hint = "",
+--       info = "",
+--       warning = "",
+--       error = "",
+--     }
+--   },
+--   -- update the focused file on `BufEnter`, un-collapses the folders recursively until it finds the file
+--   update_focused_file = {
+--     -- enables the feature
+--     enable      = true,
+--     -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
+--     -- only relevant when `update_focused_file.enable` is true
+--     update_cwd  = false,
+--     -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
+--     -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
+--     ignore_list = {}
+--   },
+--   -- configuration options for the system open command (`s` in the tree by default)
+--   system_open = {
+--     -- the command to run this, leaving nil should work in most cases
+--     cmd  = nil,
+--     -- the command arguments as a list
+--     args = {}
+--   },
+--
+--   view = {
+--     -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
+--     width = 30,
+--     -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
+--     height = 30,
+--     -- Hide the root path of the current folder on top of the tree
+--     hide_root_folder = true,
+--     -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
+--     side = 'left',
+--     -- if true the tree will resize itself after opening a file
+--     auto_resize = true,
+--     mappings = {
+--       -- custom only false will merge the list with the default mappings
+--       -- if true, it will only use your list to set the mappings
+--       custom_only = false,
+--       -- list of mappings to set on the tree manually
+--       list = {}
+--     }
+--   }
+-- }
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -1601,10 +1730,12 @@ EOF
 
     let g:NERDDefaultAlign = 'left'
 
-    nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
-    inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
-    nnoremap <leader>r :NvimTreeRefresh<CR>
-    nnoremap <leader>n :NvimTreeFindFile<CR>
+    nnoremap <C-o> :Neotree toggle reveal<CR>
+    inoremap <C-o> <esc>:Neotree toggle reveal<CR>
+    " nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
+    " inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
+    " nnoremap <leader>r :NvimTreeRefresh<CR>
+    " nnoremap <leader>n :NvimTreeFindFile<CR>
     " NvimTreeOpen and NvimTreeClose are also available if you need them
 
     " let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
@@ -1755,7 +1886,7 @@ EOF
           vimPlugins.lsp_signature-nvim
           vimPlugins.git-blame-vim
           vimPlugins.nvim-web-devicons
-          nvim-tree-lua
+          #nvim-tree-lua
           #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
           vim-matchup
@@ -1780,10 +1911,11 @@ EOF
           vimPlugins.nvim-scrollbar
           vimPlugins.cmp-spell
           vimPlugins.themer-lua
-          #nui-nvim
+          nui-nvim
           #nvim-treesitter
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim
+          vimPlugins.neo-tree-nvim
         ];
         opt = [
         ];

@@ -26,6 +26,7 @@ neovim/nvim-lspconfig
 nfvs/vim-perforce
 NTBBloodbath/galaxyline.nvim@main
 nvim-lua/plenary.nvim
+nvim-neo-tree/neo-tree.nvim@v2.x
 nvim-telescope/telescope.nvim
 OmniSharp/omnisharp-vim
 petertriho/nvim-scrollbar@main

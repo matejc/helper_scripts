@@ -161,12 +161,12 @@ final: prev:
 
   lush-nvim = buildVimPluginFrom2Nix {
     pname = "lush.nvim";
-    version = "2022-03-17";
+    version = "2022-03-24";
     src = fetchFromGitHub {
       owner = "rktjmp";
       repo = "lush.nvim";
-      rev = "69848496f34a27e7c534fca5f3626c08f4fdc754";
-      sha256 = "1qm6yv474ija8mbmr33rd2wmalrj8gdzl1ji6q68wr7jrwjs3ds7";
+      rev = "fa7694fe221ca595d6f8c4f1aab531b4c1d48d7b";
+      sha256 = "14cs574nk0hr6mbf80gcjdarwbngbgj73s1grn6yczr2gqqqmhwk";
     };
     meta.homepage = "https://github.com/rktjmp/lush.nvim/";
   };
@@ -181,6 +181,18 @@ final: prev:
       sha256 = "0yjx57id4gc8bcjz3y31k77970jcpnkrghr9whb32kb85dxjrg3d";
     };
     meta.homepage = "https://github.com/Houl/motpat-vim/";
+  };
+
+  neo-tree-nvim = buildVimPluginFrom2Nix {
+    pname = "neo-tree.nvim";
+    version = "2022-03-24";
+    src = fetchFromGitHub {
+      owner = "nvim-neo-tree";
+      repo = "neo-tree.nvim";
+      rev = "45c724f9c5c4b5267a08a4d91913a8d391377a72";
+      sha256 = "14k0hjdrbhp2x27cbdjf5fvbh464az6xm11ym6rvd172l0p8fwb9";
+    };
+    meta.homepage = "https://github.com/nvim-neo-tree/neo-tree.nvim/";
   };
 
   neovim-auto-autoread = buildVimPluginFrom2Nix {
@@ -245,12 +257,12 @@ final: prev:
 
   nvim-lspconfig = buildVimPluginFrom2Nix {
     pname = "nvim-lspconfig";
-    version = "2022-03-22";
+    version = "2022-03-23";
     src = fetchFromGitHub {
       owner = "neovim";
       repo = "nvim-lspconfig";
-      rev = "63efd6ed156ae578c7e23278ec0a82776802106b";
-      sha256 = "1drphwxvpbi0sx2qgjgi5z4wg3s5r2fj3x3lxcj8rfi1a76r58wj";
+      rev = "7d5a6dc46dd2ebaeb74b573922f289ae33089fe7";
+      sha256 = "1dz2q6n2ibq9l2js088wfp2y5md6z8lqs6hy02xajglvb0d9g3fg";
     };
     meta.homepage = "https://github.com/neovim/nvim-lspconfig/";
   };
@@ -342,12 +354,12 @@ final: prev:
 
   smart-splits-nvim = buildVimPluginFrom2Nix {
     pname = "smart-splits.nvim";
-    version = "2022-03-23";
+    version = "2022-03-25";
     src = fetchFromGitHub {
       owner = "mrjones2014";
       repo = "smart-splits.nvim";
-      rev = "39779e70bd718e67499c5cddafac7f01c1df1ccc";
-      sha256 = "0lwwwkq8vllw5ab22lrh2fsm22m7mgnypvqxcq557cpdll3z0lpm";
+      rev = "96ae8e81654d4e92023e16b2b7b950fd15376fc4";
+      sha256 = "0gygx3v396gys6yj2nal71gbrz4ivzv8bf1nriwj3zacpa5cf06j";
     };
     meta.homepage = "https://github.com/mrjones2014/smart-splits.nvim/";
   };
@@ -366,12 +378,12 @@ final: prev:
 
   telescope-nvim = buildVimPluginFrom2Nix {
     pname = "telescope.nvim";
-    version = "2022-03-20";
+    version = "2022-03-24";
     src = fetchFromGitHub {
       owner = "nvim-telescope";
       repo = "telescope.nvim";
-      rev = "1a72a92b641e1dab42036c07e2571b43c55bfaa1";
-      sha256 = "1iywxpdy03z1wna8ms1nh1xak1ajya3q8mnlzpfr1vdxp64idy22";
+      rev = "503db70a6a82ff4847593e5830c05082db39faa0";
+      sha256 = "0psdw2v5a5785sk6phvyrb90admg0wnrx1np0xlar72an2jsncix";
     };
     meta.homepage = "https://github.com/nvim-telescope/telescope.nvim/";
   };
