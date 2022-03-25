@@ -6,8 +6,9 @@
 , nameservers ? [ "1.1.1.1" ]
 , cmds ? [
   { start = "fakeroot protonvpn connect --fastest"; stop = "fakeroot protonvpn disconnect"; }
-  { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
+  #{ start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
   { start = "chromium --no-sandbox --incognito --enable-features=UseOzonePlatform --ozone-platform=wayland http://localhost:9091/transmission/web/"; }
+  #{ start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
 ]
 , packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.chromium ]
 , preCmds ? [ ]
@@ -110,9 +111,10 @@ let
   script = writeScript "script.sh" ''
     #!${stdenv.shell}
     set -e
-    mkdir -p ${homeDir}/.vpn/${name}/{home,resolve,root}
+    mkdir -p ${homeDir}/.vpn/${name}/{home,root}
 
-    cat ${resolvConf} > ${homeDir}/.vpn/${name}/resolve/stub-resolv.conf
+    cat ${resolvConf} > ${homeDir}/.vpn/${name}/resolv.conf
+    chmod o+rw ${homeDir}/.vpn/${name}/resolv.conf
 
     ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") mounts}
     ${concatMapStringsSep "\n" (m: "[ -f ${m.from} ] || mkdir -p ${m.from}") tmpMounts}
@@ -148,13 +150,14 @@ let
 
     bwrap \
       --tmpfs / \
-      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | grep -v /dev | xargs -i sh -c "test -r '{}' && basename '{}'" | awk '{printf "--bind /"$1" /"$1" "}') \
+      $(find / -mindepth 1 -maxdepth 1 | grep -v /home | grep -v /root | xargs -i sh -c "test -r '{}' && basename '{}'" | awk '{printf "--bind /"$1" /"$1" "}') \
+      --bind ${homeDir}/.vpn/${name}/resolv.conf "$(realpath /etc/resolv.conf)" \
       --dev /dev \
       --dev-bind /dev/dri /dev/dri \
       --dev-bind /dev/net/tun /dev/net/tun \
       --dev-bind /dev/shm /dev/shm \
       --bind ${homeDir}/.vpn/${name}/pid /tmp/pid \
-      --ro-bind ${homeDir}/.vpn/${name}/hosts /etc/hosts \
+      --ro-bind ${homeDir}/.vpn/${name}/hosts "$(realpath /etc/hosts)" \
       --ro-bind ${homeDir}/.vpn/${name}/passwd /etc/passwd \
       --ro-bind ${machineId} /etc/machine-id \
       --bind ${homeDir}/.vpn/${name}/home ${homeDir} \
@@ -188,7 +191,7 @@ in
     buildInputs = [
       bwrap iproute2 shadow slirp4netns curl fakeroot which sysctl procps kmod
       openvpn pstree utillinux fontconfig coreutils libcap strace less
-      python39Packages.supervisor
+      python39Packages.supervisor iptables
     ] ++ packages;
     shellHook = ''
       ${script}
