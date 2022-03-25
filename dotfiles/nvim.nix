@@ -53,7 +53,7 @@ let
     #"pylsp"
     "pyright"
     #"python_language_server"
-    "ansiblels"
+    #"ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
@@ -1601,8 +1601,8 @@ EOF
 
     let g:NERDDefaultAlign = 'left'
 
-    nnoremap <C-o> :NvimTreeToggle<CR>
-    inoremap <C-o> <esc>:NvimTreeToggle<CR>
+    nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
+    inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
     nnoremap <leader>r :NvimTreeRefresh<CR>
     nnoremap <leader>n :NvimTreeFindFile<CR>
     " NvimTreeOpen and NvimTreeClose are also available if you need them
