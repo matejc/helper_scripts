@@ -19,6 +19,7 @@ kana/vim-fakeclip
 kevinhwang91/nvim-hlslens@main
 kyazdani42/nvim-tree.lua
 kyazdani42/nvim-web-devicons
+lewis6991/gitsigns.nvim@main
 lifepillar/vim-solarized8
 mrjones2014/smart-splits.nvim
 MunifTanjim/nui.nvim@main

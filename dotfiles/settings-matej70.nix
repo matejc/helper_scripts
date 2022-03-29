@@ -120,6 +120,7 @@ let
     ./keepassxc-oath.nix
     ./dd.nix
     ./devenv.nix
+    ./stream.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst

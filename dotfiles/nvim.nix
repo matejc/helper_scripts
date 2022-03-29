@@ -973,6 +973,7 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<Left>'] = cmp.mapping.close(),
   },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -1792,6 +1793,16 @@ EOF
     highlight MatchParen guibg=Grey40
     highlight GalaxyLineFillSection guibg=#32302f
 
+    highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
+    highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
+    highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
+    highlight SignifyLineAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
+    highlight SignifyLineDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
+    highlight SignifyLineChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
+
+    nnoremap <C-H> :SignifyHunkDiff<cr>
+    inoremap <C-H> <esc>:SignifyHunkDiff<cr>
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -1868,8 +1879,8 @@ EOF
           vimPlugins.vim-hashicorp-tools
           #Jenkinsfile-vim-syntax
           vimPlugins.neovim-gui-shim
-          vim-vinegar
-          vim-fugitive
+          #vim-vinegar
+          #vim-fugitive
           #vimPlugins.nerdtree
           #vimPlugins.nerdtree-git-plugin
           #ansible-vim
@@ -1882,7 +1893,7 @@ EOF
           #vimPlugins.neovim-auto-autoread
           vim-rsi
           vim-signify
-          vimPlugins.vim-perforce
+          #vimPlugins.vim-perforce
           vimPlugins.lsp_signature-nvim
           vimPlugins.git-blame-vim
           vimPlugins.nvim-web-devicons
