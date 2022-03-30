@@ -1505,7 +1505,7 @@ require("telescope").setup {
 require("scrollbar").setup({
     handle = {
         text = " ",
-        color = "#3c3836",
+        color = "#5c5856",
     },
     marks = {
         Search = { text = { "-", "=" }, priority = 0, color = "orange" },
@@ -1796,9 +1796,6 @@ EOF
     highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
     highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
     highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
-    highlight SignifyLineAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
-    highlight SignifyLineDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
-    highlight SignifyLineChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
 
     nnoremap <C-H> :SignifyHunkDiff<cr>
     inoremap <C-H> <esc>:SignifyHunkDiff<cr>
@@ -1938,6 +1935,13 @@ in [{
   source = pkgs.writeScript "nvim-lsp-install" ''
     #!${pkgs.stdenv.shell}
 
+    if [[ "$1" == "clean" ]]
+    then
+      rm -vrf ${variables.homeDir}/.npm-packages/*
+      rm -vrf ${variables.homeDir}/.py-packages/*
+      exit 0
+    fi
+
     export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
     export PY_PACKAGES="${variables.homeDir}/.py-packages"
 
@@ -1947,10 +1951,8 @@ in [{
     }
 
     pip_install() {
-      if [ ! -d "$PY_PACKAGES" ]
-      then
-        ${pkgs.python3Packages.python}/bin/python -m venv "$PY_PACKAGES"
-      fi
+      ${pkgs.python3Packages.python}/bin/python -m venv "$PY_PACKAGES"
+      $PY_PACKAGES/bin/python -m pip install --upgrade pip
       $PY_PACKAGES/bin/pip install "$@"
     }
 
