@@ -13,7 +13,7 @@
   { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
   { start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
 ]
-, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.zsh pkgs.kitty (import ../we-get.nix {}) ]
+, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.zsh pkgs.kitty ]
 , preCmds ? [ ]
 , chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
@@ -57,10 +57,7 @@ let
     }
     trap stop_script SIGINT SIGTERM
     ${start}
-    while true
-    do
-      sleep 1
-    done
+    wait $!
   '';
 
   mkVpnCmd = writeScript "start-vpn.sh" ''
@@ -124,7 +121,7 @@ let
     user = ${user}
     numprocs = 1
     autostart = false
-    autorestart = unexpected
+    autorestart = true
     startsecs = 3
     exitcodes = 0
     stopsignal = TERM
