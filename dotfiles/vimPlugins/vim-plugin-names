@@ -29,6 +29,7 @@ NTBBloodbath/galaxyline.nvim@main
 nvim-lua/plenary.nvim
 nvim-neo-tree/neo-tree.nvim@v2.x
 nvim-telescope/telescope.nvim
+nvim-treesitter/nvim-treesitter
 OmniSharp/omnisharp-vim
 petertriho/nvim-scrollbar@main
 ray-x/lsp_signature.nvim

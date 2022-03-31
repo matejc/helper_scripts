@@ -1563,6 +1563,36 @@ require('smart-splits').ignored_filetypes = {
   'quickfix',
   'prompt',
 }
+
+
+require'nvim-treesitter.configs'.setup {
+  -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = "maintained",
+
+  -- Install languages synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- List of parsers to ignore installing
+  -- ignore_install = { "javascript" },
+
+  highlight = {
+    -- `false` will disable the whole extension
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    -- disable = { "jsonc" },
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1822,34 +1852,6 @@ EOF
     '';
   };
 
-  treeSitter = pkgs.rustPlatform.buildRustPackage rec {
-    pname = "tree-sitter";
-    version = "0.18.0";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "tree-sitter";
-      repo = pname;
-      rev = version;
-      sha256 = "0q4lrsr5az5w06q1q0ndqs21v993bclpxv3bjxzlmv9i7zrj5hs1";
-    };
-
-    cargoSha256 = "08zr74yb1vaja4k5lyvhyj7fyhvhskx9z8ngg0cd4yg7fkzglp0s";
-
-    doCheck = false;
-  };
-
-  neovim-unwrapped = pkgs.neovim-unwrapped.overrideDerivation (old: {
-    name = "neovim-unwrapped-nightly";
-    version = "nightly";
-    src = pkgs.fetchFromGitHub {
-      owner = "neovim";
-      repo = "neovim";
-      rev = "b3e0d6708eca3cd22695d364ba2aca7401cc0f8c";
-      sha256 = "0mxv7hmj1ni904nhbijimg65bybgzd3y468g9rjn3rgzi4bk4q53";
-    };
-    #buildInputs = old.buildInputs ++ [ pkgs.utf8proc (pkgs.tree-sitter.override {webUISupport = false;}) ];
-  });
-
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
@@ -1882,7 +1884,7 @@ EOF
           #vimPlugins.nerdtree-git-plugin
           #ansible-vim
           #vimPlugins.python-mode
-          vim-polyglot
+          #vim-polyglot
           #kotlin-vim
           vimPlugins.nvim-lspconfig
           #deoplete-nvim
@@ -1920,10 +1922,10 @@ EOF
           vimPlugins.cmp-spell
           vimPlugins.themer-lua
           nui-nvim
-          #nvim-treesitter
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
+          (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
         ];
         opt = [
         ];
@@ -1987,6 +1989,7 @@ in [{
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
     export PATH="${lib.makeBinPath [
+      pkgs.stdenv.cc.cc
       pkgs.python3Packages.python
       pkgs.perl
       pkgs.nodejs
@@ -1994,6 +1997,8 @@ in [{
       pkgs.python3Packages.yamllint
       pkgs.ripgrep
     ]}:$PATH"
+    export CC="${pkgs.stdenv.cc.cc}/bin/gcc"
+    export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
     ${neovim}/bin/nvim "$@"
   '';
 } {
