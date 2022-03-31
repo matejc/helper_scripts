@@ -1989,7 +1989,7 @@ in [{
   source = pkgs.writeScript "nvim" ''
     #!${pkgs.stdenv.shell}
     export PATH="${lib.makeBinPath [
-      pkgs.stdenv.cc.cc
+      pkgs.stdenv.cc
       pkgs.python3Packages.python
       pkgs.perl
       pkgs.nodejs
@@ -1997,7 +1997,7 @@ in [{
       pkgs.python3Packages.yamllint
       pkgs.ripgrep
     ]}:$PATH"
-    export CC="${pkgs.stdenv.cc.cc}/bin/gcc"
+    export CC="${pkgs.stdenv.cc}/bin/cc"
     export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
     ${neovim}/bin/nvim "$@"
   '';
