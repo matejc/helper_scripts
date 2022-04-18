@@ -67,6 +67,7 @@ let
       #o = "${goneovim}/bin/goneovim --nvim ${variables.homeDir}/bin/nvim";
       q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${variables.homeDir}/bin/nvim";
       n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
+      g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
     };
   };
 
@@ -76,7 +77,7 @@ let
     ./thissession.nix
     ./oath.nix
     ./httpserver.nix
-    ./wcontrol.nix
+    #./wcontrol.nix
     ./temp.nix
     ./volume.nix
     ./yaml2nix.nix
