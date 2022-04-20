@@ -1950,7 +1950,8 @@ in [{
       vim-language-server \
       vscode-html-languageserver-bin \
       vscode-css-languageserver-bin \
-      coc-powershell
+      coc-powershell \
+      ansible-language-server
 
     pip_install \
       robotframework-lsp
