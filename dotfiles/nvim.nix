@@ -53,7 +53,7 @@ let
     #"pylsp"
     "pyright"
     #"python_language_server"
-    #"ansiblels"
+    "ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
@@ -933,26 +933,6 @@ require'lsp_signature'.setup(cfg)
 
 local cmp = require'cmp'
 
--- cmp.setup({
---   snippet = {
---     expand = function(args)
---       vim.fn["vsnip#anonymous"](args.body)
---     end,
---   },
---   mapping = {
---     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
---     ['<C-f>'] = cmp.mapping.scroll_docs(4),
---     ['<C-Space>'] = cmp.mapping.complete(),
---     ['<C-e>'] = cmp.mapping.close(),
---     ['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace }),
---   },
---   sources = {
---     { name = 'nvim_lsp' },
---     { name = 'buffer' },
---     { name = 'vsnip' },
---   }
--- })
-
 cmp.setup({
   snippet = {
     -- REQUIRED - you must specify a snippet engine
@@ -963,7 +943,7 @@ cmp.setup({
       -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
     end,
   },
-  mapping = {
+  mapping = cmp.mapping.preset.insert({
     ['<C-d>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -974,10 +954,15 @@ cmp.setup({
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Left>'] = cmp.mapping.close(),
-  },
+    ['<Tab>'] = cmp.mapping.select_next_item(),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+  }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
+    { name = 'nvim_lsp_signature_help' },
     { name = 'vsnip' }, -- For vsnip users.
+    { name = 'rg' },
+    { name = 'treesitter' },
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
@@ -987,13 +972,6 @@ cmp.setup({
   }, {
     { name = 'spell' },
   })
-})
-
--- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline('/', {
-  sources = {
-    { name = 'buffer' }
-  }
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -1915,12 +1893,16 @@ EOF
           vimPlugins.cmp-vsnip
           vimPlugins.cmp-path
           vimPlugins.cmp-cmdline
-          vimPlugins.vim-vsnip
+          vimPlugins.cmp-spell
+          vimPlugins.cmp-nvim-lsp-signature-help
+          vimPlugins.cmp-rg
+          vimPlugins.cmp-treesitter
           #vimPlugins.searchbox-nvim
           vimPlugins.nvim-hlslens
           vimPlugins.nvim-scrollbar
-          vimPlugins.cmp-spell
           vimPlugins.themer-lua
+          vimPlugins.vim-vsnip
+          vimPlugins.friendly-snippets
           nui-nvim
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim

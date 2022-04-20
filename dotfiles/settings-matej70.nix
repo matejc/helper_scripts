@@ -53,6 +53,7 @@ let
         ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
       ''}";
       tug = "${pkgs.turbogit}/bin/tug";
+      "," = "${pkgs.comma}/bin/,";
     };
     locale.all = "en_US.utf8";
     startup = [
