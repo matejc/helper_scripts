@@ -479,7 +479,7 @@ let
     map <C-q> <esc>:qall
     inoremap <C-q> <esc>:qall
     nnoremap <silent> <c-s> :w<CR>
-    inoremap <silent> <c-s> <C-o>:w<CR>
+    inoremap <silent> <c-s> <esc>:w<CR>
     nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
     inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
@@ -548,6 +548,7 @@ let
     inoremap <C-c> <C-o>yy
     nnoremap <C-c> yy
     vnoremap <C-c> y
+    vnoremap <C-S-c> y
 
     nnoremap <c-v> "+p
     inoremap <c-v> <C-R><C-O>+
@@ -1723,8 +1724,9 @@ EOF
     let g:deoplete#enable_at_startup = 1
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-    tnoremap <silent> <C-[><C-[> <C-\><C-n>
+    tnoremap <silent> <esc><esc> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
+    tnoremap <C-S-v> <C-\><C-N>"+pi
 
     tnoremap <silent> <c-PageUp> <C-\><C-N>:bprev<cr>
     tnoremap <silent> <c-PageDown> <C-\><C-N>:bnext<cr>

@@ -53,6 +53,9 @@ in
       #precmd_functions+=_direnv_hook;
     #fi
 
+    # emacs mode
+    bindkey -e
+
     # del
     bindkey '^[[3~' delete-char
 
