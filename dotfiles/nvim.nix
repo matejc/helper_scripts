@@ -479,7 +479,7 @@ let
     map <C-q> <esc>:qall
     inoremap <C-q> <esc>:qall
     nnoremap <silent> <c-s> :w<CR>
-    inoremap <silent> <c-s> <esc>:w<CR>
+    inoremap <silent> <c-s> <C-o>:w<CR>
     nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
     inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
