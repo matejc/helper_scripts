@@ -261,7 +261,7 @@ let
     pyright = ''
       nvim_lsp["pyright"].setup {
         on_attach = on_attach;
-        cmd = {"${pyright}/bin/pyright-langserver", "--stdio"};
+        cmd = {"${pkgs.pyright}/bin/pyright-langserver", "--stdio"};
         capabilities = capabilities;
         filetypes = { 'python' };
       }
@@ -377,7 +377,7 @@ let
     if exists('g:GuiLoaded')
       GuiPopupmenu 0
       GuiTabline 0
-      GuiFont ${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
+      GuiFont! ${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
       " call GuiClipboard()
     endif
 
@@ -1469,6 +1469,9 @@ require("bufferline").setup{
 
 require("telescope").setup {
   defaults = {
+    layout_strategy = 'vertical',
+    layout_config = { vertical = { width = 0.9, preview_height = 0.7 } },
+    wrap_results = true,
     vimgrep_arguments = {
       "${pkgs.ripgrep}/bin/rg",
       "--color=never",
@@ -1546,7 +1549,7 @@ require('smart-splits').ignored_filetypes = {
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = "maintained",
+  ensure_installed = "all",
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -1993,7 +1996,7 @@ in [{
     set -e
     trap "kill 0" EXIT
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
-    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(1);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
+    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(0.2);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" &
     wait
   '';
