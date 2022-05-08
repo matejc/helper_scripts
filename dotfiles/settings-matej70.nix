@@ -6,6 +6,7 @@ let
 
   variables = rec {
     prefix = "/home/matejc/workarea/helper_scripts";
+    nixpkgs = "/home/matejc/workarea/nixpkgs";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
     user = "matejc";
     homeDir = "/home/matejc";
@@ -53,7 +54,6 @@ let
         ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
       ''}";
       tug = "${pkgs.turbogit}/bin/tug";
-      "," = "${pkgs.comma}/bin/,";
     };
     locale.all = "en_US.utf8";
     startup = [
@@ -123,6 +123,7 @@ let
     ./dd.nix
     ./devenv.nix
     ./stream.nix
+    ./comma.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst
