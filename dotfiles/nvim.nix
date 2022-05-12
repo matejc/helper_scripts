@@ -461,7 +461,7 @@ let
       set undofile
     endif
 
-    set noautoindent
+    set autoindent
     set nosmartindent
     set nocopyindent
     set tabstop=2 shiftwidth=2 expandtab softtabstop=2
@@ -824,14 +824,88 @@ let
       endif
       call cursor([a:line, a:column])
     endfu
-    nnoremap <silent> <expr> <c-right> <sid>MyMotionDir('n', 0)
-    nnoremap <silent> <expr> <c-left> <sid>MyMotionDir('n', 1)
-    vnoremap <silent> <expr> <c-right> <sid>MyMotionDir('v', 0)
-    vnoremap <silent> <expr> <c-left> <sid>MyMotionDir('v', 1)
-    "inoremap <silent> <c-right> <esc>l:<c-u>execute(<sid>MyMotionDir('i', 0))<cr>i
-    "inoremap <silent> <c-left> <esc>:<c-u>execute(<sid>MyMotionDir('i', 1))<cr>i
+    fu! <sid>WordMove(mode, forward)
+      let initialLine=line('.')
+      let initialCol=col('.')
+      if a:mode == 'i'
+        if a:forward
+        else
+        endif
+      else
+        if a:forward
+          if initialCol == col('$')
+            let newLine = search('^', "W", initialLine+1)
+            let newCol = col('.')
+          else
+            let newLine = search('.', "W", initialLine)
+            if initialCol == col('.')
+              let newCol = col('$')
+            else
+              let newCol = col('.')
+              echo newLine.",".newCol
+            endif
+          endif
+        else
+        endif
+      endif
+      call cursor(["".newLine, "".newCol])
+    endfu
 
-    " inoremap <silent> <expr> <s-right> <esc>:<c-u>execute(<sid>MyMotionDir('v', 0))<cr>
+
+lua << EOF
+
+function myMove(pattern, forward)
+  flags = 'W'
+  if forward == 0 then
+    flags = flags .. 'b'
+  end
+  local initialrow, initialcol = unpack(vim.api.nvim_win_get_cursor(0))
+  local row, col
+  if forward == 1 then
+    if initialcol+1 == vim.fn.col('$') then
+      row = initialrow+1
+      col = 1
+    else
+      row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
+      if col == 0 then
+        row = initialrow
+        col = vim.fn.col('$')
+      end
+    end
+  else
+    if initialcol == 0 then
+      row = initialrow-1
+      col = vim.fn.strlen(vim.fn.getline(row))+1
+    else
+      row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
+      if col == 0 then
+        row = initialrow
+        col = 1
+      end
+    end
+  end
+  vim.api.nvim_win_set_cursor(0, { row, col-1 })
+end
+
+function wordMove(mode, forward)
+  local wpattern='[a-zA-Z0-9]\\+\\|^\\|$'
+  if mode == 'i' then
+    myMove(wpattern, forward)
+  else
+    myMove(wpattern, forward)
+  end
+end
+
+vim.keymap.set("n", '<c-right>', function() wordMove("n", 1) end, { noremap = true, silent = true })
+vim.keymap.set("n", '<c-left>', function() wordMove("n", 0) end, { noremap = true, silent = true })
+
+vim.keymap.set("v", '<c-right>', function() wordMove("v", 1) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-left>', function() wordMove("v", 0) end, { noremap = true, silent = true })
+
+vim.keymap.set("i", '<c-right>', function() wordMove("i", 1) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-left>', function() wordMove("i", 0) end, { noremap = true, silent = true })
+
+EOF
 
     inoremap <silent> <A-del> <C-o>ce
     inoremap <silent> <C-del> <C-o>ce
@@ -948,6 +1022,13 @@ cmp.setup({
   window = {
     -- completion = cmp.config.window.bordered(),
     -- documentation = cmp.config.window.bordered(),
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      local item = entry:get_completion_item()
+      vim_item.menu = item.detail
+      return vim_item
+    end
   },
   mapping = cmp.mapping.preset.insert({
     ['<PageUp>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
@@ -2006,7 +2087,7 @@ in [{
     set -e
     trap "kill 0" EXIT
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
-    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(0.2);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
+    { ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(0.4);'; ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN"; } &
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" &
     wait
   '';
