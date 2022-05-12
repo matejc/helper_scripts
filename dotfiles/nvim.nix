@@ -1816,7 +1816,7 @@ EOF
     nnoremap <C-H> :SignifyHunkDiff<cr>
     inoremap <C-H> <esc>:SignifyHunkDiff<cr>
 
-    nnoremap \\ :noh<cr>
+    nnoremap <silent> <C-L> :noh<cr>
 
     autocmd UIEnter * source ${ginitVim}
   '';
