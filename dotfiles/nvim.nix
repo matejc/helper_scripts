@@ -891,7 +891,7 @@ local on_attach = function(client, bufnr)
   -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', 'rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', 'cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  -- buf_set_keymap('n', 'cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   -- buf_set_keymap('n', '{', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   -- buf_set_keymap('n', '}', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
@@ -953,8 +953,9 @@ cmp.setup({
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
     }),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<CR>'] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
     ['<Left>'] = cmp.mapping.close(),
+    ['<Right>'] = cmp.mapping.close(),
     ['<Tab>'] = cmp.mapping.select_next_item(),
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
@@ -1590,9 +1591,12 @@ EOF
     " tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
     nnoremap gd :lua require'telescope.builtin'.lsp_definitions{}<cr>
+    nnoremap gD :lua require'telescope.builtin'.lsp_implementations{}<cr>
     nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
+
+    nnoremap km :lua require'telescope.builtin'.keymaps{}<cr>
 
     nnoremap <C-S-f> :lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
     vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
@@ -1811,6 +1815,8 @@ EOF
 
     nnoremap <C-H> :SignifyHunkDiff<cr>
     inoremap <C-H> <esc>:SignifyHunkDiff<cr>
+
+    nnoremap \\ :noh<cr>
 
     autocmd UIEnter * source ${ginitVim}
   '';
