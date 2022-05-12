@@ -50,8 +50,8 @@ let
     #"pwsh"
     "robotframeworklsp"
     "lemminx"
-    #"pylsp"
-    "pyright"
+    "pylsp"
+    #"pyright"
     #"python_language_server"
     "ansiblels"
     "solargraph"
@@ -256,6 +256,7 @@ let
         cmd = {"${pkgs.python3Packages.python-lsp-server}/bin/pylsp"};
         capabilities = capabilities;
         filetypes = { 'python' };
+        single_file_support = true;
       }
     '';
     pyright = ''
