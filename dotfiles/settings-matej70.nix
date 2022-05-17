@@ -37,10 +37,10 @@ let
     dropDownTerminal = programs.dropdown;
     term = null;
     programs = {
-      filemanager = "${pkgs.dolphin}/bin/dolphin";
+      #filemanager = "${pkgs.dolphin}/bin/dolphin";
       terminal = "${pkgs.kitty}/bin/kitty";
       editor = "${pkgs.nano}/bin/nano";
-      dropdown = "env PATH=${pkgs.kitty}/bin:${pkgs.xorg.xrandr}/bin ${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% kitty";
+      #dropdown = "env PATH=${pkgs.kitty}/bin:${pkgs.xorg.xrandr}/bin ${pkgs.tdrop}/bin/tdrop -ma -w 98% -x 1% -h 90% kitty";
       #dropdown = "${pkgs.xfce.terminal}/bin/xfce4-terminal --drop-down";
       browser = "${pkgs.chromium}/bin/chromium";
       #google-chrome = "${pkgs.google-chrome}/bin/google-chrome-stable";
@@ -49,10 +49,6 @@ let
       mykeepassxc = "${pkgs.keepassxc}/bin/keepassxc";
       #nextcloud = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.nextcloud-client}/bin/nextcloud";
       launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
-      myweechat = "${pkgs.konsole}/bin/konsole -e ${pkgs.writeScript "weechat" ''
-        #!${pkgs.stdenv.shell}
-        ${pkgs.mosh}/bin/mosh weechat@fornax -- attach-weechat
-      ''}";
       tug = "${pkgs.turbogit}/bin/tug";
     };
     locale.all = "en_US.utf8";
