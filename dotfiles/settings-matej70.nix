@@ -124,6 +124,7 @@ let
     ./devenv.nix
     ./stream.nix
     ./comma.nix
+    ./tmux.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst

@@ -46,21 +46,20 @@
 
     bind-key -n MouseDrag1Status swap-window -t=
 
-    bind-key -n C-PageDown next-window
-    bind-key -n C-PageUp previous-window
-    bind-key -n F1 swap-window -t -1
-    bind-key -n F2 swap-window -t +1
+    bind-key -n M-PageDown next-window
+    bind-key -n M-PageUp previous-window
+    bind-key -n M-S-PageDown swap-window -t +1\; next-window
+    bind-key -n M-S-PageUp swap-window -t -1\; previous-window
 
-    bind-key -n C-N new-window -c '#{pane_current_path}'
-    bind-key -n C-T new-window -c '#{pane_current_path}'
+    bind-key -n M-t new-window -c '#{pane_current_path}'
 
-    bind-key -n C-S-Left select-pane -L
-    bind-key -n C-S-Right select-pane -R
-    bind-key -n C-S-Up select-pane -U
-    bind-key -n C-S-Down select-pane -D
+    bind-key -n M-Left select-pane -L
+    bind-key -n M-Right select-pane -R
+    bind-key -n M-Up select-pane -U
+    bind-key -n M-Down select-pane -D
 
-    bind-key -n C-S-Home splitw -h -p 50 -c '#{pane_current_path}'
-    bind-key -n C-S-End splitw -v -p 50 -c '#{pane_current_path}'
+    bind-key -n M-Home splitw -h -p 50 -c '#{pane_current_path}'
+    bind-key -n M-End splitw -v -p 50 -c '#{pane_current_path}'
 
     setw -g monitor-activity on
     set -g visual-activity off
@@ -70,7 +69,7 @@
 
     set-window-option -g xterm-keys on
 
-    set -g history-limit 10000
+    set -g history-limit 100000
 
     set-option -s set-clipboard off
     # For vi copy mode bindings
@@ -108,12 +107,12 @@
     # Left side of status bar
     set -g status-left-style bg="#272822",fg="#66D9EF"
     set -g status-left-length 40
-    set -g status-left "#[fg=colour100,bg=\"#272822\",bold] #S #[fg=\"#66D9EF\",bg=\"#272822\",nobold]#[fg=\"#66D9EF\",bg=\"#272822\"] #(whoami) #[fg=colour235,bg=\"#272822\"]#[fg=colour235,bg=\"#272822\",nobold]"
+    set -g status-left "#[fg=colour100,bg=\"#272822\",bold] #S #[fg=\"#66D9EF\",bg=\"#272822\",nobold]#[fg=\"#66D9EF\",bg=\"#272822\"]/ #(whoami) / #H#[fg=colour235,bg=\"#272822\"]#[fg=colour235,bg=\"#272822\",nobold]"
 
     # Right side of status bar
     set -g status-right-style bg="#272822",fg="#66D9EF"
     set -g status-right-length 150
-    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold] #H [${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}/#(echo $(batstatus)%)]"
+    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold]${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles} / #(date '+%H:%M %a %d of %b') "
 
     # Window status
     set -g window-status-format " #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#{pane_current_command} "
