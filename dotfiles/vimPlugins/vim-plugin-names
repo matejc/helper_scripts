@@ -1,4 +1,5 @@
 repo,branch,alias
+https://github.com/goolord/alpha-nvim/,main,
 https://github.com/akinsho/bufferline.nvim/,main,
 https://github.com/hrsh7th/cmp-buffer/,main,
 https://github.com/hrsh7th/cmp-cmdline/,main,
@@ -21,6 +22,7 @@ https://github.com/Houl/motpat-vim/,,
 https://github.com/nvim-neo-tree/neo-tree.nvim/,v2.x,
 https://github.com/thezoq2/neovim-auto-autoread/,,
 https://github.com/equalsraf/neovim-gui-shim/,,
+https://github.com/Shatur/neovim-session-manager/,,
 https://github.com/MunifTanjim/nui.nvim/,main,
 https://github.com/hrsh7th/nvim-cmp/,main,
 https://github.com/kevinhwang91/nvim-hlslens/,main,

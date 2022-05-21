@@ -84,10 +84,10 @@ let
     ./monitor.nix
     ./programs.nix
     ./any2mp3.nix
-    ./sublime.nix
+    #./sublime.nix
     ./vlc.nix
-    ./konsole.nix
-    ./connman.nix
+    #./konsole.nix
+    #./connman.nix
     ./sshproxy.nix
     ./chrome_cast_allow.nix
     ./castnow.nix
@@ -99,7 +99,7 @@ let
     ./screenshooter.nix
     ./xfce-terminal-dropdown.nix
     #./launcher.nix
-    ./bemenu.nix
+    #./bemenu.nix
     ./kitty.nix
     ./bash.nix
     ./starship.nix
@@ -108,11 +108,11 @@ let
     ./trace2scad.nix
     ./superslicer.nix
     ./look.nix
-    ./i3config.nix
-    ./i3_workspace.nix
-    ./waybar.nix
-    ./swaylockscreen.nix
-    ./sway-launcher-desktop.nix
+    #./i3config.nix
+    #./i3_workspace.nix
+    #./waybar.nix
+    #./swaylockscreen.nix
+    #./sway-launcher-desktop.nix
     ./clearprimary.nix
     ./py3-venv.nix
     ./keepassxc-oath.nix
@@ -121,6 +121,7 @@ let
     ./stream.nix
     ./comma.nix
     ./tmux.nix
+    ./opera.nix
   ];
 
     #${pkgs.procps}/bin/pkill dunst

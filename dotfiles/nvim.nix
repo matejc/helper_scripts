@@ -1039,7 +1039,7 @@ cmp.setup({
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
     }),
-    ['<CR>'] = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Left>'] = cmp.mapping.close(),
     ['<Right>'] = cmp.mapping.close(),
     ['<Tab>'] = cmp.mapping.select_next_item(),
@@ -1567,8 +1567,24 @@ require("telescope").setup {
       "--column",
       "--smart-case",
     }
+  },
+  extensions = {
+    fzy_native = {
+      override_generic_sorter = true,
+      override_file_sorter = true,
+    },
+    frecency = {
+      default_workspace = 'CWD',
+      show_scores = false,
+      show_unindexed = true,
+      ignore_patterns = {"*.git/*", "*/tmp/*"},
+      disable_devicons = true,
+      workspaces = {}
+    }
   }
 }
+require('telescope').load_extension('fzy_native')
+require"telescope".load_extension("frecency")
 
 require("scrollbar").setup({
     handle = {
@@ -1661,6 +1677,20 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+local Path = require('plenary.path')
+require('session_manager').setup({
+  sessions_dir = Path:new(vim.fn.stdpath('data'), 'sessions'), -- The directory where the session files will be saved.
+  path_replacer = '__', -- The character to which the path separator will be replaced for session files.
+  colon_replacer = '++', -- The character to which the colon symbol will be replaced for session files.
+  autoload_mode = require('session_manager.config').AutoloadMode.CurrentDir, -- Define what to do when Neovim is started without arguments. Possible values: Disabled, CurrentDir, LastSession
+  autosave_last_session = true, -- Automatically save last session on exit and on session switch.
+  autosave_ignore_not_normal = true, -- Plugin will not save a session when no buffers are opened, or all of them aren't writable or listed.
+  autosave_ignore_filetypes = { -- All buffers of these file types will be closed before the session is saved.
+    'gitcommit',
+  },
+  autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
+  max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
+})
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1687,8 +1717,9 @@ EOF
     nnoremap <C-S-f> :lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
     vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
 
-    nnoremap <C-p> :lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
-    vnoremap <C-p> <esc>:lua require'telescope.builtin'.find_files{ disable_devicons = true }<cr>
+    nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
+    vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
+    inoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
 
     nnoremap <C-d> :lua require'telescope.builtin'.diagnostics{ bufnr=0, disable_devicons = true }<cr>
 
@@ -1729,43 +1760,43 @@ EOF
     let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
     " let g:airline#extensions#tabline#enabled = 1
 
-    set sessionoptions-=options
-    set sessionoptions+=globals
+    " set sessionoptions-=options
+    " set sessionoptions+=globals
 
-    function! Sha1(text)
-      let hash = system('${sha1Cmd} "' . a:text . '"')
-      return hash
-    endfunction
+    " function! Sha1(text)
+    "   let hash = system('${sha1Cmd} "' . a:text . '"')
+    "   return hash
+    " endfunction
 
-    function! SessionPath()
-      return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . Sha1( getcwd() ) . ".vim"
-    endfunction
+    " function! SessionPath()
+    "   return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . Sha1( getcwd() ) . ".vim"
+    " endfunction
 
-    function! WipeAll()
-        let i = 0
-        let n = bufnr("$")
-        while i < n
-            let i = i + 1
-            if bufexists(i)
-                execute("bw " . i)
-            endif
-        endwhile
-    endfunction
+    " function! WipeAll()
+    "     let i = 0
+    "     let n = bufnr("$")
+    "     while i < n
+    "         let i = i + 1
+    "         if bufexists(i)
+    "             execute("bw " . i)
+    "         endif
+    "     endwhile
+    " endfunction
 
-    autocmd VimLeavePre * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
-        \ call mkdir("${variables.homeDir}/.vim-sessions") |
-        \ endif |
-        \ execute "mksession! " . SessionPath()
+    " autocmd VimLeavePre * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
+    "     \ call mkdir("${variables.homeDir}/.vim-sessions") |
+    "     \ endif |
+    "     \ execute "mksession! " . SessionPath()
 
-    function! MySessionLoad()
-      let l:sessionPath = SessionPath()
-      if argc() == 0 && filereadable(l:sessionPath)
-        " call WipeAll()
-        execute "source " . l:sessionPath
-      endif
-    endfunction
+    " function! MySessionLoad()
+    "   let l:sessionPath = SessionPath()
+    "   if argc() == 0 && filereadable(l:sessionPath)
+    "     " call WipeAll()
+    "     execute "source " . l:sessionPath
+    "   endif
+    " endfunction
 
-    autocmd VimEnter * nested call MySessionLoad()
+    " autocmd VimEnter * nested call MySessionLoad()
 
     "augroup CtrlPExtension
     "  autocmd!
@@ -2004,6 +2035,8 @@ EOF
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
           (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+          vimPlugins.neovim-session-manager
+          telescope-frecency-nvim
         ];
         opt = [
         ];
