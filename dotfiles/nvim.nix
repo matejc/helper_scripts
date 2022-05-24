@@ -884,7 +884,9 @@ function myMove(pattern, forward)
       end
     end
   end
-  vim.api.nvim_win_set_cursor(0, { row, col-1 })
+  if row > 0 and row <= vim.fn.line('$') then
+    vim.api.nvim_win_set_cursor(0, { row, col-1 })
+  end
 end
 
 function wordMove(mode, forward)
