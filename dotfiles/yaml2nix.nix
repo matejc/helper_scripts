@@ -39,9 +39,9 @@
 
     if [ -d "$1" ]
     then
-      yamlDir2nix "$1"
+      yamlDir2nix "$1" | ${pkgs.nixfmt}/bin/nixfmt
     else
-      yamlFile2nix "$1"
+      yamlFile2nix "$1" | ${pkgs.nixfmt}/bin/nixfmt
     fi
 
   '';
