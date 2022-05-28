@@ -318,6 +318,10 @@ in {
         padding: 0 10px;
     }
 
+    #window {
+        padding: 0 30px;
+    }
+
     #battery {
         background-color: #ffffff;
         color: black;
@@ -350,8 +354,8 @@ in {
       layer = "top";
       position = "bottom";
       height = 26;
-      modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" ];
-      modules-center = [ "sway/window" ];
+      modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" "sway/window" ];
+      modules-center = [ ];
       modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
