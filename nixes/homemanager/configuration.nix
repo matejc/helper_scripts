@@ -221,6 +221,8 @@ in {
             "${modifier}+Control+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
             "${modifier}+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
             "${modifier}+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
+            "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
           };
         modifier = "Mod1";
         startup = [
@@ -312,7 +314,7 @@ in {
         border-bottom: 3px solid white;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network {
         padding: 0 10px;
     }
 
@@ -350,7 +352,7 @@ in {
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" ];
       modules-center = [ "sway/window" ];
-      modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
@@ -401,6 +403,18 @@ in {
             activated = "";
             deactivated = "";
         };
+      };
+      network = {
+        interface = "br0";
+        format = "{ifname}";
+        format-wifi = "{essid} ({signalStrength}%) ";
+        format-ethernet = "{ipaddr}/{cidr} ";
+        format-disconnected = "";
+        tooltip-format = "{ifname} via {gwaddr} ";
+        tooltip-format-wifi = "{essid} ({signalStrength}%) ";
+        tooltip-format-ethernet = "{ifname} ";
+        tooltip-format-disconnected = "Disconnected";
+        max-length = 50;
       };
     };
   };
