@@ -31,6 +31,7 @@ let
     ./../../dotfiles/superslicer.nix
     ./../../dotfiles/scan.nix
     ./../../dotfiles/swaylockscreen.nix
+    ./../../dotfiles/comma.nix
   ];
   context.activationScript = "";
   context.variables = rec {
@@ -242,7 +243,7 @@ in {
         workspaceOutputAssign = [ { workspace = "1"; output = "HDMI-A-2"; } ];
       };
       extraConfig = ''
-        focus_wrapping workspace
+        focus_wrapping yes
       '';
   };
 
@@ -266,203 +267,138 @@ in {
   };
 
   programs.waybar.enable = true;
+  programs.waybar.style = ''
+* {
+    border: none;
+    border-radius: 0;
+    font-family: ${context.variables.font.family};
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    min-height: 0;
+    padding: 0;
+}
+
+window#waybar {
+    background: rgba(43, 48, 59, 0.5);
+    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
+    color: white;
+}
+
+tooltip {
+  background: rgba(43, 48, 59, 0.5);
+  border: 1px solid rgba(100, 114, 125, 0.5);
+}
+tooltip label {
+  color: white;
+}
+
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: white;
+    border-bottom: 3px solid transparent;
+}
+
+#workspaces button.focused {
+    background: #64727D;
+    border-bottom: 3px solid white;
+}
+
+#mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray {
+    padding: 0 10px;
+}
+
+#battery {
+    background-color: #ffffff;
+    color: black;
+}
+
+#battery.charging {
+    color: white;
+    background-color: #26A65B;
+}
+
+@keyframes blink {
+    to {
+        background-color: #ffffff;
+        color: black;
+    }
+}
+
+#battery.warning:not(.charging) {
+    background: #f53c3c;
+    color: white;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+  '';
   programs.waybar.settings = {
     mainBar = {
       layer = "top";
       position = "bottom";
-      height = 24;
+      height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" ];
       modules-center = [ "sway/window" ];
-      modules-right = [ "pulseaudio" "idle_inhibitor" "bluetooth" "battery" "temperature" "clock" "tray" ];
+      modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
       };
-      clock.format = "{:%H:%M %a, %d.%m.%Y}";
+      clock.format = "{:%H:%M, %a %d.%m.%Y}";
+      pulseaudio = {
+        scroll-step = 5.0;
+        format = "{volume}% {icon}";
+        format-bluetooth = "{volume}% {icon}";
+        format-muted = "";
+        format-icons = {
+            headphone = "";
+            hands-free = "";
+            headset = "";
+            phone = "";
+            portable = "";
+            car = "";
+            default = ["" ""];
+        };
+        on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+        on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+      };
+      keyboard-state = {
+        capslock = true;
+        format = "{name} {icon}";
+        format-icons = {
+          locked = "";
+          unlocked = "";
+        };
+      };
+      bluetooth = {
+        format = "  {status}";
+        format-disabled = "";
+        format-connected = " {num_connections} connected";
+        tooltip-format = "{controller_alias}\t{controller_address}";
+        tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
+        tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+      };
+      cpu = {
+        format = "{icon}";
+        format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+      };
+      temperature.hwmon-path = "/sys/class/hwmon/hwmon1/temp1_input";
+      idle_inhibitor = {
+        format = "{icon}";
+        format-icons = {
+            activated = "";
+            deactivated = "";
+        };
+      };
     };
   };
   programs.waybar.systemd.enable = true;
+  programs.waybar.systemd.target = "sway-session.target";
 
-  services.polybar =
-    let
-      variables = context.variables;
-      pulse = true;
-    in rec {
-      enable = false;
-      package = polybar.override { i3Support = true; pulseSupport = pulse; };
-    config = {
-      colors = {
-        background = "#e0272822";
-        background-alt = "#454932";
-        foreground = "#dfdfdf";
-        foreground-alt = "#555942";
-        primary = "#FD971F";
-        secondary = "#5900ff";
-        alert = "#A6E22E";
-        underline = "#0a81f5";
-      };
-      settings = {
-        screenchange-reload = true;
-      };
-      "global/wm" = {
-        margin-top = 5;
-        margin-bottom = 5;
-      };
-      "bar/my" = {
-        width = "100%";
-        height = "24";
-        radius = "0.0";
-        fixed-center = false;
-        bottom = true;
-        background = config.colors.background;
-        foreground = config.colors.foreground;
-        line-size = 2;
-        line-color = "#f00";
-        border-size = 0;
-        border-color = "#00000000";
-        padding-left = 0;
-        padding-right = 2;
-        module-margin-left = 1;
-        module-margin-right = 2;
-        #font-0 = "Font Awesome 5 Free Solid:size=10";
-        font-0 = "${context.variables.font.family}:style=${context.variables.font.style}:size=${toString context.variables.font.size}";
-        modules-left = "i3 xwindow";
-        modules-right = "xkeyboard filesystem memory cpu ${optionalString pulse "volume"} ${concatImapStringsSep " " (i: v: ''wlan${toString i}'') variables.wirelessInterfaces} ${concatImapStringsSep " " (i: v: ''eth${toString i}'') variables.ethernetInterfaces} external-ip date";
-        tray-position = "right";
-        tray-padding = 2;
-        tray-background = config.colors.background;
-        tray-reparent = true;
-      };
-      "module/xwindow" = {
-        type = "internal/xwindow";
-        label = "%title:0:60:...%";
-      };
-      "module/xkeyboard" = {
-        type = "internal/xkeyboard";
-        format = "<label-indicator>";
-        blacklist-0 = "num lock";
-        blacklist-1 = "scroll lock";
-        format-prefix-foreground = config.colors.foreground-alt;
-        format-prefix-underline = config.colors.underline;
-        label-indicator-padding = 2;
-        label-indicator-margin = 1;
-        label-indicator-background = config.colors.secondary;
-        label-indicator-underline = config.colors.underline;
-      };
-      "module/filesystem" = {
-        type = "internal/fs";
-        interval = "25";
-        label-mounted = "%{F#0a81f5}%mountpoint%%{F-} %percentage_used%%";
-        label-mounted-underline = config.colors.underline;
-        label-unmounted = "%mountpoint% not mounted";
-        label-unmounted-foreground = config.colors.foreground-alt;
-      } // builtins.listToAttrs (imap (i: m: { name = "mount-${toString (i - 1)}"; value = m; }) variables.mounts);
-      "module/i3" = {
-        type = "internal/i3";
-        format = "<label-state> <label-mode>";
-        index-sort = true;
-        wrapping-scroll = false;
-        label-mode-padding = 1;
-        label-mode-foreground = "#000";
-        label-mode-background = config.colors.primary;
-        label-focused = "%index%";
-        label-focused-background = config.colors.background-alt;
-        label-focused-underline = config.colors.primary;
-        label-focused-padding = 1;
-        label-unfocused = "%index%";
-        label-unfocused-padding = 1;
-        label-visible = "%index%";
-        label-visible-background = config.colors.background-alt;
-        label-visible-padding = 1;
-        label-urgent = "%index%";
-        label-urgent-foreground = config.colors.foreground-alt;
-        label-urgent-background = config.colors.alert;
-        label-urgent-padding = 1;
-      };
-      "module/cpu" = {
-        type = "internal/cpu";
-        interval = 2;
-        format-prefix = " ";
-        format-prefix-foreground = config.colors.foreground-alt;
-        format-underline = config.colors.underline;
-        label = "%percentage%%";
-      };
-      "module/memory" = {
-        type = "internal/memory";
-        interval = 2;
-        format-prefix = " ";
-        format-prefix-foreground = config.colors.foreground-alt;
-        format-underline = config.colors.underline;
-        label = "%percentage_used%%";
-      };
-      "module/date" = {
-        type = "internal/date";
-        interval = 5;
-        date = "%a, %d.%m.%Y";
-        time = "%H:%M";
-        format-underline = config.colors.underline;
-        label = "%time% %date%";
-      };
-      "module/external-ip" = {
-        type = "custom/script";
-        exec = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
-        click-left = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com";
-        click-right = "${pkgs.curl}/bin/curl --connect-timeout 2 -fs myip.matejc.com | ${pkgs.coreutils}/bin/tr -d '\\n' | ${pkgs.xclip}/bin/xclip -selection primary";
-        interval = 30;
-        format-underline = config.colors.underline;
-        format-prefix = " ";
-      };
-      "module/volume" = {
-        type = "internal/pulseaudio";
-        use-ui-max = false;
-        format-volume = "<ramp-volume> <bar-volume>";
-        ramp-volume-0 = "";
-        ramp-volume-1 = "";
-        ramp-volume-2 = "";
-        format-muted-foreground = config.colors.foreground;
-        label-muted = "婢";
-        bar-volume-width = "10";
-        bar-volume-foreground-0 = "#55aa55";
-        bar-volume-foreground-1 = "#55aa55";
-        bar-volume-foreground-2 = "#55aa55";
-        bar-volume-foreground-3 = "#f5a70a";
-        bar-volume-foreground-4 = "#ff5555";
-        bar-volume-gradient = false;
-        bar-volume-indicator = "";
-        bar-volume-fill = "─";
-        bar-volume-empty = "─";
-        bar-volume-empty-foreground = config.colors.foreground-alt;
-      };
-    } // (
-      builtins.listToAttrs (imap (i: interface: { name = "module/wlan-${toString i}"; value = {
-        type = "internal/network";
-        interface = interface;
-        interval = 3;
-        format-connected = "<ramp-signal> <label-connected>";
-        format-connected-underline = config.colors.underline;
-        label-connected = "%essid%";
-        format-disconnected = "<label-disconnected>";
-        label-disconnected = "%ifname% disconnected";
-        label-disconnected-foreground = config.colors.foreground-alt;
-        ramp-signal-0 = "";
-        ramp-signal-1 = "";
-        ramp-signal-2 = "";
-        ramp-signal-0-foreground = "#ff0000";
-        ramp-signal-1-foreground = "#ffa500";
-        ramp-signal-2-foreground = "#00ff00";
-      }; }) variables.wirelessInterfaces)
-      ) // (
-        builtins.listToAttrs (imap (i: interface: { name = "module/eth${toString i}"; value = {
-          type = "internal/network";
-          interface = interface;
-          interval = 3;
-          format-connected-underline = config.colors.underline;
-          label-connected = " %local_ip%";
-          format-disconnected = "";
-        }; }) variables.ethernetInterfaces)
-      );
-    script = exec "polybar my &";
-  };
   services.dunst = {
     enable = true;
     settings = {
