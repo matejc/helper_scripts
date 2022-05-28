@@ -33,14 +33,24 @@
             exit(1)
 
     def find_by(workspaces, current, step, output = None, skip = True):
+        others = []
         if output != None:
             workspaces = filter(lambda w: w[u'output'] == output, workspaces)
+            otherworkspaces = filter(lambda w: w[u'output'] != output, workspaces)
+            others = map(lambda w: w[u'num'], otherworkspaces)
 
         existing = map(lambda w: w[u'num'], workspaces)
+
+        othersnext = filter(lambda w: w > current, others)
+        othersprev = [0] + filter(lambda w: w < current, others)
 
         next = current + step
         first = 1
         last = max(existing)
+
+        if output != None:
+            first = max(othersprev) + 1
+            last = next if len(othersnext) == 0 else min(othersnext) - 1
 
         if skip:
             r = []

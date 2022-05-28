@@ -6,7 +6,7 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      swaylock -f -i ${variables.lockImage}
+      ${pkgs.swaylock-effects}/bin/swaylock -f --effect-pixelate 100 --screenshots --grace 1
     fi
   '';
 } {

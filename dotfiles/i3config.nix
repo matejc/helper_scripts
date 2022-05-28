@@ -543,24 +543,20 @@
   source = pkgs.writeScript "terminal-dropdown.sh" ''
     #!${pkgs.stdenv.shell}
     set -x
-    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[].nodes[] | select(.marks[0]=="I3WM_SCRATCHPAD").focused')
+    RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[] | select(.marks[0]=="I3WM_SCRATCHPAD").visible')
     if [ -z "$RESULT" ]
     then
       ${variables.programs.terminal} --title=ScratchTerm $@ &
       sleep 0.5
-      if [ ! -f "${variables.homeDir}/bin/window-center" ]
-      then
-        ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, resize set $(${variables.homeDir}/bin/window-size width 95) px $(${variables.homeDir}/bin/window-size height 90) px, focus"
-      else
-        WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
-        ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
-      fi
+      WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
+      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
     elif [[ "$RESULT" = "true" ]]
     then
       ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] move scratchpad'
     elif [[ "$RESULT" = "false" ]]
     then
-      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] focus'
+      WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
+      ${variables.i3-msg} "[con_mark="I3WM_SCRATCHPAD"] $WINDOW_CENTER, focus"
     fi
   '';
 } {

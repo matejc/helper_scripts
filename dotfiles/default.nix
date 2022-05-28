@@ -31,6 +31,8 @@ let
         ln -vs "${d.source}" "${d.target}"
     '') dotAttrs}
 
+    true
+
     ${activationScript}
   '';
 in if exposeScript then dotFilesScript else {
