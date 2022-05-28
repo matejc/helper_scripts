@@ -227,9 +227,9 @@ in {
           #{ command = "dbus-update-activation-environment --systemd DISPLAY; systemctl --user restart gnome-keyring"; always = true; }
           { command = "sleep 1 && systemctl --user restart waybar"; }
           { command = "sleep 2 && systemctl --user restart kanshi"; always = true; }
-          { command = "systemctl --user restart kdeconnect"; }
           { command = "sleep 2 && systemctl --user restart nextcloud-client"; }
-          { command = "sleep 2 && systemctl --user restart kdeconnect-indicator"; }
+          { command = "sleep 2 && systemctl --user restart kdeconnect"; }
+          { command = "sleep 3 && systemctl --user restart kdeconnect-indicator"; }
           { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
           { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
           { command = "sleep 2 && ${execRestart "mako" "${mako}/bin/mako"}"; always = true; }
