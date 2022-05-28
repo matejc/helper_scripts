@@ -181,6 +181,11 @@ in {
       }];
     };
 
+    services.kdeconnect = {
+      enable = true;
+      indicator = true;
+    };
+
     wayland.windowManager.sway = {
       enable = true;
       systemdIntegration = true;
@@ -206,7 +211,7 @@ in {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "F12" = "exec ${context.variables.programs.dropdown}";
-            "${modifier}+Control+k" = "kill";
+            "Mod1+F4" = "kill";
             "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+Control+l" = "exec ${context.variables.binDir}/lockscreen";
             "Control+Tab" = "workspace back_and_forth";
@@ -220,13 +225,15 @@ in {
         modifier = "Mod1";
         startup = [
           #{ command = "dbus-update-activation-environment --systemd DISPLAY; systemctl --user restart gnome-keyring"; always = true; }
-          { command = "systemctl --user restart waybar"; always = true; }
-          { command = "systemctl --user restart kanshi"; always = true; }
-          { command = "systemctl --user restart dunst"; always = true; }
-          { command = "systemctl --user restart nextcloud-client"; always = true; }
+          { command = "sleep 1 && systemctl --user restart waybar"; }
+          { command = "sleep 2 && systemctl --user restart kanshi"; always = true; }
+          { command = "systemctl --user restart kdeconnect"; }
+          { command = "sleep 2 && systemctl --user restart nextcloud-client"; }
+          { command = "sleep 2 && systemctl --user restart kdeconnect-indicator"; }
           { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
           { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
-          #{ command = "${execRestart "nextcloud" "${nextcloud-client}/bin/nextcloud --background"}"; always = true; }
+          { command = "sleep 2 && ${execRestart "mako" "${mako}/bin/mako"}"; always = true; }
+          { command = "sleep 2 && ${execRestart "blueberry-tray" "${blueberry}/bin/blueberry-tray"}"; always = true; }
           { command = "${context.variables.programs.browser}"; }
           { command = "${context.variables.programs.terminal}"; }
         ];
@@ -268,73 +275,73 @@ in {
 
   programs.waybar.enable = true;
   programs.waybar.style = ''
-* {
-    border: none;
-    border-radius: 0;
-    font-family: ${context.variables.font.family};
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    min-height: 0;
-    padding: 0;
-}
+    * {
+        border: none;
+        border-radius: 0;
+        font-family: ${context.variables.font.family};
+        font-style: normal;
+        font-weight: bold;
+        font-size: 14px;
+        min-height: 0;
+        padding: 0;
+    }
 
-window#waybar {
-    background: rgba(43, 48, 59, 0.5);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-    color: white;
-}
+    window#waybar {
+        background: rgba(50, 48, 47, 0.5);
+        border-bottom: 3px solid rgba(100, 90, 86, 0.5);
+        color: white;
+    }
 
-tooltip {
-  background: rgba(43, 48, 59, 0.5);
-  border: 1px solid rgba(100, 114, 125, 0.5);
-}
-tooltip label {
-  color: white;
-}
+    tooltip {
+      background: rgba(50, 48, 47, 0.5);
+      border: 1px solid rgba(100, 90, 86, 0.5);
+    }
+    tooltip label {
+      color: white;
+    }
 
-#workspaces button {
-    padding: 0 5px;
-    background: transparent;
-    color: white;
-    border-bottom: 3px solid transparent;
-}
+    #workspaces button {
+        padding: 0 5px;
+        background: transparent;
+        color: white;
+        border-bottom: 3px solid transparent;
+    }
 
-#workspaces button.focused {
-    background: #64727D;
-    border-bottom: 3px solid white;
-}
+    #workspaces button.focused {
+        background: #64727D;
+        border-bottom: 3px solid white;
+    }
 
-#mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray {
-    padding: 0 10px;
-}
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray {
+        padding: 0 10px;
+    }
 
-#battery {
-    background-color: #ffffff;
-    color: black;
-}
-
-#battery.charging {
-    color: white;
-    background-color: #26A65B;
-}
-
-@keyframes blink {
-    to {
+    #battery {
         background-color: #ffffff;
         color: black;
     }
-}
 
-#battery.warning:not(.charging) {
-    background: #f53c3c;
-    color: white;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
+    #battery.charging {
+        color: white;
+        background-color: #26A65B;
+    }
+
+    @keyframes blink {
+        to {
+            background-color: #ffffff;
+            color: black;
+        }
+    }
+
+    #battery.warning:not(.charging) {
+        background: #f53c3c;
+        color: white;
+        animation-name: blink;
+        animation-duration: 0.5s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+    }
   '';
   programs.waybar.settings = {
     mainBar = {
@@ -381,6 +388,7 @@ tooltip label {
         tooltip-format = "{controller_alias}\t{controller_address}";
         tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+        on-click-right = "${blueberry}/bin/blueberry";
       };
       cpu = {
         format = "{icon}";
@@ -399,73 +407,9 @@ tooltip label {
   programs.waybar.systemd.enable = true;
   programs.waybar.systemd.target = "sway-session.target";
 
-  services.dunst = {
+  programs.mako = {
     enable = true;
-    settings = {
-      global = {
-        font = "${context.variables.font.family} ${context.variables.font.style} ${toString context.variables.font.size}";
-        allow_markup = "yes";
-        plain_text = "no";
-        format = "<b>%s</b>\\n%b";
-        sort = "no";
-        indicate_hidden = "yes";
-        alignment = "center";
-        bounce_freq = 0;
-        show_age_threshold = -1;
-        word_wrap = "yes";
-        ignore_newline = "no";
-        stack_duplicates = "yes";
-        hide_duplicates_count = "yes";
-        geometry = "300x50-15+15";
-        shrink = "no";
-        transparency = 50;
-        idle_threshold = 0;
-        monitor = 0;
-        follow = "none";
-        sticky_history = "yes";
-        history_length = 15;
-        show_indicators = "no";
-        line_height = 3;
-        separator_height = 2;
-        padding = 6;
-        horizontal_padding = 6;
-        separator_color = "frame";
-        startup_notification = "false";
-        dmenu = "${pkgs.rofi}/bin/rofi -dmenu -p dunst:";
-        browser = "${context.variables.programs.browser}";
-        icon_position = "off";
-        max_icon_size = 80;
-        icon_folders = "${pkgs.paper-icon-theme}/share/icons/Paper/16x16/mimetypes/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/status/:${pkgs.paper-icon-theme}/share/icons/Paper/16x16/devices/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/notifications/:${pkgs.paper-icon-theme}/share/icons/Paper/48x48/emblems/";
-      };
-      frame = {
-        width = 3;
-        color = "#8EC07C";
-      };
-      shortcuts = {
-        close = "ctrl+space";
-        close_all = "ctrl+shift+space";
-      };
-      urgency_low = {
-        frame_color = "#A6E22E";
-        foreground = "#A6E22E";
-        background = "#1E1F1C";
-        timeout = 10;
-      };
-      urgency_normal = {
-        frame_color = "#66D9EF";
-        foreground = "#66D9EF";
-        background = "#1E1F1C";
-        timeout = 20;
-      };
-      urgency_critical = {
-        frame_color = "#F92672";
-        foreground = "#F92672";
-        background = "#1E1F1C";
-        timeout = 30;
-      };
-    };
   };
-  systemd.user.services.dunst.Service.ExecStart = mkForce (exec "${dunst}/bin/dunst");
 
   services.nextcloud-client.enable = true;
   systemd.user.services.nextcloud-client.Service.ExecStart = mkForce (exec "${nextcloud-client}/bin/nextcloud --background");
