@@ -13,6 +13,7 @@ in
     ZSH_DISABLE_COMPFIX="true"
 
     unset RPS1  # clean up
+    PATH="${pkgs.coreutils-full}/bin:$PATH"
 
     function preexec() {
       printf "\033]0;%s\a" "$1"

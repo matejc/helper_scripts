@@ -6,7 +6,7 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      ${pkgs.swaylock-effects}/bin/swaylock -f --effect-pixelate 100 --screenshots --grace 3
+      ${pkgs.swaylock}/bin/swaylock -f --color=000000
     fi
   '';
 } {
