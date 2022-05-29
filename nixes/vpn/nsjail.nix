@@ -4,16 +4,17 @@
 , uid ? "1000"
 , gid ? "100"
 , nameservers ? [ "1.1.1.1" ]
-, vpnStart ? "fakeroot protonvpn connect --fastest"
-, vpnStop ? "fakeroot protonvpn disconnect"
+, vpnStart ? null
+, vpnStop ? "pkill openvpn"
+, openvpnConfig ? "/etc/openvpn/mullvad_fi_hel.conf"
 , run ? null
 , runAsUser ? null
 , cmds ? [
-  { start = "kitty zsh"; }
+  #{ start = "kitty zsh"; }
   { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
   { start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
 ]
-, packages ? [ pkgs.protonvpn-cli pkgs.transmission pkgs.firefox pkgs.zsh pkgs.kitty ]
+, packages ? with pkgs; [ transmission firefox zsh kitty ]
 , preCmds ? [ ]
 , chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
@@ -22,12 +23,13 @@
   { from = "${homeDir}/.config/kitty"; to = "${homeDir}/.config/kitty"; }
   { from = "${homeDir}/.zshrc"; to = "${homeDir}/.zshrc"; }
   { from = "${homeDir}/.zlogin"; to = "${homeDir}/.zlogin"; }
+  { from = "${homeDir}/.vpn/mullvad_config_linux_fi_hel"; to = "/etc/openvpn"; }
 ]
 , symlinks ? [ ]
 , variables ? [
   { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
 ]
-, waylandDisplay ? "wayland-0"
+, waylandDisplay ? "wayland-1"
 , tmpfs ? [ ]
 , homeDir ? "/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
@@ -60,6 +62,14 @@ let
     wait $!
   '';
 
+  mkUpCmd = writeScript "start-up.sh" ''
+    #!${stdenv.shell}
+    set -e
+    ${concatImapStringsSep "\n" (i: p: ''
+    supervisorctl --serverurl=unix:///tmp/supervisor.sock start p${toString i}
+    '') cmds}
+  '';
+
   mkVpnCmd = writeScript "start-vpn.sh" ''
     #!${stdenv.shell}
     set -e
@@ -69,14 +79,17 @@ let
       exit 0
     }
     trap stop_script SIGINT SIGTERM
-    ${vpnStart}
-    ${concatImapStringsSep "\n" (i: p: ''
-    supervisorctl --serverurl=unix:///tmp/supervisor.sock start p${toString i}
-    '') cmds}
-    while true
-    do
-      sleep 1
-    done
+    ${if openvpnConfig == null then ''
+      ${vpnStart}
+      ${mkUpCmd}
+      while true
+      do
+        sleep 1
+      done
+    '' else ''
+      cd $(dirname ${openvpnConfig})
+      ${openvpn}/bin/openvpn --config '${openvpnConfig}'
+    ''}
   '';
 
   supervisorConf = writeText "supervisord.conf" ''
@@ -120,7 +133,7 @@ let
     directory = ${homeDir}
     user = ${user}
     numprocs = 1
-    autostart = false
+    autostart = ${if openvpnConfig == null then "false" else "true"}
     autorestart = true
     startsecs = 3
     exitcodes = 0
@@ -209,6 +222,11 @@ let
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/machine-id:$(realpath /etc/machine-id) \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
+      --tmpfsmount /sbin \
+      --symlink ${openresolv}/bin/resolvconf:/sbin/resolvconf \
+      --tmpfsmount /bin \
+      --symlink ${bash}/bin/bash:/bin/bash \
+      --symlink ${bash}/bin/sh:/bin/sh \
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:rw \
       --bindmount /run/user/${uid}/${waylandDisplay}:/run/user/${uid}/${waylandDisplay} \

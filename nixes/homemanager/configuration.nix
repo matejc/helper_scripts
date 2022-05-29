@@ -61,7 +61,7 @@ let
     i3-msg = "${programs.i3-msg}";
     term = null;
     programs = {
-      filemanager = "${xfce.thunar}/bin/thunar";
+      filemanager = "${cinnamon.nemo}/bin/nemo";
       #terminal = "${xfce.terminal}/bin/xfce4-terminal";
       terminal = "${pkgs.kitty}/bin/kitty";
       dropdown = "${dotFileAt ./../../dotfiles/i3config.nix 1} --class=ScratchTerm";
@@ -93,13 +93,21 @@ let
     exec ${cmd}
   ''}";
 
-  execRestart = binName: execCmd: writeScript "${binName}-restart-script.sh" ''
+  execRestart = binName: cmd: writeScript "${binName}-restart-script.sh" ''
     #!${context.variables.shell}
     ${procps}/bin/pkill ${binName}
     source "${context.variables.homeDir}/.zshrc"
-    mkdir -p ${context.variables.homeDir}/.logs
-    exec ${execCmd} &>${context.variables.homeDir}/.logs/${binName}.log
+    exec ${cmd}
   '';
+
+  startupEntry = { cmd, delay ? 0, always ? false, kill ? null }:
+  let
+    command = if kill == null then
+      "sleep ${toString delay} && ${exec cmd}"
+    else
+      "sleep ${toString delay} && ${execRestart kill cmd}";
+  in
+    { inherit command always; };
 
   # https://nix-community.github.io/home-manager/options.html
 in {
@@ -124,6 +132,7 @@ in {
       qt5Full
       socat
       protonvpn-cli
+      cinnamon.nemo
       (import "${nixmySrc}/default.nix" { inherit pkgs lib; config = args.config; })
     ];
     #home.sessionVariables = {
@@ -191,7 +200,8 @@ in {
       systemdIntegration = true;
       config = rec {
         assigns = {
-          "1" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
+          "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+          "2" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
         };
         bars = [];
         colors = {
@@ -209,47 +219,52 @@ in {
         keybindings =
           mkOptionDefault {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
+            "Mod1+Control+t" = "exec ${context.variables.programs.terminal}";
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
+            "Mod1+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "F12" = "exec ${context.variables.programs.dropdown}";
             "Mod1+F4" = "kill";
+            "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
-            "${modifier}+Control+l" = "exec ${context.variables.binDir}/lockscreen";
+            "${modifier}+l" = "exec ${context.variables.binDir}/lockscreen";
+            "Mod1+Control+l" = "exec ${context.variables.binDir}/lockscreen";
             "Control+Tab" = "workspace back_and_forth";
             "Mod1+Tab" = "focus right";
             "Mod1+Shift+Tab" = "focus left";
-            "${modifier}+Control+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "${modifier}+Control+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "${modifier}+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
-            "${modifier}+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
             "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
           };
-        modifier = "Mod1";
+        modifier = "Mod4";
         startup = [
-          #{ command = "dbus-update-activation-environment --systemd DISPLAY; systemctl --user restart gnome-keyring"; always = true; }
-          { command = "sleep 1 && systemctl --user restart waybar"; }
-          { command = "sleep 2 && systemctl --user restart kanshi"; always = true; }
-          { command = "sleep 2 && systemctl --user restart nextcloud-client"; }
-          { command = "sleep 2 && systemctl --user restart kdeconnect"; }
-          { command = "sleep 3 && systemctl --user restart kdeconnect-indicator"; }
-          { command = "${pkgs.xorg.xrdb}/bin/xrdb -load ${context.variables.homeDir}/.Xresources"; always = true; }
-          { command = "${pkgs.feh}/bin/feh --bg-fill ${context.variables.wallpaper}"; always = true; }
-          { command = "sleep 2 && ${execRestart "mako" "${mako}/bin/mako"}"; always = true; }
-          { command = "sleep 2 && ${execRestart "blueberry-tray" "${blueberry}/bin/blueberry-tray"}"; always = true; }
-          { command = "${context.variables.programs.browser}"; }
-          { command = "${context.variables.programs.terminal}"; }
+          (startupEntry { cmd = "systemctl --user restart waybar"; delay = 2; always = true; })
+          (startupEntry { cmd = "systemctl --user restart kanshi"; delay = 2; always = true; })
+          (startupEntry { cmd = "systemctl --user restart nextcloud-client"; delay = 3; })
+          (startupEntry { cmd = "systemctl --user restart kdeconnect"; delay = 3; })
+          (startupEntry { cmd = "systemctl --user restart kdeconnect-indicator"; delay = 4; })
+          (startupEntry { cmd = "systemctl --user restart blueman-applet"; delay = 3; })
+          (startupEntry { cmd = "${mako}/bin/mako"; delay = 2; kill = "mako"; always = true; })
+          (startupEntry { cmd = "${context.variables.programs.terminal}"; })
+          (startupEntry { cmd = "${context.variables.programs.browser}"; })
+          (startupEntry { cmd = "${context.variables.programs.keepassxc}"; })
         ];
         window = {
           border = 1;
           commands = [
             #{ command = "mark I3WM_SCRATCHPAD"; criteria = { app_id = "ScratchTerm"; }; }
-            { command = "border pixel 1"; criteria = { class = "Xfce4-terminal"; }; }
-            { command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
-            { command = "border pixel 1"; criteria = { class = "Firefox"; }; }
-            { command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
+            #{ command = "border pixel 1"; criteria = { class = "Xfce4-terminal"; }; }
+            #{ command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
+            #{ command = "border pixel 1"; criteria = { class = "Firefox"; }; }
+            #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
           ];
         };
-        workspaceOutputAssign = [ { workspace = "1"; output = "HDMI-A-2"; } ];
+        workspaceOutputAssign = [
+          { workspace = "1"; output = "HDMI-A-2"; }
+          { workspace = "2"; output = "HDMI-A-2"; }
+        ];
       };
       extraConfig = ''
         focus_wrapping yes
@@ -274,6 +289,8 @@ in {
       { timeout = 3600; command = "systemctl suspend"; }
     ];
   };
+
+  services.blueman-applet.enable = true;
 
   programs.waybar.enable = true;
   programs.waybar.style = ''
@@ -388,13 +405,13 @@ in {
         };
       };
       bluetooth = {
-        format = "  {status}";
-        format-disabled = "";
+        format = " {status}";
+        format-disabled = " {status}";
         format-connected = " {num_connections} connected";
         tooltip-format = "{controller_alias}\t{controller_address}";
         tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-        on-click-right = "${blueberry}/bin/blueberry";
+        on-click-right = "${blueman}/bin/blueman-manager";
       };
       cpu = {
         format = "{icon}";
