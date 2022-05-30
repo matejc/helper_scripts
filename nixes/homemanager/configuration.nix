@@ -220,6 +220,7 @@ in {
       protonvpn-cli
       cinnamon.nemo
       kdeconnect_custom
+      zsh
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ];
     home.sessionVariables = {
@@ -396,14 +397,14 @@ in {
     }
 
     window#waybar {
-        background: rgba(50, 48, 47, 0.8);
-        border-bottom: 3px solid rgba(100, 90, 86, 0.8);
+        background: rgba(50, 48, 47, 0.9);
+        border-bottom: 3px solid rgba(100, 90, 86, 0.9);
         color: white;
     }
 
     tooltip {
-      background: rgba(50, 48, 47, 0.8);
-      border: 1px solid rgba(100, 90, 86, 0.8);
+      background: rgba(50, 48, 47, 0.9);
+      border: 1px solid rgba(100, 90, 86, 0.9);
     }
     tooltip label {
       color: white;

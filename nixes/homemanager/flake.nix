@@ -1,7 +1,11 @@
 {
   description = "home-manager from non-nixos system";
   inputs = {
-    nixpkgs.url = "github:matejc/nixpkgs/mylocal225";
+    nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
+    nixos-configuration = {
+      url = "path:/etc/nixos";
+      flake = false;
+    };
     nixmy = {
       url = "github:matejc/nixmy/master";
       flake = false;
@@ -19,18 +23,28 @@
 
   outputs = { self, ... }@inputs: {
     homeConfigurations = {
-      homemanager = inputs.home-manager.lib.homeManagerConfiguration rec {
+      matejc = inputs.home-manager.lib.homeManagerConfiguration rec {
         configuration = { ... }: {
           imports = [ (import ./configuration.nix { inherit inputs; }) ];
-          #nixpkgs.overlays = [ inputs.nur.overlay ];
         };
         system = "x86_64-linux";
         homeDirectory = "/home/${username}";
         username = "matejc";
       };
     };
-
-    homemanager = self.homeConfigurations.homemanager.activationPackage;
-    defaultPackage.x86_64-linux = self.homemanager;
+    nixosConfigurations = {
+      matejc = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = false;
+            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; });
+          }
+        ];
+      };
+    };
   };
 }
