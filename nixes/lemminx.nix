@@ -4,7 +4,10 @@ stdenv.mkDerivation rec {
   name = "lemminx";
   version = "0.19.2-655";
   # https://github.com/redhat-developer/vscode-xml/blob/master/package.json
-  src = builtins.fetchurl "https://download.jboss.org/jbosstools/vscode/snapshots/lemminx-binary/${version}/lemminx-linux.zip";
+  src = builtins.fetchurl {
+    url = "https://download.jboss.org/jbosstools/vscode/snapshots/lemminx-binary/${version}/lemminx-linux.zip";
+    sha256 = "sha256:05f6fzqg8wzki1d12v5kqx2w5xqhp955x8klxqh055a1x3sgg4jf";
+  };
   nativeBuildInputs = [ unzip ];
   phases = "unpackPhase installPhase";
   unpackPhase = ''

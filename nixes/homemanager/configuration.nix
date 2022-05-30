@@ -1,40 +1,44 @@
-{ pkgs, lib, ... }@args:
+{ inputs }:
+{ pkgs, lib, config, ... }@args:
 with lib;
 with pkgs;
 let
-  config = args.config.home-manager.users.${args.defaultUser};
+  #config = builtins.trace args.config.home-manager.users.matejc args;
 
-  nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-    inherit pkgs;
-  };
+  #nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+  #  inherit pkgs;
+  #};
 
-  nixmySrc = builtins.fetchGit {
-    url = "https://github.com/matejc/nixmy.git";
-  };
+  nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
 
-  dotfiles = import ./../../dotfiles/default.nix
+  #nixmySrc = builtins.fetchGit {
+  #  url = "https://github.com/matejc/nixmy.git";
+  #};
+
+  dotfiles = import "${inputs.helper_scripts}/dotfiles/default.nix"
     { name = "homemanager"; exposeScript = true; inherit context; }
     { inherit pkgs lib config; };
 
   dotFileAt = file: at:
-    (elemAt (import file { inherit lib pkgs; inherit (context) variables config; }) at).source;
+    (elemAt (import "${inputs.helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
   context.dotFilePaths = [
-    ./../../dotfiles/programs.nix
-    ./../../dotfiles/nvim.nix
-    ./../../dotfiles/xfce4-terminal.nix
-    ./../../dotfiles/gitconfig.nix
-    ./../../dotfiles/gitignore.nix
-    ./../../dotfiles/nix.nix
-    ./../../dotfiles/oath.nix
-    ./../../dotfiles/jstools.nix
-    ./../../dotfiles/superslicer.nix
-    ./../../dotfiles/scan.nix
-    ./../../dotfiles/swaylockscreen.nix
-    ./../../dotfiles/comma.nix
+    "${inputs.helper_scripts}/dotfiles/programs.nix"
+    "${inputs.helper_scripts}/dotfiles/nvim.nix"
+    "${inputs.helper_scripts}/dotfiles/xfce4-terminal.nix"
+    "${inputs.helper_scripts}/dotfiles/gitconfig.nix"
+    "${inputs.helper_scripts}/dotfiles/gitignore.nix"
+    "${inputs.helper_scripts}/dotfiles/nix.nix"
+    "${inputs.helper_scripts}/dotfiles/oath.nix"
+    "${inputs.helper_scripts}/dotfiles/jstools.nix"
+    "${inputs.helper_scripts}/dotfiles/superslicer.nix"
+    "${inputs.helper_scripts}/dotfiles/scan.nix"
+    "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
+    "${inputs.helper_scripts}/dotfiles/comma.nix"
   ];
   context.activationScript = ''
     mkdir -p ${context.variables.homeDir}/.supervisord/
+    mkdir -p ${context.variables.homeDir}/.xdg-runtime-dir/
   '';
   context.variables = rec {
     homeDir = config.home.homeDirectory;
@@ -42,7 +46,7 @@ let
     profileDir = config.home.profileDirectory;
     prefix = "${homeDir}/workarea/helper_scripts";
     nixpkgs = "${homeDir}/workarea/nixpkgs";
-    nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
+    #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
     binDir = "${homeDir}/bin";
     temperatureFiles = [ hwmonPath ];
     hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
@@ -67,13 +71,13 @@ let
       filemanager = "${cinnamon.nemo}/bin/nemo";
       #terminal = "${xfce.terminal}/bin/xfce4-terminal";
       terminal = "${pkgs.kitty}/bin/kitty";
-      dropdown = "${dotFileAt ./../../dotfiles/i3config.nix 1} --class=ScratchTerm";
+      dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
       browser = "${profileDir}/bin/chromium";
       editor = "${nano}/bin/nano";
-      launcher = dotFileAt ./../../dotfiles/bemenu.nix 0;
+      launcher = dotFileAt "bemenu.nix" 0;
       #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
-      window-size = dotFileAt ./../../dotfiles/i3config.nix 2;
-      window-center = dotFileAt ./../../dotfiles/i3config.nix 3;
+      window-size = dotFileAt "i3config.nix" 2;
+      window-center = dotFileAt "i3config.nix" 3;
       i3-msg = "${profileDir}/bin/swaymsg";
       nextcloud = "${nextcloud-client}/bin/nextcloud";
       keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
@@ -167,11 +171,11 @@ let
 
     [group:once]
     programs = ${concatMapStringsSep "," (p: "${p.name}") (filter (p: !p.always) context.variables.supervisor.programs)}
-{ bg = "~/path/to/background.png fill"; }
+
     ${concatMapStringsSep "\n" (p: ''
     [program:${p.name}]
     command = ${exec { inherit (p) name cmd delay; }}
-    environment = PATH="${context.variables.profileDir}/bin:${context.variables.binDir}:%(ENV_PATH)s",WAYLAND_DISPLAY="%(ENV_WAYLAND_DISPLAY)s",SWAYSOCK="%(ENV_SWAYSOCK)s",${concatMapStringsSep "," (s: "${s.name}=\"${s.value}\"") (mapAttrsToList (name: value: {inherit name value;}) config.home.sessionVariables)}
+    environment = PATH="${context.variables.profileDir}/bin:${context.variables.binDir}:%(ENV_PATH)s",XDG_RUNTIME_DIR="%(ENV_XDG_RUNTIME_DIR)s",DISPLAY="%(ENV_DISPLAY)s",WAYLAND_DISPLAY="%(ENV_WAYLAND_DISPLAY)s",SWAYSOCK="%(ENV_SWAYSOCK)s",${concatMapStringsSep "," (s: "${s.name}=\"${s.value}\"") (mapAttrsToList (name: value: {inherit name value;}) config.home.sessionVariables)}
     priority = 1
     directory = ${context.variables.homeDir}
     user = ${context.variables.user}
@@ -193,10 +197,10 @@ let
 
   # https://nix-community.github.io/home-manager/options.html
 in {
-    nixpkgs.config = import ./../../dotfiles/nixpkgs-config.nix;
+    nixpkgs.config = import "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
     xdg = {
       enable = true;
-      configFile."nixpkgs/config.nix".source = ./../../dotfiles/nixpkgs-config.nix;
+      #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
     };
 
     #services.gnome-keyring = {
@@ -216,7 +220,7 @@ in {
       protonvpn-cli
       cinnamon.nemo
       kdeconnect_custom
-      (import "${nixmySrc}/default.nix" { inherit pkgs lib; config = args.config; })
+      (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ];
     home.sessionVariables = {
       #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
@@ -316,10 +320,10 @@ in {
             "Control+Tab" = "workspace back_and_forth";
             "Mod1+Tab" = "focus right";
             "Mod1+Shift+Tab" = "focus left";
-            "Mod1+Control+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt ./../../dotfiles/i3_workspace.nix 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Right" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
             "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
           };
@@ -546,12 +550,12 @@ in {
     enable = true;
     enableVteIntegration = true;
     initExtra = ''
-      ${readFile (dotFileAt ./../../dotfiles/zsh.nix 0)}
+      ${readFile (dotFileAt "zsh.nix" 0)}
 
       . "${pkgs.nix}/etc/profile.d/nix.sh"
       . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
     '';
-    loginExtra = readFile (dotFileAt ./../../dotfiles/zsh.nix 1);
+    loginExtra = readFile (dotFileAt "zsh.nix" 1);
   };
   programs.starship = {
     enable = true;

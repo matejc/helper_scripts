@@ -1,7 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 with pkgs;
 runCommand "groovy-language-server" {
-  src = builtins.fetchurl https://github.com/Moonshine-IDE/Moonshine-IDE/raw/master/ide/MoonshineSharedCore/src/elements/groovy-language-server/groovy-language-server-all.jar;
+  src = builtins.fetchurl {
+    url = https://github.com/Moonshine-IDE/Moonshine-IDE/raw/216aa139620d50995a14827e949825c522bd85e5/ide/MoonshineSharedCore/src/elements/groovy-language-server/groovy-language-server-all.jar;
+    sha256 = "sha256:1iq8c904xsyv7gf4i703g7kb114kyq6cg9gf1hr1fzvy7fpjw0im";
+  };
   buildInputs = [ makeWrapper ];
 } ''
   mkdir -p $out/{bin,share/groovy-language-server}/
