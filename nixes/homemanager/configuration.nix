@@ -5,10 +5,7 @@ with pkgs;
 let
   context = import contextFile { inherit pkgs lib config inputs dotFileAt; };
 
-  nixGL = (import (builtins.fetchGit {
-    url = git://github.com/guibou/nixGL;
-    ref = "refs/heads/main";
-  }) { enable32bits = false; }).auto;
+  nixGL = (import inputs.nixGL { enable32bits = false; }).auto;
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
 
