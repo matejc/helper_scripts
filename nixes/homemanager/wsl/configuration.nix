@@ -25,8 +25,6 @@ in
 
   security.pam.services.su.startSession = true;
 
-  services.xrdp.enable = true;
-
   services.dbus.enable = true;
   programs.mosh.enable = true;
 

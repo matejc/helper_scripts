@@ -3,7 +3,7 @@ with pkgs;
 let
   startsway = writeScriptBin "startsway" ''
     sudo rm /tmp/.X11-unix
-    sudo su - ${config.home.username} -c "env XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir WAYLAND_DISPLAY=wayland-0 XDG_SESSION_TYPE=wayland sway"
+    sudo su - ${self.variables.user} -c "env XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir WAYLAND_DISPLAY=wayland-0 XDG_SESSION_TYPE=wayland ${self.variables.profileDir}/bin/sway"
   '';
   self = {
     dotFilePaths = [
