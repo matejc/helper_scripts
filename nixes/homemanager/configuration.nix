@@ -5,6 +5,11 @@ with pkgs;
 let
   context = import contextFile { inherit pkgs lib config inputs dotFileAt; };
 
+  nixGL = (import (builtins.fetchGit {
+    url = git://github.com/guibou/nixGL;
+    ref = "refs/heads/main";
+  }) { enable32bits = false; }).auto;
+
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
 
   dotfiles = import "${inputs.helper_scripts}/dotfiles/default.nix"
@@ -52,6 +57,7 @@ in lib.mkMerge ([{
       protonvpn-cli
       cinnamon.nemo
       zsh
+      nixGL
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {
