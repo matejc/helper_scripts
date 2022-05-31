@@ -15,14 +15,15 @@ in
   nixpkgs.config.allowUnfree = true;
   environment.noXlibs = lib.mkForce false;
   environment.systemPackages = with pkgs; [
-    dconf xorg.xrandr
-    libsForQt5.kwallet
+    dconf
   ];
   system.activationScripts.specialfs = mkForce "true";
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
   home-manager.users.${defaultUser} = (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; });
+
+  security.pam.services.su.startSession = true;
 
   services.xrdp.enable = true;
 

@@ -52,6 +52,7 @@ in lib.mkMerge ([{
       protonvpn-cli
       cinnamon.nemo
       zsh
+      wl-clipboard
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {

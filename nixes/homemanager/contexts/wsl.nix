@@ -1,6 +1,10 @@
 { pkgs, lib, config, inputs, dotFileAt }:
 with pkgs;
 let
+  startsway = writeScriptBin "startsway" ''
+    sudo rm /tmp/.X11-unix
+    sudo su - ${config.home.username} -c "env XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir WAYLAND_DISPLAY=wayland-0 XDG_SESSION_TYPE=wayland sway"
+  '';
   self = {
     dotFilePaths = [
       "${inputs.helper_scripts}/dotfiles/programs.nix"
@@ -90,6 +94,7 @@ let
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.keepassxc}"; }
       ];
+      home.packages = [ startsway ];
     };
   };
 in
