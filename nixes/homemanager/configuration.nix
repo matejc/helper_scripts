@@ -1,19 +1,11 @@
-{ inputs }:
+{ inputs, contextFile }:
 { pkgs, lib, config, ... }@args:
 with lib;
 with pkgs;
 let
-  #config = builtins.trace args.config.home-manager.users.matejc args;
-
-  #nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-  #  inherit pkgs;
-  #};
+  context = import contextFile { inherit pkgs lib config inputs dotFileAt; };
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
-
-  #nixmySrc = builtins.fetchGit {
-  #  url = "https://github.com/matejc/nixmy.git";
-  #};
 
   dotfiles = import "${inputs.helper_scripts}/dotfiles/default.nix"
     { name = "homemanager"; exposeScript = true; inherit context; }
@@ -22,207 +14,46 @@ let
   dotFileAt = file: at:
     (elemAt (import "${inputs.helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
-  context.dotFilePaths = [
-    "${inputs.helper_scripts}/dotfiles/programs.nix"
-    "${inputs.helper_scripts}/dotfiles/nvim.nix"
-    "${inputs.helper_scripts}/dotfiles/xfce4-terminal.nix"
-    "${inputs.helper_scripts}/dotfiles/gitconfig.nix"
-    "${inputs.helper_scripts}/dotfiles/gitignore.nix"
-    "${inputs.helper_scripts}/dotfiles/nix.nix"
-    "${inputs.helper_scripts}/dotfiles/oath.nix"
-    "${inputs.helper_scripts}/dotfiles/jstools.nix"
-    "${inputs.helper_scripts}/dotfiles/superslicer.nix"
-    "${inputs.helper_scripts}/dotfiles/scan.nix"
-    "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
-    "${inputs.helper_scripts}/dotfiles/comma.nix"
-  ];
-  context.activationScript = ''
-    mkdir -p ${context.variables.homeDir}/.supervisord/
-    mkdir -p ${context.variables.homeDir}/.xdg-runtime-dir/
-  '';
-  context.variables = rec {
-    homeDir = config.home.homeDirectory;
-    user = config.home.username;
-    profileDir = config.home.profileDirectory;
-    prefix = "${homeDir}/workarea/helper_scripts";
-    nixpkgs = "${homeDir}/workarea/nixpkgs";
-    #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
-    binDir = "${homeDir}/bin";
-    temperatureFiles = [ hwmonPath ];
-    hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
-    lockscreen = "${homeDir}/bin/lockscreen";
-    lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
-    wallpaper = "${homeDir}/Pictures/pexels.png";
-    fullName = "Matej Cotman";
-    email = "matej@matejc.com";
-    locale.all = "en_US.UTF-8";
-    networkInterface = "br0";
-    wirelessInterfaces = [];
-    ethernetInterfaces = [ networkInterface ];
-    mounts = [ "/" ];
-    font = {
-      family = "SauceCodePro Nerd Font Mono";
-      style = "Bold";
-      size = 10.0;
-    };
-    i3-msg = "${programs.i3-msg}";
-    term = null;
-    programs = {
-      filemanager = "${cinnamon.nemo}/bin/nemo";
-      #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-      terminal = "${pkgs.kitty}/bin/kitty";
-      dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-      browser = "${profileDir}/bin/chromium";
-      editor = "${nano}/bin/nano";
-      launcher = dotFileAt "bemenu.nix" 0;
-      #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
-      window-size = dotFileAt "i3config.nix" 2;
-      window-center = dotFileAt "i3config.nix" 3;
-      i3-msg = "${profileDir}/bin/swaymsg";
-      nextcloud = "${nextcloud-client}/bin/nextcloud";
-      keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
-      tmux = "${pkgs.tmux}/bin/tmux";
-      tug = "${pkgs.turbogit}/bin/tug";
-      supervisorctl = "${pkgs.python3Packages.supervisor}/bin/supervisorctl --serverurl=unix://${homeDir}/.supervisor.sock";
-      supervisord = "${pkgs.python3Packages.supervisor}/bin/supervisord --configuration=${supervisorConf}";
-      sway = sway_exec;
-    };
-    shell = "${profileDir}/bin/zsh";
-    sway.enable = false;
-    vims = {
-      q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
-      n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
-      g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
-    };
-    outputs = [{
-      criteria = "Samsung Electric Company S24F350 H4ZN501371";
-      position = "0,0";
-      output = "HDMI-A-2";
-      workspaces = [ "1" "2" ];
-      wallpaper = wallpaper;
-    } {
-      criteria = "BenQ Corporation BenQ GL2480 ETPBL0133504U";
-      position = "1920,0";
-      output = "HDMI-A-1";
-      workspaces = [ "3" ];
-      wallpaper = wallpaper;
-    }];
-    supervisor.programs = [
-      { name = "waybar"; cmd = "${waybar}/bin/waybar"; delay = 1; always = true; }
-      { name = "mako"; cmd = "${mako}/bin/mako"; delay = 2; always = true; }
-      { name = "kanshi"; cmd = "${kanshi}/bin/kanshi"; delay = 2; always = true; }
-      { name = "nextcloud"; cmd = "${nextcloud-client}/bin/nextcloud --background"; delay = 3; always = true; }
-      { name = "kdeconnect"; cmd = "${kdeconnect_custom}/bin/kdeconnectd"; delay = 3; always = true; }
-      { name = "kdeconnect-indicator"; cmd = "${kdeconnect_custom}/bin/kdeconnect-indicator"; delay = 4; always = true; }
-      { name = "blueman-applet"; cmd = "${blueman}/bin/blueman-applet"; delay = 3; always = true; }
-      { name = "gnome-keyring"; cmd = "${gnome.gnome-keyring}/bin/gnome-keyring-daemon --start --foreground --components=secrets"; delay = 1; always = true; }
-      { name = "browser"; cmd = "${context.variables.programs.browser}"; delay = 0; always = false; }
-      { name = "keepassxc"; cmd = "${context.variables.programs.keepassxc}"; delay = 0; always = false; }
-    ];
-  };
-  context.config = {};
-
-  sway_exec = pkgs.writeScript "sway.sh" ''
-    #!${pkgs.stdenv.shell}
-    trap 'kill $(cat ${context.variables.homeDir}/.supervisord.pid)' EXIT
-    ${context.variables.profileDir}/bin/sway $@
-  '';
-
-  kdeconnect_custom = pkgs.kdeconnect.overrideDerivation (old: {
-    postInstall = ''
-      ln -s $out/libexec/kdeconnectd $out/bin/kdeconnectd
-    '';
-  });
-
-  exec = { name, cmd, delay ? 0 }: "${writeScript "exec.sh" ''
+  exec = { name, cmd, delay ? 0 }: "${writeScript "exec-${name}.sh" ''
     #!${context.variables.shell}
-    systemctl disable --now ${name} || true
     ${pkgs.coreutils}/bin/sleep ${toString delay}
-    source "${context.variables.homeDir}/.zshrc"
+    source "${context.variables.shellRc}"
     exec ${cmd}
   ''}";
 
-  execRestart = binName: cmd: writeScript "${binName}-restart-script.sh" ''
+  services-cmds = map (group: writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
-    ${procps}/bin/pkill ${binName}
-    source "${context.variables.homeDir}/.zshrc"
-    exec ${cmd}
-  '';
-
-  supervisorConf = writeText "supervisord.conf" ''
-    [supervisord]
-    directory = ${context.variables.homeDir}/.supervisord
-    user = ${context.variables.user}
-    pidfile = ${context.variables.homeDir}/.supervisord.pid
-    logfile = ${context.variables.homeDir}/.supervisord/supervisord.log
-    logfile_maxbytes = 10MB
-
-    [unix_http_server]
-    file = ${context.variables.homeDir}/.supervisor.sock
-
-    [rpcinterface:supervisor]
-    supervisor.rpcinterface_factory=supervisor.rpcinterface:make_main_rpcinterface
-
-    [supervisorctl]
-    serverurl = unix://${context.variables.homeDir}/.supervisor.sock
-
-    [group:always]
-    programs = ${concatMapStringsSep "," (p: "${p.name}") (filter (p: p.always) context.variables.supervisor.programs)}
-
-    [group:once]
-    programs = ${concatMapStringsSep "," (p: "${p.name}") (filter (p: !p.always) context.variables.supervisor.programs)}
-
-    ${concatMapStringsSep "\n" (p: ''
-    [program:${p.name}]
-    command = ${exec { inherit (p) name cmd delay; }}
-    environment = PATH="${context.variables.profileDir}/bin:${context.variables.binDir}:%(ENV_PATH)s",XDG_RUNTIME_DIR="%(ENV_XDG_RUNTIME_DIR)s",DISPLAY="%(ENV_DISPLAY)s",WAYLAND_DISPLAY="%(ENV_WAYLAND_DISPLAY)s",SWAYSOCK="%(ENV_SWAYSOCK)s",${concatMapStringsSep "," (s: "${s.name}=\"${s.value}\"") (mapAttrsToList (name: value: {inherit name value;}) config.home.sessionVariables)}
-    priority = 1
-    directory = ${context.variables.homeDir}
-    user = ${context.variables.user}
-    numprocs = 1
-    autostart = false
-    autorestart = unexpected
-    startretries = 3
-    startsecs = ${toString (p.delay + 2)}
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${context.variables.homeDir}/.supervisord/${p.name}.log
-    stdout_logfile_maxbytes = 10MB
-    '') context.variables.supervisor.programs}
-  '';
+    source "${context.variables.shellRc}"
+    ${concatMapStringsSep "\n" (s: ''{ sleep ${toString s.delay} && systemctl --user "$1" "${s.name}"; } &'') context.services}
+    wait
+  '') (map (s: s.group) context.services);
 
   # https://nix-community.github.io/home-manager/options.html
-in {
+in lib.mkMerge ([{
     nixpkgs.config = import "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
     };
 
-    #services.gnome-keyring = {
-      #enable = true;
-    #};
+    services.gnome-keyring = {
+      enable = true;
+    };
     #systemd.user.services.gnome-keyring.Service.ExecStart = mkForce "/wrappers/gnome-keyring-daemon --start --foreground --components=secrets";
 
-    fonts.fontconfig.enable = mkDefault true;
-    home.packages = with pkgs; [
+    fonts.fontconfig.enable = mkForce true;
+    home.packages = [
       font-awesome
       (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
       corefonts
       git
-      keepassxc
       qt5Full
       socat
       protonvpn-cli
       cinnamon.nemo
-      kdeconnect_custom
       zsh
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
-    ];
+    ] ++ services-cmds;
     home.sessionVariables = {
       #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
       QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
@@ -249,9 +80,10 @@ in {
     programs.chromium = {
       enable = true;
       extensions = [
-        "gcbommkclmclpchllfjekcdonpmejbdp" # https everywhere
-        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-        "oboonakemofpalcgghocfoadofidjkkk" # keepassxc
+        "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
+        "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
+        "oboonakemofpalcgghocfoadofidjkkk"  # keepassxc
+        "clpapnmmlmecieknddelobgikompchkk"  # disable automatic gain control
       ];
     };
 
@@ -280,10 +112,12 @@ in {
       profiles.default.outputs = map (o: { inherit (o) criteria position; }) context.variables.outputs;
     };
 
-    #services.kdeconnect = {
-    #  enable = true;
-    #  indicator = true;
-    #};
+    services.kdeconnect = {
+      enable = true;
+      indicator = true;
+    };
+    systemd.user.services.kdeconnect.Install.WantedBy = mkForce [ "sway-session.target" ];
+    systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
 
     wayland.windowManager.sway = {
       enable = true;
@@ -291,9 +125,9 @@ in {
       config = rec {
         assigns = {
           "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-          "2" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
+          "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
         };
-        bars = [];
+        bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
         colors = {
           background = "#ff0000";
           focused = { background = "#272822"; border = "#272822"; childBorder = "#66D9EF"; indicator = "#66D9EF"; text = "#A6E22E"; };
@@ -330,19 +164,9 @@ in {
           };
         modifier = "Mod4";
         startup = [
-          { command = "${context.variables.binDir}/supervisord"; }
-          { command = "sleep 1 && ${context.variables.binDir}/supervisorctl restart 'always:*'"; always = true; }
-          { command = "sleep 1 && ${context.variables.binDir}/supervisorctl start 'once:*'"; }
-          #(startupEntry { cmd = "systemctl --user restart waybar"; delay = 2; always = true; })
-          #(startupEntry { cmd = "systemctl --user restart kanshi"; delay = 2; always = true; })
-          #(startupEntry { cmd = "systemctl --user restart nextcloud-client"; delay = 3; })
-          #(startupEntry { cmd = "systemctl --user restart kdeconnect"; delay = 3; })
-          #(startupEntry { cmd = "systemctl --user restart kdeconnect-indicator"; delay = 4; })
-          #(startupEntry { cmd = "systemctl --user restart blueman-applet"; delay = 3; })
-          #(startupEntry { cmd = "${mako}/bin/mako"; delay = 2; kill = "mako"; always = true; })
-          #(startupEntry { cmd = "${context.variables.programs.terminal}"; })
-          #(startupEntry { cmd = "${context.variables.programs.browser}"; })
-          #(startupEntry { cmd = "${context.variables.programs.keepassxc}"; })
+          { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
+          { command = "${context.variables.profileDir}/bin/service-group-once start"; }
+          { command = "${mako}/bin/mako"; always = true; }
         ];
         window = {
           border = 1;
@@ -537,12 +361,12 @@ in {
     enable = true;
   };
 
-  #services.nextcloud-client.enable = true;
+  services.nextcloud-client.enable = true;
+  services.nextcloud-client.startInBackground = true;
   #systemd.user.services.nextcloud-client.Service.ExecStart = mkForce (exec "${nextcloud-client}/bin/nextcloud --background");
 
   home.activation.dotfiles = ''
     $DRY_RUN_CMD ${dotfiles}/bin/dot-files-apply-homemanager
-    $DRY_RUN_CMD rm -fv ${context.variables.homeDir}/.zshrc.zwc
   '';
 
   home.activation.checkLinkTargets = mkForce "true";
@@ -565,4 +389,4 @@ in {
       character.error_symbol = "[✗](bold red) ";
     };
   };
-}
+}] ++ [ context.home-configuration ])

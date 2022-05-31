@@ -1,5 +1,5 @@
 {
-  description = "home-manager from non-nixos system";
+  description = "home-manager system";
   inputs = {
     nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
     nixos-configuration = {
@@ -23,9 +23,12 @@
 
   outputs = { self, ... }@inputs: {
     homeConfigurations = {
-      matejc = inputs.home-manager.lib.homeManagerConfiguration rec {
+      wsl = inputs.home-manager.lib.homeManagerConfiguration rec {
         configuration = { ... }: {
-          imports = [ (import ./configuration.nix { inherit inputs; }) ];
+          imports = [
+            (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
+            ./modules/xrdp.nix
+          ];
         };
         system = "x86_64-linux";
         homeDirectory = "/home/${username}";
@@ -33,7 +36,7 @@
       };
     };
     nixosConfigurations = {
-      matejc = inputs.nixpkgs.lib.nixosSystem {
+      matej70 = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
@@ -41,10 +44,24 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
-            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; });
+            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
           }
         ];
       };
+    };
+    images = {
+      wsl =
+        let
+          build = import "${inputs.nixpkgs}/nixos" {
+            configuration = {
+              imports = [
+                (import ./wsl/configuration.nix { inherit inputs; defaultUser = "matejc"; })
+                (import ./wsl/build-tarball.nix { inherit inputs; })
+              ];
+            };
+            system = "x86_64-linux";
+          };
+        in { system = build.system; tarball = build.config.system.build.tarball; };
     };
   };
 }
