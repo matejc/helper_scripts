@@ -19,10 +19,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
-    nixGL = {
-      url = "github:guibou/nixGL/main";
-      flake = false;
-    };
   };
 
   outputs = { self, ... }@inputs: {
