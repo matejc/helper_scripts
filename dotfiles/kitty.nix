@@ -25,7 +25,7 @@
 #:     italic_font      Operator Mono Book Italic
 #:     bold_italic_font Operator Mono Medium Italic
 
-  font_size ${toString variables.font.size}.0
+  font_size ${toString variables.font.size}
 
 #: Font size (in pts)
 

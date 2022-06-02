@@ -53,6 +53,7 @@ in lib.mkMerge ([{
       cinnamon.nemo
       zsh
       wl-clipboard
+      xdg-utils
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {

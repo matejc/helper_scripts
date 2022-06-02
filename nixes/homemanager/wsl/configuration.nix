@@ -22,6 +22,7 @@ in
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
   home-manager.users.${defaultUser} = (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; });
+  hardware.opengl.enable = true;
 
   security.pam.services.su.startSession = true;
 

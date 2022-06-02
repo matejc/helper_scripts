@@ -20,6 +20,7 @@ let
       "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
       "${inputs.helper_scripts}/dotfiles/comma.nix"
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
+      "${inputs.helper_scripts}/dotfiles/kitty.nix"
     ];
     activationScript = ''
       mkdir -vp ${self.variables.homeDir}/.supervisord/
@@ -58,7 +59,7 @@ let
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${profileDir}/bin/chromium";
+        browser = "${profileDir}/bin/chromium --ozone-platform-hint=auto";
         editor = "${nano}/bin/nano";
         launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
