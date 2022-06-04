@@ -1,10 +1,6 @@
 { pkgs, lib, config, inputs, dotFileAt }:
 with pkgs;
 let
-  startsway = writeScriptBin "startsway" ''
-    sudo rm /tmp/.X11-unix
-    sudo su - ${self.variables.user} -c "env XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir WAYLAND_DISPLAY=wayland-0 XDG_SESSION_TYPE=wayland ${self.variables.profileDir}/bin/sway"
-  '';
   self = {
     dotFilePaths = [
       "${inputs.helper_scripts}/dotfiles/programs.nix"
@@ -23,8 +19,6 @@ let
       "${inputs.helper_scripts}/dotfiles/kitty.nix"
     ];
     activationScript = ''
-      mkdir -vp ${self.variables.homeDir}/.supervisord/
-      mkdir -vp ${self.variables.homeDir}/.xdg-runtime-dir/
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
     variables = rec {
@@ -43,7 +37,7 @@ let
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       locale.all = "en_US.UTF-8";
-      networkInterface = "br0";
+      networkInterface = "eth0";
       wirelessInterfaces = [];
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
@@ -79,23 +73,27 @@ let
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
         g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
-      outputs = [];
+      outputs = [{
+        output = "HEADLESS-1";
+        criteria = "HEADLESS-1";
+        position = "0,0";
+        mode = "1920x1080@60Hz";
+        workspaces = [ "1" ];
+        wallpaper = "${pkgs.sway}/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png";
+      }];
     };
     services = [
-      { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "nextcloud-client"; delay = 3; group = "always"; }
-      { name = "kdeconnect"; delay = 3; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
-      { name = "blueman-applet"; delay = 3; group = "always"; }
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
     home-configuration = {
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.programs.keepassxc}"; }
       ];
-      home.packages = [ startsway ];
+      services.swayidle.enable = lib.mkForce false;
+      services.blueman-applet.enable = lib.mkForce false;
+      services.nextcloud-client.enable = lib.mkForce false;
+      services.kanshi.enable = lib.mkForce false;
     };
   };
 in

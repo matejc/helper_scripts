@@ -111,7 +111,7 @@ in lib.mkMerge ([{
 
     services.kanshi = {
       enable = true;
-      profiles.default.outputs = map (o: { inherit (o) criteria position; }) context.variables.outputs;
+      profiles.default.outputs = map (o: { inherit (o) criteria position mode; }) context.variables.outputs;
     };
 
     services.kdeconnect = {
@@ -181,7 +181,7 @@ in lib.mkMerge ([{
           ];
         };
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
-        output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; }; }) context.variables.outputs);
+        output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; }; }) context.variables.outputs);
       };
       extraConfig = ''
         focus_wrapping yes

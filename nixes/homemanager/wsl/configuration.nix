@@ -24,8 +24,6 @@ in
   home-manager.users.${defaultUser} = (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; });
   hardware.opengl.enable = true;
 
-  security.pam.services.su.startSession = true;
-
   services.dbus.enable = true;
   programs.mosh.enable = true;
 

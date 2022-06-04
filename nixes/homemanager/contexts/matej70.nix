@@ -18,8 +18,6 @@ let
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
     ];
     activationScript = ''
-      mkdir -vp ${self.variables.homeDir}/.supervisord/
-      mkdir -vp ${self.variables.homeDir}/.xdg-runtime-dir/
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
     variables = rec {

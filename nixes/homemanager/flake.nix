@@ -57,7 +57,10 @@
               imports = [
                 (import ./wsl/configuration.nix { inherit inputs; defaultUser = "matejc"; })
                 (import ./wsl/build-tarball.nix { inherit inputs; })
+                ./modules/wayvnc.nix
               ];
+              services.wayvnc.enable = true;
+              services.wayvnc.user = "matejc";
             };
             system = "x86_64-linux";
           };
