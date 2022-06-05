@@ -16,6 +16,9 @@ let
       "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
       "${inputs.helper_scripts}/dotfiles/comma.nix"
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
+      "${inputs.helper_scripts}/dotfiles/kitty.nix"
+      "${inputs.helper_scripts}/dotfiles/dd.nix"
+      "${inputs.helper_scripts}/dotfiles/sync.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -76,23 +79,20 @@ let
         criteria = "Samsung Electric Company S24F350 H4ZN501371";
         position = "0,0";
         output = "HDMI-A-2";
+        mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
       } {
         criteria = "BenQ Corporation BenQ GL2480 ETPBL0133504U";
         position = "1920,0";
         output = "HDMI-A-1";
+        mode = "1920x1080";
         workspaces = [ "5" ];
         wallpaper = wallpaper;
       }];
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "nextcloud-client"; delay = 3; group = "always"; }
-      { name = "kdeconnect"; delay = 3; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
-      { name = "blueman-applet"; delay = 3; group = "always"; }
-      { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
     home-configuration = {
@@ -100,6 +100,14 @@ let
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.keepassxc}"; }
       ];
+      services.kanshi.enable = true;
+      services.swayidle.enable = true;
+      services.kdeconnect.enable = true;
+      services.kdeconnect.indicator = true;
+      services.blueman-applet.enable = true;
+      services.syncthing.enable = true;
+      services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
+      services.syncthing.tray.enable = true;
     };
   };
 in

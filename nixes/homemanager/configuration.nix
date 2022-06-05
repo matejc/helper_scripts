@@ -110,16 +110,16 @@ in lib.mkMerge ([{
     };
 
     services.kanshi = {
-      enable = true;
+      #enable = true;
       profiles.default.outputs = map (o: { inherit (o) criteria position mode; }) context.variables.outputs;
     };
 
     services.kdeconnect = {
-      enable = true;
-      indicator = true;
+      #enable = true;
+      #indicator = true;
     };
-    systemd.user.services.kdeconnect.Install.WantedBy = mkForce [ "sway-session.target" ];
-    systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
+    #systemd.user.services.kdeconnect.Install.WantedBy = mkForce [ "sway-session.target" ];
+    #systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
 
     wayland.windowManager.sway = {
       enable = true;
@@ -189,7 +189,7 @@ in lib.mkMerge ([{
   };
 
   services.swayidle = {
-    enable = true;
+    #enable = true;
     events = [
       { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
       { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
@@ -207,7 +207,7 @@ in lib.mkMerge ([{
     ];
   };
 
-  services.blueman-applet.enable = true;
+  #services.blueman-applet.enable = true;
 
   programs.waybar.enable = true;
   programs.waybar.style = ''
@@ -363,9 +363,11 @@ in lib.mkMerge ([{
     enable = true;
   };
 
-  services.nextcloud-client.enable = true;
+  #services.nextcloud-client.enable = true;
   services.nextcloud-client.startInBackground = true;
   #systemd.user.services.nextcloud-client.Service.ExecStart = mkForce (exec "${nextcloud-client}/bin/nextcloud --background");
+
+  services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" ];
 
   home.activation.dotfiles = ''
     $DRY_RUN_CMD ${dotfiles}/bin/dot-files-apply-homemanager

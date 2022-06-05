@@ -90,10 +90,6 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
       ];
-      services.swayidle.enable = lib.mkForce false;
-      services.blueman-applet.enable = lib.mkForce false;
-      services.nextcloud-client.enable = lib.mkForce false;
-      services.kanshi.enable = lib.mkForce false;
     };
   };
 in
