@@ -50,13 +50,14 @@ let
     #"pwsh"
     "robotframeworklsp"
     "lemminx"
-    "pylsp"
-    #"pyright"
+    #"pylsp"
+    "pyright"
     #"python_language_server"
     "ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
+    "ltex"
   ];
 
   mkNvimLsp = enabled:
@@ -334,6 +335,13 @@ let
       nvim_lsp["rust_analyzer"].setup {
         on_attach = on_attach;
         cmd = {"${pkgs.rust-analyzer}/bin/rust-analyzer"};
+        capabilities = capabilities;
+      }
+    '';
+    ltex = ''
+      nvim_lsp["ltex"].setup {
+        on_attach = on_attach;
+        cmd = {"${ltex-ls}/bin/ltex-ls"};
         capabilities = capabilities;
       }
     '';
@@ -1693,6 +1701,43 @@ require('session_manager').setup({
   autosave_only_in_session = false, -- Always autosaves session. If true, only autosaves after a session is active.
   max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
 })
+
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            -- 'for', -- These won't appear in the context
+            -- 'while',
+            -- 'if',
+            -- 'switch',
+            -- 'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+    exact_patterns = {
+        -- Example for a specific filetype with Lua patterns
+        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+        -- exactly match "impl_item" only)
+        -- rust = true,
+    },
+
+    -- [!] The options below are exposed but shouldn't require your attention,
+    --     you can safely ignore them.
+
+    zindex = 20, -- The Z-index of the context window
+}
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
     " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
@@ -1959,6 +2004,14 @@ EOF
     '';
   };
 
+  ltex-ls = pkgs.runCommand "ltex-ls" {
+    buildInputs = [ pkgs.makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${pkgs.vscode-extensions.valentjn.vscode-ltex}/share/vscode/extensions/valentjn.vscode-ltex/lib/ltex-ls-*/bin/ltex-ls $out/bin/ltex-ls \
+      --prefix JAVACMD : ${pkgs.jre}/bin/java
+  '';
+
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
@@ -2039,6 +2092,7 @@ EOF
           (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
+          nvim-treesitter-context
         ];
         opt = [
         ];
