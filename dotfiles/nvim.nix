@@ -482,6 +482,7 @@ let
     set encoding=utf-8
 
     nnoremap <silent> <C-S-W> :bd!<cr>
+    tnoremap <silent> <C-S-W> <C-\><C-N>:bd!<cr>
     inoremap <silent> <C-S-W> <C-o>:bd!<cr>
     nnoremap <silent> <C-w> :bd<cr>
     inoremap <silent> <C-w> <C-o>:bd<cr>
@@ -1576,7 +1577,8 @@ require("telescope").setup {
       "--line-number",
       "--column",
       "--smart-case",
-    }
+    },
+    scroll_strategy = 'limit'
   },
   extensions = {
     fzy_native = {
@@ -1905,6 +1907,7 @@ EOF
     tnoremap <silent> <a-right> <C-right>
 
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
+    tnoremap <silent> <C-S-T> <C-\><C-N>:edit term://${variables.vimShell or "zsh"}<cr>
     " let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
     cnoremap <C-v> <C-r>+
@@ -1912,6 +1915,7 @@ EOF
     let g:NERDDefaultAlign = 'left'
 
     nnoremap <C-o> :Neotree toggle reveal<CR>
+    tnoremap <C-o> <C-\><C-N>:Neotree toggle reveal<CR>
     inoremap <C-o> <esc>:Neotree toggle reveal<CR>
     " nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
     " inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
@@ -1968,6 +1972,12 @@ EOF
       au TermOpen * :setlocal signcolumn=no
       au TermOpen * :nnoremap <buffer><cr> i
     augroup END
+
+    function! TerminalOptions()
+      silent! au BufEnter <buffer> startinsert!
+      silent! au BufLeave <buffer> stopinsert!
+    endfunction
+    au TermOpen * call TerminalOptions()
 
     highlight CursorLine guibg=Grey22
     highlight MatchParen guibg=Grey40

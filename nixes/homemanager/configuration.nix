@@ -178,6 +178,7 @@ in lib.mkMerge ([{
             #{ command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
             #{ command = "border pixel 1"; criteria = { class = "Firefox"; }; }
             #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
+            { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
           ];
         };
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);

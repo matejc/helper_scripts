@@ -19,6 +19,7 @@ let
       "${inputs.helper_scripts}/dotfiles/kitty.nix"
       "${inputs.helper_scripts}/dotfiles/dd.nix"
       "${inputs.helper_scripts}/dotfiles/sync.nix"
+      "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -92,7 +93,7 @@ let
       }];
     };
     services = [
-      { name = "kanshi"; delay = 2; group = "always"; }
+      #{ name = "kanshi"; delay = 2; group = "always"; }
     ];
     config = {};
     home-configuration = {
@@ -108,6 +109,10 @@ let
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.syncthing.tray.enable = true;
+      programs.obs-studio = {
+        enable = true;
+        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
+      };
     };
   };
 in
