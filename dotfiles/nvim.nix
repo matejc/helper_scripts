@@ -484,12 +484,12 @@ let
     nnoremap <silent> <C-S-W> :bd!<cr>
     tnoremap <silent> <C-S-W> <C-\><C-N>:bd!<cr>
     inoremap <silent> <C-S-W> <C-o>:bd!<cr>
-    nnoremap <silent> <C-w> :bd<cr>
-    inoremap <silent> <C-w> <C-o>:bd<cr>
-    map <C-q> <esc>:qall
-    inoremap <C-q> <esc>:qall
-    nnoremap <silent> <c-s> :w<CR>
-    inoremap <silent> <c-s> <C-o>:w<CR>
+    " nnoremap <silent> <C-w> :bd<cr>
+    " inoremap <silent> <C-w> <C-o>:bd<cr>
+    " map <C-q> <esc>:qall
+    " inoremap <C-q> <esc>:qall
+    "nnoremap <silent> <c-s> :w<CR>
+    "inoremap <silent> <c-s> <C-o>:w<CR>
     nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
     inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
@@ -544,9 +544,9 @@ let
 
     vmap <S-Right> l
 
-    nmap <C-k> "_dd
-    imap <C-k> <esc>"_ddi
-    vmap <C-k> "_d
+    nnoremap <C-k> "_dd
+    inoremap <C-k> <C-o>"_dd
+    vnoremap <C-k> "_d
 
     nnoremap <C-x> dd
     inoremap <C-x> <esc>ddi
@@ -572,19 +572,16 @@ let
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
 
-    nnoremap <C-S-D> :copy .<cr>
     " nnoremap <C-d> :copy .<cr>
-    vnoremap <C-S-D> :copy '><cr>
-    " vnoremap <C-d> :copy '><cr>
-    inoremap <C-S-D> <c-o>:copy .<cr>
-    " inoremap <C-d> <c-o>:copy .<cr>
+    vnoremap <C-S-M-Down> :copy '><cr>
+    inoremap <C-S-M-Down> <c-o>:copy .<cr>
 
     vmap <PageUp> 10<up>
     vmap <PageDown> 10<down>
     vmap <S-PageUp> 10<up>
     vmap <S-PageDown> 10<down>
-    imap <S-PageUp> <esc>v10<up>
-    imap <S-PageDown> <esc>lv10<down>
+    inoremap <S-PageUp> <C-o>v10<up>
+    inoremap <S-PageDown> <C-o>lv10<down>
     nmap <S-PageUp> v10<up>
     nmap <S-PageDown> v10<down>
 
@@ -662,10 +659,14 @@ let
     " vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
     " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
-    " nnoremap <C-f> <cmd>lua require('searchbox').incsearch()<CR>
+    inoremap <C-\> <C-o>/
+    inoremap <C-S-\> <C-o>:%s/FIND/REPLACE/g
+    inoremap <C-S-c> <C-o>:noh<cr>
+    inoremap <C-n> <C-o>n
+    inoremap <C-S-n> <C-o>N
 
-    " vnoremap // :call feedkeys("/" . <SID>get_visual_selection())<cr>
-    " nnoremap // :call feedkeys("/" . expand("<cword>"))<cr>
+    " vnoremap <C-f> :call feedkeys("/" . <SID>get_visual_selection())<cr>
+    " inoremap <C-f> <Cmd>call feedkeys("/" . expand("<cword>"))<cr>
 
     let g:ctrlp_cmd = 'CtrlP'
     let g:ctrlp_custom_ignore = {
@@ -764,32 +765,17 @@ let
 
     let g:VM_mouse_mappings = 1
     let g:VM_default_mappings = 0
-    let g:VM_maps = {}
-    let g:VM_maps['Find Under']                  = '<C-n>'
-    let g:VM_maps['Find Subword Under']          = '<C-n>'
-    let g:VM_maps["Select All"]                  = '<C-S-N>'
-    " let g:VM_maps["Start Regex Search"]          = 'g/'
-    let g:VM_maps["Add Cursor Down"]             = '<C-Down>'
-    let g:VM_maps["Add Cursor Up"]               = '<C-Up>'
-    let g:VM_maps["Add Cursor At Pos"]           = '<C-t>'
-    " let g:VM_maps["Visual Regex"]                = 'g/'
-    " let g:VM_maps["Visual All"]                  = '<leader>A'
-    " let g:VM_maps["Visual Add"]                  = '<A-a>'
-    " let g:VM_maps["Visual Find"]                 = '<A-f>'
-    " let g:VM_maps["Visual Cursors"]              = '<A-c>'
-    " let g:VM_maps["Select l"]              = '<A-Right>'
-    " let g:VM_maps["Select h"]              = '<A-Left>'
 
     set autoread
     autocmd FocusGained,BufEnter * silent! checktime
 
-    nmap <c-_> <leader>c<space>
-    imap <c-_> <esc><leader>c<space>
-    vmap <c-_> <leader>c<space>
+    "nnoremap <c-_> <leader>c<space>
+    inoremap <c-_> <C-o><plug>NERDCommenterToggle
+    vnoremap <c-_> <plug>NERDCommenterToggle
 
-    nmap <c-/> <leader>c<space>
-    imap <c-/> <esc><leader>c<space>
-    vmap <c-/> <leader>c<space>
+    "nnoremap <c-/> <leader>c<space>
+    "inoremap <c-/> <C-o><leader>c<space>
+    "vnoremap <c-/> <leader>c<space>
 
     let g:mpattern='[a-zA-Z0-9]\+\|^\|$'
 
@@ -1051,6 +1037,7 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<Esc>'] = cmp.mapping.close(),
     ['<Left>'] = cmp.mapping.close(),
     ['<Right>'] = cmp.mapping.close(),
     ['<Tab>'] = cmp.mapping.select_next_item(),
@@ -1578,7 +1565,12 @@ require("telescope").setup {
       "--column",
       "--smart-case",
     },
-    scroll_strategy = 'limit'
+    scroll_strategy = 'limit',
+    mappings = {
+      i = {
+        ['<esc>'] = require('telescope.actions').close
+      }
+    }
   },
   extensions = {
     fzy_native = {
@@ -1761,18 +1753,20 @@ EOF
     nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
-    nnoremap km :lua require'telescope.builtin'.keymaps{}<cr>
+    inoremap <C-S-p> <Cmd>lua require'telescope.builtin'.keymaps{}<cr>
 
-    nnoremap <C-S-f> :lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
-    vnoremap <C-S-f> <esc>:lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
+    nnoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
+    inoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
+    vnoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
 
     nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
     vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
     inoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
 
-    nnoremap <C-d> :lua require'telescope.builtin'.diagnostics{ bufnr=0, disable_devicons = true }<cr>
+    inoremap <C-S-d> <Cmd>lua require'telescope.builtin'.diagnostics{ bufnr=0, disable_devicons = true }<cr>
 
-    nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
+    " nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
+    inoremap <C-S-g> <C-o>:call gitblame#echo()<CR>
 
 
     " function! OpenCompletion()
@@ -1936,11 +1930,6 @@ EOF
     " let g:blamer_relative_time = 1
     " let g:blamer_template = '<committer> • <committer-time> • <summary>'
 
-    nnoremap <C-S-P> <C-o>
-    inoremap <C-S-P> <esc><C-o>
-    nnoremap <C-S-N> <C-i>
-    inoremap <C-S-N> <esc><C-i>
-
     set splitbelow
     set splitright
     nnoremap <silent> <A-h> :sp<cr>
@@ -1988,9 +1977,47 @@ EOF
     highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
 
     nnoremap <C-H> :SignifyHunkDiff<cr>
-    inoremap <C-H> <esc>:SignifyHunkDiff<cr>
+    inoremap <C-H> <C-o>:SignifyHunkDiff<cr>
 
     nnoremap <silent> <C-L> :noh<cr>
+
+    let g:novim_mode_use_editor_fixes = 0
+    let g:novim_mode_use_pane_controls = 0
+    let g:novim_mode_use_general_app_shortcuts = 0
+
+    inoremap <silent> <M-Left>  <C-O><C-W><Left>
+    snoremap <silent> <M-Left>  <Esc><C-W><Left>
+    nnoremap <silent> <M-Left>  <C-W><Left>
+    inoremap <silent> <M-Down>  <C-O><C-W><Down>
+    snoremap <silent> <M-Down>  <Esc><C-W><Down>
+    nnoremap <silent> <M-Down>  <C-W><Down>
+    inoremap <silent> <M-Up>    <C-O><C-W><Up>
+    snoremap <silent> <M-Up>    <Esc><C-W><Up>
+    nnoremap <silent> <M-Up>    <C-W><Up>
+    inoremap <silent> <M-Right> <C-O><C-W><Right>
+    snoremap <silent> <M-Right> <Esc><C-W><Right>
+    nnoremap <silent> <M-Right> <C-W><Right>
+
+    inoremap <silent> <C-W> <C-O>:bd<CR>
+    snoremap <silent> <C-W> <C-O>:bd<CR>
+    nnoremap <silent> <C-W> :bd<CR>
+
+    inoremap <C-Q> <C-O>:qall
+    snoremap <C-Q> <C-O>:qall
+    nnoremap <C-Q> :qall
+    cnoremap <C-Q> <C-C><C-O>:qall
+
+    inoremap <silent> <C-S> <C-O>:update<CR>
+
+    inoremap <M-;> <C-O>:
+    snoremap <M-;> <C-O>:
+    inoremap <M-c> <C-O>:
+    snoremap <M-c> <C-O>:
+    nnoremap <M-;> :
+    nnoremap <M-c> :
+
+    inoremap <M-o> <C-O>
+    snoremap <M-o> <C-O>
 
     autocmd UIEnter * source ${ginitVim}
   '';
@@ -2089,7 +2116,6 @@ EOF
           vimPlugins.cmp-nvim-lsp-signature-help
           vimPlugins.cmp-rg
           vimPlugins.cmp-treesitter
-          #vimPlugins.searchbox-nvim
           vimPlugins.nvim-hlslens
           vimPlugins.nvim-scrollbar
           vimPlugins.themer-lua
@@ -2103,6 +2129,7 @@ EOF
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
           nvim-treesitter-context
+          vimPlugins.novim-mode
         ];
         opt = [
         ];
@@ -2159,8 +2186,6 @@ in [{
       mkdir -p "$destination"
       ln -svf "$path" "$destination/$cmdbasename"
     }
-
-    #ensure_lsp_link "rnix" "${pkgs.rnix-lsp}/bin/rnix-lsp"
   '';
 } {
   target = "${variables.homeDir}/bin/nvim";
