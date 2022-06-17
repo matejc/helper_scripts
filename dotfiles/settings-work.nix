@@ -4,6 +4,7 @@ let
     prefix = "${variables.homeDir}/workarea/helper_scripts";
     nixpkgs = "${variables.homeDir}/workarea/nixpkgs";
     nixpkgsConfig = "${variables.prefix}/dotfiles/nixpkgs-config.nix";
+    temperatureFiles = [];
     user = "matejc";
     homeDir = "/home/${variables.user}";
     binDir = "${variables.prefix}/bin";
@@ -34,7 +35,7 @@ let
     #alacritty.args = ''-o "shell.program='wsl.exe'" -o "shell.args=['-d Ubuntu-20.04 /home/matejc/bin/shell']"'';
     #vims.n = "env NVIM_FRONTEND_PATH=/mnt/c/Users/cotman_matej/neovide/neovide.exe NVIM_FRONTEND_ARGS='--remote-tcp' ${homeDir}/bin/guinvim";
     #vims.n = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovide}/bin/neovide --neovim-bin ${homeDir}/bin/nvim";
-    vims.q = "env NVIM_FRONTEND_PATH=/mnt/c/Users/cotman_matej/neovim-qt/bin/nvim-qt.exe ${homeDir}/bin/guinvim & sleep 1";
+    vims.q = "env NVIM_FRONTEND_PATH=/mnt/c/Users/cotman_matej/neovim-qt/bin/nvim-qt.exe ${homeDir}/bin/guinvim";
     #vims.q = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
     #vims.g = "${nixGL.nixGLDefault}/bin/nixGL ${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-cmdline --disable-ext-popupmenu --disable-ext-tabline";
   };
@@ -61,6 +62,7 @@ let
     ./kitty.nix
     ./fonts.nix
     ./look.nix
+    ./tmux.nix
   ];
 
   activationScript = ''

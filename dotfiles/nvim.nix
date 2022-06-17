@@ -48,7 +48,7 @@ let
     #"hls"
     "sumneko_lua"
     #"pwsh"
-    "robotframeworklsp"
+    "robotframework_ls"
     "lemminx"
     #"pylsp"
     "pyright"
@@ -221,22 +221,21 @@ let
         capabilities = capabilities;
       }
     '';
-    robotframeworklsp = ''
-      if not nvim_lsp["robotframework_ls"] then
-        nvim_lsp_configs.robotframework_ls = {
-          default_config = {
-            cmd = {"robotframework_ls"};
-            filetypes = {'robot'};
-            root_dir = function(fname)
-              return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
-            end;
-            settings = {};
-          };
-        }
-      end
+    robotframework_ls = ''
       nvim_lsp["robotframework_ls"].setup {
         on_attach = on_attach;
+        cmd = {"robotframework_ls"};
         capabilities = capabilities;
+        filetypes = {'robot'};
+        settings = {
+          robot = {
+            python = {
+              env = {
+                PYTHONPATH = os.getenv('PYTHONPATH');
+              };
+            };
+          };
+        };
       }
     '';
     lemminx = ''
@@ -572,31 +571,31 @@ let
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
 
-    " nnoremap <C-d> :copy .<cr>
-    vnoremap <C-S-M-Down> :copy '><cr>
-    inoremap <C-S-M-Down> <c-o>:copy .<cr>
+    nnoremap <C-S-Down> :copy .<cr>
+    vnoremap <C-S-Down> :copy '><cr>
+    inoremap <C-S-Down> <c-o>:copy .<cr>
 
-    vmap <PageUp> 10<up>
-    vmap <PageDown> 10<down>
-    vmap <S-PageUp> 10<up>
-    vmap <S-PageDown> 10<down>
+    vnoremap <PageUp> 10<up>
+    vnoremap <PageDown> 10<down>
+    vnoremap <S-PageUp> 10<up>
+    vnoremap <S-PageDown> 10<down>
     inoremap <S-PageUp> <C-o>v10<up>
     inoremap <S-PageDown> <C-o>lv10<down>
-    nmap <S-PageUp> v10<up>
-    nmap <S-PageDown> v10<down>
+    nnoremap <S-PageUp> v10<up>
+    nnoremap <S-PageDown> v10<down>
 
-    vmap <Tab> >gv
-    vmap <S-Tab> <gv
-    nmap <Tab> >>
-    nmap <S-Tab> <<
+    vnoremap <Tab> >gv
+    vnoremap <S-Tab> <gv
+    nnoremap <Tab> >>
+    nnoremap <S-Tab> <<
     inoremap <S-Tab> <C-d>
 
-    nmap <C-S-Down> :m .+1<CR>==
-    nmap <C-S-Up> :m .-2<CR>==
-    inoremap <C-S-Down> <C-o>:m .+1<CR>
-    inoremap <C-S-Up> <C-o>:m .-2<CR>
-    vmap <C-S-Down> :m '>+1<CR>gv=gv
-    vmap <C-S-Up> :m '<-2<CR>gv=gv
+    "nmap <C-S-Down> :m .+1<CR>==
+    "nmap <C-S-Up> :m .-2<CR>==
+    "inoremap <C-S-Down> <C-o>:m .+1<CR>
+    "inoremap <C-S-Up> <C-o>:m .-2<CR>
+    "vmap <C-S-Down> :m '>+1<CR>gv=gv
+    "vmap <C-S-Up> :m '<-2<CR>gv=gv
 
     " let g:bufferline_echo = 0
     " autocmd VimEnter *
@@ -772,6 +771,8 @@ let
     "nnoremap <c-_> <leader>c<space>
     inoremap <c-_> <C-o><plug>NERDCommenterToggle
     vnoremap <c-_> <plug>NERDCommenterToggle
+    inoremap <c-/> <C-o><plug>NERDCommenterToggle
+    vnoremap <c-/> <plug>NERDCommenterToggle
 
     "nnoremap <c-/> <leader>c<space>
     "inoremap <c-/> <C-o><leader>c<space>
@@ -1001,6 +1002,9 @@ end
 
 cfg = {
   bind = true, -- This is mandatory, otherwise border config won't get registered.
+  floating_window_above_cur_line = true,
+  toggle_key = '<M-l>',
+  hint_enable = false,
 }
 require'lsp_signature'.setup(cfg)
 
@@ -1890,7 +1894,7 @@ EOF
     let g:deoplete#enable_at_startup = 1
     autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-    tnoremap <silent> <esc><esc> <C-\><C-n>
+    tnoremap <silent> <C-l> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
     tnoremap <C-S-v> <C-\><C-N>"+pi
 
@@ -1901,6 +1905,7 @@ EOF
     tnoremap <silent> <a-right> <C-right>
 
     nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
+    inoremap <silent> <C-S-T> <C-o>:edit term://${variables.vimShell or "zsh"}<cr>
     tnoremap <silent> <C-S-T> <C-\><C-N>:edit term://${variables.vimShell or "zsh"}<cr>
     " let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
 
@@ -1910,7 +1915,7 @@ EOF
 
     nnoremap <C-o> :Neotree toggle reveal<CR>
     tnoremap <C-o> <C-\><C-N>:Neotree toggle reveal<CR>
-    inoremap <C-o> <esc>:Neotree toggle reveal<CR>
+    inoremap <C-o> <Cmd>Neotree toggle reveal<CR>
     " nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
     " inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
     " nnoremap <leader>r :NvimTreeRefresh<CR>
@@ -1976,8 +1981,8 @@ EOF
     highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
     highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
 
-    nnoremap <C-H> :SignifyHunkDiff<cr>
-    inoremap <C-H> <C-o>:SignifyHunkDiff<cr>
+    nnoremap <C-h> :SignifyHunkDiff<cr>
+    inoremap <C-h> <C-o>:SignifyHunkDiff<cr>
 
     nnoremap <silent> <C-L> :noh<cr>
 
@@ -2018,6 +2023,12 @@ EOF
 
     inoremap <M-o> <C-O>
     snoremap <M-o> <C-O>
+
+    set wildcharm=<C-Z>
+    cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
+    cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
+    cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
+    cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
 
     autocmd UIEnter * source ${ginitVim}
   '';
