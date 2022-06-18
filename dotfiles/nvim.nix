@@ -2010,6 +2010,7 @@ EOF
     inoremap <C-Q> <C-O>:qall
     snoremap <C-Q> <C-O>:qall
     nnoremap <C-Q> :qall
+    tnoremap <C-Q> <C-\><C-N>:qall
     cnoremap <C-Q> <C-C><C-O>:qall
 
     inoremap <silent> <C-S> <C-O>:update<CR>
