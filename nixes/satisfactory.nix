@@ -2,7 +2,10 @@
   users.users.satisfactory = {
     home = "/var/lib/satisfactory";
     createHome = true;
+    isSystemUser = true;
+    group = "satisfactory";
   };
+  users.groups.satisfactory = {};
 
   nixpkgs.config.allowUnfree = true;
 
@@ -19,11 +22,12 @@
       ${pkgs.steamcmd}/bin/steamcmd \
         +login anonymous \
         +force_install_dir /var/lib/satisfactory/SatisfactoryDedicatedServer \
-        +app_update 1690800 -beta experimental validate \
+        +app_update 1690800 validate \
         +quit
+      ${pkgs.patchelf}/bin/patchelf --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UE4Server-Linux-Shipping
     '';
     script = ''
-      ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UE4Server-Linux-Shipping FactoryGame
+      /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UE4Server-Linux-Shipping FactoryGame
     '';
     serviceConfig = {
       Nice = "-5";
