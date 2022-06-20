@@ -899,11 +899,16 @@ vim.keymap.set("n", '<c-left>', function() wordMove("n", 0) end, { noremap = tru
 
 vim.keymap.set("v", '<c-right>', function() wordMove("v", 1) end, { noremap = true, silent = true })
 vim.keymap.set("v", '<c-left>', function() wordMove("v", 0) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-s-right>', function() wordMove("v", 1) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-s-left>', function() wordMove("v", 0) end, { noremap = true, silent = true })
 
 vim.keymap.set("i", '<c-right>', function() wordMove("i", 1) end, { noremap = true, silent = true })
 vim.keymap.set("i", '<c-left>', function() wordMove("i", 0) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-s-right>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('v',true,false,true),'x',false); wordMove("i", 1) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-s-left>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('v',true,false,true),'x',false); wordMove("i", 0) end, { noremap = true, silent = true })
 
 EOF
+    vnoremap <esc> <esc><esc>i
 
     inoremap <silent> <A-del> <C-o>ce
     inoremap <silent> <C-del> <C-o>ce
