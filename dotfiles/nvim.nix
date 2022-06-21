@@ -762,7 +762,7 @@ let
     " nnoremap <C-o> :call NTToggle()<CR>
     " autocmd VimLeave * NERDTreeClose
 
-    let g:VM_mouse_mappings = 1
+    let g:VM_mouse_mappings = 0
     let g:VM_default_mappings = 0
 
     set autoread
@@ -960,14 +960,14 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
   -- buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   -- buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  -- buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   -- buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  -- buf_set_keymap('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   -- buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
   -- buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   -- buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   -- buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', 'rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  -- buf_set_keymap('n', 'rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
   -- buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   -- buf_set_keymap('n', 'cd', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   -- buf_set_keymap('n', '{', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
@@ -976,9 +976,9 @@ local on_attach = function(client, bufnr)
 
   -- Set some keybinds conditional on server capabilities
   if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("i", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+    buf_set_keymap("v", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
   end
 
   -- Set autocommands conditional on server_capabilities
@@ -1005,13 +1005,13 @@ local on_attach = function(client, bufnr)
   -- end
 end
 
-cfg = {
-  bind = true, -- This is mandatory, otherwise border config won't get registered.
-  floating_window_above_cur_line = true,
-  toggle_key = '<M-l>',
-  hint_enable = false,
-}
-require'lsp_signature'.setup(cfg)
+--cfg = {
+--  bind = true, -- This is mandatory, otherwise border config won't get registered.
+--  floating_window_above_cur_line = true,
+--  toggle_key = '<M-l>',
+--  hint_enable = false,
+--}
+--require'lsp_signature'.setup(cfg)
 
 local cmp = require'cmp'
 
@@ -1741,26 +1741,30 @@ require'treesitter-context'.setup{
 
     zindex = 20, -- The Z-index of the context window
 }
+
+local saga = require 'lspsaga'
+saga.init_lsp_saga()
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
-    " nnoremap <silent> gh :Lspsaga lsp_finder<CR>
-    " nnoremap <silent> ca :Lspsaga code_action<CR>
-    " vnoremap <silent> ca :<C-U>Lspsaga range_code_action<CR>
-    " nnoremap <silent> K :Lspsaga hover_doc<CR>
-    " nnoremap <silent> gs :Lspsaga signature_help<CR>
-    " nnoremap <silent> rn :Lspsaga rename<CR>
-    " nnoremap <silent> gd :Lspsaga preview_definition<CR>
-    " nnoremap <silent> cd :Lspsaga show_line_diagnostics<CR>
-    " nnoremap <silent> } :Lspsaga diagnostic_jump_next<CR>
-    " nnoremap <silent> { :Lspsaga diagnostic_jump_prev<CR>
-    " nnoremap <silent> <A-d> :Lspsaga open_floaterm<CR>
-    " tnoremap <silent> <A-d> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
-    nnoremap gd :lua require'telescope.builtin'.lsp_definitions{}<cr>
-    nnoremap gD :lua require'telescope.builtin'.lsp_implementations{}<cr>
-    nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
-    nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
-    vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
+    " inoremap <silent> <c-g>h <Cmd>:Lspsaga lsp_finder<CR>
+    inoremap <silent> <c-g>a <Cmd>:Lspsaga code_action<CR>
+    inoremap <silent> <c-g>k <Cmd>:Lspsaga hover_doc<CR>
+    inoremap <silent> <c-g>s <Cmd>:Lspsaga signature_help<CR>
+    inoremap <silent> <c-g>r <Cmd>:Lspsaga rename<CR>
+    "inoremap <silent> <c-g>d <Cmd>:Lspsaga preview_definition<CR>
+    "inoremap <silent> <c-g>g <Cmd>:Lspsaga show_line_diagnostics<CR>
+    "inoremap <silent> <c-g>] <Cmd>:Lspsaga diagnostic_jump_next<CR>
+    "inoremap <silent> <c-g>[ <Cmd>:Lspsaga diagnostic_jump_prev<CR>
+    "inoremap <silent> <c-`> <Cmd>:Lspsaga open_floaterm<CR>
+    "tnoremap <silent> <c-`> <C-\><C-n>:Lspsaga close_floaterm<CR>
+
+    inoremap <c-g>d <Cmd>:lua require'telescope.builtin'.lsp_definitions{}<cr>
+    inoremap <c-g>D <Cmd>:lua require'telescope.builtin'.lsp_implementations{}<cr>
+    inoremap <c-g>g <Cmd>:lua require'telescope.builtin'.diagnostics{ bufnr = 0 }<cr>
+    "nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
+    "nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
+    "vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
     inoremap <C-S-p> <Cmd>lua require'telescope.builtin'.keymaps{}<cr>
 
@@ -1791,7 +1795,7 @@ EOF
     " set shortmess+=c
 
     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-    inoremap <c-c> <ESC>
+    inoremap <silent> <c-c> <C-o>:startinsert<cr>
 
     "imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
     "imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
@@ -1955,7 +1959,7 @@ EOF
     nnoremap <A-Up> :lua require('smart-splits').move_cursor_up()<CR>
     nnoremap <A-Right> :lua require('smart-splits').move_cursor_right()<CR>
 
-    nnoremap <C-U> :MundoToggle<CR>
+    inoremap <C-S-U> <Cmd>:MundoToggle<CR>
 
     set redrawtime=3000
 
@@ -2076,7 +2080,7 @@ EOF
           #undotree
           vim-better-whitespace
           vim-jsbeautify
-          vim-visual-multi
+          #vim-visual-multi
           #vim-pasta
           #vimPlugins.ctrlsf-vim
           #ctrlp
@@ -2107,7 +2111,7 @@ EOF
           vim-rsi
           vim-signify
           #vimPlugins.vim-perforce
-          vimPlugins.lsp_signature-nvim
+          #vimPlugins.lsp_signature-nvim
           vimPlugins.git-blame-vim
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
@@ -2147,6 +2151,7 @@ EOF
           telescope-frecency-nvim
           nvim-treesitter-context
           vimPlugins.novim-mode
+          vimPlugins.lspsaga-nvim
         ];
         opt = [
         ];
