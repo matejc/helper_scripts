@@ -1172,7 +1172,8 @@ require("neo-tree").setup({
     },
     follow_current_file = true, -- This will find and focus the file in the active buffer every
                                  -- time the current file is changed while the tree is open.
-    hijack_netrw_behavior = "open_default", -- netrw disabled, opening a directory opens neo-tree
+    hijack_netrw_behavior = "disabled",
+                          -- "open_default", -- netrw disabled, opening a directory opens neo-tree
                                             -- in whatever position is specified in window.position
                           -- "open_current",  -- netrw disabled, opening a directory opens within the
                                             -- window like netrw would, regardless of window.position
@@ -2040,6 +2041,44 @@ EOF
     cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
     cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
 
+    inoremap <C-S-o> <Cmd>:Lexplore<cr>
+    nnoremap <C-S-o> <Cmd>:Lexplore<cr>
+
+    function! NetrwMapping()
+        " noremap <buffer> <C-l> <C-W>l
+        " noremap <buffer> <C-h> <C-W>h
+
+        " let g:netrw_banner = 0 " remove the banner at the top
+        let g:netrw_liststyle = 3  " default directory view. Cycle with i
+        let g:netrw_browse_split = 4
+        let g:netrw_altv = 1
+        let g:netrw_sort_sequence = '[\/]$,*'
+
+        let g:netrw_list_hide= '.*.swp$,
+                \ *.pyc$,
+                \ *.log$,
+                \ *.o$,
+                \ *.xmi$,
+                \ *.swp$,
+                \ *.bak$,
+                \ *.pyc$,
+                \ *.class$,
+                \ *.jar$,
+                \ *.war$,
+                \ *__pycache__*'
+
+    endfunction
+
+    augroup netrw_mapping
+        autocmd!
+        autocmd filetype netrw call NetrwMapping()
+    augroup END
+
+    augroup AutoDeleteNetrwHiddenBuffers
+      au!
+      au FileType netrw setlocal bufhidden=wipe
+    augroup end
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -2221,6 +2260,8 @@ in [{
       pkgs.gnugrep
       pkgs.python3Packages.yamllint
       pkgs.ripgrep
+      pkgs.sshpass
+      pkgs.openssh
     ]}:$PATH"
     export CC="${pkgs.stdenv.cc}/bin/cc"
     export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
