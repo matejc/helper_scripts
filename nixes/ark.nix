@@ -3,7 +3,7 @@ let
   cfg = config.services.ark;
 in
 {
-  options = {
+  options.services.ark = {
     enable = lib.mkEnableOption "Enable ARK Dedicated Server";
     password = lib.mkOption {
       type = lib.types.str;
