@@ -30,8 +30,7 @@ in
     networking = {
       firewall = {
         allowedTCPPorts = [ 27020 ];
-        allowedUDPPorts = [ 27015 ];
-        allowedUDPPortRanges = [ { from = 7777; to = 7782; } ];
+        allowedUDPPorts = [ 7779 27015 ];
       };
     };
 
@@ -48,7 +47,7 @@ in
           /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer
       '';
       script = ''
-        /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=matejc?ServerPassword=${cfg.password}?ServerAdminPassword=${cfg.adminPassword}?MaxPlayers=10?bPvEDisableFriendlyFire=true?serverPVE=true?RCONPort=27020?RCONEnabled=True -UseBattleye -server -log
+        /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=matejc?ServerPassword=${cfg.password}?ServerAdminPassword=${cfg.adminPassword}?MaxPlayers=10?bPvEDisableFriendlyFire=true?serverPVE=true?Port=7779?QueryPort=27015?RCONPort=27020?RCONEnabled=True -UseBattleye -server -log
       '';
       serviceConfig = {
         Nice = "-5";
