@@ -1,4 +1,7 @@
-{config, pkgs, lib, ...}: {
+{config, pkgs, lib, ...}:
+let
+  cfg = config.services.ark;
+in {
   users.users.ark = {
     home = "/var/lib/ark";
     createHome = true;
@@ -29,7 +32,7 @@
       ${pkgs.patchelf}/bin/patchelf --set-interpreter ${pkgs.glibc}/lib/ld-linux-x86-64.so.2 /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer
     '';
     script = ''
-      /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=matejc?ServerPassword=${services.ark.password}?ServerAdminPassword=${services.ark.adminPassword}?MaxPlayers=10 -server -log
+      /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=matejc?ServerPassword=${cfg.password}?ServerAdminPassword=${cfg.adminPassword}?MaxPlayers=10 -server -log
     '';
     serviceConfig = {
       Nice = "-5";
