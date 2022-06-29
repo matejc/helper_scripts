@@ -179,6 +179,7 @@ in lib.mkMerge ([{
             #{ command = "border pixel 1"; criteria = { class = "Firefox"; }; }
             #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
+            { command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
           ];
         };
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
