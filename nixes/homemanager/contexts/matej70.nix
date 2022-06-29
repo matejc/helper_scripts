@@ -93,10 +93,12 @@ let
       }];
     };
     services = [
-      #{ name = "kanshi"; delay = 2; group = "always"; }
+      { name = "kanshi"; delay = 2; group = "always"; }
+      { name = "syncthingtray"; delay = 2; group = "always"; }
     ];
     config = {};
     home-configuration = {
+      home.stateVersion = "20.09";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.keepassxc}"; }
