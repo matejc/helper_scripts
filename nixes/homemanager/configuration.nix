@@ -45,7 +45,6 @@ in lib.mkMerge ([{
     home.packages = [
       font-awesome
       (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
-      corefonts
       git
       qt5Full
       socat
@@ -108,6 +107,9 @@ in lib.mkMerge ([{
     programs.home-manager = {
       enable = true;
     };
+    home.username = "matejc";
+    home.homeDirectory = "/home/matejc";
+    home.stateVersion = "21.05";
 
     services.kanshi = {
       #enable = true;
@@ -386,7 +388,14 @@ in lib.mkMerge ([{
       . "${pkgs.nix}/etc/profile.d/nix.sh"
       . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
     '';
-    loginExtra = readFile (dotFileAt "zsh.nix" 1);
+    loginExtra = ''
+      ${readFile (dotFileAt "zsh.nix" 1)}
+
+      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty3" ] && [ -f "$(${pkgs.which}/bin/which startsway)" ]
+      then
+        exec dbus-run-session startsway
+      fi
+    '';
   };
   programs.starship = {
     enable = true;

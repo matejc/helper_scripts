@@ -2,7 +2,7 @@
 let
 
   nixGL = (import (builtins.fetchGit {
-    url = git://github.com/guibou/nixGL;
+    url = http://github.com/guibou/nixGL;
     ref = "refs/heads/main";
   }) { enable32bits = false; }).auto;
 
@@ -17,7 +17,7 @@ let
     font = {
       family = "SauceCodePro Nerd Font Mono";
       style = "Regular";
-      size = 10;
+      size = 10.0;
     };
     term = null;
     terminal = null;

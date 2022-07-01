@@ -49,8 +49,8 @@ in
 
     systemd = {
       services.wayvnc = {
-        wantedBy = [ "multi-user.target" ]; 
-        after = [ "sway.service" ];        
+        wantedBy = [ "multi-user.target" ];
+        after = [ "sway.service" ];
         description = "wayvnc service";
         serviceConfig = {
           Type = "simple";
@@ -61,8 +61,8 @@ in
       };
 
       services.sway = {
-        wantedBy = [ "multi-user.target" ]; 
-        after = [ "network.target" ];        
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network.target" ];
         description = "headless sway session service";
         serviceConfig = {
           Type = "simple";

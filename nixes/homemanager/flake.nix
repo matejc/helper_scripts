@@ -18,6 +18,10 @@
       url = "github:nix-community/home-manager/master";
     };
     nur.url = "github:nix-community/NUR";
+    clearprimary = {
+      url = "github:matejc/clearprimary/main";
+      flake = false;
+    };
   };
 
   outputs = { self, ... }@inputs: {
@@ -32,6 +36,12 @@
         system = "x86_64-linux";
         homeDirectory = "/home/${username}";
         username = "matejc";
+      };
+      nixcode = inputs.home-manager.lib.homeManagerConfiguration rec {
+        pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+        modules = [
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
+        ];
       };
     };
     nixosConfigurations = {
