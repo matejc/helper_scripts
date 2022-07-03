@@ -181,6 +181,7 @@ in lib.mkMerge ([{
             #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
             { command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
+            { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
           ];
         };
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);

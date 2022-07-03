@@ -58,8 +58,8 @@ let
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/chromium";
         editor = "${nano}/bin/nano";
-        launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
+        #launcher = dotFileAt "bemenu.nix" 0;
+        launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         window-size = dotFileAt "i3config.nix" 2;
         window-center = dotFileAt "i3config.nix" 3;
         i3-msg = "${profileDir}/bin/swaymsg";
