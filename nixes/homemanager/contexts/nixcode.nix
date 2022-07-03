@@ -92,6 +92,7 @@ let
     config = {};
     home-configuration = {
       services.nextcloud-client.enable = true;
+      home.stateVersion = "21.05";
     };
   };
 in

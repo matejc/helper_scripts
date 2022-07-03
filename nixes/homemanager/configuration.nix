@@ -109,7 +109,6 @@ in lib.mkMerge ([{
     };
     home.username = "matejc";
     home.homeDirectory = "/home/matejc";
-    home.stateVersion = "21.05";
 
     services.kanshi = {
       #enable = true;
