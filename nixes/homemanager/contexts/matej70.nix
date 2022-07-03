@@ -20,6 +20,7 @@ let
       "${inputs.helper_scripts}/dotfiles/dd.nix"
       "${inputs.helper_scripts}/dotfiles/sync.nix"
       "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
+      "${inputs.helper_scripts}/dotfiles/wofi.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -59,7 +60,8 @@ let
         browser = "${profileDir}/bin/chromium";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
-        launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
+        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
+        launcher = "${pkgs.wofi}/bin/wofi --show run";
         window-size = dotFileAt "i3config.nix" 2;
         window-center = dotFileAt "i3config.nix" 3;
         i3-msg = "${profileDir}/bin/swaymsg";

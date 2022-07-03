@@ -53,6 +53,7 @@ in lib.mkMerge ([{
       zsh
       wl-clipboard
       xdg-utils
+      wofi
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {

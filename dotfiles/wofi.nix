@@ -4,37 +4,49 @@
   source = pkgs.writeText "wofi.conf" ''
     width=600
     height=400
-    colors=colors
     filter_rate=100
   '';
 } {
   target = "${variables.homeDir}/.config/wofi/style.css";
   source = pkgs.writeText "wofi.css" ''
 window {
-  border: 1px solid #00bcd4;
-  background-color: #222d32CC;
+  margin: 0px;
+  border: 1px solid #fb246f;
+  background-color: #272822;
 }
 
 #input {
   margin: 5px;
-  background-color: #222d32CC;
+  border: none;
+  color: #a0e300;
+  background-color: #32332b;
 }
 
 #inner-box {
   margin: 5px;
-  background-color: #222d32CC;
+  border: none;
+  background-color: #272822;
 }
 
 #outer-box {
-  background-color: #222d32CC;
+  margin: 5px;
+  border: none;
+  background-color: #272822;
 }
 
 #scroll {
-  background-color: #222d32CC;
+  margin: 0px;
+  border: none;
 }
 
 #text {
-  background-color: #222d32CC;
+  margin: 5px;
+  border: none;
+  color: #f8f8f2;
+}
+
+#entry:selected {
+  background-color: #32332b;
 }
   '';
 }]
