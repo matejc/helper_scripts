@@ -547,12 +547,12 @@ let
     inoremap <C-k> <C-o>"_dd
     vnoremap <C-k> "_d
 
-    nnoremap <C-x> dd
-    inoremap <C-x> <esc>ddi
-    vnoremap <C-x> d
+    " nnoremap <C-x> dd
+    " inoremap <C-x> <esc>ddi
+    " vnoremap <C-x> d
 
-    nmap <C-a> gg0vG$
-    imap <C-a> <esc>gg0vG$
+    " nnoremap <C-a> gg0vG$
+    " inoremap <C-a> <C-o>gg0vG$
 
     inoremap <C-c> <C-o>yy
     nnoremap <C-c> yy
@@ -1796,7 +1796,7 @@ EOF
     " set shortmess+=c
 
     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-    inoremap <silent> <c-c> <C-o>:startinsert<cr>
+    " inoremap <silent> <c-c> <C-o>:startinsert<cr>
 
     "imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
     "imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
@@ -1999,6 +1999,7 @@ EOF
     let g:novim_mode_use_editor_fixes = 0
     let g:novim_mode_use_pane_controls = 0
     let g:novim_mode_use_general_app_shortcuts = 0
+    let g:novim_mode_use_copypasting = 0
 
     inoremap <silent> <M-Left>  <C-O><C-W><Left>
     snoremap <silent> <M-Left>  <Esc><C-W><Left>
@@ -2034,6 +2035,26 @@ EOF
 
     inoremap <M-o> <C-O>
     snoremap <M-o> <C-O>
+
+    "inoremap <C-V> <C-O>:call novim_mode#Paste()<CR>
+    " The odd <Space><Backspace> here is because one-off Normal Mode commands
+    " don't seem to work as expected when some text is selected. Also just
+    " using <Backspace> on its own seems to cause weird behaviour too.
+    "snoremap <C-V> <Space><Backspace><C-O>:call novim_mode#Paste()<CR>
+    "cnoremap <C-V> <C-R>"
+    "snoremap <C-C> <C-O>"+ygv
+    "snoremap <C-X> <C-O>"+xi
+
+    inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
+    inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>
+    inoremap <silent> <S-Up> <C-O>:call novim_mode#EnterSelectionMode('up')<CR>
+    inoremap <silent> <S-Down> <C-O>:call novim_mode#EnterSelectionMode('down')<CR>
+    inoremap <silent> <S-Home> <C-O>:call novim_mode#EnterSelectionMode('home')<CR>
+    inoremap <silent> <S-End> <C-O>:call novim_mode#EnterSelectionMode('end')<CR>
+
+    " CTRL-A for selecting all text
+    " inoremap <silent> <C-a> <C-O>:call novim_mode#EnterSelectionMode('all')<CR>
+    " snoremap <C-a> <C-O><C-C>gggH<C-O>G
 
     set wildcharm=<C-Z>
     cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
