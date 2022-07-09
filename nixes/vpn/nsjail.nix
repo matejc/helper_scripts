@@ -6,7 +6,7 @@
 , nameservers ? [ "1.1.1.1" ]
 , vpnStart ? null
 , vpnStop ? "pkill openvpn"
-, openvpnConfig ? "/etc/openvpn/mullvad_fi_hel.conf"
+, openvpnConfig ? "/etc/openvpn/all.conf"
 , run ? null
 , runAsUser ? null
 , cmds ? [
@@ -23,13 +23,15 @@
   { from = "${homeDir}/.config/kitty"; to = "${homeDir}/.config/kitty"; }
   { from = "${homeDir}/.zshrc"; to = "${homeDir}/.zshrc"; }
   { from = "${homeDir}/.zlogin"; to = "${homeDir}/.zlogin"; }
-  { from = "${homeDir}/.vpn/mullvad_config_linux_fi_hel"; to = "/etc/openvpn"; }
+  { from = "${homeDir}/.vpn/openvpns"; to = "/etc/openvpn"; }
 ]
 , symlinks ? [ ]
 , variables ? [
   { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
 ]
 , waylandDisplay ? "wayland-1"
+, caps ? [ ]
+, extraArgs ? ""
 , tmpfs ? [ ]
 , homeDir ? "/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
@@ -252,11 +254,13 @@ let
       --env USER=${user} \
       --env PATH=${binPaths} \
       --env WAYLAND_DISPLAY=${waylandDisplay} \
+      ${concatMapStringsSep " " (c: "--cap ${c}") caps} \
       ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
       ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
       ${concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
       ${concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
       ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
+      ${extraArgs} \
       ${unshareCmd}
   '';
 
