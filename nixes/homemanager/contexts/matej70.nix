@@ -97,6 +97,7 @@ let
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
       { name = "syncthingtray"; delay = 2; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
     ];
     config = {};
     home-configuration = {

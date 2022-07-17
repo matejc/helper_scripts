@@ -131,7 +131,8 @@ in lib.mkMerge ([{
           "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
         };
-        bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
+        #bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
+        bars = [ ];
         colors = {
           background = "#ff0000";
           focused = { background = "#272822"; border = "#272822"; childBorder = "#66D9EF"; indicator = "#66D9EF"; text = "#A6E22E"; };
@@ -361,11 +362,12 @@ in lib.mkMerge ([{
       };
     };
   };
-  #programs.waybar.systemd.enable = true;
-  #programs.waybar.systemd.target = "sway-session.target";
+  programs.waybar.systemd.enable = true;
+  programs.waybar.systemd.target = "sway-session.target";
 
   programs.mako = {
     enable = true;
+    font = "${context.variables.font.family} ${context.variables.font.style} ${toString context.variables.font.size}";
   };
 
   #services.nextcloud-client.enable = true;
