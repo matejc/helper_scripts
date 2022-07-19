@@ -21,6 +21,7 @@ let
       "${inputs.helper_scripts}/dotfiles/sync.nix"
       "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
+      "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
