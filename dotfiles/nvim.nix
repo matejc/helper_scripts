@@ -503,8 +503,8 @@ let
     nnoremap <silent> <c-cr> o
     inoremap <silent> <c-cr> <C-o>o
 
-    inoremap <C-u> <esc>ui
-    nnoremap <C-u> u
+    "inoremap <C-u> <esc>ui
+    "nnoremap <C-u> u
     "nno <C-r> <C-R>
     "ino <C-r> <esc><C-R>
     inoremap <C-z> <esc>ui
@@ -515,7 +515,7 @@ let
     inoremap <A-r> <C-R>i
     nnoremap <A-r> <C-R>
 
-    "nnoremap <C-U> <esc>:UndotreeToggle<CR>
+    inoremap <C-S-U> <Cmd>:UndotreeToggle<CR>
 
     function! PyBeautify()
       :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
@@ -1960,8 +1960,6 @@ EOF
     nnoremap <A-Up> :lua require('smart-splits').move_cursor_up()<CR>
     nnoremap <A-Right> :lua require('smart-splits').move_cursor_right()<CR>
 
-    inoremap <C-S-U> <Cmd>:MundoToggle<CR>
-
     set redrawtime=3000
 
     set re=2
@@ -2185,7 +2183,8 @@ EOF
           vimPlugins.galaxyline-nvim
           vimPlugins.lush-nvim
           #vimPlugins.gruvbox-nvim
-          vim-mundo
+          #vim-mundo
+          undotree
           telescope-fzy-native-nvim
           vimPlugins.nvim-cmp
           vimPlugins.cmp-buffer
