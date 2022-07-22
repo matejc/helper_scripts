@@ -14,6 +14,23 @@ in
       type = lib.types.str;
       description = "Server Admin password";
     };
+    sessionName = lib.mkOption {
+      type = lib.types.str;
+      description = "Session Name";
+    };
+    mapName = lib.mkOption {
+      type = lib.types.str;
+      description = "Server Map Name";
+      default = "TheIsland";
+    };
+    settings = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      description = "Server Settings";
+      default = [
+        "MaxPlayers=10" "bPvEDisableFriendlyFire=true" "serverPVE=true" "Port=7779" "QueryPort=27015" "RCONPort=27020" "RCONEnabled=True"
+        "XPMultiplier=2.0" "PlayerCharacterFoodDrainMultiplier=0.1" "PlayerCharacterWaterDrainMultiplier=0.3" "PlayerDamageMultiplier=2.0" "PlayerResistanceMultiplier=0.5"
+      ];
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -47,7 +64,7 @@ in
           /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer
       '';
       script = ''
-        /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen?SessionName=matejc?ServerPassword=${cfg.password}?ServerAdminPassword=${cfg.adminPassword}?MaxPlayers=10?bPvEDisableFriendlyFire=true?serverPVE=true?Port=7779?QueryPort=27015?RCONPort=27020?RCONEnabled=True -UseBattleye -server -log
+        /var/lib/ark/ARKDedicatedServer/ShooterGame/Binaries/Linux/ShooterGameServer ${cfg.mapName}?listen?SessionName=${cfg.sessionName}?ServerPassword=${cfg.password}?ServerAdminPassword=${cfg.adminPassword}?${lib.concatMapStringsSep "?" (x: "${x}") cfg.settings} -UseBattleye -server
       '';
       serviceConfig = {
         Nice = "-5";
