@@ -131,8 +131,16 @@ in lib.mkMerge ([{
           "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
         };
-        #bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
         bars = [ ];
+        #bars = [ {
+        #  fonts = {
+        #    names = [ context.variables.font.family ];
+        #    style = context.variables.font.style;
+        #    size = context.variables.font.size;
+        #  };
+        #  colors.background = "#32302f";
+        #  statusCommand = "i3status-rs ${context.variables.homeDir}/.config/i3status-rust/config-default.toml";
+        #} ];
         colors = {
           background = "#ff0000";
           focused = { background = "#272822"; border = "#272822"; childBorder = "#66D9EF"; indicator = "#66D9EF"; text = "#A6E22E"; };
@@ -215,6 +223,56 @@ in lib.mkMerge ([{
   };
 
   #services.blueman-applet.enable = true;
+
+  programs.i3status-rust = {
+    enable = true;
+    bars.default = {
+      blocks = [
+        {
+           block = "disk_space";
+           path = "/";
+           alias = "/";
+           info_type = "available";
+           unit = "GB";
+           interval = 60;
+           warning = 20.0;
+           alert = 10.0;
+         }
+         {
+           block = "memory";
+           display_type = "memory";
+           format_mem = "{mem_used_percents}";
+           format_swap = "{swap_used_percents}";
+         }
+         {
+           block = "cpu";
+           interval = 1;
+         }
+         {
+           block = "load";
+           interval = 1;
+           format = "{1m}";
+         }
+         { block = "sound"; }
+         {
+           block = "time";
+           interval = 60;
+           format = "%a %d.%m.%Y %R";
+         }
+      ];
+      settings = {
+        theme =  {
+          name = "solarized-dark";
+          overrides = {
+            idle_bg = "#32302f";
+            idle_fg = "#abcdef";
+          };
+        };
+      };
+      icons = "material-nf";
+      theme = "gruvbox-dark";
+    };
+  };
 
   programs.waybar.enable = true;
   programs.waybar.style = ''
@@ -335,7 +393,8 @@ in lib.mkMerge ([{
         tooltip-format = "{controller_alias}\t{controller_address}";
         tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
         tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
-        on-click-right = "${blueman}/bin/blueman-manager";
+        #on-click-right = "${blueman}/bin/blueman-manager";
+        on-click-right = "${blueberry}/bin/blueberry";
       };
       cpu = {
         format = "{icon}";
