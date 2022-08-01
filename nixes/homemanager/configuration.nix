@@ -463,6 +463,7 @@ in lib.mkMerge ([{
   programs.starship = {
     enable = true;
     settings = {
+      command_timeout = 1000;
       character.success_symbol = "[❯](bold green) ";
       character.error_symbol = "[✗](bold red) ";
     };
