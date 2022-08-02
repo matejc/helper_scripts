@@ -353,7 +353,7 @@ in lib.mkMerge ([{
       layer = "top";
       position = "bottom";
       height = 26;
-      modules-left = [ "sway/workspaces" "sway/mode" "wlr/taskbar" "sway/window" ];
+      modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
       modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
