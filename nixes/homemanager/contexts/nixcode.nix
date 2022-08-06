@@ -25,6 +25,7 @@ let
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
       "${inputs.helper_scripts}/dotfiles/kitty.nix"
       "${inputs.helper_scripts}/dotfiles/startup.nix"
+      "${inputs.helper_scripts}/dotfiles/wofi.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -52,7 +53,7 @@ let
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
-        size = 10.0;
+        size = 11.0;
       };
       i3-msg = "${programs.i3-msg}";
       term = null;
@@ -63,8 +64,9 @@ let
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/chromium --ozone-platform-hint=auto";
         editor = "${nano}/bin/nano";
-        launcher = dotFileAt "bemenu.nix" 0;
+        #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
+        launcher = "${pkgs.wofi}/bin/wofi --show run";
         window-size = dotFileAt "i3config.nix" 2;
         window-center = dotFileAt "i3config.nix" 3;
         i3-msg = "${profileDir}/bin/swaymsg";
@@ -93,6 +95,7 @@ let
     home-configuration = {
       services.nextcloud-client.enable = true;
       home.stateVersion = "21.05";
+      systemd.user.services.nextcloud-client.environment.QT_QPA_PLATFORM = "wayland";
     };
   };
 in

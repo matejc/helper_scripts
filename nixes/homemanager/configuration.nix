@@ -449,6 +449,8 @@ in lib.mkMerge ([{
       ${readFile (dotFileAt "zsh.nix" 0)}
 
       . "${pkgs.nix}/etc/profile.d/nix.sh"
+
+      unset __HM_SESS_VARS_SOURCED
       . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
     '';
     loginExtra = ''

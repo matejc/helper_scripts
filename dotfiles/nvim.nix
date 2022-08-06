@@ -58,6 +58,7 @@ let
     "groovyls"
     "rust_analyzer"
     "ltex"
+    "terraform_lsp"
   ];
 
   mkNvimLsp = enabled:
@@ -341,6 +342,20 @@ let
       nvim_lsp["ltex"].setup {
         on_attach = on_attach;
         cmd = {"${ltex-ls}/bin/ltex-ls"};
+        capabilities = capabilities;
+      }
+    '';
+    terraformls = ''
+      nvim_lsp["terraformls"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.terraform-ls}/bin/terraform-ls", "serve"};
+        capabilities = capabilities;
+      }
+    '';
+    terraform_lsp = ''
+      nvim_lsp["terraform_lsp"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.terraform-lsp}/bin/terraform-lsp"};
         capabilities = capabilities;
       }
     '';
@@ -1665,7 +1680,8 @@ require('smart-splits').ignored_filetypes = {
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = "all",
+  -- ensure_installed = "all",
+  auto_install = false,
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -2151,7 +2167,7 @@ EOF
           #vimPlugins.omnisharp-vim
           robotframework-vim
           sleuth
-          vimPlugins.vim-hashicorp-tools
+          #vimPlugins.vim-hashicorp-tools
           #Jenkinsfile-vim-syntax
           vimPlugins.neovim-gui-shim
           #vim-vinegar
