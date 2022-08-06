@@ -97,8 +97,9 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "syncthingtray"; delay = 2; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
+      { name = "syncthingtray"; delay = 3; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "waybar"; delay = 1; group = "always"; }
     ];
     config = {};
     home-configuration = {
@@ -111,7 +112,6 @@ let
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
-      services.blueman-applet.enable = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.syncthing.tray.enable = true;
