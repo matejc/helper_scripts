@@ -119,6 +119,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
+      home.packages = [ super-slicer solvespace ];
     };
   };
 in
