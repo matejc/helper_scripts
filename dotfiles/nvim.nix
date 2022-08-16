@@ -58,7 +58,7 @@ let
     "groovyls"
     "rust_analyzer"
     "ltex"
-    "terraform_lsp"
+    "terraformls"
   ];
 
   mkNvimLsp = enabled:
@@ -530,7 +530,7 @@ let
     inoremap <A-r> <C-R>i
     nnoremap <A-r> <C-R>
 
-    inoremap <C-S-U> <Cmd>:UndotreeToggle<CR>
+    inoremap <C-U> <Cmd>:UndotreeToggle<CR>
 
     function! PyBeautify()
       :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
@@ -1311,10 +1311,20 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
   }
 )
 
-local fileinfo = require("galaxyline.providers.fileinfo")
-local lspclient = require("galaxyline.providers.lsp")
 local gl = require('galaxyline')
-local colors = require('galaxyline.themes.colors').gruvbox
+local colors = {
+  bg = "#32302f",
+  fg = "#d4be98",
+  fg_alt = "#ddc7a1",
+  yellow = "#d8a657",
+  cyan = "#89b482",
+  green = "#a9b665",
+  orange = "#e78a4e",
+  magenta = "#d3869b",
+  blue = "#7daea3",
+  red = "#ea6962",
+  violet = "#a9a1e1",
+}
 local condition = require('galaxyline.condition')
 local gls = gl.section
 gl.short_line_list = {'NvimTree','vista','dbui','packer'}
@@ -1354,7 +1364,7 @@ gls.left[4] ={
   FileIcon = {
     provider = 'FileIcon',
     condition = condition.buffer_not_empty,
-    highlight = {require('galaxyline.providers.fileinfo').get_file_icon_color,colors.bg},
+    highlight = {require('galaxyline.provider_fileinfo').get_file_icon_color,colors.bg},
   },
 }
 
@@ -2014,6 +2024,7 @@ EOF
     let g:novim_mode_use_pane_controls = 0
     let g:novim_mode_use_general_app_shortcuts = 0
     let g:novim_mode_use_copypasting = 0
+    let g:novim_mode_use_undoing = 0
 
     inoremap <silent> <M-Left>  <C-O><C-W><Left>
     snoremap <silent> <M-Left>  <Esc><C-W><Left>
@@ -2058,6 +2069,18 @@ EOF
     "cnoremap <C-V> <C-R>"
     "snoremap <C-C> <C-O>"+ygv
     "snoremap <C-X> <C-O>"+xi
+
+    " Use <M-o><C-Z> for native terminal backgrounding.
+    " The <Esc>s used in the `snoremap` commands seem to prevent the selection
+    " process itself being put in the undo history - so now the undo actually undoes
+    " the last *text* activity.
+    inoremap <silent> <C-Z> <C-O>u
+    snoremap <silent> <C-Z> <Esc><C-O>u
+    vnoremap <silent> <C-Z> <Esc><C-O>u
+    " Redo
+    inoremap <silent> <C-Y> <C-O><C-R>
+    snoremap <silent> <C-Y> <Esc><C-O><C-R>
+    vnoremap <silent> <C-Y> <Esc><C-O><C-R>
 
     inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
     inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>

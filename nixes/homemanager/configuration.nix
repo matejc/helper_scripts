@@ -431,7 +431,7 @@ in lib.mkMerge ([{
   };
 
   #services.nextcloud-client.enable = true;
-  services.nextcloud-client.startInBackground = true;
+  #services.nextcloud-client.startInBackground = true;
   #systemd.user.services.nextcloud-client.Service.ExecStart = mkForce (exec "${nextcloud-client}/bin/nextcloud --background");
 
   services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" ];

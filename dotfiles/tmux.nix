@@ -112,7 +112,7 @@
     # Right side of status bar
     set -g status-right-style bg="#272822",fg="#66D9EF"
     set -g status-right-length 150
-    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold]${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles}${if variables.temperatureFiles == [] then '''' else '' / ''}#(date '+%H:%M %a %d of %b') "
+    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold]${lib.concatMapStringsSep '', '' (i: ''#(echo $(( $(cat ${i}) / 1000 ))°C)'') variables.temperatureFiles} / #(echo $(batstatus)%) ${if variables.temperatureFiles == [] then '''' else '' / ''}#(date '+%H:%M %a %d of %b') "
 
     # Window status
     set -g window-status-format " #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#{pane_current_command} "

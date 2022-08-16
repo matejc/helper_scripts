@@ -23,6 +23,7 @@ let
       "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
       "${inputs.helper_scripts}/dotfiles/comma.nix"
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
+      "${inputs.helper_scripts}/dotfiles/batstatus.nix"
       "${inputs.helper_scripts}/dotfiles/kitty.nix"
       "${inputs.helper_scripts}/dotfiles/startup.nix"
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
@@ -38,6 +39,7 @@ let
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
+      batteries = [ "0" ];
       temperatureFiles = [ hwmonPath ];
       hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
       lockscreen = "${homeDir}/bin/lockscreen";
@@ -93,9 +95,12 @@ let
     services = [ ];
     config = {};
     home-configuration = {
-      services.nextcloud-client.enable = true;
+      #services.nextcloud-client.enable = true;
       home.stateVersion = "21.05";
-      systemd.user.services.nextcloud-client.environment.QT_QPA_PLATFORM = "wayland";
+      #systemd.user.services.nextcloud-client.environment.QT_QPA_PLATFORM = "wayland";
+      services.syncthing.enable = true;
+      services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
+      services.syncthing.tray.enable = false;
     };
   };
 in
