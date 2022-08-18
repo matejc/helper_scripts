@@ -377,12 +377,12 @@ final: prev:
 
   nvim-treesitter = buildVimPluginFrom2Nix {
     pname = "nvim-treesitter";
-    version = "2022-08-15";
+    version = "2022-08-17";
     src = fetchFromGitHub {
       owner = "nvim-treesitter";
       repo = "nvim-treesitter";
-      rev = "a0251c989642afdef26fe0d147bdf6f760aa32ac";
-      sha256 = "02kq0npyksmjz2i27yfvnm3si7jmv3wpfmna6kfc9d5xac77zclw";
+      rev = "116c72f5c2e4e63bbf0b7d698f9d35e36848605a";
+      sha256 = "0b0rp87blax3f0yv8qcwzry46lja0a6v39vb3xcg01arx5411qaj";
     };
     meta.homepage = "https://github.com/nvim-treesitter/nvim-treesitter/";
   };
@@ -450,12 +450,12 @@ final: prev:
 
   sonokai = buildVimPluginFrom2Nix {
     pname = "sonokai";
-    version = "2022-08-09";
+    version = "2022-08-16";
     src = fetchFromGitHub {
       owner = "sainnhe";
       repo = "sonokai";
-      rev = "65f016108ac95c99fa9d2885af5440ffc5043ec6";
-      sha256 = "1gxzrqn1jicihjjygf1iz32sikm5mwhkkxy0pna572sirlw5hcpc";
+      rev = "003e5798eb7f16b35ab79d93279ba484b66fd353";
+      sha256 = "0gfz2rgyglaxrvq7d8mg2y3fqdvf87clyrrsvkc9ladccihfvg1w";
     };
     meta.homepage = "https://github.com/sainnhe/sonokai/";
   };
@@ -578,6 +578,18 @@ final: prev:
       sha256 = "1d9wr97a02j717sbh55xk7xam6d97l5ggi0ymc67q64hrq8nsaai";
     };
     meta.homepage = "https://github.com/hrsh7th/vim-vsnip/";
+  };
+
+  image-nvim = buildVimPluginFrom2Nix {
+    pname = "image.nvim";
+    version = "2022-08-16";
+    src = fetchFromGitHub {
+      owner = "samodostal";
+      repo = "image.nvim";
+      rev = "79bb95668af740eb37cd25b2646aa589c9e5effe";
+      sha256 = "14jbizx5863g8ji2zjqpw7clzwby3yn3j1vi7dmk0k3lk67akybb";
+    };
+    meta.homepage = "https://github.com/samodostal/image.nvim/";
   };
 
 

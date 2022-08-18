@@ -27,6 +27,7 @@ let
       "${inputs.helper_scripts}/dotfiles/kitty.nix"
       "${inputs.helper_scripts}/dotfiles/startup.nix"
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
+      "${inputs.helper_scripts}/dotfiles/wezterm.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -62,7 +63,7 @@ let
       programs = {
         filemanager = "${cinnamon.nemo}/bin/nemo";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${profileDir}/bin/nixGL ${pkgs.wezterm}/bin/wezterm";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/chromium --ozone-platform-hint=auto";
         editor = "${nano}/bin/nano";
@@ -101,6 +102,10 @@ let
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.syncthing.tray.enable = false;
+      programs.obs-studio = {
+        enable = true;
+        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
+      };
     };
   };
 in

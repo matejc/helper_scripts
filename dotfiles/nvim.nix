@@ -1542,6 +1542,12 @@ function getTableSize(t)
     return count
 end
 
+vim.opt.termguicolors = true
+
+require("themer").setup({
+  colorscheme = "gruvbox",
+})
+
 require("bufferline").setup{
   options = {
     numbers = "none",
@@ -1663,9 +1669,9 @@ require("scrollbar").setup({
 })
 -- require("hlslens").setup()
 -- require("scrollbar.handlers.search").setup()
-require("themer").setup({
-  colorscheme = "gruvbox",
-})
+-- require("themer").setup({
+--   colorscheme = "gruvbox",
+-- })
 
 -- require("regexplainer").setup({
 --   mode = "narrative",
@@ -1771,6 +1777,12 @@ require'treesitter-context'.setup{
 
 local saga = require 'lspsaga'
 saga.init_lsp_saga()
+
+-- require('image').setup {
+--   min_padding = 5,
+--   show_label = true,
+--   render_using_dither = true,
+-- }
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
