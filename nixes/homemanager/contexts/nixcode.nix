@@ -63,7 +63,7 @@ let
       programs = {
         filemanager = "${cinnamon.nemo}/bin/nemo";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${profileDir}/bin/nixGL ${pkgs.wezterm}/bin/wezterm";
+        terminal = "${profileDir}/bin/nixGL ${pkgs.wezterm}/bin/wezterm start --always-new-process";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/chromium --ozone-platform-hint=auto";
         editor = "${nano}/bin/nano";

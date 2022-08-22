@@ -22,6 +22,7 @@ let
       "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
       "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
+      "${inputs.helper_scripts}/dotfiles/wezterm.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -56,7 +57,8 @@ let
       programs = {
         filemanager = "${cinnamon.nemo}/bin/nemo";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        #terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/chromium";
         editor = "${nano}/bin/nano";
@@ -107,6 +109,7 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.keepassxc}"; }
+        { command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
       services.kanshi.enable = true;
       services.swayidle.enable = true;

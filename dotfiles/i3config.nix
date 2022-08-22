@@ -546,10 +546,10 @@
     RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[] | select(.marks[0]=="I3WM_SCRATCHPAD").visible')
     if [ -z "$RESULT" ]
     then
-      ${variables.programs.terminal} --title=ScratchTerm $@ &
+      ${variables.programs.terminal} $@ &
       sleep 0.5
       WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
-      ${variables.i3-msg} "[title=\"^ScratchTerm.*\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
+      ${variables.i3-msg} "[app_id=\"^ScratchTerm\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
     elif [[ "$RESULT" = "true" ]]
     then
       ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] move scratchpad'
