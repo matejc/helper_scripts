@@ -586,9 +586,9 @@ let
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
 
-    nnoremap <C-d> :copy .<cr>
-    vnoremap <C-d> :copy '><cr>
-    inoremap <C-d> <c-o>:copy .<cr>
+    nnoremap <C-S-d> :copy .<cr>
+    vnoremap <C-S-d> :copy '><cr>
+    inoremap <C-S-d> <c-o>:copy .<cr>
 
     vnoremap <PageUp> 10<up>
     vnoremap <PageDown> 10<down>
@@ -1830,8 +1830,6 @@ EOF
     nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
     vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
     inoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
-
-    inoremap <C-S-d> <Cmd>lua require'telescope.builtin'.diagnostics{ bufnr=0, disable_devicons = true }<cr>
 
     " nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
     inoremap <C-S-g> <C-o>:call gitblame#echo()<CR>
