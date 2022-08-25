@@ -56,6 +56,8 @@
         font_size = ${toString variables.font.size},
       },
       hide_tab_bar_if_only_one_tab = true,
+      use_fancy_tab_bar = false,
+      tab_max_width = 32,
     }
   '';
 }
