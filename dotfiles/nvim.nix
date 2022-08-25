@@ -53,7 +53,7 @@ let
     #"pylsp"
     "pyright"
     #"python_language_server"
-    "ansiblels"
+    #"ansiblels"
     "solargraph"
     "groovyls"
     "rust_analyzer"
@@ -586,9 +586,9 @@ let
     " vmap <C-S-Down> :copy '><cr>
     " imap <C-S-Down> <esc>:copy .<cr>i
 
-    nnoremap <C-S-Down> :copy .<cr>
-    vnoremap <C-S-Down> :copy '><cr>
-    inoremap <C-S-Down> <c-o>:copy .<cr>
+    nnoremap <C-d> :copy .<cr>
+    vnoremap <C-d> :copy '><cr>
+    inoremap <C-d> <c-o>:copy .<cr>
 
     vnoremap <PageUp> 10<up>
     vnoremap <PageDown> 10<down>
@@ -779,6 +779,22 @@ let
 
     let g:VM_mouse_mappings = 0
     let g:VM_default_mappings = 0
+    let g:VM_quit_after_leaving_insert_mode = 1
+    inoremap <silent> <C-S-Down> <esc>:call vm#commands#add_cursor_down(0, 1)<cr>
+    inoremap <silent> <C-S-Up> <esc>:call vm#commands#add_cursor_up(0, 1)<cr>
+    inoremap <silent> <C-S-a> <esc>:call vm#commands#add_cursor_at_pos(0)<cr>
+
+    let g:VM_maps = {}
+    let g:VM_maps["Select Cursor Down"] = '<C-S-Down>'      " start selecting down
+    let g:VM_maps["Select Cursor Up"]   = '<C-S-Up>'        " start selecting up
+    let g:VM_maps["Add Cursor At Pos"]   = '<C-S-a>'
+
+    function! VM_Start()
+      inoremap <buffer> <Esc> <Esc>
+    endfunction
+    function! VM_Exit()
+      iunmap <buffer> <Esc>
+    endfunction
 
     set autoread
     autocmd FocusGained,BufEnter * silent! checktime
@@ -2080,7 +2096,7 @@ EOF
     "snoremap <C-V> <Space><Backspace><C-O>:call novim_mode#Paste()<CR>
     "cnoremap <C-V> <C-R>"
     "snoremap <C-C> <C-O>"+ygv
-    "snoremap <C-X> <C-O>"+xi
+    snoremap <C-X> <C-O>"+xi
 
     " Use <M-o><C-Z> for native terminal backgrounding.
     " The <Esc>s used in the `snoremap` commands seem to prevent the selection
@@ -2189,7 +2205,7 @@ EOF
           #undotree
           vim-better-whitespace
           vim-jsbeautify
-          #vim-visual-multi
+          vim-visual-multi
           #vim-pasta
           #vimPlugins.ctrlsf-vim
           #ctrlp
