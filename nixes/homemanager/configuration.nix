@@ -191,7 +191,7 @@ in lib.mkMerge ([{
             #{ command = "border pixel 1"; criteria = { class = "Firefox"; }; }
             #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
-            { command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
+            #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
           ];
         };
@@ -355,7 +355,7 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "pulseaudio" "idle_inhibitor" "keyboard-state" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;

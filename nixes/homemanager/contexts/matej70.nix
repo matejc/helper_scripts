@@ -102,6 +102,7 @@ let
       { name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 1; group = "always"; }
+      { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
     home-configuration = {
