@@ -6,8 +6,8 @@
 , nameservers ? [ "1.1.1.1" ]
 , vpnStart ? "true"
 , vpnStop ? "pkill openvpn"
-#, openvpnConfig ? "/etc/openvpn/all.conf"
-, openvpnConfig ? null
+, openvpnConfig ? "/etc/openvpn/all.conf"
+#, openvpnConfig ? null
 , run ? null
 , runAsUser ? null
 , cmds ? [
