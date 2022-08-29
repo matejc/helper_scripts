@@ -2044,7 +2044,7 @@ EOF
     nnoremap <C-h> :SignifyHunkDiff<cr>
     inoremap <C-h> <C-o>:SignifyHunkDiff<cr>
 
-    nnoremap <silent> <C-L> :noh<cr>
+    nnoremap <silent> <C-L> :noh<cr>i
 
     let g:novim_mode_use_editor_fixes = 0
     let g:novim_mode_use_pane_controls = 0
