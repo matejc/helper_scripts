@@ -405,9 +405,45 @@ let
     endif
 
     if exists("g:neovide")
-      let g:neovide_cursor_animation_length=0.1
+      let g:neovide_cursor_animation_length=0.05
       set guifont=${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
+
+      " Set transparency and background color (title bar color)
+      let g:neovide_transparency=0.975
+      let g:neovide_transparency_point=0.975
+      let g:neovide_background_color = '#0f1117'.printf('%x', float2nr(255 * g:neovide_transparency_point))
     endif
+
+lua << EOF
+      vim.g.gui_font_default_size = ${toString variables.font.size}
+      vim.g.gui_font_size = vim.g.gui_font_default_size
+      vim.g.gui_font_face = "${variables.font.family}"
+
+      RefreshGuiFont = function()
+        vim.opt.guifont = string.format("%s:h%s",vim.g.gui_font_face, vim.g.gui_font_size)
+      end
+
+      ResizeGuiFont = function(delta)
+        vim.g.gui_font_size = vim.g.gui_font_size + delta
+        RefreshGuiFont()
+      end
+
+      ResetGuiFont = function()
+        vim.g.gui_font_size = vim.g.gui_font_default_size
+        RefreshGuiFont()
+      end
+
+      -- Call function on startup to set default value
+      ResetGuiFont()
+
+      -- Keymaps
+
+      local opts = { noremap = true, silent = true }
+
+      vim.keymap.set({'n', 'i'}, "<C-+>", function() ResizeGuiFont(1)  end, opts)
+      vim.keymap.set({'n', 'i'}, "<C-->", function() ResizeGuiFont(-1) end, opts)
+      vim.keymap.set({'n', 'i'}, "<C-*>", function() ResetGuiFont() end, opts)
+EOF
   '';
 
   customRC = ''
