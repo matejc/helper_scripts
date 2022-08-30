@@ -468,6 +468,9 @@ in lib.mkMerge ([{
       command_timeout = 1000;
       character.success_symbol = "[❯](bold green) ";
       character.error_symbol = "[✗](bold red) ";
+      status.disabled = false;
+      status.style = "fg:red";
+      status.format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style) ";
     };
   };
 }] ++ [ context.home-configuration ])

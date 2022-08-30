@@ -58,7 +58,7 @@ let
     "groovyls"
     "rust_analyzer"
     "ltex"
-    "terraformls"
+    "terraform_lsp"
   ];
 
   mkNvimLsp = enabled:
@@ -440,9 +440,9 @@ lua << EOF
 
       local opts = { noremap = true, silent = true }
 
-      vim.keymap.set({'n', 'i'}, "<C-+>", function() ResizeGuiFont(1)  end, opts)
+      vim.keymap.set({'n', 'i'}, "<C-=>", function() ResizeGuiFont(1)  end, opts)
       vim.keymap.set({'n', 'i'}, "<C-->", function() ResizeGuiFont(-1) end, opts)
-      vim.keymap.set({'n', 'i'}, "<C-*>", function() ResetGuiFont() end, opts)
+      vim.keymap.set({'n', 'i'}, "<C-0>", function() ResetGuiFont() end, opts)
 EOF
   '';
 
@@ -2035,18 +2035,18 @@ EOF
 
     set splitbelow
     set splitright
-    nnoremap <silent> <A-h> :sp<cr>
-    nnoremap <silent> <A-v> :vsp<cr>
-    nnoremap <silent> <A-c> :close<cr>
+    inoremap <silent> <A-h> <Cmd>:sp<cr>
+    inoremap <silent> <A-v> <Cmd>:vsp<cr>
+    inoremap <silent> <A-c> <Cmd>:close<cr>
     " nnoremap <A-Down> <C-W><C-J>
     " nnoremap <A-Up> <C-W><C-K>
     " nnoremap <A-Right> <C-W><C-L>
     " nnoremap <A-Left> <C-W><C-H>
 
-    nnoremap <A-Left> :lua require('smart-splits').move_cursor_left()<CR>
-    nnoremap <A-Down> :lua require('smart-splits').move_cursor_down()<CR>
-    nnoremap <A-Up> :lua require('smart-splits').move_cursor_up()<CR>
-    nnoremap <A-Right> :lua require('smart-splits').move_cursor_right()<CR>
+    inoremap <A-Left> <Cmd>:lua require('smart-splits').move_cursor_left()<CR>
+    inoremap <A-Down> <Cmd>:lua require('smart-splits').move_cursor_down()<CR>
+    inoremap <A-Up> <Cmd>:lua require('smart-splits').move_cursor_up()<CR>
+    inoremap <A-Right> <Cmd>:lua require('smart-splits').move_cursor_right()<CR>
 
     set redrawtime=3000
 
@@ -2199,6 +2199,8 @@ EOF
       au FileType netrw setlocal bufhidden=wipe
     augroup end
 
+    let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -2312,6 +2314,9 @@ EOF
           nvim-treesitter-context
           vimPlugins.novim-mode
           vimPlugins.lspsaga-nvim
+          vimPlugins.previm
+          plantuml-syntax
+          open-browser-vim
         ];
         opt = [
         ];
@@ -2383,6 +2388,9 @@ in [{
       pkgs.ripgrep
       pkgs.sshpass
       pkgs.openssh
+      pkgs.openjdk
+      pkgs.graphviz
+      pkgs.python3Packages.docutils
     ]}:$PATH"
     export CC="${pkgs.stdenv.cc}/bin/cc"
     export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"

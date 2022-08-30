@@ -69,7 +69,7 @@ let
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
-        launcher = "${pkgs.wofi}/bin/wofi --show run";
+        launcher = ''env PATH="${profileDir}/bin:${homeDir}/bin:$PATH" ${pkgs.wofi}/bin/wofi --show run'';
         window-size = dotFileAt "i3config.nix" 2;
         window-center = dotFileAt "i3config.nix" 3;
         i3-msg = "${profileDir}/bin/swaymsg";
