@@ -1610,7 +1610,7 @@ require("bufferline").setup{
     -- NOTE: this plugin is designed with this icon in mind,
     -- and so changing this is NOT recommended, this is intended
     -- as an escape hatch for people who cannot bear it for whatever reason
-    indicator_icon = '▎',
+    indicator = { style = 'icon', icon = '▎' },
     buffer_close_icon = '',
     modified_icon = '●',
     close_icon = '',
@@ -2077,8 +2077,21 @@ EOF
     highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
     highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
 
-    nnoremap <C-h> :SignifyHunkDiff<cr>
-    inoremap <C-h> <C-o>:SignifyHunkDiff<cr>
+    nnoremap <C-S-h> :SignifyHunkDiff<cr>
+    inoremap <C-S-h> <C-o>:SignifyHunkDiff<cr>
+    inoremap <C-S-u> <C-o>:SignifyHunkUndo<cr>
+
+    inoremap <C-]> <cmd>:call sy#jump#next_hunk(1)<cr>
+    inoremap <C-[> <cmd>:call sy#jump#prev_hunk(1)<cr>
+
+    autocmd User SignifyHunk call s:show_current_hunk()
+
+    function! s:show_current_hunk() abort
+      let h = sy#util#get_hunk_stats()
+      if !empty(h)
+        echo printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks)
+      endif
+    endfunction
 
     nnoremap <silent> <C-L> :noh<cr>i
 
