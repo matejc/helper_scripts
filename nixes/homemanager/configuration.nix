@@ -218,7 +218,7 @@ in lib.mkMerge ([{
         command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;
         resumeCommand = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs;
       }
-      { timeout = 3600; command = "systemctl suspend"; }
+      { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
     ];
   };
 
