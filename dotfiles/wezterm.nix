@@ -4,10 +4,17 @@
   source = pkgs.writeText "wezterm.lua" ''
     local wezterm = require 'wezterm'
     local act = wezterm.action
+    local mux = wezterm.mux
+
+    wezterm.on("gui-startup", function(cmd)
+      local tab, pane, window = mux.spawn_window(cmd or {})
+      window:gui_window():maximize()
+    end)
 
     return {
       font = wezterm.font '${variables.font.family}',
       font_size = ${toString variables.font.size},
+      default_cursor_style = 'SteadyBar',
       window_background_opacity = 0.95,
       color_scheme = 'Gruvbox dark, hard (base16)',
       check_for_updates = false,
