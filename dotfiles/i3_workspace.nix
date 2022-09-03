@@ -10,7 +10,7 @@
     import os
 
     def usage():
-        return "Usage: {0} [--skip,--notify] {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
+        return "Usage: {0} [--skip] {{prev|next|prev_on_output|next_on_output}}".format(os.path.basename(sys.argv[0]))
 
     if len(sys.argv) < 2:
         print usage()
@@ -18,14 +18,11 @@
 
     direction = 'next'
     skip = False
-    notify = False
 
     for i in range(1, len(sys.argv)):
         option = sys.argv[i].lower()
-        if option in ('prev', 'next', 'prev_on_output', 'next_on_output'):
+        if option in ('prev', 'next', 'prev_on_output', 'next_on_output', 'prev_output', 'next_output'):
             direction = option
-        elif option == '--notify':
-            notify = True
         elif option == '--skip':
             skip = True
         else:
@@ -72,6 +69,40 @@
 
         return next
 
+    def find_by_output(workspaces, current, step, output):
+        output_workspaces = filter(lambda w: w[u'output'] == output, workspaces)
+        output_nums = map(lambda w: w[u'num'], output_workspaces)
+
+        other_workspaces = filter(lambda w: w[u'output'] != output, workspaces)
+        other_nums = map(lambda w: w[u'num'], other_workspaces)
+
+        other_nums_prev = [0] + filter(lambda w: w < current, other_nums)
+        other_nums_next = filter(lambda w: w > current, other_nums)
+
+        next = current + step
+        first = max(other_nums_prev) + 1
+        last = next if len(other_nums_next) == 0 else min(other_nums_next) - 1
+
+        if next < first:
+            next = first
+        elif next > last:
+            next = last
+
+        return next
+
+    def find_output(workspaces, current, step, output):
+        other_workspaces = filter(lambda w: w[u'output'] != output and w[u'visible'], workspaces)
+
+        other_prevs = filter(lambda w: w[u'num'] < current, other_workspaces)
+        other_nexts = filter(lambda w: w[u'num'] > current, other_workspaces)
+
+        if step < 0:
+            return current if len(other_prevs) == 0 else other_prevs[-1][u'num']
+        elif step > 0:
+            return current if len(other_nexts) == 0 else other_nexts[0][u'num']
+
+        return current
+
     output = subprocess.check_output(["${variables.i3-msg}", "-t", "get_workspaces"])
 
     workspaces = json.loads(output)
@@ -88,12 +119,14 @@
             elif direction == 'next':
                 result = find_by(workspaces, current, 1, skip=skip)
             elif direction == 'prev_on_output':
-                result = find_by(workspaces, current, -1, workspace[u'output'], skip)
+                result = find_by_output(workspaces, current, -1, workspace[u'output'])
             elif direction == 'next_on_output':
-                result = find_by(workspaces, current, 1, workspace[u'output'], skip)
+                result = find_by_output(workspaces, current, 1, workspace[u'output'])
+            elif direction == 'prev_output':
+                result = find_output(workspaces, current, -1, workspace[u'output'])
+            elif direction == 'next_output':
+                result = find_output(workspaces, current, 1, workspace[u'output'])
 
-            if notify:
-              subprocess.call(["${pkgs.libnotify}/bin/notify-send", "-a", "workspace", "-t", "500", "Workspace: "+str(result)])
             print result
 
             break

@@ -48,7 +48,6 @@ in lib.mkMerge ([{
       git
       qt5Full
       socat
-      protonvpn-cli
       cinnamon.nemo
       zsh
       wl-clipboard
@@ -168,6 +167,10 @@ in lib.mkMerge ([{
             "Control+Tab" = "workspace back_and_forth";
             "Mod1+Tab" = "focus right";
             "Mod1+Shift+Tab" = "focus left";
+            "Mod1+Control+Up" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Down" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_output) && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Up" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Shift+Down" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
             "Mod1+Control+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
             "Mod1+Control+Right" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
             "Mod1+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
