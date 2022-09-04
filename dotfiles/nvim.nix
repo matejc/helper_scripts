@@ -108,7 +108,7 @@ let
           yaml = {
             schemas = {
               ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*";
-              ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json"] = "/*.k8s.yaml";
+              ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json"] = "/*k8s*";
             };
           };
         };
@@ -630,8 +630,8 @@ EOF
     vnoremap <PageDown> 10<down>
     vnoremap <S-PageUp> 10<up>
     vnoremap <S-PageDown> 10<down>
-    inoremap <S-PageUp> <C-o>v10<up>
-    inoremap <S-PageDown> <C-o>lv10<down>
+    inoremap <S-PageUp> <C-o>v10k
+    inoremap <S-PageDown> <C-o>v10j
     nnoremap <S-PageUp> v10<up>
     nnoremap <S-PageDown> v10<down>
 
