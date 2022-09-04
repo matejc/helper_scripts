@@ -1773,6 +1773,10 @@ require'nvim-treesitter.configs'.setup {
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
+
+  matchup = {
+    enable = true,
+  },
 }
 
 local Path = require('plenary.path')
@@ -2091,7 +2095,6 @@ EOF
     au TermOpen * call TerminalOptions()
 
     highlight CursorLine guibg=Grey22
-    highlight MatchParen guibg=Grey40
     highlight GalaxyLineFillSection guibg=#32302f
 
     highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
@@ -2235,6 +2238,16 @@ EOF
 
     let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
 
+    " augroup matchup_matchparen_highlight
+    "   autocmd!
+    "   autocmd ColorScheme * hi MatchParenCur guifg=Gray40
+    "   autocmd ColorScheme * hi MatchWordCur cterm=underline gui=underline
+    " augroup END
+    inoremap <C-m> <C-o>%
+    " let g:matchup_matchparen_deferred = 1
+    " let g:matchup_matchparen_deferred_show_delay = 50
+    " let g:matchup_matchparen_deferred_hide_delay = 700
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -2310,9 +2323,9 @@ EOF
           vimPlugins.git-blame-vim
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
-          #vimPlugins.lspsaga-nvim
           vimPlugins.vim-fakeclip
-          vim-matchup
+          #vim-matchup
+          #vimPlugins.nvim-surround
           #nvim-compe
           plenary-nvim
           telescope-nvim

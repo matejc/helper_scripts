@@ -339,6 +339,18 @@ final: prev:
     meta.homepage = "https://github.com/hrsh7th/nvim-cmp/";
   };
 
+  nvim-colorizer-lua = buildVimPluginFrom2Nix {
+    pname = "nvim-colorizer.lua";
+    version = "2022-09-03";
+    src = fetchFromGitHub {
+      owner = "NvChad";
+      repo = "nvim-colorizer.lua";
+      rev = "84aa4ad6a09d74fbafea842115b368aa314dfe0e";
+      sha256 = "14bmbphr4ahm29qjbbawgrdkckm9l031ia4c5l8z7hh63dz43pzn";
+    };
+    meta.homepage = "https://github.com/NvChad/nvim-colorizer.lua/";
+  };
+
   nvim-hlslens = buildVimPluginFrom2Nix {
     pname = "nvim-hlslens";
     version = "2022-07-07";
@@ -389,12 +401,12 @@ final: prev:
 
   nvim-treesitter = buildVimPluginFrom2Nix {
     pname = "nvim-treesitter";
-    version = "2022-09-03";
+    version = "2022-09-04";
     src = fetchFromGitHub {
       owner = "nvim-treesitter";
       repo = "nvim-treesitter";
-      rev = "b56659f15e1d1396271b4938889ed92aca043b75";
-      sha256 = "1qk5yi2yqa02nqmrbwq317dhpqg02rkqn0rbnrkjr7ryvsnf6mvi";
+      rev = "1506334ebeeae860f4304541bfc2dc20e7b6613a";
+      sha256 = "1s2wiq8l56wyk8qvsrwbyn58f8sf0fpbp5sbs8synmxwh3jvw8zq";
     };
     meta.homepage = "https://github.com/nvim-treesitter/nvim-treesitter/";
   };
@@ -616,16 +628,16 @@ final: prev:
     meta.homepage = "https://github.com/hrsh7th/vim-vsnip/";
   };
 
-  nvim-colorizer-lua = buildVimPluginFrom2Nix {
-    pname = "nvim-colorizer.lua";
-    version = "2022-09-03";
+  nvim-surround = buildVimPluginFrom2Nix {
+    pname = "nvim-surround";
+    version = "2022-08-29";
     src = fetchFromGitHub {
-      owner = "NvChad";
-      repo = "nvim-colorizer.lua";
-      rev = "84aa4ad6a09d74fbafea842115b368aa314dfe0e";
-      sha256 = "14bmbphr4ahm29qjbbawgrdkckm9l031ia4c5l8z7hh63dz43pzn";
+      owner = "kylechui";
+      repo = "nvim-surround";
+      rev = "01e17311bddffd65cc191bbefb845dba46780859";
+      sha256 = "0hhfmxmcqi0bmrv19jr9qs8751gwg6bpxljjyyasbgd37hp3vgqb";
     };
-    meta.homepage = "https://github.com/NvChad/nvim-colorizer.lua/";
+    meta.homepage = "https://github.com/kylechui/nvim-surround/";
   };
 
 
