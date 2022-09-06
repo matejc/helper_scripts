@@ -34,6 +34,7 @@ in lib.mkMerge ([{
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
+      mime.enable = true;
     };
 
     services.gnome-keyring = {
@@ -52,7 +53,7 @@ in lib.mkMerge ([{
       zsh
       wl-clipboard
       xdg-utils
-      wofi
+      dconf
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {
@@ -127,8 +128,9 @@ in lib.mkMerge ([{
       systemdIntegration = true;
       config = rec {
         assigns = {
-          "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-          "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; }];
+          "2" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+          "3" = [{ class = "^Slack$"; }];
+          "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
         };
         bars = [ ];
         #bars = [ {
@@ -178,6 +180,12 @@ in lib.mkMerge ([{
             "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
             "Control+Mod1+Delete" = "exec ${pkgs.nwg-launchers}/bin/nwgbar";
+            "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+            "XF86AudioMicMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+            "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
+            "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
           };
         modifier = "Mod4";
         startup = [

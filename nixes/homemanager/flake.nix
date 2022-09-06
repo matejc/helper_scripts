@@ -17,6 +17,9 @@
     home-manager = {
       url = "github:nix-community/home-manager/master";
     };
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+    };
     nur.url = "github:nix-community/NUR";
     clearprimary = {
       url = "github:matejc/clearprimary/main";
@@ -54,6 +57,18 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
+          }
+        ];
+      };
+      nixcode = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          inputs.home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = false;
+            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; });
           }
         ];
       };
