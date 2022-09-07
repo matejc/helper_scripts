@@ -55,7 +55,7 @@ let
       i3-msg = "${programs.i3-msg}";
       term = null;
       programs = {
-        filemanager = "${cinnamon.nemo}/bin/nemo";
+        filemanager = "${pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
@@ -88,6 +88,7 @@ let
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
+        scale = 1.0;
       } {
         criteria = "BenQ Corporation BenQ GL2480 ETPBL0133504U";
         position = "1920,0";
@@ -95,6 +96,7 @@ let
         mode = "1920x1080";
         workspaces = [ "5" ];
         wallpaper = wallpaper;
+        scale = 1.0;
       }];
     };
     services = [
