@@ -42,7 +42,7 @@ let
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
-        size = 9.0;
+        size = 11.0;
       };
       i3-msg = "${programs.i3-msg}";
       term = null;
@@ -52,7 +52,8 @@ let
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${profileDir}/bin/google-chrome-stable";
+        browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        slack = "${profileDir}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -77,6 +78,7 @@ let
         position = "0,0";
         output = "eDP-1";
         mode = "2880x1800";
+        scale = 1.5;
         workspaces = [ "2" "3" "4" "5" ];
         wallpaper = wallpaper;
       }];
@@ -93,7 +95,7 @@ let
       home.stateVersion = "22.05";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.profileDir}/bin/slack"; }
+        { command = "${self.variables.programs.slack}"; }
         { command = "${self.variables.profileDir}/bin/keepassxc"; }
         #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
@@ -113,6 +115,10 @@ let
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       home.packages = [ google-chrome slack keepassxc zoom-us ];
+      home.sessionVariables = {
+        XDG_CURRENT_DESKTOP = "sway";
+        LIBVA_DRIVER_NAME = "iHD";
+      };
     };
   };
 in

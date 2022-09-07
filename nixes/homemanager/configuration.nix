@@ -113,7 +113,13 @@ in lib.mkMerge ([{
 
     services.kanshi = {
       #enable = true;
-      profiles.default.outputs = map (o: { inherit (o) criteria position mode; }) context.variables.outputs;
+      profiles.default = {
+        exec = [
+          "${pkgs.sway}/bin/swaymsg output '*' scale_filter smart"
+          "${pkgs.sway}/bin/swaymsg output '*' subpixel none"
+        ];
+        outputs = map (o: { inherit (o) criteria position mode scale; }) context.variables.outputs;
+      };
     };
 
     services.kdeconnect = {
@@ -192,6 +198,8 @@ in lib.mkMerge ([{
           { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
           { command = "${context.variables.profileDir}/bin/service-group-once start"; }
           { command = "${mako}/bin/mako"; always = true; }
+          { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
+          { command = "hash ${pkgs.dbus}/bin/dbus-update-activation-environment 2>/dev/null && ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
         ];
         window = {
           border = 1;
@@ -207,7 +215,7 @@ in lib.mkMerge ([{
           ];
         };
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
-        output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; }; }) context.variables.outputs);
+        output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
       };
       extraConfig = ''
         focus_wrapping yes
