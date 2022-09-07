@@ -99,6 +99,13 @@ let
       ];
       services.kanshi.enable = true;
       services.swayidle.enable = true;
+      services.swayidle.timeouts = [
+        {
+          timeout = 100;
+          command = "${pkgs.brillo}/bin/brillo -U 20";
+          resumeCommand = "${pkgs.brillo}/bin/brillo -A 20";
+        }
+      ];
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;

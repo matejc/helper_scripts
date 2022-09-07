@@ -236,7 +236,7 @@ in lib.mkMerge ([{
   #services.blueman-applet.enable = true;
 
   programs.i3status-rust = {
-    enable = true;
+    enable = false;
     bars.default = {
       blocks = [
         {
