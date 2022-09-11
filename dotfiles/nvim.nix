@@ -1853,7 +1853,7 @@ require("colorizer").setup {
   user_default_options = {
     RGB = true, -- #RGB hex codes
     RRGGBB = true, -- #RRGGBB hex codes
-    names = true, -- "Name" codes like Blue or blue
+    names = false, -- "Name" codes like Blue or blue
     RRGGBBAA = true, -- #RRGGBBAA hex codes
     AARRGGBB = true, -- 0xAARRGGBB hex codes
     rgb_fn = true, -- CSS rgb() and rgba() functions
@@ -1867,6 +1867,9 @@ require("colorizer").setup {
   -- all the sub-options of filetypes apply to buftypes
   buftypes = {},
 }
+
+-- require("nvim-surround").setup({
+-- })
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
@@ -2366,6 +2369,7 @@ EOF
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
           (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+          #nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
           nvim-treesitter-context
