@@ -1123,13 +1123,13 @@ cmp.setup({
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
     { name = 'vsnip' }, -- For vsnip users.
-    { name = 'treesitter' },
     -- { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
-    { name = 'buffer' },
     { name = 'path' },
-    { name = 'rg' },
+    { name = 'buffer' },
+    -- { name = 'treesitter' },
+    -- { name = 'rg' },
   }, {
     { name = 'spell' },
   })
@@ -1138,10 +1138,17 @@ cmp.setup({
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
   sources = cmp.config.sources({
-    { name = 'path' }
+    { name = 'path' },
   }, {
-    { name = 'cmdline' }
+    { name = 'cmdline' },
   })
+})
+
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
 })
 
 -- Setup lspconfig.
@@ -2247,6 +2254,9 @@ EOF
     " let g:matchup_matchparen_deferred = 1
     " let g:matchup_matchparen_deferred_show_delay = 50
     " let g:matchup_matchparen_deferred_hide_delay = 700
+
+    autocmd Filetype * if getfsize(@%) > 10000000 | setlocal syntax=off | endif
+    autocmd Filetype * if getfsize(@%) > 1000000 | lua require'cmp'.setup.buffer { completion = { autocomplete = false } } | endif
 
     autocmd UIEnter * source ${ginitVim}
   '';
