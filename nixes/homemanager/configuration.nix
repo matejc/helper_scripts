@@ -51,7 +51,7 @@ in lib.mkMerge ([{
     fonts.fontconfig.enable = mkForce true;
     home.packages = [
       font-awesome
-      (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+      config.gtk.font.package
       git
       qt5Full
       socat
@@ -74,7 +74,11 @@ in lib.mkMerge ([{
 
     gtk = {
       enable = true;
-      font.name = "${context.variables.font.family} ${context.variables.font.style} ${toString context.variables.font.size}";
+      font = {
+        package = nerdfonts.override { fonts = [ "SourceCodePro" ]; };
+        name = context.variables.font.family;
+        size = builtins.floor context.variables.font.size;
+      };
       iconTheme = {
         name = "breeze";
         package = breeze-icons;
