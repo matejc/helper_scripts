@@ -1868,7 +1868,7 @@ require("colorizer").setup {
   buftypes = {},
 }
 
-require("nvim-surround").setup({})
+-- require("nvim-surround").setup({})
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
@@ -2247,18 +2247,21 @@ EOF
 
     let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
 
-    " augroup matchup_matchparen_highlight
-    "   autocmd!
-    "   autocmd ColorScheme * hi MatchParenCur guifg=Gray40
-    "   autocmd ColorScheme * hi MatchWordCur cterm=underline gui=underline
-    " augroup END
-    inoremap <C-m> <C-o>%
-    " let g:matchup_matchparen_deferred = 1
-    " let g:matchup_matchparen_deferred_show_delay = 50
-    " let g:matchup_matchparen_deferred_hide_delay = 700
+    augroup matchup_matchparen_highlight
+      autocmd!
+      autocmd ColorScheme * hi MatchParen guifg=Gray40
+      autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
+    augroup END
+    inoremap <C-m> <C-o><plug>(matchup-g%)
+    let g:matchup_matchparen_deferred = 1
+    let g:matchup_matchparen_deferred_show_delay = 200
+    let g:matchup_matchparen_deferred_hide_delay = 600
 
-    autocmd Filetype * if getfsize(@%) > 10000000 | setlocal syntax=off | endif
-    autocmd Filetype * if getfsize(@%) > 1000000 | lua require'cmp'.setup.buffer { completion = { autocomplete = false } } | endif
+    augroup large_file_support
+      autocmd!
+      autocmd FileType * if getfsize(@%) > 10000000 | setlocal syntax=off | else | setlocal syntax=on | endif
+      autocmd FileType * if getfsize(@%) > 1000000 | lua require'cmp'.setup.buffer { completion = { autocomplete = false } } | endif
+    augroup END
 
     autocmd UIEnter * source ${ginitVim}
   '';
@@ -2336,8 +2339,8 @@ EOF
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
           vimPlugins.vim-fakeclip
-          #vim-matchup
-          vimPlugins.nvim-surround
+          vim-matchup
+          #vimPlugins.nvim-surround
           #nvim-compe
           plenary-nvim
           telescope-nvim
@@ -2368,7 +2371,7 @@ EOF
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
           (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
-          #nvim-treesitter-textobjects
+          nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
           nvim-treesitter-context
