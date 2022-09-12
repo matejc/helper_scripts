@@ -31,6 +31,12 @@ let
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
     nixpkgs.config = import "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
+
+    home.file.default-cursor = {
+      source = "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+      target = ".icons/default";
+    };
+
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
@@ -76,6 +82,11 @@ in lib.mkMerge ([{
       theme = {
         name = "Breeze";
         package = breeze-gtk;
+      };
+      cursorTheme = {
+        name = "Vanilla-DMZ";
+        package = vanilla-dmz;
+        size = 16;
       };
     };
 
@@ -133,7 +144,7 @@ in lib.mkMerge ([{
       enable = true;
       systemdIntegration = true;
       config = rec {
-        assigns = {
+        assigns = mkDefault {
           "2" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "3" = [{ class = "^Slack$"; }];
           "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
@@ -167,6 +178,7 @@ in lib.mkMerge ([{
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "Mod1+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "F12" = "exec ${context.variables.programs.dropdown}";
+            "XF86Favorites" = "exec ${context.variables.programs.dropdown}";
             "Mod1+F4" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";

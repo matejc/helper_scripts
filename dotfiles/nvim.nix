@@ -1868,8 +1868,7 @@ require("colorizer").setup {
   buftypes = {},
 }
 
--- require("nvim-surround").setup({
--- })
+require("nvim-surround").setup({})
 EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
@@ -2338,7 +2337,7 @@ EOF
           #nvim-tree-lua
           vimPlugins.vim-fakeclip
           #vim-matchup
-          #vimPlugins.nvim-surround
+          vimPlugins.nvim-surround
           #nvim-compe
           plenary-nvim
           telescope-nvim
