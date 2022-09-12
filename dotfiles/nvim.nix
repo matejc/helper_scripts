@@ -499,6 +499,7 @@ EOF
 
     set colorcolumn=80
     set scrolloff=5
+    set sidescrolloff=5
 
     set fixendofline
 
@@ -1083,6 +1084,9 @@ end
 local cmp = require'cmp'
 
 cmp.setup({
+  experimental = {
+    ghost_text = true,
+  },
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
@@ -1091,10 +1095,6 @@ cmp.setup({
       -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
       -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
     end,
-  },
-  window = {
-    -- completion = cmp.config.window.bordered(),
-    -- documentation = cmp.config.window.bordered(),
   },
   formatting = {
     format = function(entry, vim_item)
@@ -1115,7 +1115,7 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Esc>'] = cmp.mapping.close(),
     ['<Left>'] = cmp.mapping.close(),
-    ['<Right>'] = cmp.mapping.close(),
+    ['<Right>'] = cmp.mapping.confirm({ select = true }),
     ['<Tab>'] = cmp.mapping.select_next_item(),
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
@@ -2259,9 +2259,11 @@ EOF
 
     augroup large_file_support
       autocmd!
-      autocmd FileType * if getfsize(@%) > 10000000 | setlocal syntax=off | else | setlocal syntax=on | endif
-      autocmd FileType * if getfsize(@%) > 1000000 | lua require'cmp'.setup.buffer { completion = { autocomplete = false } } | endif
+      autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | setlocal syntax=off | endif
+      autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | lua require'cmp'.setup.buffer { enabled = false } | endif
     augroup END
+
+    autocmd BufRead xml setlocal syntax=on
 
     autocmd UIEnter * source ${ginitVim}
   '';
