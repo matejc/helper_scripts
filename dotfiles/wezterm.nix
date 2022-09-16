@@ -64,9 +64,9 @@
       },
       colors = {
         tab_bar = {
-          background = '#0b0022',
+          background = '#222222',
           active_tab = {
-            bg_color = '#2b2042',
+            bg_color = '#424242',
             fg_color = '#c0c0c0',
             intensity = 'Bold',
             underline = 'None',
@@ -74,20 +74,20 @@
             strikethrough = false,
           },
           inactive_tab = {
-            bg_color = '#1b1032',
+            bg_color = '#323232',
             fg_color = '#808080',
           },
           inactive_tab_hover = {
-            bg_color = '#3b3052',
+            bg_color = '#525252',
             fg_color = '#909090',
             italic = true,
           },
           new_tab = {
-            bg_color = '#1b1032',
+            bg_color = '#323232',
             fg_color = '#808080',
           },
           new_tab_hover = {
-            bg_color = '#3b3052',
+            bg_color = '#525252',
             fg_color = '#909090',
             italic = true,
           },

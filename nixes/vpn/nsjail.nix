@@ -3,6 +3,7 @@
 , user ? "matejc"
 , uid ? "1000"
 , gid ? "100"
+, timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
 , vpnStart ? "true"
 , vpnStop ? "pkill openvpn"
@@ -190,6 +191,7 @@ let
     ln -sf ${groupFile} ${homeDir}/.vpn/${name}/etc/group
     ln -sf ${hostsFile} ${homeDir}/.vpn/${name}/etc/hosts
     ln -sf ${hostnameFile} ${homeDir}/.vpn/${name}/etc/hostname
+    ln -sf "${tzdata}/share/zoneinfo/${timeZone}" ${homeDir}/.vpn/${name}/etc/localtime
 
     ${preCmd}
 
@@ -223,6 +225,7 @@ let
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/group:$(realpath /etc/group) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/hostname:$(realpath /etc/hostname) \
       --bindmount_ro ${homeDir}/.vpn/${name}/etc/machine-id:$(realpath /etc/machine-id) \
+      --bindmount_ro ${homeDir}/.vpn/${name}/etc/localtime:$(realpath /etc/localtime) \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
       --tmpfsmount /sbin \

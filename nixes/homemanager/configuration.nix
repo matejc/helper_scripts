@@ -208,6 +208,7 @@ in lib.mkMerge ([{
             "XF86AudioMicMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
             "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
             "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
+            "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
           };
         modifier = "Mod4";
         startup = [

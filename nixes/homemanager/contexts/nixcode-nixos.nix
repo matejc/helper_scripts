@@ -1,6 +1,8 @@
 { pkgs, lib, config, inputs, dotFileAt }:
 with pkgs;
 let
+  clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
+
   self = {
     dotFilePaths = [
       "${inputs.helper_scripts}/dotfiles/programs.nix"
@@ -16,6 +18,7 @@ let
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
       "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
       "${inputs.helper_scripts}/dotfiles/wezterm.nix"
+      "${inputs.helper_scripts}/dotfiles/countdown.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -58,8 +61,8 @@ let
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        window-size = dotFileAt "i3config.nix" 2;
-        window-center = dotFileAt "i3config.nix" 3;
+        window-center = dotFileAt "i3config.nix" 4;
+        window-size = dotFileAt "i3config.nix" 5;
         i3-msg = "${profileDir}/bin/swaymsg";
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
         tmux = "${pkgs.tmux}/bin/tmux";
@@ -102,7 +105,7 @@ let
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.slack}"; }
         { command = "${self.variables.profileDir}/bin/keepassxc"; }
-        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
+        { command = "${clearprimary}/bin/clearprimary"; }
       ];
       wayland.windowManager.sway.config.input = {
         "2:10:TPPS/2_Elan_TrackPoint" = { pointer_accel = "-0.3"; };

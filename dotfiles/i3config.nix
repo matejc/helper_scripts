@@ -544,19 +544,19 @@
     #!${pkgs.stdenv.shell}
     set -x
     RESULT=$(${variables.i3-msg} -t get_tree | ${pkgs.jq}/bin/jq '.. | .floating_nodes? // empty | .[] | select(.marks[0]=="I3WM_SCRATCHPAD").visible')
+    WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
     if [ -z "$RESULT" ]
     then
       ${variables.programs.terminal} $@ &
       sleep 0.5
-      WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
-      ${variables.i3-msg} "[app_id=\"^ScratchTerm\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, $WINDOW_CENTER, focus"
-    elif [[ "$RESULT" = "true" ]]
+      ${variables.i3-msg} "[app_id=\"^ScratchTerm\"] mark I3WM_SCRATCHPAD, move scratchpad, border pixel 1, focus, $WINDOW_CENTER"
+    elif [[ "$RESULT" == "true" ]]
     then
-      ${variables.i3-msg} '[con_mark="I3WM_SCRATCHPAD"] move scratchpad'
-    elif [[ "$RESULT" = "false" ]]
+      ${variables.i3-msg} "[con_mark=\"I3WM_SCRATCHPAD\"] move scratchpad"
+    elif [[ "$RESULT" == "false" ]]
     then
-      WINDOW_CENTER="$(${variables.homeDir}/bin/window-center 95 90)"
-      ${variables.i3-msg} "[con_mark="I3WM_SCRATCHPAD"] $WINDOW_CENTER, focus"
+      ${variables.i3-msg} "[con_mark=\"I3WM_SCRATCHPAD\"] focus"
+      ${variables.i3-msg} "[con_mark=\"I3WM_SCRATCHPAD\"] $WINDOW_CENTER"
     fi
   '';
 } {
@@ -596,12 +596,28 @@
     wp="$1"
     hp="$2"
 
-    width="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[0].rect.width')"
-    height="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[0].rect.height')"
+    width="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[]|select(.focused==true)|.rect.width')"
+    height="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[]|select(.focused==true)|.rect.height')"
 
     w="$(($width * $wp/100))"
     h="$(($height * $hp/100))"
 
     echo "resize set $w px $h px, move position $(( ($width - $w) / 2 )) px $(( ($height - $h) / 2 )) px"
+  '';
+} {
+  target = "${variables.homeDir}/bin/window-size";
+  source = pkgs.writeScript "sway-window-size.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    case "$1" in
+      width)
+        width="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[]|select(.focused==true)|.rect.width')"
+        echo "$width * $2/100" | ${pkgs.bc}/bin/bc
+      ;;
+      height)
+        height="$(${variables.i3-msg} -t get_outputs | ${pkgs.jq}/bin/jq '.[]|select(.focused==true)|.rect.height')"
+        echo "$height * $2/100" | ${pkgs.bc}/bin/bc
+      ;;
+    esac
   '';
 }]
