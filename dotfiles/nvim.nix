@@ -497,7 +497,8 @@ EOF
     set number
     set mouse=a
 
-    set colorcolumn=80
+    " set colorcolumn=80
+
     set scrolloff=5
     set sidescrolloff=5
 
@@ -1444,14 +1445,14 @@ gls.left[6] = {
   },
 }
 
-gls.left[7] = {
-  PerCent = {
-    provider = 'LinePercent',
-    separator = ' ',
-    separator_highlight = {'NONE',colors.bg},
-    highlight = {colors.fg,colors.bg,'bold'},
-  }
-}
+-- gls.left[7] = {
+--   PerCent = {
+--     provider = 'LinePercent',
+--     separator = ' ',
+--     separator_highlight = {'NONE',colors.bg},
+--     highlight = {colors.fg,colors.bg,'bold'},
+--   }
+-- }
 
 gls.left[8] = {
   DiagnosticError = {
@@ -1605,6 +1606,17 @@ vim.opt.termguicolors = true
 
 require("themer").setup({
   colorscheme = "gruvbox",
+  remaps = {
+    highlights = {
+      gruvbox = {
+        base = {
+          LineNr = {
+            fg = "#555555",
+          },
+        },
+      },
+    },
+  },
 })
 
 require("bufferline").setup{
@@ -1848,25 +1860,25 @@ saga.init_lsp_saga()
 -- }
 
 
-require("colorizer").setup {
-  filetypes = { "*" },
-  user_default_options = {
-    RGB = true, -- #RGB hex codes
-    RRGGBB = true, -- #RRGGBB hex codes
-    names = false, -- "Name" codes like Blue or blue
-    RRGGBBAA = true, -- #RRGGBBAA hex codes
-    AARRGGBB = true, -- 0xAARRGGBB hex codes
-    rgb_fn = true, -- CSS rgb() and rgba() functions
-    hsl_fn = true, -- CSS hsl() and hsla() functions
-    css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
-    css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
-    -- Available modes for `mode`: foreground, background,  virtualtext
-    mode = "background", -- Set the display mode.
-    virtualtext = "■",
-  },
-  -- all the sub-options of filetypes apply to buftypes
-  buftypes = {},
-}
+-- require("colorizer").setup {
+--   filetypes = { "*" },
+--   user_default_options = {
+--     RGB = true, -- #RGB hex codes
+--     RRGGBB = true, -- #RRGGBB hex codes
+--     names = false, -- "Name" codes like Blue or blue
+--     RRGGBBAA = true, -- #RRGGBBAA hex codes
+--     AARRGGBB = true, -- 0xAARRGGBB hex codes
+--     rgb_fn = true, -- CSS rgb() and rgba() functions
+--     hsl_fn = true, -- CSS hsl() and hsla() functions
+--     css = true, -- Enable all CSS features: rgb_fn, hsl_fn, names, RGB, RRGGBB
+--     css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
+--     -- Available modes for `mode`: foreground, background,  virtualtext
+--     mode = "background", -- Set the display mode.
+--     virtualtext = "■",
+--   },
+--   -- all the sub-options of filetypes apply to buftypes
+--   buftypes = {},
+-- }
 
 -- require("nvim-surround").setup({})
 EOF
@@ -2265,6 +2277,9 @@ EOF
 
     autocmd BufRead xml setlocal syntax=on
 
+    highlight LineTooLongMarker guibg=Gray26
+    call matchadd('LineTooLongMarker', '\%81v', 100)
+
     autocmd UIEnter * source ${ginitVim}
   '';
 
@@ -2382,7 +2397,7 @@ EOF
           vimPlugins.previm
           plantuml-syntax
           open-browser-vim
-          vimPlugins.nvim-colorizer-lua
+          #vimPlugins.nvim-colorizer-lua
         ];
         opt = [
         ];
