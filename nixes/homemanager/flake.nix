@@ -25,6 +25,10 @@
       url = "github:matejc/clearprimary/main";
       flake = false;
     };
+    devenv = {
+      url = "github:matejc/devenv/master";
+      flake = false;
+    };
   };
 
   outputs = { self, ... }@inputs: {

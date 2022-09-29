@@ -2,6 +2,7 @@
 with pkgs;
 let
   clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
+  devenv = import "${inputs.devenv}" { inherit pkgs; };
 
   self = {
     dotFilePaths = [
@@ -125,7 +126,7 @@ let
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ google-chrome slack keepassxc zoom-us networkmanagerapplet wezterm ];
+      home.packages = [ google-chrome slack keepassxc zoom-us networkmanagerapplet wezterm devenv ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";

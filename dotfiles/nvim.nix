@@ -2472,6 +2472,7 @@ in [{
       pkgs.openjdk
       pkgs.graphviz
       pkgs.python3Packages.docutils
+      pkgs.shellcheck
     ]}:$PATH"
     export CC="${pkgs.stdenv.cc}/bin/cc"
     export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
