@@ -184,6 +184,7 @@ in lib.mkMerge ([{
             "F12" = "exec ${context.variables.programs.dropdown}";
             "XF86Favorites" = "exec ${context.variables.programs.dropdown}";
             "Mod1+F4" = "kill";
+            "${modifier}+k" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+l" = "exec ${context.variables.binDir}/lockscreen";
