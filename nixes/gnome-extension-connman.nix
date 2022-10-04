@@ -1,6 +1,6 @@
 # does not work, obviously - I am here overriding the version of current gnome shell
 
-{ stdenv, fetchgit, which, gnome3_12, intltool, pkgconfig }:
+{ stdenv, fetchgit, which, gnome3_12, intltool, pkg-config }:
 stdenv.mkDerivation rec {
   name = "gnome-extension-connman-${rev}";
   rev = "3d0d93cc36ca96b60c12257440ebb38dad53d17f";
@@ -14,11 +14,11 @@ stdenv.mkDerivation rec {
   preConfigure = ''
     ./autogen.sh
   '';
-  
+
   postInstall = ''
     substituteInPlace $out/share/gnome-shell/extensions/gnome-extension-connman/metadata.json \
       --replace "\"shell-version\": [" "\"shell-version\": [ \"3.12.2\", "
   '';
 
-  buildInputs = [ which gnome3_12.gnome_common intltool pkgconfig ];
+  buildInputs = [ which gnome3_12.gnome_common intltool pkg-config ];
 }

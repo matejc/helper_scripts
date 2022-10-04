@@ -45,7 +45,7 @@ rec {
         python3Packages.pycairo
         python3Packages.pygobject2
 
-        pkgconfig
+        pkg-config
         cairo.dev
         xorg.libxcb.dev
         xorg.libX11.dev
@@ -179,7 +179,7 @@ rec {
         #mercurial
         openssh
         openssl
-        pkgconfig
+        pkg-config
         #postgresql
         (python27Full.withPackages (ps: with ps; [ urllib3 ]))
         python27Packages.pyyaml
@@ -265,7 +265,7 @@ rec {
         bundler bundix
         rubyPackages.jekyll
         rubyPackages.jekyll-watch
-        gnumake stdenv.cc pkgconfig
+        gnumake stdenv.cc pkg-config
 
         zlib.dev
         zlib
@@ -285,7 +285,7 @@ rec {
       paths = with pkgs; [
         stdenv gnumake coreutils strace
         git
-        ruby bundler libffi.dev stdenv.cc gnugrep gawk pkgconfig libxml2.dev libxslt.dev zlib zlib.dev
+        ruby bundler libffi.dev stdenv.cc gnugrep gawk pkg-config libxml2.dev libxslt.dev zlib zlib.dev
         readline
         gnused
         nodejs
@@ -300,7 +300,7 @@ rec {
         stdenv gnumake strace
         stdenv.cc
         git
-        pkgconfig
+        pkg-config
         autoconf
         intltool
         automake
@@ -462,7 +462,7 @@ rec {
         openssl
         pcre
         #pdftk
-        pkgconfig
+        pkg-config
         postgresql
         readline
         sqlite

@@ -294,7 +294,7 @@ let
 
   buildInputs = [
       iproute2 slirp4netns curl fakeroot which sysctl procps kmod
-      openvpn pstree utillinux fontconfig coreutils libcap strace less
+      openvpn pstree util-linux fontconfig coreutils libcap strace less
       python39Packages.supervisor gawk dnsutils iptables nsjail gnugrep
   ] ++ packages;
 

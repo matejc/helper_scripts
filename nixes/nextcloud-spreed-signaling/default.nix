@@ -51,7 +51,7 @@ let
       sha256 = "0ibjwgzan1ssjcdmvsmi1cy98addgjzd5hz22gvgnqjqybd9x0mn";
     };
     buildInputs = with pkgs; [
-      autogen autoconf automake libtool pkgconfig curl jansson libconfig glib
+      autogen autoconf automake libtool pkg-config curl jansson libconfig glib
       libnice srtp gengetopt libwebsockets libuv usrsctp
     ];
     preConfigure = ''
