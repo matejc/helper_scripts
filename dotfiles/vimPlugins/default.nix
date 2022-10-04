@@ -1,9 +1,9 @@
-{ callPackage, config, lib, vimUtils, vim, darwin, llvmPackages, luaPackages }:
+{ callPackage, config, lib, vimUtils, vim, darwin, llvmPackages, luaPackages, neovimUtils }:
 
 let
 
   inherit (vimUtils.override {inherit vim;})
-    buildVimPluginFrom2Nix vimGenDocHook vimCommandCheckHook;
+    buildVimPluginFrom2Nix buildNeovimPluginFrom2Nix vimGenDocHook vimCommandCheckHook;
 
   inherit (lib) extends;
 
@@ -24,7 +24,7 @@ let
 
   plugins = callPackage ./generated.nix {
     inherit buildVimPluginFrom2Nix;
-    inherit (vimUtils) buildNeovimPluginFrom2Nix;
+    inherit (neovimUtils) buildNeovimPluginFrom2Nix;
   };
 
   # TL;DR

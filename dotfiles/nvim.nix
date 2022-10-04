@@ -711,8 +711,8 @@ EOF
     " vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
     " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
-    inoremap <C-\> <C-o>/
-    inoremap <C-S-\> <C-o>:%s/FIND/REPLACE/g
+    inoremap <C-/> <C-o>/
+    inoremap <C-S-?> <C-o>:%s/FIND/REPLACE/g
     inoremap <C-S-c> <C-o>:noh<cr>
     inoremap <C-n> <C-o>n
     inoremap <C-S-n> <C-o>N
@@ -838,10 +838,10 @@ EOF
     autocmd FocusGained,BufEnter * silent! checktime
 
     "nnoremap <c-_> <leader>c<space>
-    inoremap <c-_> <C-o><plug>NERDCommenterToggle
-    vnoremap <c-_> <plug>NERDCommenterToggle
-    inoremap <c-/> <C-o><plug>NERDCommenterToggle
-    vnoremap <c-/> <plug>NERDCommenterToggle
+    "inoremap <c-_> <C-o><plug>NERDCommenterToggle
+    "vnoremap <c-_> <plug>NERDCommenterToggle
+    inoremap <c-\> <C-o><plug>NERDCommenterToggle
+    vnoremap <c-\> <plug>NERDCommenterToggle
 
     "nnoremap <c-/> <leader>c<space>
     "inoremap <c-/> <C-o><leader>c<space>
@@ -979,8 +979,8 @@ vim.keymap.set("i", '<c-s-left>', function() vim.api.nvim_feedkeys(vim.api.nvim_
 EOF
     vnoremap <esc> <esc><esc>i
 
-    inoremap <silent> <A-del> <C-o>ce
-    inoremap <silent> <C-del> <C-o>ce
+    inoremap <silent> <A-del> <C-o>"_dw
+    inoremap <silent> <C-del> <C-o>"_dw
     inoremap <silent> <C-BS> <C-W>
 
     nnoremap <silent> <C-del> "_dw
@@ -1044,11 +1044,11 @@ local on_attach = function(client, bufnr)
   -- buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
 
   -- Set some keybinds conditional on server capabilities
-  if client.resolved_capabilities.document_formatting then
-    buf_set_keymap("i", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  elseif client.resolved_capabilities.document_range_formatting then
-    buf_set_keymap("v", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-  end
+  -- if client.resolved_capabilities.document_formatting then
+  --   buf_set_keymap("i", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  -- elseif client.resolved_capabilities.document_range_formatting then
+  --   buf_set_keymap("v", "<c-g>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  -- end
 
   -- Set autocommands conditional on server_capabilities
   -- if client.resolved_capabilities.document_highlight then
@@ -1896,6 +1896,9 @@ EOF
     "inoremap <silent> <c-`> <Cmd>:Lspsaga open_floaterm<CR>
     "tnoremap <silent> <c-`> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
+    inoremap <silent> <c-g>f <cmd>lua vim.lsp.buf.formatting()<CR>
+    vnoremap <silent> <c-g>f <cmd>lua vim.lsp.buf.formatting()<CR>
+
     inoremap <c-g>d <Cmd>:lua require'telescope.builtin'.lsp_definitions{}<cr>
     inoremap <c-g>D <Cmd>:lua require'telescope.builtin'.lsp_implementations{}<cr>
     inoremap <c-g>g <Cmd>:lua require'telescope.builtin'.diagnostics{ bufnr = 0 }<cr>
@@ -2126,8 +2129,8 @@ EOF
     inoremap <C-S-h> <C-o>:SignifyHunkDiff<cr>
     inoremap <C-S-u> <C-o>:SignifyHunkUndo<cr>
 
-    inoremap <C-]> <cmd>:call sy#jump#next_hunk(1)<cr>
-    inoremap <C-[> <cmd>:call sy#jump#prev_hunk(1)<cr>
+    inoremap <C-S-}> <cmd>:call sy#jump#next_hunk(1)<cr>
+    inoremap <C-S-{> <cmd>:call sy#jump#prev_hunk(1)<cr>
 
     autocmd User SignifyHunk call s:show_current_hunk()
 
