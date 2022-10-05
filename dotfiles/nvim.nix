@@ -1115,8 +1115,20 @@ cmp.setup({
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Esc>'] = cmp.mapping.close(),
-    ['<Left>'] = cmp.mapping.close(),
-    ['<Right>'] = cmp.mapping.confirm({ select = true }),
+    ['<Left>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        cmp.close()
+      end
+      fallback()
+    end,
+    ['<Right>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        cmp.close()
+      end
+      fallback()
+    end,
     ['<Tab>'] = cmp.mapping.select_next_item(),
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
@@ -2267,7 +2279,7 @@ EOF
       autocmd ColorScheme * hi MatchParen guifg=Gray40
       autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
     augroup END
-    inoremap <C-m> <C-o><plug>(matchup-g%)
+    inoremap <C-S-m> <C-o><plug>(matchup-g%)
     let g:matchup_matchparen_deferred = 1
     let g:matchup_matchparen_deferred_show_delay = 200
     let g:matchup_matchparen_deferred_hide_delay = 600
