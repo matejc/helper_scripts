@@ -149,8 +149,7 @@ in lib.mkMerge ([{
       systemdIntegration = true;
       config = rec {
         assigns = mkDefault {
-          "2" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-          "3" = [{ class = "^Slack$"; }];
+          "1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
         };
         bars = [ ];
