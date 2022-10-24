@@ -1165,7 +1165,7 @@ cmp.setup.cmdline('/', {
 })
 
 -- Setup lspconfig.
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 ${enabledNvimLsp}
 
@@ -2292,8 +2292,8 @@ EOF
 
     autocmd BufRead xml setlocal syntax=on
 
-    highlight LineTooLongMarker guibg=Gray26
-    call matchadd('LineTooLongMarker', '\%81v', 100)
+    " highlight LineTooLongMarker guibg=Gray26
+    " call matchadd('LineTooLongMarker', '\%81v', 100)
 
     autocmd UIEnter * source ${ginitVim}
   '';
@@ -2413,6 +2413,8 @@ EOF
           plantuml-syntax
           open-browser-vim
           #vimPlugins.nvim-colorizer-lua
+          #vimPlugins.noice-nvim
+          #vimPlugins.nvim-notify
         ];
         opt = [
         ];

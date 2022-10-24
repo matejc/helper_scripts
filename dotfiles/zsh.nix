@@ -98,15 +98,15 @@ in
       bindkey -r '^S'
     fi
 
-    export HISTFILESIZE=10000000
-    export HISTSIZE=10000000
-    export SAVEHIST=10000000
-    export HISTFILE=~/.zsh_history
+    #export HISTFILESIZE=10000000
+    #export HISTSIZE=10000000
+    #export SAVEHIST=10000000
+    #export HISTFILE=~/.zsh_history
 
     setopt HIST_FIND_NO_DUPS
     setopt SHARE_HISTORY
 
-    setopt histignorespace
+    #setopt histignorespace
 
     # 0 -- vanilla completion (abc => abc)
     # 1 -- smart case completion (abc => Abc)
@@ -119,19 +119,19 @@ in
 
     zstyle ':completion:*' menu select
 
-    source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    #source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     ZSH_HIGHLIGHT_HIGHLIGHTERS=(main)
 
-    source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+    #source ${pkgs.zsh-autosuggestions}/share/zsh-autosuggestions/zsh-autosuggestions.zsh
     ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
     ZSH_AUTOSUGGEST_STRATEGY=("history")
     ZSH_AUTOSUGGEST_CLEAR_WIDGETS+=(bracketed-paste)
 
-    source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-    bindkey "$terminfo[kcuu1]" history-substring-search-up
-    bindkey "$terminfo[kcud1]" history-substring-search-down
-    bindkey "^[[A" history-substring-search-up
-    bindkey "^[[B" history-substring-search-down
+    #source ${pkgs.zsh-history-substring-search}/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+    #bindkey "$terminfo[kcuu1]" history-substring-search-up
+    #bindkey "$terminfo[kcud1]" history-substring-search-down
+    #bindkey "^[[A" history-substring-search-up
+    #bindkey "^[[B" history-substring-search-down
     HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
 
     DISABLE_AUTO_TITLE="true"
@@ -141,10 +141,9 @@ in
     alias cdu='cd-gitroot'
     alias ...='cd-gitroot'
 
-    alias l='${pkgs.exa}/bin/exa -gal --git'
-    alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
-
-    alias ..='cd ..'
+    #alias l='${pkgs.exa}/bin/exa -gal --git'
+    #alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
+    #alias ..='cd ..'
 
     # include .profile if it exists
     if [ -f "$HOME/.profile" ]; then
@@ -204,8 +203,8 @@ in
 
     # source ${pkgs.zsh-z}/share/zsh-z/zsh-z.plugin.zsh
 
-    autoload -U compinit
-    compinit -i
+    #autoload -U compinit
+    #compinit -i
   '';
 } {
   target = "${variables.homeDir}/.zlogin";

@@ -478,6 +478,19 @@ in lib.mkMerge ([{
 
   home.activation.checkLinkTargets = mkForce "true";
 
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+  };
+
+  programs.bash = {
+    enable = true;
+    enableVteIntegration = true;
+    historyControl = [ "erasedups" "ignorespace" ];
+  };
+
   programs.zsh = {
     enable = true;
     enableVteIntegration = true;
@@ -497,9 +510,24 @@ in lib.mkMerge ([{
         exec dbus-run-session startsway
       fi
     '';
+    history = {
+      expireDuplicatesFirst = true;
+      extended = true;
+    };
+    historySubstringSearch = {
+      enable = true;
+      searchUpKey = "^[[A";
+      searchDownKey = "^[[B";
+    };
+    enableSyntaxHighlighting = true;
+    enableAutosuggestions = true;
+    autocd = true;
+    defaultKeymap = "emacs";
   };
   programs.starship = {
     enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
     settings = {
       command_timeout = 1000;
       character.success_symbol = "[❯](bold green) ";
@@ -508,5 +536,10 @@ in lib.mkMerge ([{
       status.style = "fg:red";
       status.format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style) ";
     };
+  };
+  home.shellAliases = {
+    ".." = "cd ..";
+    "l" = "${pkgs.exa}/bin/exa -gal --git";
+    "t" = "${pkgs.exa}/bin/exa -T --ignore-glob='.git' -L3";
   };
 }] ++ [ context.home-configuration ])
