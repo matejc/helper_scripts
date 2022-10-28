@@ -10,6 +10,14 @@
 
 self: super: {
 
+  plantuml-previewer-vim = super.plantuml-previewer-vim.overrideAttrs (old: {
+    postInstall = ''
+      find $out
+      substituteInPlace $out/autoload/plantuml_previewer.vim \
+        --replace "let output_dir_path = s:tmp_path" "let output_dir_path = s:viewer_path() . '/tmp'"
+    '';
+  });
+
   regexplainer = super.regexplainer.overrideAttrs (old: {
     buildInputs = old.buildInputs ++ [ tree-sitter ];
   });

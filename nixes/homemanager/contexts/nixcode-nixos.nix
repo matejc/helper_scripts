@@ -38,7 +38,7 @@ let
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";
-      locale.all = "en_US.UTF-8";
+      locale.all = "en_GB.UTF-8";
       networkInterface = "wlp0s20f3";
       wirelessInterfaces = [];
       ethernetInterfaces = [ networkInterface ];
@@ -116,8 +116,8 @@ let
       services.swayidle.timeouts = [
         {
           timeout = 100;
-          command = "${pkgs.brillo}/bin/brillo -U 20";
-          resumeCommand = "${pkgs.brillo}/bin/brillo -A 20";
+          command = "${pkgs.brillo}/bin/brillo -U 40";
+          resumeCommand = "${pkgs.brillo}/bin/brillo -A 40";
         }
       ];
       services.kdeconnect.enable = true;

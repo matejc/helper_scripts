@@ -37,6 +37,11 @@ in lib.mkMerge ([{
       target = ".icons/default";
     };
 
+    home.file.nixpkgs-config = {
+      source = "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
+      target = ".config/nixpkgs/config.nix";
+    };
+
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
@@ -349,7 +354,7 @@ in lib.mkMerge ([{
         border-bottom: 3px solid white;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #dnd {
         padding: 0 10px;
     }
 
@@ -391,12 +396,12 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
       };
-      clock.format = "{:%H:%M, %a %d.%m.%Y}";
+      clock.format = "{:%a %d.%m.%Y, %H:%M}";
       pulseaudio = {
         scroll-step = 5.0;
         format = "{volume}% {icon}";
@@ -456,14 +461,31 @@ in lib.mkMerge ([{
         tooltip-format-disconnected = "Disconnected";
         max-length = 50;
       };
+      "custom/dnd" = {
+        interval = "once";
+        return-type = "json";
+        format = "{}{icon}";
+        format-icons = {
+            default = "";
+            dnd = "ﮡ";
+        };
+        on-click = "${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep 'do-not-disturb' && ${pkgs.mako}/bin/makoctl mode -r do-not-disturb || ${pkgs.mako}/bin/makoctl mode -a do-not-disturb; ${pkgs.procps}/bin/pkill -RTMIN+11 waybar";
+        exec = ''${pkgs.coreutils}/bin/printf '{\"alt\":\"%s\",\"tooltip\":\"mode: %s\"}' $(${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep -q 'do-not-disturb' && echo dnd || echo default) $(${pkgs.mako}/bin/makoctl mode | ${pkgs.coreutils}/bin/tail -1)'';
+        signal = 11;
+      };
     };
   };
   programs.waybar.systemd.enable = true;
   programs.waybar.systemd.target = "sway-session.target";
+  systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
 
   programs.mako = {
     enable = true;
     font = "${context.variables.font.family} ${context.variables.font.style} ${toString context.variables.font.size}";
+    extraConfig = ''
+    [mode=do-not-disturb]
+    invisible=1
+    '';
   };
 
   #services.nextcloud-client.enable = true;

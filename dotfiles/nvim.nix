@@ -2272,7 +2272,10 @@ EOF
       au FileType netrw setlocal bufhidden=wipe
     augroup end
 
-    let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
+    " let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
+    au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = "${pkgs.plantuml}/lib/plantuml.jar"
+    let g:plantuml_previewer#viewer_path = "${variables.homeDir}/.plantuml-previewer-vim"
+    let g:plantuml_previewer#debug_mode = 1
 
     augroup matchup_matchparen_highlight
       autocmd!
@@ -2409,8 +2412,9 @@ EOF
           nvim-treesitter-context
           vimPlugins.novim-mode
           vimPlugins.lspsaga-nvim
-          vimPlugins.previm
+          #vimPlugins.previm
           plantuml-syntax
+          vimPlugins.plantuml-previewer-vim
           open-browser-vim
           #vimPlugins.nvim-colorizer-lua
           #vimPlugins.noice-nvim
@@ -2486,7 +2490,7 @@ in [{
       pkgs.ripgrep
       pkgs.sshpass
       pkgs.openssh
-      pkgs.openjdk
+      pkgs.jdk11
       pkgs.graphviz
       pkgs.python3Packages.docutils
       pkgs.shellcheck
