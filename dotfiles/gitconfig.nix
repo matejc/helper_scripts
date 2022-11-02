@@ -47,5 +47,7 @@ in
         rebase = true
     [commit]
         gpgsign = true
+    [gpg]
+        program = ${pkgs.gnupg}/bin/gpg
   '';
 }
