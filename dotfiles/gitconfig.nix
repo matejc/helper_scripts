@@ -17,6 +17,7 @@ in
     [user]
         name = ${variables.fullName}
         email = ${variables.email}
+        signingkey = ${variables.signingkey}
     [core]
         editor = ${variables.programs.editor}
         excludesfile = ${variables.homeDir}/.gitignore
