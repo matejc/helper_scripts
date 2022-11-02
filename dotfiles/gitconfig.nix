@@ -44,5 +44,7 @@ in
         grep-history = !git rev-list --all --date-order | PAGER=cat xargs git grep -n
     [pull]
         rebase = true
+    [commit]
+        gpgsign = true
   '';
 }
