@@ -1782,7 +1782,7 @@ vim.opt.runtimepath:append(parser_install_dir)
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  -- ensure_installed = "all",
+  ensure_installed = "all",
   auto_install = true,
   parser_install_dir = parser_install_dir,
 
