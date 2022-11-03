@@ -42,6 +42,7 @@ let
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
+      signingkey = "C7AED7F07CA47341";
       locale.all = "en_US.UTF-8";
       networkInterface = "br0";
       wirelessInterfaces = [];
