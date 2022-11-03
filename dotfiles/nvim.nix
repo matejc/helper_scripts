@@ -570,6 +570,24 @@ EOF
 
     inoremap <C-U> <Cmd>:UndotreeToggle<CR>
 
+    let $PATH .= ':${lib.makeBinPath [
+      pkgs.stdenv.cc
+      pkgs.python3Packages.python
+      pkgs.perl
+      pkgs.nodejs
+      pkgs.gnugrep
+      pkgs.python3Packages.yamllint
+      pkgs.ripgrep
+      pkgs.sshpass
+      pkgs.openssh
+      pkgs.jdk11
+      pkgs.graphviz
+      pkgs.python3Packages.docutils
+      pkgs.shellcheck
+    ]}'
+    let $CC = "${pkgs.stdenv.cc}/bin/cc"
+    let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
+
     function! PyBeautify()
       :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
     endfunction
@@ -1912,8 +1930,8 @@ EOF
     "inoremap <silent> <c-`> <Cmd>:Lspsaga open_floaterm<CR>
     "tnoremap <silent> <c-`> <C-\><C-n>:Lspsaga close_floaterm<CR>
 
-    inoremap <silent> <c-g>f <cmd>lua vim.lsp.buf.formatting()<CR>
-    vnoremap <silent> <c-g>f <cmd>lua vim.lsp.buf.formatting()<CR>
+    inoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
+    vnoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
 
     inoremap <c-g>d <Cmd>:lua require'telescope.builtin'.lsp_definitions{}<cr>
     inoremap <c-g>D <Cmd>:lua require'telescope.builtin'.lsp_implementations{}<cr>
@@ -2482,27 +2500,28 @@ in [{
   '';
 } {
   target = "${variables.homeDir}/bin/nvim";
-  source = pkgs.writeScript "nvim" ''
-    #!${pkgs.stdenv.shell}
-    export PATH="${lib.makeBinPath [
-      pkgs.stdenv.cc
-      pkgs.python3Packages.python
-      pkgs.perl
-      pkgs.nodejs
-      pkgs.gnugrep
-      pkgs.python3Packages.yamllint
-      pkgs.ripgrep
-      pkgs.sshpass
-      pkgs.openssh
-      pkgs.jdk11
-      pkgs.graphviz
-      pkgs.python3Packages.docutils
-      pkgs.shellcheck
-    ]}:$PATH"
-    export CC="${pkgs.stdenv.cc}/bin/cc"
-    export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
-    ${neovim}/bin/nvim "$@"
-  '';
+  source = "${neovim}/bin/nvim";
+  #source = pkgs.writeScript "nvim" ''
+  #  #!${pkgs.stdenv.shell}
+  #  export PATH="${lib.makeBinPath [
+  #    pkgs.stdenv.cc
+  #    pkgs.python3Packages.python
+  #    pkgs.perl
+  #    pkgs.nodejs
+  #    pkgs.gnugrep
+  #    pkgs.python3Packages.yamllint
+  #    pkgs.ripgrep
+  #    pkgs.sshpass
+  #    pkgs.openssh
+  #    pkgs.jdk11
+  #    pkgs.graphviz
+  #    pkgs.python3Packages.docutils
+  #    pkgs.shellcheck
+  #  ]}:$PATH"
+  #  export CC="${pkgs.stdenv.cc}/bin/cc"
+  #  export LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib:$LIBRARY_PATH"
+  #  ${neovim}/bin/nvim "$@"
+  #'';
 } {
   target = "${variables.homeDir}/bin/guinvim";
   source = pkgs.writeScript "guinvim.sh" ''
