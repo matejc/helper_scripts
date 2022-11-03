@@ -1776,11 +1776,15 @@ require('smart-splits').ignored_filetypes = {
   'prompt',
 }
 
+local parser_install_dir = vim.fn.stdpath("cache") .. "/treesitters"
+vim.fn.mkdir(parser_install_dir, "p")
+vim.opt.runtimepath:append(parser_install_dir)
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
   -- ensure_installed = "all",
-  auto_install = false,
+  auto_install = true,
+  parser_install_dir = parser_install_dir,
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
