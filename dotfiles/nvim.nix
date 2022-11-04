@@ -560,12 +560,13 @@ EOF
     "nnoremap <C-u> u
     "nno <C-r> <C-R>
     "ino <C-r> <esc><C-R>
-    inoremap <C-z> <esc>ui
+    inoremap <C-z> <C-O>u
+    inoremap <C-S-Z> <C-O><C-R>
     nnoremap <C-z> u
 
-    inoremap <A-u> <esc>ui
+    inoremap <A-u> <C-O>u
     nnoremap <A-u> u
-    inoremap <A-r> <C-R>i
+    inoremap <A-r> <C-O><C-R>
     nnoremap <A-r> <C-R>
 
     inoremap <C-U> <Cmd>:UndotreeToggle<CR>
