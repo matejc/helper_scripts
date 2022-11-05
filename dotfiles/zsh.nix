@@ -193,9 +193,6 @@ in
     bindkey '^I' first-tab
     .{1..9} (){ local d=.; repeat ''${0:1} d+=/..; cd $d;}
 
-    # export STARSHIP_CONFIG="${variables.homeDir}/.config/starship.toml"
-    # eval "$(${pkgs.starship}/bin/starship init zsh)"
-
     fpath=(${pkgs.zsh-completions}/share/zsh/site-functions $fpath)
     source ${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh
     fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)

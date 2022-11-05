@@ -552,7 +552,7 @@ in lib.mkMerge ([{
     enableBashIntegration = true;
     enableZshIntegration = true;
     settings = {
-      command_timeout = 1000;
+      command_timeout = 2000;
       character.success_symbol = "[❯](bold green) ";
       character.error_symbol = "[✗](bold red) ";
       status.disabled = false;
