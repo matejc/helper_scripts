@@ -2134,7 +2134,7 @@ EOF
 
     set redrawtime=3000
 
-    set re=2
+    set re=0
 
     hi BlackBg guibg=black
 

@@ -326,6 +326,7 @@ in lib.mkMerge ([{
         font-size: 14px;
         min-height: 0;
         padding: 0;
+        color: white;
     }
 
     window#waybar {
@@ -363,13 +364,20 @@ in lib.mkMerge ([{
     }
 
     #battery {
-        background-color: #ffffff;
         color: black;
     }
 
     #battery.charging {
         color: white;
         background-color: #26A65B;
+    }
+
+    #battery.critical {
+         color: #e06c75;
+    }
+
+    #battery.full {
+        margin: 0px 0px 0px 0px;
     }
 
     @keyframes blink {
