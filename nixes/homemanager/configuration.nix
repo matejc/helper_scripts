@@ -355,7 +355,7 @@ in lib.mkMerge ([{
         border-bottom: 3px solid white;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-weather {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd {
         padding: 0 10px;
     }
 
@@ -404,7 +404,7 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "custom/weather" "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
@@ -490,10 +490,6 @@ in lib.mkMerge ([{
         format = "{capacity}% {icon}";
         format-icons = ["" "" "" "" ""];
         max-length = 25;
-      };
-      "custom/weather" = {
-        exec = "${pkgs.curl}/bin/curl 'https://wttr.in/?format=1'";
-        interval = 3600;
       };
     };
   };
