@@ -355,7 +355,7 @@ in lib.mkMerge ([{
         border-bottom: 3px solid white;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #dnd {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-weather {
         padding: 0 10px;
     }
 
@@ -404,7 +404,7 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "custom/weather" "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
@@ -480,6 +480,20 @@ in lib.mkMerge ([{
         on-click = "${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep 'do-not-disturb' && ${pkgs.mako}/bin/makoctl mode -r do-not-disturb || ${pkgs.mako}/bin/makoctl mode -a do-not-disturb; ${pkgs.procps}/bin/pkill -RTMIN+11 waybar";
         exec = ''${pkgs.coreutils}/bin/printf '{\"alt\":\"%s\",\"tooltip\":\"mode: %s\"}' $(${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep -q 'do-not-disturb' && echo dnd || echo default) $(${pkgs.mako}/bin/makoctl mode | ${pkgs.coreutils}/bin/tail -1)'';
         signal = 11;
+      };
+      battery = {
+        interval = 60;
+        states = {
+          warning = 30;
+          critical = 15;
+        };
+        format = "{capacity}% {icon}";
+        format-icons = ["" "" "" "" ""];
+        max-length = 25;
+      };
+      "custom/weather" = {
+        exec = "${pkgs.curl}/bin/curl 'https://wttr.in/?format=1'";
+        interval = 3600;
       };
     };
   };
