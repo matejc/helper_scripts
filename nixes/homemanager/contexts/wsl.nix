@@ -5,18 +5,18 @@ let
     dotFilePaths = [
       "${inputs.helper_scripts}/dotfiles/programs.nix"
       "${inputs.helper_scripts}/dotfiles/nvim.nix"
-      "${inputs.helper_scripts}/dotfiles/xfce4-terminal.nix"
       "${inputs.helper_scripts}/dotfiles/gitconfig.nix"
       "${inputs.helper_scripts}/dotfiles/gitignore.nix"
-      "${inputs.helper_scripts}/dotfiles/nix.nix"
-      "${inputs.helper_scripts}/dotfiles/oath.nix"
-      "${inputs.helper_scripts}/dotfiles/jstools.nix"
-      "${inputs.helper_scripts}/dotfiles/superslicer.nix"
-      "${inputs.helper_scripts}/dotfiles/scan.nix"
       "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
       "${inputs.helper_scripts}/dotfiles/comma.nix"
       "${inputs.helper_scripts}/dotfiles/tmux.nix"
-      "${inputs.helper_scripts}/dotfiles/kitty.nix"
+      "${inputs.helper_scripts}/dotfiles/dd.nix"
+      "${inputs.helper_scripts}/dotfiles/sync.nix"
+      "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
+      "${inputs.helper_scripts}/dotfiles/wofi.nix"
+      "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
+      "${inputs.helper_scripts}/dotfiles/wezterm.nix"
+      "${inputs.helper_scripts}/dotfiles/countdown.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -36,6 +36,7 @@ let
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
+      signingkey = "";
       locale.all = "en_US.UTF-8";
       networkInterface = "eth0";
       wirelessInterfaces = [];
@@ -49,21 +50,21 @@ let
       i3-msg = "${programs.i3-msg}";
       term = null;
       programs = {
-        filemanager = "${cinnamon.nemo}/bin/nemo";
+        filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        #terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${profileDir}/bin/chromium --ozone-platform-hint=auto";
+        browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         editor = "${nano}/bin/nano";
-        launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.xfce.terminal}/bin/xfce4-terminal --title Launcher --hide-scrollbar --hide-toolbar --hide-menubar --drop-down -x ${homeDir}/bin/sway-launcher-desktop";
-        window-size = dotFileAt "i3config.nix" 2;
-        window-center = dotFileAt "i3config.nix" 3;
+        #launcher = dotFileAt "bemenu.nix" 0;
+        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
+        launcher = "${pkgs.wofi}/bin/wofi --show run";
+        window-center = dotFileAt "i3config.nix" 4;
+        window-size = dotFileAt "i3config.nix" 5;
         i3-msg = "${profileDir}/bin/swaymsg";
-        nextcloud = "${nextcloud-client}/bin/nextcloud";
-        keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
+        #nextcloud = "${nextcloud-client}/bin/nextcloud";
         tmux = "${pkgs.tmux}/bin/tmux";
-        tug = "${pkgs.turbogit}/bin/tug";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -79,6 +80,7 @@ let
         position = "0,0";
         mode = "1920x1080@60Hz";
         workspaces = [ "1" ];
+        scale = 1.0;
         wallpaper = "${pkgs.sway}/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png";
       }];
     };
@@ -87,6 +89,7 @@ let
     ];
     config = {};
     home-configuration = {
+      home.stateVersion = "22.11";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
       ];
