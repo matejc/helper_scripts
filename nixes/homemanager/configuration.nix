@@ -208,8 +208,8 @@ in lib.mkMerge ([{
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
             "Control+Mod1+Delete" = "exec ${pkgs.nwg-launchers}/bin/nwgbar";
             "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-            "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +5%";
-            "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -5%";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +3%";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -3%";
             "XF86AudioMicMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
             "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
             "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
@@ -411,7 +411,7 @@ in lib.mkMerge ([{
       };
       clock.format = "{:%a %d.%m.%Y, %H:%M}";
       pulseaudio = {
-        scroll-step = 5.0;
+        scroll-step = 3.0;
         format = "{volume}% {icon}";
         format-bluetooth = "{volume}% {icon}";
         format-muted = "";
