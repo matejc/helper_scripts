@@ -2,6 +2,6 @@
 [{
   target = "${variables.homeDir}/.config/nix/nix.conf";
   source = pkgs.writeText "nix.conf" ''
-    experimental-features = flakes
+    experimental-features = flakes nix-command
   '';
 }]

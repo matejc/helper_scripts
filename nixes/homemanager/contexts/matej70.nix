@@ -72,7 +72,6 @@ let
         nextcloud = "${nextcloud-client}/bin/nextcloud";
         keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         tmux = "${pkgs.tmux}/bin/tmux";
-        tug = "${pkgs.turbogit}/bin/tug";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";

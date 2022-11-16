@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 rec {
   packageOverrides = pkgs:
   rec {
@@ -592,7 +591,6 @@ rec {
     NIX_USER_PROFILE_DIR = "/nix/var/nix/profiles/per-user/matejc";
     NIX_MY_GITHUB = "git@github.com:matejc/nixpkgs.git";
     NIX_MY_BACKUP = "git@github.com:matejc/configurations.git";
-    nix = pkgs.nix;
   };
   android_sdk.accept_license = true;
   permittedInsecurePackages = [

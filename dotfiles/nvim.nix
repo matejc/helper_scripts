@@ -585,6 +585,7 @@ EOF
       pkgs.graphviz
       pkgs.python3Packages.docutils
       pkgs.shellcheck
+      pkgs.tree-sitter
     ]}'
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
