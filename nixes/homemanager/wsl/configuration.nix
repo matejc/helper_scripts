@@ -29,6 +29,9 @@ in
     :WSLInterop:M::MZ::/init:PF
   '';
 
+  virtualisation.docker.enable = true;
+  virtualisation.docker.extraOptions = "--iptables=False";
+
   services.dbus.enable = true;
   programs.mosh.enable = true;
 
