@@ -90,6 +90,7 @@ let
     config = {};
     home-configuration = {
       home.stateVersion = "22.11";
+      home.sessionVariables.WSL_INTEROP = "$(realpath /run/WSL/*_interop)";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
       ];

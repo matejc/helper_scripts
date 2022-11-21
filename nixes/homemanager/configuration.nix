@@ -100,7 +100,7 @@ in lib.mkMerge ([{
     };
 
     programs.chromium = {
-      enable = true;
+      enable = false;
       extensions = [
         "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
         "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
@@ -110,7 +110,7 @@ in lib.mkMerge ([{
     };
 
     programs.firefox = {
-      enable = true;
+      enable = false;
       extensions = with nur.repos.rycee.firefox-addons; [
         https-everywhere ublock-origin keepassxc-browser
       ];

@@ -24,6 +24,11 @@ in
   home-manager.users.${defaultUser} = (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; });
   hardware.opengl.enable = true;
 
+  programs.nix-ld.enable = true;
+  environment.etc."binfmt.d/WSLInterop.conf".text = ''
+    :WSLInterop:M::MZ::/init:PF
+  '';
+
   services.dbus.enable = true;
   programs.mosh.enable = true;
 
