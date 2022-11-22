@@ -37,15 +37,10 @@
   outputs = { self, ... }@inputs: {
     homeConfigurations = {
       wsl = inputs.home-manager.lib.homeManagerConfiguration rec {
-        configuration = { ... }: {
-          imports = [
-            (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
-            ./modules/xrdp.nix
-          ];
-        };
-        system = "x86_64-linux";
-        homeDirectory = "/home/${username}";
-        username = "matejc";
+        pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+        modules = [
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
+        ];
       };
       nixcode = inputs.home-manager.lib.homeManagerConfiguration rec {
         pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";

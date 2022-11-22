@@ -1161,7 +1161,7 @@ cmp.setup({
     -- { name = 'snippy' }, -- For snippy users.
     { name = 'path' },
     { name = 'buffer' },
-    -- { name = 'treesitter' },
+    { name = 'treesitter' },
     -- { name = 'rg' },
   }, {
     { name = 'spell' },
@@ -2429,7 +2429,7 @@ EOF
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
-          (nvim-treesitter.withPlugins (_: pkgs.tree-sitter.allGrammars))
+          nvim-treesitter
           nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
