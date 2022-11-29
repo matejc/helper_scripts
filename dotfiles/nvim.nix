@@ -1830,7 +1830,7 @@ require'nvim-treesitter.configs'.setup {
   },
 
   matchup = {
-    enable = true,
+    enable = false,
   },
 }
 
@@ -2301,15 +2301,15 @@ EOF
     let g:plantuml_previewer#viewer_path = "${variables.homeDir}/.plantuml-previewer-vim"
     let g:plantuml_previewer#debug_mode = 1
 
-    augroup matchup_matchparen_highlight
-      autocmd!
-      autocmd ColorScheme * hi MatchParen guifg=Gray40
-      autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
-    augroup END
-    inoremap <C-S-m> <C-o><plug>(matchup-g%)
-    let g:matchup_matchparen_deferred = 1
-    let g:matchup_matchparen_deferred_show_delay = 200
-    let g:matchup_matchparen_deferred_hide_delay = 600
+    " augroup matchup_matchparen_highlight
+    "   autocmd!
+    "   autocmd ColorScheme * hi MatchParen guifg=Gray40
+    "   autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
+    " augroup END
+    " inoremap <C-S-m> <C-o><plug>(matchup-g%)
+    " let g:matchup_matchparen_deferred = 1
+    " let g:matchup_matchparen_deferred_show_delay = 200
+    " let g:matchup_matchparen_deferred_hide_delay = 600
 
     augroup large_file_support
       autocmd!
@@ -2398,7 +2398,7 @@ EOF
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
           vimPlugins.vim-fakeclip
-          vim-matchup
+          #vim-matchup
           #vimPlugins.nvim-surround
           #nvim-compe
           plenary-nvim

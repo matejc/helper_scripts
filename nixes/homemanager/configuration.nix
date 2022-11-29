@@ -58,7 +58,6 @@ in lib.mkMerge ([{
       font-awesome
       config.gtk.font.package
       git
-      qt5Full
       socat
       cinnamon.nemo
       zsh
@@ -100,7 +99,6 @@ in lib.mkMerge ([{
     };
 
     programs.chromium = {
-      enable = false;
       extensions = [
         "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
         "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
@@ -110,7 +108,6 @@ in lib.mkMerge ([{
     };
 
     programs.firefox = {
-      enable = false;
       extensions = with nur.repos.rycee.firefox-addons; [
         https-everywhere ublock-origin keepassxc-browser
       ];

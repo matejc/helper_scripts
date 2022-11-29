@@ -33,6 +33,11 @@ in
   virtualisation.docker.extraOptions = "--iptables=False";
 
   services.dbus.enable = true;
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+  };
+
   programs.mosh.enable = true;
 
   services.gnome.gnome-keyring.enable = true;

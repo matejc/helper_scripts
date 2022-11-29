@@ -132,6 +132,7 @@ let
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
       };
+      programs.firefox.enable = true;
     };
   };
 in
