@@ -600,7 +600,7 @@ EOF
     nnoremap <silent> <PageUp> 10<up>
     nnoremap <silent> <PageDown> 10<down>
     inoremap <expr> <silent> <PageUp> line('.')==1?'<C-o>^':'<C-o>10k'
-    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>$':'<C-o>10j'
+    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>^':'<C-o>10j'
     vnoremap <silent> <PageUp> 10<up>
     vnoremap <silent> <PageDown> 10<down>
     vmap <S-PageUp> 10<up>
