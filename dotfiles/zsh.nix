@@ -98,10 +98,10 @@ in
       bindkey -r '^S'
     fi
 
-    #export HISTFILESIZE=10000000
-    #export HISTSIZE=10000000
-    #export SAVEHIST=10000000
-    #export HISTFILE=~/.zsh_history
+    export HISTFILESIZE=10000000
+    export HISTSIZE=10000000
+    export SAVEHIST=10000000
+    export HISTFILE=~/.zsh_history
 
     setopt HIST_FIND_NO_DUPS
     setopt SHARE_HISTORY

@@ -53,15 +53,9 @@ let
     ./programs.nix
     ./starship.nix
     ./nvim.nix
-    ./oath.nix
     ./mypassgen.nix
-    ./keepassxc-oath.nix
     ./nixmy.nix
-    ./devenv.nix
     ./comma.nix
-    ./kitty.nix
-    ./fonts.nix
-    ./look.nix
     ./tmux.nix
   ];
 

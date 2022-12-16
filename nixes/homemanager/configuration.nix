@@ -361,7 +361,7 @@ in lib.mkMerge ([{
     }
 
     #battery {
-        color: black;
+        color: white;
     }
 
     #battery.charging {
@@ -541,7 +541,7 @@ in lib.mkMerge ([{
       . "${pkgs.nix}/etc/profile.d/nix.sh"
 
       unset __HM_SESS_VARS_SOURCED
-      . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh"
+      . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh" || true
     '';
     loginExtra = ''
       ${readFile (dotFileAt "zsh.nix" 1)}

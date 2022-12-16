@@ -586,7 +586,7 @@ EOF
       pkgs.python3Packages.docutils
       pkgs.shellcheck
       pkgs.tree-sitter
-    ]}'
+    ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin'
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
 
@@ -2109,7 +2109,7 @@ EOF
 
     au BufNewFile,BufRead *.robot setlocal filetype=robot
 
-    au BufNewFile,BufRead Jenkinsfile setlocal filetype=groovy
+    au BufNewFile,BufRead *Jenkinsfile* setlocal filetype=groovy
 
     " let g:gitblame_date_format = '%r'
     " let g:blamer_enabled = 1
