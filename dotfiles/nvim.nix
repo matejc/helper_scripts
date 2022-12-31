@@ -599,22 +599,35 @@ EOF
 
     nnoremap <silent> <PageUp> 10<up>
     nnoremap <silent> <PageDown> 10<down>
+
     inoremap <expr> <silent> <PageUp> line('.')==1?'<C-o>^':'<C-o>10k'
-    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>^':'<C-o>10j'
+    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>$':'<C-o>10j'
+
     vnoremap <silent> <PageUp> 10<up>
     vnoremap <silent> <PageDown> 10<down>
-    vmap <S-PageUp> 10<up>
-    vmap <S-PageDown> 10<down>
-    nmap <S-PageUp> v10<up>
-    nmap <S-PageDown> v10<down>
-    nmap <S-Down> vj
-    nmap <S-Up> vk
-    nmap <S-Left> vh
-    nmap <S-Right> vl
-    vmap <S-Down> j
-    vmap <S-Up> k
 
-    vmap <S-Right> l
+    nnoremap <S-PageUp> v10<up>
+    nnoremap <S-PageDown> v10<down>
+    nnoremap <S-Down> vj
+    nnoremap <S-Up> vk
+    nnoremap <S-Left> vh
+    nnoremap <S-Right> vl
+
+    inoremap <S-PageUp> <C-o>v10<up>
+    inoremap <S-PageDown> <C-o>v10<down>
+    inoremap <S-Down> <C-o>vj
+    inoremap <S-Up> <C-o>vk
+    inoremap <S-Left> <C-o>vh
+    inoremap <S-Right> <C-o>vl
+    inoremap <S-Home> <C-o>v<Home>
+    inoremap <S-End> <C-o>v<End>
+
+    vnoremap <S-PageUp> 10<up>
+    vnoremap <S-PageDown> 10<down>
+    vnoremap <S-Down> j
+    vnoremap <S-Up> k
+    vnoremap <S-Left> h
+    vnoremap <S-Right> l
 
     nnoremap <C-k> "_dd
     inoremap <C-k> <C-o>"_dd
@@ -647,15 +660,6 @@ EOF
     nnoremap <C-S-d> :copy .<cr>
     vnoremap <C-S-d> :copy '><cr>
     inoremap <C-S-d> <c-o>:copy .<cr>
-
-    vnoremap <PageUp> 10<up>
-    vnoremap <PageDown> 10<down>
-    vnoremap <S-PageUp> 10<up>
-    vnoremap <S-PageDown> 10<down>
-    inoremap <S-PageUp> <C-o>v10k
-    inoremap <S-PageDown> <C-o>v10j
-    nnoremap <S-PageUp> v10<up>
-    nnoremap <S-PageDown> v10<down>
 
     vnoremap <Tab> >gv
     vnoremap <S-Tab> <gv
@@ -1103,26 +1107,38 @@ end
 --require'lsp_signature'.setup(cfg)
 
 local cmp = require'cmp'
+local lspkind = require('lspkind')
 
 cmp.setup({
+  window = {
+    completion = {
+      --winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+      col_offset = -3,
+      side_padding = 0,
+    },
+  },
   experimental = {
     ghost_text = true,
   },
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
       -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
       -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
     end,
   },
   formatting = {
+    fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      local item = entry:get_completion_item()
-      vim_item.menu = item.detail
-      return vim_item
-    end
+      local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 40 })(entry, vim_item)
+      local strings = vim.split(kind.kind, "%s", { trimempty = true })
+      kind.kind = " " .. strings[1] .. " "
+      --kind.menu = "    (" .. strings[2] .. ")"
+
+      return kind
+    end,
   },
   mapping = cmp.mapping.preset.insert({
     ['<PageUp>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
@@ -1155,8 +1171,8 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
-    { name = 'vsnip' }, -- For vsnip users.
-    -- { name = 'luasnip' }, -- For luasnip users.
+    -- { name = 'vsnip' }, -- For vsnip users.
+    { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
     { name = 'path' },
@@ -1917,7 +1933,57 @@ saga.init_lsp_saga()
 -- }
 
 -- require("nvim-surround").setup({})
+
+vim.diagnostic.config({ update_in_insert = true, })
+
+local null_ls = require("null-ls")
+
+null_ls.setup({
+    border = nil,
+    cmd = { "${variables.homeDir}/bin/nvim" },
+    debounce = 250,
+    debug = false,
+    default_timeout = 5000,
+    diagnostic_config = nil,
+    diagnostics_format = "#{m}",
+    fallback_severity = vim.diagnostic.severity.ERROR,
+    log_level = "warn",
+    notify_format = "[null-ls] %s",
+    on_attach = nil,
+    on_init = nil,
+    on_exit = nil,
+    root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".git"),
+    should_attach = nil,
+    temp_dir = nil,
+    update_in_insert = true,
+    sources = {
+      null_ls.builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix", }),
+      null_ls.builtins.diagnostics.statix.with({ command = "${pkgs.statix}/bin/statix", }),
+    },
+})
+
+require("luasnip.loaders.from_vscode").lazy_load()
 EOF
+    highlight! CmpItemMenu guifg=pink gui=italic
+
+    " gray
+    highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
+    " blue
+    highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6 gui=bold
+    highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
+    " light blue
+    highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
+    highlight! link CmpItemKindInterface CmpItemKindVariable
+    highlight! link CmpItemKindText CmpItemKindVariable
+    " pink
+    highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
+    highlight! link CmpItemKindMethod CmpItemKindFunction
+    " front
+    highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
+    highlight! link CmpItemKindProperty CmpItemKindKeyword
+    highlight! link CmpItemKindUnit CmpItemKindKeyword
+
+
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
     " inoremap <silent> <c-g>h <Cmd>:Lspsaga lsp_finder<CR>
@@ -2199,7 +2265,6 @@ EOF
     nnoremap <silent> <M-Right> <C-W><Right>
 
     inoremap <silent> <C-W> <C-O>:bd<CR>
-    snoremap <silent> <C-W> <C-O>:bd<CR>
     nnoremap <silent> <C-W> :bd<CR>
 
     inoremap <C-Q> <C-O>:qall
@@ -2208,7 +2273,8 @@ EOF
     tnoremap <C-Q> <C-\><C-N>:qall
     cnoremap <C-Q> <C-C><C-O>:qall
 
-    inoremap <silent> <C-S> <C-O>:update<CR>
+    inoremap <silent> <C-S> <C-o>:w<CR><C-o>:update<CR>
+    nnoremap <silent> <C-S> :w<CR>:update<CR>i
 
     inoremap <M-;> <C-O>:
     snoremap <M-;> <C-O>:
@@ -2241,12 +2307,12 @@ EOF
     snoremap <silent> <C-Y> <Esc><C-O><C-R>
     vnoremap <silent> <C-Y> <Esc><C-O><C-R>
 
-    inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
-    inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>
-    inoremap <silent> <S-Up> <C-O>:call novim_mode#EnterSelectionMode('up')<CR>
-    inoremap <silent> <S-Down> <C-O>:call novim_mode#EnterSelectionMode('down')<CR>
-    inoremap <silent> <S-Home> <C-O>:call novim_mode#EnterSelectionMode('home')<CR>
-    inoremap <silent> <S-End> <C-O>:call novim_mode#EnterSelectionMode('end')<CR>
+    " inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
+    " inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>
+    " inoremap <silent> <S-Up> <C-O>:call novim_mode#EnterSelectionMode('up')<CR>
+    " inoremap <silent> <S-Down> <C-O>:call novim_mode#EnterSelectionMode('down')<CR>
+    " inoremap <silent> <S-Home> <C-O>:call novim_mode#EnterSelectionMode('home')<CR>
+    " inoremap <silent> <S-End> <C-O>:call novim_mode#EnterSelectionMode('end')<CR>
 
     " CTRL-A for selecting all text
     " inoremap <silent> <C-a> <C-O>:call novim_mode#EnterSelectionMode('all')<CR>
@@ -2323,6 +2389,15 @@ EOF
     " call matchadd('LineTooLongMarker', '\%81v', 100)
 
     autocmd UIEnter * source ${ginitVim}
+
+    function! SetColumnToStart()
+lua << EOF
+local r, c = unpack(vim.api.nvim_win_get_cursor(0))
+vim.api.nvim_win_set_cursor(0, {r, 0})
+EOF
+    endfunction
+
+    " autocmd SessionLoadPost * call SetColumnToStart()
   '';
 
   kotlin-language-server = pkgs.stdenv.mkDerivation rec {
@@ -2413,7 +2488,8 @@ EOF
           vimPlugins.nvim-cmp
           vimPlugins.cmp-buffer
           vimPlugins.cmp-nvim-lsp
-          vimPlugins.cmp-vsnip
+          #vimPlugins.cmp-vsnip
+          vimPlugins.cmp_luasnip
           vimPlugins.cmp-path
           vimPlugins.cmp-cmdline
           vimPlugins.cmp-spell
@@ -2423,7 +2499,7 @@ EOF
           vimPlugins.nvim-hlslens
           vimPlugins.nvim-scrollbar
           vimPlugins.themer-lua
-          vimPlugins.vim-vsnip
+          #vimPlugins.vim-vsnip
           vimPlugins.friendly-snippets
           nui-nvim
           #vimPlugins.nvim-regexplainer
@@ -2443,6 +2519,9 @@ EOF
           #vimPlugins.nvim-colorizer-lua
           #vimPlugins.noice-nvim
           #vimPlugins.nvim-notify
+          vimPlugins.null-ls-nvim
+          vimPlugins.LuaSnip
+          vimPlugins.lspkind-nvim
         ];
         opt = [
         ];

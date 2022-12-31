@@ -99,6 +99,7 @@ in lib.mkMerge ([{
     };
 
     programs.chromium = {
+      enable = true;
       extensions = [
         "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
         "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
@@ -496,10 +497,26 @@ in lib.mkMerge ([{
 
   programs.mako = {
     enable = true;
-    font = "${context.variables.font.family} ${context.variables.font.style} ${toString context.variables.font.size}";
+    font = "${context.variables.font.family} 9";
     extraConfig = ''
-    [mode=do-not-disturb]
-    invisible=1
+      max-icon-size=64
+      border-radius=10
+      background-color=#2e3440
+      border-size=2
+      border-color=#88c0d0
+
+      [urgency=low]
+      border-color=#cccccc
+
+      [urgency=normal]
+      border-color=#d08770
+
+      [urgency=high]
+      border-color=#bf616a
+      default-timeout=0
+
+      [mode=do-not-disturb]
+      invisible=1
     '';
   };
 
