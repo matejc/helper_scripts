@@ -21,7 +21,7 @@ in
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
-  home-manager.users.${defaultUser} = (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; });
+  home-manager.users.${defaultUser} = import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; };
   hardware.opengl.enable = true;
 
   programs.nix-ld.enable = true;
@@ -30,7 +30,7 @@ in
   '';
 
   virtualisation.docker.enable = true;
-  virtualisation.docker.extraOptions = "--iptables=False";
+  virtualisation.docker.package = pkgs.docker.override { iptables = pkgs.iptables-legacy; };
 
   services.dbus.enable = true;
   services.openssh = {
