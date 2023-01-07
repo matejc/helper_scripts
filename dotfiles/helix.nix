@@ -126,9 +126,6 @@ in
     mode.insert = "INSERT"
     mode.select = "SELECT"
 
-    [editor.file-picker]
-    hidden = false
-
     [editor.whitespace.render]
     space = "none"
     tab = "all"
@@ -145,6 +142,7 @@ in
     "ret" = "open_below"
     C-l = "insert_mode"
     C-o = "file_picker"
+    C-p = "file_picker"
     C-f = "global_search"
     C-u = "undo"
     C-z = "undo"
@@ -170,6 +168,8 @@ in
     A-S-down = "swap_view_down"
     A-S-left = "swap_view_left"
     A-S-right = "swap_view_right"
+    C-home = "goto_file_start"
+    C-end = "goto_last_line"
 
     [keys.insert]
     C-s = [ "normal_mode", ":w" ]
