@@ -35,6 +35,14 @@ let
     '';
   };
 
+  ltex-ls = pkgs.runCommand "ltex-ls" {
+    buildInputs = [ pkgs.makeWrapper ];
+  } ''
+    mkdir -p $out/bin
+    makeWrapper ${pkgs.vscode-extensions.valentjn.vscode-ltex}/share/vscode/extensions/valentjn.vscode-ltex/lib/ltex-ls-*/bin/ltex-ls $out/bin/ltex-ls \
+      --prefix JAVACMD : ${pkgs.jre}/bin/java
+  '';
+
   path = with pkgs; lib.makeBinPath [
     stdenv.cc.cc binutils wl-clipboard
     nil nodePackages_latest.yaml-language-server nodePackages_latest.bash-language-server
@@ -83,6 +91,15 @@ in
     [[language]]
     name = "python"
     config = { pylsp = { configurationSources = ["pycodestyle", "flake8"], plugins = { pycodestyle = { enabled = true }, flake8 = { enabled = true, executable = "${pkgs.python3Packages.flake8}/bin/flake8" } } } }
+
+    [[language]]
+    name = "latex"
+    scope = "source.tex"
+    injection-regex = "md|markdown|latex|tex"
+    file-types = ["md", "markdown", "tex", "txt"]
+    roots = []
+    language-server = { command = "${ltex-ls}/bin/ltex-ls" }
+    indent = { tab-width = 2, unit = "  " }
   '';
 } {
   target = "${variables.homeDir}/.config/helix/config.toml";
@@ -142,6 +159,17 @@ in
     S-left = ":bprev"
     C-pagedown = ":bnext"
     C-pageup = ":bprev"
+    A-v = ":vsplit-new"
+    A-h = ":hsplit-new"
+    A-c = ":bclose"
+    A-up = "jump_view_up"
+    A-down = "jump_view_down"
+    A-left = "jump_view_left"
+    A-right = "jump_view_right"
+    A-S-up = "swap_view_up"
+    A-S-down = "swap_view_down"
+    A-S-left = "swap_view_left"
+    A-S-right = "swap_view_right"
 
     [keys.insert]
     C-s = [ "normal_mode", ":w" ]
