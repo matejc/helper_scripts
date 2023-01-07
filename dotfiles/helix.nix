@@ -48,6 +48,7 @@ let
     nil nodePackages_latest.yaml-language-server nodePackages_latest.bash-language-server
     terraform-ls python3Packages.python-lsp-server python3Packages.python
     python3Packages.pycodestyle
+    nodePackages_latest.dockerfile-language-server-nodejs
     nodePackages_latest.typescript-language-server nodePackages_latest.typescript nodejs
     nodePackages_latest.vscode-json-languageserver
   ];
@@ -186,6 +187,7 @@ in
     C-right = "move_next_word_end"
     C-left = "move_prev_word_start"
     C-k = [ "goto_line_start", "kill_to_line_end" ]
+    C-space = "completion"
 
     [keys.select]
     del = "delete_selection_noyank"
