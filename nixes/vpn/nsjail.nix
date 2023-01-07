@@ -236,6 +236,7 @@ let
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:rw \
       --bindmount /run/user/${uid}/${waylandDisplay}:/run/user/${uid}/${waylandDisplay} \
+      --bindmount /run/user/${uid}/pulse:/run/user/${uid}/pulse \
       --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
       --disable_clone_newpid \
       --bindmount /proc:/proc \
@@ -258,6 +259,7 @@ let
       --env USER=${user} \
       --env PATH=${binPaths} \
       --env WAYLAND_DISPLAY=${waylandDisplay} \
+      --env PULSE_SERVER=/run/user/${uid}/pulse/native \
       ${concatMapStringsSep " " (c: "--cap ${c}") caps} \
       ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
       ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \

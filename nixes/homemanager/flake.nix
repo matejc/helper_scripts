@@ -32,6 +32,10 @@
       url = "github:matejc/devenv/master";
       flake = false;
     };
+    nixgl = {
+      url = "github:guibou/nixGL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }@inputs: {
@@ -59,6 +63,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
+            nixpkgs.overlays = [ inputs.nixgl.overlay ];
           }
         ];
       };

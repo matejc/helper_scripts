@@ -23,6 +23,7 @@ let
       "${inputs.helper_scripts}/dotfiles/wofi.nix"
       "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
       "${inputs.helper_scripts}/dotfiles/wezterm.nix"
+      "${inputs.helper_scripts}/dotfiles/helix.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -125,7 +126,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer solvespace ];
+      home.packages = [ super-slicer solvespace nixgl.nixVulkanIntel ];
     };
   };
 in

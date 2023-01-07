@@ -66,18 +66,18 @@ let
 
   nvimLsp = {
     kotlin_language_server = ''
-      nvim_lsp["kotlin_language_server"].setup {
+      setup_lsp("kotlin_language_server", {
         on_attach = on_attach;
         cmd = {"${kotlin-language-server}/bin/kotlin-language-server"};
         capabilities = capabilities;
-      }
+      })
     '';
     rnix = ''
-      nvim_lsp["rnix"].setup {
+      setup_lsp("rnix", {
         on_attach = on_attach;
         cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"};
         capabilities = capabilities;
-      }
+      })
     '';
     bashls = ''
       nvim_lsp["bashls"].setup {
@@ -586,6 +586,7 @@ EOF
       pkgs.python3Packages.docutils
       pkgs.shellcheck
       pkgs.tree-sitter
+      pkgs.coreutils-full
     ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin'
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
@@ -1199,6 +1200,33 @@ cmp.setup.cmdline('/', {
     { name = 'buffer' }
   }
 })
+
+local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
+vim.api.nvim_create_autocmd({ "BufReadPre" }, {
+  callback = function()
+    local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
+    if ok and stats and (stats.size > 999999) then
+      vim.b.large_buf = true
+      vim.cmd("syntax off")
+      vim.opt_local.spell = false
+    else
+      vim.b.large_buf = false
+    end
+  end,
+  group = aug,
+  pattern = "*",
+})
+
+local function setup_lsp(server, opts)
+  local conf = nvim_lsp[server]
+  conf.setup(opts)
+  local try_add = conf.manager.try_add
+  conf.manager.try_add = function (bufnr)
+    if not vim.b.large_buf then
+      return try_add(bufnr)
+    end
+  end
+end
 
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -1832,6 +1860,10 @@ require'nvim-treesitter.configs'.setup {
     -- `false` will disable the whole extension
     enable = true,
 
+    disable = function()
+      return vim.b.large_buf
+    end,
+
     -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
     -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
     -- the name of the parser)
@@ -1936,31 +1968,30 @@ saga.init_lsp_saga()
 
 vim.diagnostic.config({ update_in_insert = true, })
 
-local null_ls = require("null-ls")
-
-null_ls.setup({
-    border = nil,
-    cmd = { "${variables.homeDir}/bin/nvim" },
-    debounce = 250,
-    debug = false,
-    default_timeout = 5000,
-    diagnostic_config = nil,
-    diagnostics_format = "#{m}",
-    fallback_severity = vim.diagnostic.severity.ERROR,
-    log_level = "warn",
-    notify_format = "[null-ls] %s",
-    on_attach = nil,
-    on_init = nil,
-    on_exit = nil,
-    root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".git"),
-    should_attach = nil,
-    temp_dir = nil,
-    update_in_insert = true,
-    sources = {
-      null_ls.builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix", }),
-      null_ls.builtins.diagnostics.statix.with({ command = "${pkgs.statix}/bin/statix", }),
-    },
-})
+-- local null_ls = require("null-ls")
+-- null_ls.setup({
+--     border = nil,
+--     cmd = { "${variables.homeDir}/bin/nvim" },
+--     debounce = 250,
+--     debug = false,
+--     default_timeout = 5000,
+--     diagnostic_config = nil,
+--     diagnostics_format = "#{m}",
+--     fallback_severity = vim.diagnostic.severity.ERROR,
+--     log_level = "warn",
+--     notify_format = "[null-ls] %s",
+--     on_attach = nil,
+--     on_init = nil,
+--     on_exit = nil,
+--     root_dir = require("null-ls.utils").root_pattern(".null-ls-root", ".git"),
+--     should_attach = nil,
+--     temp_dir = nil,
+--     update_in_insert = true,
+--     sources = {
+--       null_ls.builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix", }),
+--       null_ls.builtins.diagnostics.statix.with({ command = "${pkgs.statix}/bin/statix", }),
+--     },
+-- })
 
 require("luasnip.loaders.from_vscode").lazy_load()
 EOF
@@ -2377,11 +2408,11 @@ EOF
     " let g:matchup_matchparen_deferred_show_delay = 200
     " let g:matchup_matchparen_deferred_hide_delay = 600
 
-    augroup large_file_support
-      autocmd!
-      autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | setlocal syntax=off | endif
-      autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | lua require'cmp'.setup.buffer { enabled = false } | endif
-    augroup END
+    " augroup large_file_support
+    "   autocmd!
+    "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | setlocal syntax=off | endif
+    "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | lua require'cmp'.setup.buffer { enabled = false } | endif
+    " augroup END
 
     autocmd BufRead xml setlocal syntax=on
 
