@@ -43,6 +43,21 @@ let
       --prefix JAVACMD : ${pkgs.jre}/bin/java
   '';
 
+  html-languageserver = pkgs.writeScriptBin "vscode-html-language-server" ''
+    #!${pkgs.stdenv.shell}
+    exec ${pkgs.nodePackages_latest.vscode-html-languageserver-bin}/bin/html-languageserver $@
+  '';
+
+  css-languageserver = pkgs.writeScriptBin "vscode-css-language-server" ''
+    #!${pkgs.stdenv.shell}
+    exec ${pkgs.nodePackages_latest.vscode-css-languageserver-bin}/bin/css-languageserver $@
+  '';
+
+  json-languageserver = pkgs.writeScriptBin "vscode-json-language-server" ''
+    #!${pkgs.stdenv.shell}
+    exec ${pkgs.nodePackages_latest.vscode-json-languageserver}/bin/vscode-json-languageserver $@
+  '';
+
   path = with pkgs; lib.makeBinPath [
     stdenv.cc.cc binutils wl-clipboard
     nil nodePackages_latest.yaml-language-server nodePackages_latest.bash-language-server
@@ -50,7 +65,10 @@ let
     python3Packages.pycodestyle
     nodePackages_latest.dockerfile-language-server-nodejs
     nodePackages_latest.typescript-language-server nodePackages_latest.typescript nodejs
-    nodePackages_latest.vscode-json-languageserver
+    json-languageserver
+    taplo
+    html-languageserver
+    css-languageserver
   ];
 in
 [{
@@ -148,6 +166,7 @@ in
     C-u = "undo"
     C-z = "undo"
     C-r = "redo"
+    C-7 = "toggle_comments"
     C-c = [ "goto_line_start", "select_mode", "goto_line_end", ":clipboard-yank", "normal_mode" ]
     C-x = [ "goto_line_start", "select_mode", "goto_line_end", ":clipboard-yank", "delete_selection", "normal_mode" ]
     C-v = ":clipboard-paste-before"
@@ -171,10 +190,6 @@ in
     A-S-right = "swap_view_right"
     C-home = "goto_file_start"
     C-end = "goto_last_line"
-    S-up = [ "select_mode", "extend_line_up" ]
-    S-down = [ "select_mode", "extend_line_down" ]
-    S-left = [ "select_mode", "extend_char_left" ]
-    S-right = [ "select_mode", "extend_char_right" ]
 
     [keys.insert]
     C-s = [ "normal_mode", ":w" ]
@@ -182,7 +197,7 @@ in
     C-u = "undo"
     C-z = "undo"
     C-r = "redo"
-    C-h = "toggle_comments"
+    C-7 = "toggle_comments"
     C-c = [ "goto_line_start", "select_mode", "goto_line_end", ":clipboard-yank", "insert_mode" ]
     C-x = [ "goto_line_start", "select_mode", "goto_line_end", ":clipboard-yank", "delete_selection", "insert_mode" ]
     C-v = ":clipboard-paste-before"
@@ -205,6 +220,7 @@ in
     C-u = "undo"
     C-z = "undo"
     C-r = "redo"
+    C-7 = "toggle_comments"
     C-k = "delete_selection_noyank"
     C-x = [ ":clipboard-yank", "delete_selection" ]
     tab = "indent"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 find $(pwd) -type d -name ".git" -exec sh -c "cd \"{}/..\" ; echo -e \"\n{}\" ; git --no-pager log --since='$1' --branches --remotes --tags --pretty=format:'  %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(green)<%an>%Creset' --committer='$2'" \;
 echo
