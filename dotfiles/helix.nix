@@ -171,6 +171,10 @@ in
     A-S-right = "swap_view_right"
     C-home = "goto_file_start"
     C-end = "goto_last_line"
+    S-up = [ "select_mode", "extend_line_up" ]
+    S-down = [ "select_mode", "extend_line_down" ]
+    S-left = [ "select_mode", "extend_char_left" ]
+    S-right = [ "select_mode", "extend_char_right" ]
 
     [keys.insert]
     C-s = [ "normal_mode", ":w" ]
@@ -188,6 +192,11 @@ in
     C-left = "move_prev_word_start"
     C-k = [ "goto_line_start", "kill_to_line_end" ]
     C-space = "completion"
+    S-tab = "unindent"
+    S-up = [ "select_mode", "extend_line_up" ]
+    S-down = [ "select_mode", "extend_line_down" ]
+    S-left = [ "select_mode", "extend_char_left" ]
+    S-right = [ "select_mode", "extend_char_right" ]
 
     [keys.select]
     del = "delete_selection_noyank"
@@ -198,6 +207,12 @@ in
     C-r = "redo"
     C-k = "delete_selection_noyank"
     C-x = [ ":clipboard-yank", "delete_selection" ]
+    tab = "indent"
+    S-tab = "unindent"
+    S-up = "extend_line_up"
+    S-down = "extend_line_down"
+    S-left = "extend_char_left"
+    S-right = "extend_char_right"
   '';
 } {
   target = "${variables.homeDir}/bin/hx";
