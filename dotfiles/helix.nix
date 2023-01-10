@@ -43,16 +43,6 @@ let
       --prefix JAVACMD : ${pkgs.jre}/bin/java
   '';
 
-  html-languageserver = pkgs.writeScriptBin "vscode-html-language-server" ''
-    #!${pkgs.stdenv.shell}
-    exec ${pkgs.nodePackages_latest.vscode-html-languageserver-bin}/bin/html-languageserver $@
-  '';
-
-  css-languageserver = pkgs.writeScriptBin "vscode-css-language-server" ''
-    #!${pkgs.stdenv.shell}
-    exec ${pkgs.nodePackages_latest.vscode-css-languageserver-bin}/bin/css-languageserver $@
-  '';
-
   json-languageserver = pkgs.writeScriptBin "vscode-json-language-server" ''
     #!${pkgs.stdenv.shell}
     exec ${pkgs.nodePackages_latest.vscode-json-languageserver}/bin/vscode-json-languageserver $@
@@ -60,15 +50,11 @@ let
 
   path = with pkgs; lib.makeBinPath [
     stdenv.cc.cc binutils wl-clipboard
-    nil nodePackages_latest.yaml-language-server nodePackages_latest.bash-language-server
-    terraform-ls python3Packages.python-lsp-server python3Packages.python
-    python3Packages.pycodestyle
-    nodePackages_latest.dockerfile-language-server-nodejs
-    nodePackages_latest.typescript-language-server nodePackages_latest.typescript nodejs
-    json-languageserver
+    nil
+    terraform-ls
+    python3Packages.python-lsp-server python3Packages.python
+    nodejs
     taplo
-    html-languageserver
-    css-languageserver
   ];
 in
 [{
@@ -119,6 +105,30 @@ in
     roots = []
     language-server = { command = "${ltex-ls}/bin/ltex-ls" }
     indent = { tab-width = 2, unit = "  " }
+
+    [[language]]
+    name = "yaml"
+    scope = "source.yaml"
+    file-types = ["yml", "yaml"]
+    roots = []
+    comment-token = "#"
+    indent = { tab-width = 2, unit = "  " }
+    language-server = { command = "yaml-language-server", args = ["--stdio"] }
+    injection-regex = "yml|yaml"
+    config = { redhat = { telemetry = { enabled = false } }, yaml = { schemas = { "https://json.schemastore.org/github-workflow.json" = "/.github/workflows/*", "https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json" = "/*k8s*" } } }
+
+    [[language]]
+    name = "robot"
+    scope = "source.robot"
+    injection-regex = "robot"
+    file-types = ["robot"]
+    roots = []
+    language-server = { command = "robotframework_ls" }
+    indent = { tab-width = 4, unit = "    " }
+
+    [[grammar]]
+    name = "robot"
+    source = { git = "https://github.com/Hubro/tree-sitter-robot", rev = "f1142bfaa6acfce95e25d2c6d18d218f4f533927" }
   '';
 } {
   target = "${variables.homeDir}/.config/helix/config.toml";
@@ -236,16 +246,63 @@ in
     #!${pkgs.stdenv.shell}
     set -e
 
-    ln -sf "${pkgs.helix}/lib/runtime/queries" "${variables.homeDir}/.config/helix/"
-    ln -sf "${pkgs.helix}/lib/runtime/themes" "${variables.homeDir}/.config/helix/"
+    mkdir -p "${variables.homeDir}/.config/helix/runtime/grammars"
+    mkdir -p "${variables.homeDir}/.config/helix/runtime/queries"
 
-    mkdir -p "${variables.homeDir}/.config/helix/grammars"
-    ln -sf ${pkgs.helix}/lib/runtime/grammars/* "${variables.homeDir}/.config/helix/grammars/"
+    ln -sf "${pkgs.helix}/lib/runtime/themes" "${variables.homeDir}/.config/helix/runtime/"
 
-    export HELIX_RUNTIME="${variables.homeDir}/.config/helix"
-    export PATH="${path}:$PATH"
-    export LIBRARY_PATH="${pkgs.stdenv.cc.libc}/lib''${LIBRARY_PATH+:$LIBRARY_PATH}"
+    ln -sf ${pkgs.helix}/lib/runtime/grammars/* "${variables.homeDir}/.config/helix/runtime/grammars/"
+    ln -sf ${pkgs.helix}/lib/runtime/queries/* "${variables.homeDir}/.config/helix/runtime/queries/"
+
+    export HELIX_RUNTIME="${variables.homeDir}/.config/helix/runtime"
+    export PATH="${path}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin:$PATH"
+    export LIBRARY_PATH="${pkgs.stdenv.cc.libc}/lib:${pkgs.stdenv.cc.cc.lib}/lib''${LIBRARY_PATH+:$LIBRARY_PATH}"
 
     exec ${pkgs.helix}/bin/.hx-wrapped $@
+  '';
+}{
+  target = "${variables.homeDir}/bin/lsp-install";
+  source = pkgs.writeScript "lsp-install.sh" ''
+    #!${pkgs.stdenv.shell}
+
+    set -e
+
+    if [[ "$1" == "clean" ]]
+    then
+      rm -vrf ${variables.homeDir}/.npm-packages/*
+      rm -vrf ${variables.homeDir}/.py-packages/*
+      exit 0
+    fi
+
+    export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
+    export PY_PACKAGES="${variables.homeDir}/.py-packages"
+
+    npm_install() {
+      mkdir -p $NPM_PACKAGES
+      ${pkgs.nodejs}/bin/npm install -g --prefix="$NPM_PACKAGES" "$@"
+    }
+
+    pip_install() {
+      ${pkgs.python3Packages.python}/bin/python -m venv "$PY_PACKAGES"
+      $PY_PACKAGES/bin/python -m pip install --upgrade pip
+      $PY_PACKAGES/bin/pip install "$@"
+    }
+
+    npm_install \
+      bash-language-server \
+      dockerfile-language-server-nodejs \
+      typescript \
+      typescript-language-server \
+      yaml-language-server \
+      vscode-json-languageserver \
+      vscode-html-languageserver-bin \
+      vscode-css-languageserver-bin \
+      coc-powershell \
+      ansible-language-server
+
+    pip_install \
+      robotframework-lsp
+
+    echo "Done!"
   '';
 }]

@@ -24,6 +24,7 @@ let
       "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
       "${inputs.helper_scripts}/dotfiles/wezterm.nix"
       "${inputs.helper_scripts}/dotfiles/helix.nix"
+      "${inputs.helper_scripts}/dotfiles/vlc.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc

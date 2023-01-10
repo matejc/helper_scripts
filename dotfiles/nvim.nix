@@ -33,7 +33,8 @@ let
 
   enabledNvimLsp = mkNvimLsp [
     #"kotlin_language_server"
-    "rnix"
+    #"rnix"
+    "nil"
     "bashls"
     "dockerls"
     "yamlls"
@@ -69,6 +70,13 @@ let
       setup_lsp("kotlin_language_server", {
         on_attach = on_attach;
         cmd = {"${kotlin-language-server}/bin/kotlin-language-server"};
+        capabilities = capabilities;
+      })
+    '';
+    nil = ''
+      setup_lsp("nil_ls", {
+        on_attach = on_attach;
+        cmd = {"${pkgs.nil}/bin/nil"};
         capabilities = capabilities;
       })
     '';
@@ -1476,9 +1484,9 @@ gls.left[2] = {
     provider = function()
       -- auto change color according the vim mode
       local mode_color = {n = colors.red, i = colors.green,v=colors.blue,
-                          [""] = colors.blue,V=colors.blue,
+                          [''] = colors.blue,V=colors.blue,
                           c = colors.magenta,no = colors.red,s = colors.orange,
-                          S=colors.orange,[""] = colors.orange,
+                          S=colors.orange,[''] = colors.orange,
                           ic = colors.yellow,R = colors.violet,Rv = colors.violet,
                           cv = colors.red,ce=colors.red, r = colors.cyan,
                           rm = colors.cyan, ['r?'] = colors.cyan,
@@ -1988,8 +1996,8 @@ vim.diagnostic.config({ update_in_insert = true, })
 --     temp_dir = nil,
 --     update_in_insert = true,
 --     sources = {
---       null_ls.builtins.diagnostics.deadnix.with({ command = "${pkgs.deadnix}/bin/deadnix", }),
---       null_ls.builtins.diagnostics.statix.with({ command = "${pkgs.statix}/bin/statix", }),
+--       null_ls.builtins.diagnostics.deadnix.with({ command = "''${pkgs.deadnix}/bin/deadnix", }),
+--       null_ls.builtins.diagnostics.statix.with({ command = "''${pkgs.statix}/bin/statix", }),
 --     },
 -- })
 
@@ -2550,7 +2558,7 @@ EOF
           #vimPlugins.nvim-colorizer-lua
           #vimPlugins.noice-nvim
           #vimPlugins.nvim-notify
-          vimPlugins.null-ls-nvim
+          #vimPlugins.null-ls-nvim
           vimPlugins.LuaSnip
           vimPlugins.lspkind-nvim
         ];
