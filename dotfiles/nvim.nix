@@ -1898,7 +1898,7 @@ require('session_manager').setup({
 })
 
 require'treesitter-context'.setup{
-    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    enable = false, -- Enable this plugin (Can be enabled/disabled later via commands)
     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
     patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
         -- For all filetypes
@@ -2467,7 +2467,7 @@ EOF
           #vim-gitgutter
           #undotree
           vim-better-whitespace
-          vim-jsbeautify
+          # vim-jsbeautify
           vim-visual-multi
           #vim-pasta
           #vimPlugins.ctrlsf-vim
@@ -2536,11 +2536,11 @@ EOF
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
-          nvim-treesitter
-          nvim-treesitter-textobjects
+          vimPlugins.nvim-treesitter
+          vimPlugins.nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
           telescope-frecency-nvim
-          nvim-treesitter-context
+          vimPlugins.nvim-treesitter-context
           vimPlugins.novim-mode
           vimPlugins.lspsaga-nvim
           #vimPlugins.previm
