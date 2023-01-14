@@ -231,6 +231,8 @@ let
       --tmpfsmount /sbin \
       --symlink ${openresolv}/bin/resolvconf:/sbin/resolvconf \
       --tmpfsmount /bin \
+      --tmpfsmount /usr \
+      --symlink ${binPath}/bin:/usr/bin \
       --symlink ${bash}/bin/bash:/bin/bash \
       --symlink ${bash}/bin/sh:/bin/sh \
       --tmpfsmount /run \
@@ -301,6 +303,12 @@ let
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
+
+  binPath = buildEnv {
+    name = "PATH";
+    paths = buildInputs;
+    pathsToLink = [ "/bin" ];
+  };
 in
   mkShell {
     name = "${user}-${name}";
