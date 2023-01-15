@@ -84,11 +84,11 @@ in lib.mkMerge ([{
         size = builtins.floor context.variables.font.size;
       };
       iconTheme = {
-        name = "breeze";
+        name = "breeze-dark";
         package = breeze-icons;
       };
       theme = {
-        name = "Breeze";
+        name = "Breeze-Dark";
         package = breeze-gtk;
       };
       cursorTheme = {
