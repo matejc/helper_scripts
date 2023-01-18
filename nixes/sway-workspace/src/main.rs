@@ -1,17 +1,78 @@
 use std::{process::Command, cmp::Ordering};
 
+use clap::{Parser, ValueEnum};
 use serde_json::{Value, from_str};
 
-fn get_workspaces() -> Vec<Value> {
-    let child = Command::new("swaymsg")
+
+/// Simple command to switch workspaces with optional output awareness for Sway/i3
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+   /// Sway/i3 msg executable name or path
+   #[arg(short, long, default_value_t = String::from("swaymsg"))]
+   exec: String,
+
+   /// Action
+   #[arg(value_enum)]
+   action: Action,
+
+   /// Move to new workspace
+   #[arg(short, long = "move", default_value_t = false)]
+   move_ws: bool,
+
+   /// Do not focus to new workspace
+   #[arg(short, long = "no-focus", default_value_t = false)]
+   no_focus_ws: bool,
+
+   /// Print workspace number to stdout
+   #[arg(short, long = "stdout", default_value_t = false)]
+   stdout_ws: bool,
+}
+
+#[derive(ValueEnum, Clone)]
+enum Action {
+    Next,
+    Prev,
+    NextOutput,
+    PrevOutput,
+    NextOnOutput,
+    PrevOnOutput,
+}
+
+fn get_workspaces(exec: String) -> Vec<Value> {
+    let child = Command::new(exec)
         .arg("-t").arg("get_workspaces")
         .output()
-        .expect("get_workspaces failed");
+        .expect("executing get_workspaces failed");
 
     if let Some(0) = child.status.code() {
         return from_str(&String::from_utf8_lossy(&child.stdout)).unwrap();
     } else {
         panic!("get_workspaces({:?}): {}", child.status.code(), String::from_utf8_lossy(&child.stderr));
+    }
+}
+
+fn focus_ws(exec: String, num: i64) {
+    let child = Command::new(exec)
+        .arg("workspace").arg(num.to_string())
+        .output()
+        .expect("executing focus failed");
+    if let Some(0) = child.status.code() {
+        return;
+    } else {
+        panic!("focus({:?}): {}", child.status.code(), String::from_utf8_lossy(&child.stderr));
+    }
+}
+
+fn move_ws(exec: String, num: i64) {
+    let child = Command::new(exec)
+        .arg("move").arg("workspace").arg(num.to_string())
+        .output()
+        .expect("executing move failed");
+    if let Some(0) = child.status.code() {
+        return;
+    } else {
+        panic!("move({:?}): {}", child.status.code(), String::from_utf8_lossy(&child.stderr));
     }
 }
 
@@ -80,22 +141,32 @@ fn find_output(workspaces: &Vec<Value>, current: i64, step: i64, output: String)
 }
 
 fn main() {
-    let option: String = std::env::args().nth(1).expect("no option given (prev|next|prev_output|next_output|prev_on_output|next_on_output)");
+    let args: Args = Args::parse();
 
-    let workspaces: &Vec<Value> = &get_workspaces();
+    let workspaces: &Vec<Value> = &get_workspaces(args.exec.to_owned());
 
     let current_ws: &Value = workspaces.into_iter().filter(|w| w["focused"] == true).nth(0).unwrap();
     let current_ws_num: i64 = current_ws["num"].as_i64().unwrap();
     let current_output: String = current_ws["output"].to_string();
 
-    let o: i64 = match option.as_str() {
-        "next_on_output" => find_on_output(&workspaces, current_ws_num, 1, current_output),
-        "prev_on_output" => find_on_output(&workspaces, current_ws_num, -1, current_output),
-        "next_output" => find_output(&workspaces, current_ws_num, 1, current_output),
-        "prev_output" => find_output(&workspaces, current_ws_num, -1, current_output),
-        "next" => find_by(&workspaces, current_ws_num, 1),
-        "prev" => find_by(&workspaces, current_ws_num, -1),
-        _ => panic!("Invalid option: {}", option),
+    let num: i64 = match args.action {
+        Action::NextOnOutput => find_on_output(&workspaces, current_ws_num, 1, current_output),
+        Action::PrevOnOutput => find_on_output(&workspaces, current_ws_num, -1, current_output),
+        Action::NextOutput => find_output(&workspaces, current_ws_num, 1, current_output),
+        Action::PrevOutput => find_output(&workspaces, current_ws_num, -1, current_output),
+        Action::Next => find_by(&workspaces, current_ws_num, 1),
+        Action::Prev => find_by(&workspaces, current_ws_num, -1),
     };
-    print!("{}", o);
+
+    if args.move_ws {
+        move_ws(args.exec.to_owned(), num);
+    }
+
+    if !args.no_focus_ws {
+        focus_ws(args.exec.to_owned(), num);
+    }
+
+    if args.stdout_ws {
+        print!("{}", num);
+    }
 }

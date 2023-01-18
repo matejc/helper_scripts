@@ -28,6 +28,8 @@ let
     wait
   '') (map (s: s.group) context.services);
 
+  sway-workspace = (import "${inputs.helper_scripts}/nixes/sway-workspace" { inherit pkgs; }).build;
+
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
     nixpkgs.config = import "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
@@ -194,14 +196,14 @@ in lib.mkMerge ([{
             "Control+Tab" = "workspace back_and_forth";
             "Mod1+Tab" = "focus right";
             "Mod1+Shift+Tab" = "focus left";
-            "Mod1+Control+Up" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Down" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Up" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Down" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Right" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_on_output) && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Left" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} prev_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
-            "Mod1+Control+Shift+Right" = "exec WSNUM=$(${dotFileAt "i3_workspace.nix" 0} next_on_output) && ${context.variables.i3-msg} move workspace $WSNUM && ${context.variables.i3-msg} workspace $WSNUM";
+            "Mod1+Control+Up" = "exec ${sway-workspace}/bin/sway-workspace prev-output";
+            "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
+            "Mod1+Control+Shift+Up" = "exec ${sway-workspace}/bin/sway-workspace --move prev-output";
+            "Mod1+Control+Shift+Down" = "exec ${sway-workspace}/bin/sway-workspace --move next-output";
+            "Mod1+Control+Left" = "exec ${sway-workspace}/bin/sway-workspace prev-on-output";
+            "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output";
+            "Mod1+Control+Shift+Left" = "exec ${sway-workspace}/bin/sway-workspace --move prev-on-output";
+            "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
             "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
             "Control+Mod1+Delete" = "exec ${pkgs.nwg-launchers}/bin/nwgbar";

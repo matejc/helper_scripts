@@ -596,5 +596,6 @@ rec {
   permittedInsecurePackages = [
     "openssl-1.0.2u"
     "p7zip-16.02"
+    "python-2.7.18.6"
   ];
 }

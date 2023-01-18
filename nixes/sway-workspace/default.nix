@@ -1,13 +1,13 @@
 { pkgs ? import <nixpkgs> {} }:
 with pkgs;
 let
-  workspace = rustPlatform.buildRustPackage {
+  build = rustPlatform.buildRustPackage {
     pname = "sway-workspace";
-    version = "dev";
+    version = "0.1.0";
 
-    src = ./workspace;
+    src = ./.;
 
-    cargoSha256 = "sha256-yX6nMWQ71fvTSbzSy2tQ5Ck+WfUUWDSZxFEdjo+o584=";
+    cargoSha256 = "sha256-V8jqHCxvpBGjHCar3CNn78mWtKifcdOB32D7HIR64Qc=";
   };
 
   shell = mkShell {
@@ -15,5 +15,5 @@ let
     RUST_BACKTRACE = 1;
   };
 in {
-  inherit workspace shell;
+  inherit build shell;
 }
