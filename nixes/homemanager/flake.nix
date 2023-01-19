@@ -36,6 +36,10 @@
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sway-workspace = {
+      url = "github:matejc/sway-workspace";
+      flake = false;
+    };
   };
 
   outputs = { self, ... }@inputs: {

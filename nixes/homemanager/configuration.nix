@@ -28,7 +28,7 @@ let
     wait
   '') (map (s: s.group) context.services);
 
-  sway-workspace = (import "${inputs.helper_scripts}/nixes/sway-workspace" { inherit pkgs; }).build;
+  sway-workspace = (import inputs.sway-workspace { inherit pkgs; }).build;
 
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
