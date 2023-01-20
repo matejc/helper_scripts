@@ -28,7 +28,17 @@ let
     wait
   '') (map (s: s.group) context.services);
 
-  sway-workspace = (import inputs.sway-workspace { inherit pkgs; }).build;
+  sway-workspace = rustPlatform.buildRustPackage {
+    name = "sway-workspace";
+    src = inputs.sway-workspace;
+    cargoSha256 = "sha256-q92XXPbehCvgPahgKorqIq/afzFzdXcdpUWmR6k60uk=";
+  };
+
+  swayest = rustPlatform.buildRustPackage {
+    name = "swayest";
+    src = inputs.swayest;
+    cargoSha256 = "sha256-B1dRU3cqDuQi/kXDbRAvNf+wnut+wpFXf7Lq54Xav9A=";
+  };
 
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
@@ -48,6 +58,33 @@ in lib.mkMerge ([{
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
       configFile."swaync/config.json".text = builtins.replaceStrings ["/etc/xdg/swaync"] ["${swaynotificationcenter}/etc/xdg/swaync"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/config.json");
+      configFile."sworkstyle/config.toml".text = ''
+        fallback = ''
+
+        [matching]
+        'vlc' = ''
+        'pavucontrol' = ''
+        'org.gnome.Nautilus' = ''
+        'Thunderbird' = ''
+        'thunderbird' = ''
+        'Google-chrome' = ''
+        '/Chromium.*/' = ''
+        'Slack' = ''
+        'Code' = ''
+        'code-oss' = ''
+        'Emacs' = ''
+        'jetbrains-studio' = ''
+        '/(?i)^Github.*Firefox/' = ''
+        'firefox' = ''
+        'Nightly' = ''
+        'firefoxdeveloperedition' = ''
+        'nvim-qt' = ''
+        '/npm/' = ''
+        '/node/' = ''
+        '/yarn/' = ''
+        'Alacritty' = ''
+        'org.wezfurlong.wezterm' = ''
+      '';
       mime.enable = true;
     };
 
@@ -178,7 +215,7 @@ in lib.mkMerge ([{
           urgent = { background = "#F92672"; border = "#F92672"; childBorder = "#F92672"; indicator = "#F92672"; text = "#FFFFFF"; };
         };
         fonts = {
-          names = [ context.variables.font.family ];
+          names = [ context.variables.font.family "Font Awesome 6 Free" ];
           style = context.variables.font.style;
           size = context.variables.font.size;
         };
@@ -225,6 +262,7 @@ in lib.mkMerge ([{
           { command = "${context.variables.profileDir}/bin/service-group-once start"; }
           #{ command = "${mako}/bin/mako"; always = true; }
           { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
+          { command = "${swayest}/bin/sworkstyle"; always = true; }
           { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
           { command = "hash ${pkgs.dbus}/bin/dbus-update-activation-environment 2>/dev/null && ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
         ];
@@ -325,7 +363,7 @@ in lib.mkMerge ([{
     * {
         border: none;
         border-radius: 0;
-        font-family: ${context.variables.font.family};
+        font-family: "${context.variables.font.family}", "Font Awesome 6 Free";
         font-style: normal;
         font-weight: bold;
         font-size: 14px;
@@ -412,7 +450,7 @@ in lib.mkMerge ([{
       modules-right = [ "custom/notification" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
-        all-outputs = true;
+        all-outputs = false;
       };
       clock.format = "{:%a %d.%m.%Y, %H:%M}";
       pulseaudio = {
