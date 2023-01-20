@@ -47,6 +47,7 @@ in lib.mkMerge ([{
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
+      configFile."swaync/config.json".text = builtins.replaceStrings ["/etc/xdg/swaync"] ["${swaynotificationcenter}/etc/xdg/swaync"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/config.json");
       mime.enable = true;
     };
 
@@ -66,6 +67,7 @@ in lib.mkMerge ([{
       wl-clipboard
       xdg-utils
       dconf
+      swaynotificationcenter
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {
@@ -112,7 +114,8 @@ in lib.mkMerge ([{
 
     programs.firefox = {
       extensions = with nur.repos.rycee.firefox-addons; [
-        https-everywhere ublock-origin keepassxc-browser
+        #https-everywhere
+        ublock-origin keepassxc-browser
       ];
       profiles = {
         default = {
@@ -196,6 +199,7 @@ in lib.mkMerge ([{
             "Control+Tab" = "workspace back_and_forth";
             "Mod1+Tab" = "focus right";
             "Mod1+Shift+Tab" = "focus left";
+            "Mod1+Control+n" = "exec ${swaynotificationcenter}/bin/swaync-client -t -sw";
             "Mod1+Control+Up" = "exec ${sway-workspace}/bin/sway-workspace prev-output";
             "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
             "Mod1+Control+Shift+Up" = "exec ${sway-workspace}/bin/sway-workspace --move prev-output";
@@ -219,7 +223,8 @@ in lib.mkMerge ([{
         startup = [
           { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
           { command = "${context.variables.profileDir}/bin/service-group-once start"; }
-          { command = "${mako}/bin/mako"; always = true; }
+          #{ command = "${mako}/bin/mako"; always = true; }
+          { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
           { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
           { command = "hash ${pkgs.dbus}/bin/dbus-update-activation-environment 2>/dev/null && ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
         ];
@@ -355,7 +360,7 @@ in lib.mkMerge ([{
         border-bottom: 3px solid white;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd #custom-notification {
         padding: 0 10px;
     }
 
@@ -404,7 +409,7 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "custom/dnd" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = [ "custom/notification" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
@@ -469,17 +474,32 @@ in lib.mkMerge ([{
         tooltip-format-disconnected = "Disconnected";
         max-length = 50;
       };
-      "custom/dnd" = {
-        interval = "once";
-        return-type = "json";
-        format = "{}{icon}";
-        format-icons = {
-            default = "";
-            dnd = "ﮡ";
+      # "custom/dnd" = {
+      #   interval = "once";
+      #   return-type = "json";
+      #   format = "{}{icon}";
+      #   format-icons = {
+      #       default = "";
+      #       dnd = "ﮡ";
+      #   };
+      #   on-click = "${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep 'do-not-disturb' && ${pkgs.mako}/bin/makoctl mode -r do-not-disturb || ${pkgs.mako}/bin/makoctl mode -a do-not-disturb; ${pkgs.procps}/bin/pkill -RTMIN+11 waybar";
+      #   exec = ''${pkgs.coreutils}/bin/printf '{\"alt\":\"%s\",\"tooltip\":\"mode: %s\"}' $(${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep -q 'do-not-disturb' && echo dnd || echo default) $(${pkgs.mako}/bin/makoctl mode | ${pkgs.coreutils}/bin/tail -1)'';
+      #   signal = 11;
+      # };
+      "custom/notification" = {
+        "tooltip" = false;
+        "format" = "{} {icon}";
+        "format-icons" = {
+          "notification" = "<span foreground='red'><sup></sup></span>";
+          "none" = "";
+          "dnd-notification" = "<span foreground='red'><sup></sup></span>";
+          "dnd-none" = "";
         };
-        on-click = "${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep 'do-not-disturb' && ${pkgs.mako}/bin/makoctl mode -r do-not-disturb || ${pkgs.mako}/bin/makoctl mode -a do-not-disturb; ${pkgs.procps}/bin/pkill -RTMIN+11 waybar";
-        exec = ''${pkgs.coreutils}/bin/printf '{\"alt\":\"%s\",\"tooltip\":\"mode: %s\"}' $(${pkgs.mako}/bin/makoctl mode | ${pkgs.gnugrep}/bin/grep -q 'do-not-disturb' && echo dnd || echo default) $(${pkgs.mako}/bin/makoctl mode | ${pkgs.coreutils}/bin/tail -1)'';
-        signal = 11;
+        "return-type" = "json";
+        "exec" = "${swaynotificationcenter}/bin/swaync-client -swb";
+        "on-click" = "${swaynotificationcenter}/bin/swaync-client -t -sw";
+        "on-click-right" = "${swaynotificationcenter}/bin/swaync-client -d -sw";
+        "escape" = true;
       };
       battery = {
         interval = 60;
@@ -498,7 +518,7 @@ in lib.mkMerge ([{
   systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
 
   programs.mako = {
-    enable = true;
+    enable = false;
     font = "${context.variables.font.family} 9";
     extraConfig = ''
       max-icon-size=64
