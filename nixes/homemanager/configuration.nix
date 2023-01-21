@@ -14,13 +14,6 @@ let
   dotFileAt = file: at:
     (elemAt (import "${inputs.helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
-  exec = { name, cmd, delay ? 0 }: "${writeScript "exec-${name}.sh" ''
-    #!${context.variables.shell}
-    ${pkgs.coreutils}/bin/sleep ${toString delay}
-    source "${context.variables.shellRc}"
-    exec ${cmd}
-  ''}";
-
   services-cmds = map (group: writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
     source "${context.variables.shellRc}"
@@ -31,7 +24,7 @@ let
   sway-workspace = rustPlatform.buildRustPackage {
     name = "sway-workspace";
     src = inputs.sway-workspace;
-    cargoSha256 = "sha256-q92XXPbehCvgPahgKorqIq/afzFzdXcdpUWmR6k60uk=";
+    cargoSha256 = "sha256-DRUd2nSdfgiIiCrBUiF6UTPYb6i8POQGo1xU5CdXuUY=";
   };
 
   swayest = rustPlatform.buildRustPackage {
@@ -58,6 +51,7 @@ in lib.mkMerge ([{
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
       configFile."swaync/config.json".text = builtins.replaceStrings ["/etc/xdg/swaync"] ["${swaynotificationcenter}/etc/xdg/swaync"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/config.json");
+      configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/style.css");
       configFile."sworkstyle/config.toml".text = ''
         fallback = ''
 
@@ -84,6 +78,7 @@ in lib.mkMerge ([{
         '/yarn/' = ''
         'Alacritty' = ''
         'org.wezfurlong.wezterm' = ''
+        'ScratchTerm' = ''
       '';
       mime.enable = true;
     };
@@ -279,11 +274,15 @@ in lib.mkMerge ([{
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
           ];
         };
-        workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
       };
-      extraConfig = ''
+      extraConfig = let
+        workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
+        workspaceOutputStr = item:
+          ''workspace number ${item.workspace} output ${item.output}'';
+      in ''
         focus_wrapping yes
+        ${concatMapStringsSep "\n" workspaceOutputStr workspaceOutputAssign}
       '';
   };
 

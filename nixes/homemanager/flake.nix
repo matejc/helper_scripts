@@ -48,13 +48,13 @@
 
   outputs = { self, ... }@inputs: {
     homeConfigurations = {
-      wsl = inputs.home-manager.lib.homeManagerConfiguration rec {
+      wsl = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
         modules = [
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
         ];
       };
-      nixcode = inputs.home-manager.lib.homeManagerConfiguration rec {
+      nixcode = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
         modules = [
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
