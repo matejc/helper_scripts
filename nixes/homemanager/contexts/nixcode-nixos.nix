@@ -100,9 +100,9 @@ let
     home-configuration = {
       home.stateVersion = "22.05";
       wayland.windowManager.sway.config.assigns = {
-        "5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        "6" = [{ class = "^Slack$"; }];
-        "7" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        "number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+        "number 6" = [{ class = "^Slack$"; }];
+        "number 7" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
