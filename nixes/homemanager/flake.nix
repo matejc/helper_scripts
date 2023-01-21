@@ -2,16 +2,13 @@
   description = "home-manager system";
   inputs = {
     nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
+    nixexprs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
     nixos-configuration = {
       url = "path:/etc/nixos";
       flake = false;
     };
     nixmy = {
       url = "github:matejc/nixmy/master";
-      flake = false;
-    };
-    helper_scripts = {
-      url = "path:/home/matejc/workarea/helper_scripts";
       flake = false;
     };
     home-manager = {

@@ -2,32 +2,26 @@
 with pkgs;
 let
   clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
-  startsway = writeScriptBin "startsway" ''
-    export XDG_RUNTIME_DIR=/run/user/$(id -u)
-    export XDG_SESSION_TYPE=wayland
-    export WLR_NO_HARDWARE_CURSORS=1
-    exec "$(${self.variables.homeDir}/bin/nixmy nix-build --no-link ${inputs.helper_scripts}/nixes/nixGL.nix)/bin/nixGL" ${self.variables.profileDir}/bin/sway $@ &>${self.variables.homeDir}/.sway.log
-  '';
   self = {
     dotFilePaths = [
-      "${inputs.helper_scripts}/dotfiles/programs.nix"
-      "${inputs.helper_scripts}/dotfiles/nvim.nix"
-      "${inputs.helper_scripts}/dotfiles/xfce4-terminal.nix"
-      "${inputs.helper_scripts}/dotfiles/gitconfig.nix"
-      "${inputs.helper_scripts}/dotfiles/gitignore.nix"
-      "${inputs.helper_scripts}/dotfiles/nix.nix"
-      "${inputs.helper_scripts}/dotfiles/oath.nix"
-      "${inputs.helper_scripts}/dotfiles/jstools.nix"
-      "${inputs.helper_scripts}/dotfiles/superslicer.nix"
-      "${inputs.helper_scripts}/dotfiles/scan.nix"
-      "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${inputs.helper_scripts}/dotfiles/comma.nix"
-      "${inputs.helper_scripts}/dotfiles/tmux.nix"
-      "${inputs.helper_scripts}/dotfiles/batstatus.nix"
-      "${inputs.helper_scripts}/dotfiles/kitty.nix"
-      "${inputs.helper_scripts}/dotfiles/startup.nix"
-      "${inputs.helper_scripts}/dotfiles/wofi.nix"
-      "${inputs.helper_scripts}/dotfiles/wezterm.nix"
+      "${helper_scripts}/dotfiles/programs.nix"
+      "${helper_scripts}/dotfiles/nvim.nix"
+      "${helper_scripts}/dotfiles/xfce4-terminal.nix"
+      "${helper_scripts}/dotfiles/gitconfig.nix"
+      "${helper_scripts}/dotfiles/gitignore.nix"
+      "${helper_scripts}/dotfiles/nix.nix"
+      "${helper_scripts}/dotfiles/oath.nix"
+      "${helper_scripts}/dotfiles/jstools.nix"
+      "${helper_scripts}/dotfiles/superslicer.nix"
+      "${helper_scripts}/dotfiles/scan.nix"
+      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/comma.nix"
+      "${helper_scripts}/dotfiles/tmux.nix"
+      "${helper_scripts}/dotfiles/batstatus.nix"
+      "${helper_scripts}/dotfiles/kitty.nix"
+      "${helper_scripts}/dotfiles/startup.nix"
+      "${helper_scripts}/dotfiles/wofi.nix"
+      "${helper_scripts}/dotfiles/wezterm.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc

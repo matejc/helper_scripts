@@ -1,22 +1,22 @@
-{ pkgs, lib, config, inputs, dotFileAt }:
+{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
 with pkgs;
 let
   self = {
     dotFilePaths = [
-      "${inputs.helper_scripts}/dotfiles/programs.nix"
-      "${inputs.helper_scripts}/dotfiles/nvim.nix"
-      "${inputs.helper_scripts}/dotfiles/gitconfig.nix"
-      "${inputs.helper_scripts}/dotfiles/gitignore.nix"
-      "${inputs.helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${inputs.helper_scripts}/dotfiles/comma.nix"
-      "${inputs.helper_scripts}/dotfiles/tmux.nix"
-      "${inputs.helper_scripts}/dotfiles/dd.nix"
-      "${inputs.helper_scripts}/dotfiles/sync.nix"
-      "${inputs.helper_scripts}/dotfiles/mypassgen.nix"
-      "${inputs.helper_scripts}/dotfiles/wofi.nix"
-      "${inputs.helper_scripts}/dotfiles/nwgbar.nix"
-      "${inputs.helper_scripts}/dotfiles/wezterm.nix"
-      "${inputs.helper_scripts}/dotfiles/countdown.nix"
+      "${helper_scripts}/dotfiles/programs.nix"
+      "${helper_scripts}/dotfiles/nvim.nix"
+      "${helper_scripts}/dotfiles/gitconfig.nix"
+      "${helper_scripts}/dotfiles/gitignore.nix"
+      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/comma.nix"
+      "${helper_scripts}/dotfiles/tmux.nix"
+      "${helper_scripts}/dotfiles/dd.nix"
+      "${helper_scripts}/dotfiles/sync.nix"
+      "${helper_scripts}/dotfiles/mypassgen.nix"
+      "${helper_scripts}/dotfiles/wofi.nix"
+      "${helper_scripts}/dotfiles/nwgbar.nix"
+      "${helper_scripts}/dotfiles/wezterm.nix"
+      "${helper_scripts}/dotfiles/countdown.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc

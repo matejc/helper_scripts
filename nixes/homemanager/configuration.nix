@@ -3,16 +3,18 @@
 with lib;
 with pkgs;
 let
-  context = import contextFile { inherit pkgs lib config inputs dotFileAt; };
+  helper_scripts = ../..;
+
+  context = import contextFile { inherit pkgs lib config inputs dotFileAt helper_scripts; };
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
 
-  dotfiles = import "${inputs.helper_scripts}/dotfiles/default.nix"
+  dotfiles = import "${helper_scripts}/dotfiles/default.nix"
     { name = "homemanager"; exposeScript = true; inherit context; }
     { inherit pkgs lib config; };
 
   dotFileAt = file: at:
-    (elemAt (import "${inputs.helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
+    (elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
   services-cmds = map (group: writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
@@ -35,7 +37,7 @@ let
 
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
-    nixpkgs.config = import "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
+    nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
     home.file.default-cursor = {
       source = "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
@@ -43,7 +45,7 @@ in lib.mkMerge ([{
     };
 
     home.file.nixpkgs-config = {
-      source = "${inputs.helper_scripts}/dotfiles/nixpkgs-config.nix";
+      source = "${helper_scripts}/dotfiles/nixpkgs-config.nix";
       target = ".config/nixpkgs/config.nix";
     };
 
@@ -666,5 +668,9 @@ in lib.mkMerge ([{
     ".." = "cd ..";
     "l" = "${pkgs.exa}/bin/exa -gal --git";
     "t" = "${pkgs.exa}/bin/exa -T --ignore-glob='.git' -L3";
+  };
+  programs.command-not-found = {
+    enable = true;
+    dbPath = "${inputs.nixexprs}/programs.sqlite";
   };
 }] ++ [ context.home-configuration ])
