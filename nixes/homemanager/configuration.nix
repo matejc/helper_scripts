@@ -397,6 +397,14 @@ in lib.mkMerge ([{
         border-bottom: 3px solid white;
     }
 
+    #workspaces button.visible {
+        border-bottom: 3px solid white;
+    }
+
+    #workspaces button.urgent {
+        background: #F92672;
+    }
+
     #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd #custom-notification {
         padding: 0 10px;
     }
