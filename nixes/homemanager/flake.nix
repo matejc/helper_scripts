@@ -25,10 +25,6 @@
       url = "github:matejc/clearprimary/main";
       flake = false;
     };
-    devenv = {
-      url = "github:matejc/devenv/master";
-      flake = false;
-    };
     nixgl = {
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";

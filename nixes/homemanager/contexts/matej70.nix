@@ -93,7 +93,7 @@ let
         wallpaper = wallpaper;
         scale = 1.0;
       } {
-        criteria = "BenQ Corporation BenQ GL2480 ETPBL0133504U";
+        criteria = "BNQ BenQ GL2480 ETPBL0133504U";
         position = "1920,0";
         output = "HDMI-A-1";
         mode = "1920x1080";

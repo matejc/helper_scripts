@@ -35,6 +35,66 @@ let
     cargoSha256 = "sha256-B1dRU3cqDuQi/kXDbRAvNf+wnut+wpFXf7Lq54Xav9A=";
   };
 
+  swayncConfig = {
+    "\$schema" = "${swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
+    control-center-height = 600;
+    control-center-margin-bottom = 0;
+    control-center-margin-left = 0;
+    control-center-margin-right = 0;
+    control-center-margin-top = 0;
+    control-center-width = 500;
+    cssPriority = "application";
+    fit-to-screen = true;
+    hide-on-action = true;
+    hide-on-clear = false;
+    image-visibility = "when-available";
+    keyboard-shortcuts = true;
+    layer = "top";
+    notification-body-image-height = 100;
+    notification-body-image-width = 200;
+    notification-icon-size = 64;
+    notification-visibility = {
+      #example-name = {
+      #  app-name = "Spotify";
+      #  state = "muted";
+      #  urgency = "Low";
+      #};
+    };
+    notification-window-width = 500;
+    positionX = "right";
+    positionY = "top";
+    script-fail-notify = true;
+    scripts = {
+      #example-script = {
+      #  exec = "echo 'Do something...'";
+      #  urgency = "Normal";
+      #};
+    };
+    timeout = 10;
+    timeout-critical = 0;
+    timeout-low = 5;
+    transition-time = 200;
+    widget-config = {
+      dnd = {
+        text = "Do Not Disturb";
+      };
+      label = {
+        max-lines = 5;
+        text = "Label Text";
+      };
+      mpris = {
+        image-radius = 12;
+        image-size = 96;
+      };
+      title = {
+        button-text = "Clear All";
+        clear-all-button = true;
+        text = "Notifications";
+      };
+    };
+    widgets = [ "title" "dnd" "notifications" "mpris" ];
+  };
+
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
@@ -52,7 +112,7 @@ in lib.mkMerge ([{
     xdg = {
       enable = true;
       #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
-      configFile."swaync/config.json".text = builtins.replaceStrings ["/etc/xdg/swaync"] ["${swaynotificationcenter}/etc/xdg/swaync"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/config.json");
+      configFile."swaync/config.json".text = builtins.toJSON swayncConfig;
       configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/style.css");
       configFile."sworkstyle/config.toml".text = ''
         fallback = ''
@@ -83,6 +143,7 @@ in lib.mkMerge ([{
         'ScratchTerm' = ''
       '';
       mime.enable = true;
+      systemDirs.config = [ "${swaynotificationcenter}/etc/xdg" ];
     };
 
     services.gnome-keyring = {
@@ -101,7 +162,6 @@ in lib.mkMerge ([{
       wl-clipboard
       xdg-utils
       dconf
-      swaynotificationcenter
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {
@@ -190,10 +250,10 @@ in lib.mkMerge ([{
       enable = true;
       systemdIntegration = true;
       config = rec {
-        assigns = mkDefault {
-          "number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-          "number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
-        };
+        #assigns = mkDefault {
+        #  "workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+        #  "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        #};
         bars = [ ];
         #bars = [ {
         #  fonts = {
@@ -212,7 +272,7 @@ in lib.mkMerge ([{
           urgent = { background = "#F92672"; border = "#F92672"; childBorder = "#F92672"; indicator = "#F92672"; text = "#FFFFFF"; };
         };
         fonts = {
-          names = [ context.variables.font.family "Font Awesome 6 Free" ];
+          names = [ context.variables.font.family ];
           style = context.variables.font.style;
           size = context.variables.font.size;
         };
@@ -274,17 +334,16 @@ in lib.mkMerge ([{
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
             #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
+            { command = "move container to workspace number 1"; criteria = { app_id = "^org.keepassxc.KeePassXC$"; }; }
+            { command = "move container to workspace number 4"; criteria = { class = "^Chromium-browser$"; }; }
+            { command = "move container to workspace number 4"; criteria = { class = "^Google-chrome$"; }; }
           ];
         };
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
-      };
-      extraConfig = let
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
-        workspaceOutputStr = item:
-          ''workspace number ${item.workspace} output ${item.output}'';
-      in ''
+      };
+      extraConfig = ''
         focus_wrapping yes
-        ${concatMapStringsSep "\n" workspaceOutputStr workspaceOutputAssign}
       '';
   };
 
