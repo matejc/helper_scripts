@@ -599,18 +599,14 @@ EOF
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
 
-    function! PyBeautify()
-      :silent exec "!${pkgs.python3Packages.black}/bin/black --line-length=79 '%:p'"
-    endfunction
-
-    autocmd FileType javascript nnoremap <buffer> <C-b> :call JsBeautify()<cr>
-    autocmd FileType python nnoremap <buffer> <C-b> :call PyBeautify()<cr>
+    function! NoOP()
+    endf
 
     nnoremap <silent> <PageUp> 10<up>
     nnoremap <silent> <PageDown> 10<down>
 
-    inoremap <expr> <silent> <PageUp> line('.')==1?'<C-o>^':'<C-o>10k'
-    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>$':'<C-o>10j'
+    inoremap <expr> <silent> <PageUp> line('.')==1?'<C-o>:call NoOP()<CR>':'<C-o>10k'
+    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>:call NoOP()<CR>':'<C-o>10j'
 
     vnoremap <silent> <PageUp> 10<up>
     vnoremap <silent> <PageDown> 10<down>
@@ -1084,18 +1080,15 @@ local on_attach = function(client, bufnr)
   -- end
 
   -- Set autocommands conditional on server_capabilities
-  -- if client.resolved_capabilities.document_highlight then
-  --   vim.api.nvim_exec([[
-  --     hi LspReferenceRead cterm=bold ctermbg=red guibg=Grey50
-  --     hi LspReferenceText cterm=bold ctermbg=red guibg=Grey50
-  --     hi LspReferenceWrite cterm=bold ctermbg=red guibg=Grey50
-  --     augroup lsp_document_highlight
-  --       autocmd!
-  --       autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-  --       autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-  --     augroup END
-  --   ]], false)
-  -- end
+  if client.server_capabilities.documentHighlightProvider then
+    vim.api.nvim_exec([[
+      augroup lsp_document_highlight
+        autocmd! * <buffer>
+        autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+        autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+      augroup END
+    ]], false)
+  end
 
   -- if client.resolved_capabilities.signature_help then
   --   vim.api.nvim_exec([[

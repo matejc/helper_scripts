@@ -28,19 +28,20 @@ let
     let
       recurse = path: set: visitList:
         let
-          visitedFun = a: path:
+          visitedFun = n: a: path:
             let
+              p = pkgs.lib.concatStringsSep "." (path ++ [n]);
               isAtt = isAttrs a;
               isDrv = isDerivation a;
-              success = if isAtt && !isDrv then pkgs.lib.any (element: element == a) visitList else false;
+              success = if isAtt && !isDrv then pkgs.lib.any (e: e == p) visitList else false;
               not = !success;
-              list = if not then (visitList ++ [a]) else visitList;
+              list = if not then (visitList ++ [p]) else visitList;
             in
               { inherit list not isAtt isDrv; };
 
           g = name: value:
             let
-              visited = visitedFun value path;
+              visited = visitedFun name value path;
             in
             if visited.isDrv then
               f (path ++ [name]) value
@@ -57,7 +58,7 @@ let
   # checkForEnterable pkgs.pythonPackages => true
   checkForEnterable = a:
     let
-      t = builtins.tryEval ((pkgs.lib.isAttrs a) && (pkgs.lib.hasAttr "recurseForDerivations" a));
+      t = builtins.tryEval ((pkgs.lib.isAttrs a) && (pkgs.lib.hasAttr "recurseForDerivations" a) && !(pkgs.lib.hasAttr "__splicedPackages" a));
     in
       (t.success && t.value == true);
 
@@ -78,11 +79,11 @@ let
         (path: value:
           let
             attrPath = pkgs.lib.concatStringsSep "." path;
-            tOutPath = builtins.tryEval value.outPath;
+            #tOutPath = builtins.tryEval value.outPath;
             tName = builtins.tryEval value.name;
           in
-            (if tOutPath.success && tName.success then
-              { out = tOutPath.value; name = tName.value; inherit attrPath; }
+            (if tName.success then
+              { name = tName.value; inherit attrPath; }
             else
               { error = "tryEval failed"; inherit attrPath; })
         )
@@ -90,10 +91,8 @@ let
         path
         []);
 
-  # just strips away values with attribute "error"
-  removeErrors = builtins.filter (x: (if pkgs.lib.hasAttr "error" x then
-      (builtins.trace "error '${x.error}' at attribute ${x.attrPath}" false)
-    else true));
+  # strips away values with attribute "error"
+  removeErrors = builtins.filter (x: !(pkgs.lib.hasAttr "error" x));
 
 in
   removeErrors (recurseInto "pkgs")
