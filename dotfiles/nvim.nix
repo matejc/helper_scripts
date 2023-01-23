@@ -1740,6 +1740,23 @@ require("bufferline").setup{
   }
 }
 
+local previewers = require('telescope.previewers')
+
+local new_maker = function(filepath, bufnr, opts)
+  opts = opts or {}
+
+  filepath = vim.fn.expand(filepath)
+  vim.loop.fs_stat(filepath, function(_, stat)
+    if not stat then return end
+    if stat.size > 10000 then
+      opts.use_ft_detect = false
+      previewers.buffer_previewer_maker(filepath, bufnr, opts)
+    else
+      previewers.buffer_previewer_maker(filepath, bufnr, opts)
+    end
+  end)
+end
+
 require("telescope").setup {
   defaults = {
     layout_strategy = 'vertical',
@@ -1759,7 +1776,8 @@ require("telescope").setup {
       i = {
         ['<esc>'] = require('telescope.actions').close
       }
-    }
+    },
+    buffer_previewer_maker = new_maker,
   },
   extensions = {
     fzy_native = {
