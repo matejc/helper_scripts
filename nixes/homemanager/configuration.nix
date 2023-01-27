@@ -250,10 +250,10 @@ in lib.mkMerge ([{
       enable = true;
       systemdIntegration = true;
       config = rec {
-        #assigns = mkDefault {
-        #  "workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        #  "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
-        #};
+        assigns = mkDefault {
+          "workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+          "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        };
         bars = [ ];
         #bars = [ {
         #  fonts = {
@@ -334,9 +334,6 @@ in lib.mkMerge ([{
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
             #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
-            { command = "move container to workspace number 1"; criteria = { app_id = "^org.keepassxc.KeePassXC$"; }; }
-            { command = "move container to workspace number 4"; criteria = { class = "^Chromium-browser$"; }; }
-            { command = "move container to workspace number 4"; criteria = { class = "^Google-chrome$"; }; }
           ];
         };
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
