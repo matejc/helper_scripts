@@ -37,6 +37,10 @@
       url = "github:Lyr-7D1h/swayest_workstyle/1.3.0";
       flake = false;
     };
+    sway-scratchpad = {
+      url = "github:matejc/sway-scratchpad";
+      flake = false;
+    };
   };
 
   outputs = { self, ... }@inputs: {

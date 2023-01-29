@@ -35,6 +35,12 @@ let
     cargoSha256 = "sha256-B1dRU3cqDuQi/kXDbRAvNf+wnut+wpFXf7Lq54Xav9A=";
   };
 
+  sway-scratchpad = rustPlatform.buildRustPackage {
+    name = "sway-scratchpad";
+    src = inputs.sway-scratchpad;
+    cargoSha256 = "sha256-OmHYYzb9/QMdMVgqmqKNwGRZTYVNdT3sxT5Dmcg8cVo=";
+  };
+
   swayncConfig = {
     "\$schema" = "${swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
     control-center-height = 600;
@@ -251,7 +257,7 @@ in lib.mkMerge ([{
       systemdIntegration = true;
       config = rec {
         assigns = mkDefault {
-          "workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+          #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
         };
         bars = [ ];
@@ -276,14 +282,16 @@ in lib.mkMerge ([{
           style = context.variables.font.style;
           size = context.variables.font.size;
         };
-        keybindings =
-          mkOptionDefault {
+        keybindings = let
+            dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.homeDir}/bin/terminal -m terminal";
+          in mkOptionDefault {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
             "Mod1+Control+t" = "exec ${context.variables.programs.terminal}";
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "Mod1+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
-            "F12" = "exec ${context.variables.programs.dropdown}";
-            "XF86Favorites" = "exec ${context.variables.programs.dropdown}";
+            "F12" = "exec ${dropdown}";
+            "XF86Favorites" = "exec ${dropdown}";
+            "F9" = "exec ${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc";
             "Mod1+F4" = "kill";
             "${modifier}+k" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
@@ -334,6 +342,7 @@ in lib.mkMerge ([{
             { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
             #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
+            { command = "border pixel 1"; criteria = { con_mark = "SCRATCHPAD_terminal"; }; }
           ];
         };
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);

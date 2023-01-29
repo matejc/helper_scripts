@@ -56,7 +56,7 @@ let
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
+        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         slack = "${profileDir}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         editor = "${nano}/bin/nano";
@@ -99,14 +99,14 @@ let
     home-configuration = {
       home.stateVersion = "22.05";
       wayland.windowManager.sway.config.assigns = {
-        "workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
+        #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
         "workspace number 6" = [{ class = "^Slack$"; }];
         "workspace number 7" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.slack}"; }
-        { command = "${self.variables.profileDir}/bin/keepassxc"; }
+        #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         { command = "${clearprimary}/bin/clearprimary"; }
       ];
       wayland.windowManager.sway.config.input = {

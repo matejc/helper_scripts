@@ -63,7 +63,8 @@ let
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
+        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
+        #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         browser = "${profileDir}/bin/chromium";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
@@ -73,7 +74,7 @@ let
         window-size = dotFileAt "i3config.nix" 5;
         i3-msg = "${profileDir}/bin/swaymsg";
         nextcloud = "${nextcloud-client}/bin/nextcloud";
-        keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
+        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
@@ -114,7 +115,7 @@ let
       home.stateVersion = "20.09";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.programs.keepassxc}"; }
+        #{ command = "${self.variables.programs.keepassxc}"; }
         { command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
       services.kanshi.enable = true;
