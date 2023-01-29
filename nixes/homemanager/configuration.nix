@@ -38,7 +38,7 @@ let
   sway-scratchpad = rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-OmHYYzb9/QMdMVgqmqKNwGRZTYVNdT3sxT5Dmcg8cVo=";
+    cargoSha256 = "sha256-JNgEwp2QLkzFXTR6jWgtnu1B3k5vhUF/oZtqMcbyXW8=";
   };
 
   swayncConfig = {
@@ -291,7 +291,7 @@ in lib.mkMerge ([{
             "Mod1+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "F12" = "exec ${dropdown}";
             "XF86Favorites" = "exec ${dropdown}";
-            "F9" = "exec ${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc";
+            "F9" = "exec ${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
             "Mod1+F4" = "kill";
             "${modifier}+k" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
