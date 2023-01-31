@@ -595,9 +595,11 @@ EOF
       pkgs.shellcheck
       pkgs.tree-sitter
       pkgs.coreutils-full
+      pkgs.delta
     ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin'
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
+    let $LESS = "iMRS"
 
     function! NoOP()
     endf
@@ -742,7 +744,6 @@ EOF
 
     inoremap <C-/> <C-o>/
     inoremap <C-S-?> <C-o>:%s/FIND/REPLACE/g
-    inoremap <C-S-c> <C-o>:noh<cr>
     inoremap <C-n> <C-o>n
     inoremap <C-S-n> <C-o>N
 
@@ -1760,21 +1761,14 @@ end
 require("telescope").setup {
   defaults = {
     layout_strategy = 'vertical',
-    layout_config = { vertical = { width = 0.9, preview_height = 0.7 } },
+    layout_config = { vertical = { width = 0.9, preview_height = 0.75 } },
     wrap_results = true,
-    vimgrep_arguments = {
-      "${pkgs.ripgrep}/bin/rg",
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-    },
     scroll_strategy = 'limit',
     mappings = {
       i = {
-        ['<esc>'] = require('telescope.actions').close
+        ['<esc>'] = require('telescope.actions').close,
+        ['<PageDown>'] = require('telescope.actions').preview_scrolling_down,
+        ['<PageUp>'] = require('telescope.actions').preview_scrolling_up,
       }
     },
     buffer_previewer_maker = new_maker,
@@ -1796,6 +1790,7 @@ require("telescope").setup {
 }
 require('telescope').load_extension('fzy_native')
 require"telescope".load_extension("frecency")
+require("telescope").load_extension("live_grep_args")
 
 require("scrollbar").setup({
     handle = {
@@ -2013,6 +2008,33 @@ vim.diagnostic.config({ update_in_insert = true, })
 -- })
 
 require("luasnip.loaders.from_vscode").lazy_load()
+
+
+local previewers = require('telescope.previewers')
+local builtin = require('telescope.builtin')
+
+local delta = previewers.new_termopen_previewer {
+  get_command = function(entry)
+    return { 'git', '-c', 'core.pager=delta', '-c', 'delta.side-by-side=false', 'diff', entry.value .. '^!', '--', entry.current_file }
+  end
+}
+
+my_git_bcommits = function(opts)
+  opts = opts or {}
+  opts.previewer = delta
+
+  builtin.git_bcommits(opts)
+end
+
+my_git_commits = function(opts)
+  opts = opts or {}
+  opts.previewer = delta
+
+  builtin.git_commits(opts)
+end
+
+vim.api.nvim_set_keymap("i", "<C-S-b>", "<cmd>lua my_git_bcommits()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>lua my_git_commits()<CR>", {noremap = true, silent = true})
 EOF
     highlight! CmpItemMenu guifg=pink gui=italic
 
@@ -2060,9 +2082,9 @@ EOF
 
     inoremap <C-S-p> <Cmd>lua require'telescope.builtin'.keymaps{}<cr>
 
-    nnoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
-    inoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
-    vnoremap <C-S-f> <Cmd>lua require'telescope.builtin'.live_grep{ disable_devicons = true }<cr>
+    nnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+    inoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+    vnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
 
     nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
     vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
@@ -2572,6 +2594,7 @@ EOF
           #vimPlugins.null-ls-nvim
           vimPlugins.LuaSnip
           vimPlugins.lspkind-nvim
+          telescope-live-grep-args-nvim
         ];
         opt = [
         ];
