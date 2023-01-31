@@ -38,7 +38,7 @@ let
   sway-scratchpad = rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-JNgEwp2QLkzFXTR6jWgtnu1B3k5vhUF/oZtqMcbyXW8=";
+    cargoSha256 = "sha256-aOKJAnaIYkf8p6KoqCH5FdZr7OUGhTumC2rn9HxP8xs=";
   };
 
   swayncConfig = {
