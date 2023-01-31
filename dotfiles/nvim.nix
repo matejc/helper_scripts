@@ -2238,7 +2238,7 @@ EOF
     set splitright
     inoremap <silent> <A-h> <Cmd>:sp<cr>
     inoremap <silent> <A-v> <Cmd>:vsp<cr>
-    inoremap <silent> <A-c> <Cmd>:close<cr>
+    inoremap <silent> <A-w> <Cmd>:close<cr>
     " nnoremap <A-Down> <C-W><C-J>
     " nnoremap <A-Up> <C-W><C-K>
     " nnoremap <A-Right> <C-W><C-L>

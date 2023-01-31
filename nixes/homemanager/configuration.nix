@@ -284,6 +284,7 @@ in lib.mkMerge ([{
         };
         keybindings = let
             dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.homeDir}/bin/terminal -m terminal";
+            passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
           in mkOptionDefault {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
             "Mod1+Control+t" = "exec ${context.variables.programs.terminal}";
@@ -291,7 +292,8 @@ in lib.mkMerge ([{
             "Mod1+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
             "F12" = "exec ${dropdown}";
             "XF86Favorites" = "exec ${dropdown}";
-            "F9" = "exec ${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
+            "F9" = "exec ${passwords}";
+            "XF86Messenger" = "exec ${passwords}";
             "Mod1+F4" = "kill";
             "${modifier}+k" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
@@ -299,8 +301,6 @@ in lib.mkMerge ([{
             "${modifier}+l" = "exec ${context.variables.binDir}/lockscreen";
             "Mod1+Control+l" = "exec ${context.variables.binDir}/lockscreen";
             "Control+Tab" = "workspace back_and_forth";
-            "Mod1+Tab" = "focus right";
-            "Mod1+Shift+Tab" = "focus left";
             "Mod1+Control+n" = "exec ${swaynotificationcenter}/bin/swaync-client -t -sw";
             "Mod1+Control+Up" = "exec ${sway-workspace}/bin/sway-workspace prev-output";
             "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
