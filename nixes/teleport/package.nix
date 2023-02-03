@@ -4,7 +4,10 @@ stdenv.mkDerivation rec {
   pname = "teleport";
   version = "11.3.2";
 
-  src = builtins.fetchurl "https://cdn.teleport.dev/teleport-v${version}-linux-amd64-bin.tar.gz";
+  src = builtins.fetchurl {
+    url = "https://cdn.teleport.dev/teleport-v${version}-linux-amd64-bin.tar.gz";
+    sha256 = "sha256:1c6c9m7k5nzymmpgk2izdzz80bgwmn3fdcf5zlm98n9b224xb6x8";
+  };
 
   installPhase = ''
     mkdir -p $out/bin

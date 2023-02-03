@@ -72,7 +72,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
-            nixpkgs.overlays = [ inputs.nixgl.overlay ];
+            nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           }
           #{
           #  imports = [(import ./modules/jupyenv.nix { jupyenv = inputs.jupyenv; })];
