@@ -74,17 +74,17 @@
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
             nixpkgs.overlays = [ inputs.nixgl.overlay ];
           }
-          {
-            imports = [(import ./modules/jupyenv.nix { jupyenv = inputs.jupyenv; })];
-            services.jupyenv.demo = {
-              enable = true;
-              port = 18080;
-              attrs = {
-                kernel.python.example.enable = true;
-                kernel.postgres.example.enable = true;
-              };
-            };
-          }
+          #{
+          #  imports = [(import ./modules/jupyenv.nix { jupyenv = inputs.jupyenv; })];
+          #  services.jupyenv.demo = {
+          #    enable = true;
+          #    port = 18080;
+          #    attrs = {
+          #      kernel.python.example.enable = true;
+          #      kernel.postgres.example.enable = true;
+          #    };
+          #  };
+          #}
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {
