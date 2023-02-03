@@ -1,4 +1,4 @@
-{ yupyenv }:
+{ jupyenv }:
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -94,6 +94,7 @@ in {
 
         configFile = pkgs.writeText "config.py" ''
           ${cfg.extraConfig}
+          c.ServerApp.allow_remote_access = True
           c.NotebookApp.password = ${cfg.password}
           c.NotebookApp.token = ${cfg.token}
         '';
