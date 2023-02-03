@@ -75,7 +75,7 @@
             nixpkgs.overlays = [ inputs.nixgl.overlay ];
           }
           {
-            imports = [(import ./modules/jupyenv.nix { inherit inputs; })];
+            imports = [(import ./modules/jupyenv.nix { jupyenv = inputs.jupyenv; })];
             services.jupyenv.demo = {
               enable = true;
               port = 18080;

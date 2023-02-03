@@ -1,4 +1,4 @@
-{ inputs }:
+{ yupyenv }:
 { config, lib, pkgs, ... }:
 
 with lib;
@@ -90,7 +90,7 @@ in {
 
     systemd.services = (mapAttrs' (name: cfg:
       let
-        package = inputs.jupyenv.lib."x86_64-linux".mkJupyterlabNew cfg.attrs;
+        package = jupyenv.lib."x86_64-linux".mkJupyterlabNew cfg.attrs;
 
         configFile = pkgs.writeText "config.py" ''
           ${cfg.extraConfig}
