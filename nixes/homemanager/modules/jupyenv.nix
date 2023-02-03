@@ -94,6 +94,7 @@ in {
 
         configFile = pkgs.writeText "config.py" ''
           ${cfg.extraConfig}
+          c.NotebookApp.terminals_enabled = False
           c.ServerApp.allow_remote_access = True
           c.NotebookApp.password = ${cfg.password}
           c.NotebookApp.token = ${cfg.token}
