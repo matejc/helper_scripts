@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
       patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
         $file
       wrapProgram $file \
-        --prefix PATH : ${lib.makeBinPath [ glibc.bin ]}
+        --prefix PATH : ${lib.makeBinPath [ stdenv.cc.libc.bin ]}
     done
   '';
 }
