@@ -2,33 +2,29 @@
 , name ? "default"
 , user ? "matejc"
 , uid ? "1000"
-, gid ? "100"
+, gid ? "1000"
 , timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
-, vpnStart ? "true"
+, vpnStart ? "openvpn --config /etc/openvpn/ovpn --daemon --log /root/openvpn.log --auth-user-pass /etc/openvpn/pass"
 , vpnStop ? "pkill openvpn"
-, openvpnConfig ? "/etc/openvpn/all.conf"
-#, openvpnConfig ? null
+, openvpnConfig ? null
 , run ? null
 , runAsUser ? null
 , cmds ? [
-  #{ start = "kitty zsh"; }
-  { start = "transmission-daemon --no-portmap --foreground --no-dht -g ${homeDir}/.transmission -w ${homeDir}/Downloads"; }
-  { start = "firefox --private-window --no-remote http://localhost:9091/transmission/web/"; }
+  { start = "firefox --private-window --no-remote"; }
 ]
-, packages ? with pkgs; [ transmission firefox zsh kitty ]
+, packages ? with pkgs; [ firefox ]
 , preCmds ? [ ]
 , chroot ? "${homeDir}/.vpn/${name}/chroot"
 , mounts ? [ ]
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
-  { from = "${homeDir}/.config/kitty"; to = "${homeDir}/.config/kitty"; }
-  { from = "${homeDir}/.zshrc"; to = "${homeDir}/.zshrc"; }
-  { from = "${homeDir}/.zlogin"; to = "${homeDir}/.zlogin"; }
   { from = "${homeDir}/.vpn/openvpns"; to = "/etc/openvpn"; }
+  { from = "/tmp/.X11-unix/X0"; to = "/tmp/.X11-unix/X0"; }
 ]
 , symlinks ? [ ]
 , variables ? [
+  { name = "DISPLAY"; value = ":0"; }
   { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
 ]
 , waylandDisplay ? "wayland-1"
@@ -38,10 +34,13 @@
 , homeDir ? "/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
+, nsjail ? "${homeDir}/.vpn/bin/nsjail"
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
 with pkgs;
 with lib;
 let
+  nsUtils = import ./ns_utils.nix { inherit pkgs; };
+
   nsjail = pkgs.nsjail.overrideDerivation (old: {
     preBuild = ''
       makeFlagsArray+=(USER_DEFINES='-DNEWUIDMAP_PATH=${newuidmap} -DNEWGIDMAP_PATH=${newgidmap}')
@@ -84,7 +83,7 @@ let
     }
     trap stop_script SIGINT SIGTERM
     ${if openvpnConfig == null then ''
-      ${vpnStart}
+      ${vpnStart} || exit 1
       ${mkUpCmd}
       while true
       do
@@ -98,10 +97,10 @@ let
 
   supervisorConf = writeText "supervisord.conf" ''
     [supervisord]
-    directory = /root/.supervisord
+    directory = ${homeDir}/.supervisord
     user = root
     nodaemon = true
-    pidfile = ${homeDir}/supervisord.pid
+    pidfile = ${homeDir}/.supervisord/.pid
 
     [unix_http_server]
     file = /tmp/supervisor.sock
@@ -127,7 +126,7 @@ let
     stopasgroup = true
     killasgroup = true
     redirect_stderr = true
-    stdout_logfile = /root/.supervisord/vpn.log
+    stdout_logfile = ${homeDir}/.supervisord/vpn.log
     stdout_logfile_maxbytes = 0
 
     ${concatImapStringsSep "\n" (i: p: ''
@@ -146,17 +145,16 @@ let
     stopasgroup = true
     killasgroup = true
     redirect_stderr = true
-    stdout_logfile = /root/.supervisord/p${toString i}.log
+    stdout_logfile = ${homeDir}/.supervisord/p${toString i}.log
     stdout_logfile_maxbytes = 0
     '') cmds}
   '';
 
-  unshareCmd = writeScript "unshare.sh" ''
+  insideCmd = writeScript "inside.sh" ''
     #!${stdenv.shell}
-    set -ex
-    echo $$ > ${homeDir}/ns.pid
+    set -e
 
-    #sysctl net.ipv6.conf.all.disable_ipv6=1
+    echo -n "$$" > ${homeDir}/.ns.pid
 
     for i in {1..50}
     do
@@ -168,36 +166,27 @@ let
     done
     ip addr show dev tap0 || exit 1
 
-    mkdir -p /root/.supervisord
+    mkdir -p ${homeDir}/.supervisord
 
-    ${if run != null then run else if runAsUser != null then "ns_su_user ${runAsUser}" else "supervisord --configuration=${supervisorConf}"}
+    trap 'kill $(cat ${homeDir}/.supervisord/.pid); kill $(jobs -rp)' SIGINT SIGTERM EXIT
+
+    ${if run != null then run else if runAsUser != null then "ns_su ${uid} ${gid} ${runAsUser}" else "supervisord --configuration=${supervisorConf}"}
   '';
 
   script = writeScript "script.sh" ''
     #!${stdenv.shell}
     set -e
-    mkdir -p ${homeDir}/.vpn/${name}/chroot/run/user/1000
+
     mkdir -p ${homeDir}/.vpn/${name}/home
-    mkdir -p ${homeDir}/.vpn/${name}/root
-    mkdir -p ${homeDir}/.vpn/${name}/etc
 
-    echo > ${homeDir}/.vpn/${name}/home/ns.pid
-
-    cat ${resolvConf} > ${homeDir}/.vpn/${name}/etc/resolv.conf
-    chmod o+rw ${homeDir}/.vpn/${name}/etc/resolv.conf
-
-    ln -sf ${machineId} ${homeDir}/.vpn/${name}/etc/machine-id
-    ln -sf ${passwdFile} ${homeDir}/.vpn/${name}/etc/passwd
-    ln -sf ${groupFile} ${homeDir}/.vpn/${name}/etc/group
-    ln -sf ${hostsFile} ${homeDir}/.vpn/${name}/etc/hosts
-    ln -sf ${hostnameFile} ${homeDir}/.vpn/${name}/etc/hostname
-    ln -sf "${tzdata}/share/zoneinfo/${timeZone}" ${homeDir}/.vpn/${name}/etc/localtime
+    cat ${resolvConf} >${homeDir}/.vpn/${name}/.resolv.conf
+    touch ${homeDir}/.vpn/${name}/home/.ns.pid
 
     ${preCmd}
 
     for i in {1..50}
     do
-      nspid="$(cat ${homeDir}/.vpn/${name}/home/ns.pid)"
+      nspid="$(cat ${homeDir}/.vpn/${name}/home/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
         slirp4netns --disable-dns --configure --mtu=65520 --disable-host-loopback $nspid tap0
@@ -206,26 +195,27 @@ let
       sleep 0.1
     done &
 
-    trap 'kill $(cat ${homeDir}/.vpn/${name}/home/supervisord.pid); kill $(jobs -rp)' EXIT
+    trap 'kill $(cat ${homeDir}/.vpn/${name}/home/.supervisord/.pid); kill $(jobs -rp)' EXIT
     trap 'exit 0' SIGINT SIGTERM
 
-    nsjail \
+    ${nsjail}/bin/nsjail \
       -Mo \
-      --chroot ${chroot} \
-      --rw \
+      --tmpfsmount / \
       --disable_proc \
       --bindmount ${homeDir}/.vpn/${name}/home:${homeDir} \
-      --bindmount ${homeDir}/.vpn/${name}/root:/root \
-      --bindmount /sys:/sys \
+      --tmpfsmount /root \
       --bindmount /dev:/dev \
+      --bindmount /sys:/sys \
       --mount none:/tmp:tmpfs:rw \
-      --bindmount_ro /nix:/nix \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/hosts:$(realpath /etc/hosts) \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/passwd:$(realpath /etc/passwd) \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/group:$(realpath /etc/group) \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/hostname:$(realpath /etc/hostname) \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/machine-id:$(realpath /etc/machine-id) \
-      --bindmount_ro ${homeDir}/.vpn/${name}/etc/localtime:$(realpath /etc/localtime) \
+      --tmpfsmount /nix \
+      --bindmount_ro /nix/store:/nix/store \
+      --tmpfsmount /etc \
+      --symlink ${hostsFile}:/etc/hosts \
+      --symlink ${passwdFile}:/etc/passwd \
+      --symlink ${groupFile}/etc/group:/etc/group \
+      --symlink ${hostnameFile}:/etc/hostname \
+      --symlink ${machineId}:/etc/machine-id \
+      --symlink ${tzdata}/share/zoneinfo/${timeZone}:/etc/localtime \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
       --tmpfsmount /sbin \
@@ -239,16 +229,16 @@ let
       --mount none:/run/user/${uid}:tmpfs:rw \
       --bindmount /run/user/${uid}/${waylandDisplay}:/run/user/${uid}/${waylandDisplay} \
       --bindmount /run/user/${uid}/pulse:/run/user/${uid}/pulse \
-      --bindmount ${homeDir}/.vpn/${name}/etc/resolv.conf:$(realpath /etc/resolv.conf) \
+      --bindmount ${homeDir}/.vpn/${name}/.resolv.conf:/etc/resolv.conf \
       --disable_clone_newpid \
       --bindmount /proc:/proc \
       --hostname RESTRICTED \
-      --cwd ${homeDir} \
-      --uid_mapping 0:101000:1 \
-      --gid_mapping 0:100100:1 \
-      --uid_mapping ${uid}:${uid}:1 \
-      --gid_mapping ${gid}:${gid}:1 \
+      --cwd / \
       --keep_caps \
+      --uid_mapping 0:200000:1 \
+      --gid_mapping 0:200000:1 \
+      --uid_mapping 1000:1000:1 \
+      --gid_mapping 1000:1000:1 \
       --rlimit_as 40960 \
       --rlimit_cpu 10000 \
       --rlimit_nofile 5120 \
@@ -269,7 +259,7 @@ let
       ${concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
       ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
       ${extraArgs} \
-      ${unshareCmd}
+      -- ${insideCmd}
   '';
 
   resolvConf = writeText "resolv.conf" ''
@@ -283,11 +273,13 @@ let
   passwdFile = writeText "passwd" ''
     root:!:0:0::/root:${interactiveShell}
     ${user}:!:${uid}:${gid}::${homeDir}:${interactiveShell}
+    nobody:!:65534:65534::/var/empty:${shadow}/bin/nologin
   '';
 
   groupFile = writeText "group" ''
     root:x:0:
-    ${user}:x:${gid}:${user}
+    users:x:${gid}:${user}
+    nogroup:x:65534:nobody
   '';
 
   hostsFile = writeText "hosts" ''
@@ -299,7 +291,8 @@ let
   buildInputs = [
       iproute2 slirp4netns curl fakeroot which sysctl procps kmod
       openvpn pstree util-linux fontconfig coreutils libcap strace less
-      python39Packages.supervisor gawk dnsutils iptables nsjail gnugrep
+      python39Packages.supervisor gawk dnsutils iptables gnugrep
+      nsUtils shadow
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;

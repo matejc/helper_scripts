@@ -213,12 +213,12 @@ in lib.mkMerge ([{
     };
 
     programs.firefox = {
-      extensions = with nur.repos.rycee.firefox-addons; [
-        #https-everywhere
-        ublock-origin keepassxc-browser
-      ];
       profiles = {
         default = {
+          extensions = with nur.repos.rycee.firefox-addons; [
+            #https-everywhere
+            ublock-origin keepassxc-browser
+          ];
           settings = {
             "general.smoothScroll" = false;
           };

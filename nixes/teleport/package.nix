@@ -2,12 +2,14 @@
 with pkgs;
 stdenv.mkDerivation rec {
   pname = "teleport";
-  version = "11.3.2";
+  version = "12.0.1";
 
   src = builtins.fetchurl {
     url = "https://cdn.teleport.dev/teleport-v${version}-linux-amd64-bin.tar.gz";
-    sha256 = "sha256:1c6c9m7k5nzymmpgk2izdzz80bgwmn3fdcf5zlm98n9b224xb6x8";
+    sha256 = "sha256:0y5f6vgybd39zp5lhvhkbzcpgfyy34nz4ayylv56g5b14jg3v9dc";
   };
+
+  nativeBuildInputs = [ makeWrapper ];
 
   installPhase = ''
     mkdir -p $out/bin
@@ -19,6 +21,8 @@ stdenv.mkDerivation rec {
     do
       patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
         $file
+      wrapProgram $file \
+        --prefix PATH : ${lib.makeBinPath [ glibc.bin ]}
     done
   '';
 }
