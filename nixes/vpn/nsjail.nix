@@ -41,11 +41,7 @@ with lib;
 let
   nsUtils = import ./ns_utils.nix { inherit pkgs; };
 
-  nsjail = pkgs.nsjail.overrideDerivation (old: {
-    preBuild = ''
-      makeFlagsArray+=(USER_DEFINES='-DNEWUIDMAP_PATH=${newuidmap} -DNEWGIDMAP_PATH=${newgidmap}')
-    '';
-  });
+  nsjail = import ../nsjail.nix { inherit pkgs; };
 
   preCmd = writeScript "pre-cmd.sh" ''
     #!${stdenv.shell}
