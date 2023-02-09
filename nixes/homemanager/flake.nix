@@ -41,10 +41,10 @@
       url = "github:matejc/sway-scratchpad";
       flake = false;
     };
-    jupyenv = {
-      url = "github:tweag/jupyenv/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #jupyenv = {
+    #  url = "github:tweag/jupyenv/main";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
   };
 
   outputs = { self, ... }@inputs: {
@@ -75,8 +75,8 @@
             nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           }
           #{
-          #  imports = [(import ./modules/jupyenv.nix { jupyenv = inputs.jupyenv; })];
-          #  services.jupyenv.demo = {
+          #  imports = [(import ../jupyenv.nix { jupyenv = inputs.jupyenv; })];
+          #  services.jupyenv.example = {
           #    enable = true;
           #    port = 18080;
           #    attrs = {

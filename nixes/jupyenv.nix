@@ -101,7 +101,7 @@ let
 
   enabled = filterAttrs (n: v: v.enable) config.services.jupyenv;
 
-  nsjail = import ../../nsjail.nix { inherit pkgs; };
+  nsjail = import ./nsjail.nix { inherit pkgs; };
 
 in {
   options.services.jupyenv = mkOption {
