@@ -48,7 +48,7 @@ let
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
       locale.all = "en_US.UTF-8";
       networkInterface = "br0";
-      wirelessInterfaces = [];
+      wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
       font = {

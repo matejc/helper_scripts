@@ -472,7 +472,7 @@ in lib.mkMerge ([{
         background: #F92672;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd #custom-notification {
+    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk {
         padding: 0 10px;
     }
 
@@ -513,6 +513,10 @@ in lib.mkMerge ([{
         animation-iteration-count: infinite;
         animation-direction: alternate;
     }
+
+    #temperature.critical {
+         color: #e06c75;
+    }
   '';
   programs.waybar.settings = {
     mainBar = {
@@ -521,7 +525,11 @@ in lib.mkMerge ([{
       height = 26;
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
-      modules-right = [ "custom/notification" "pulseaudio" "idle_inhibitor" "bluetooth" "network" "battery" "cpu" "temperature" "clock" "tray" ];
+      modules-right = flatten [
+        "custom/notification" "idle_inhibitor" "pulseaudio" "bluetooth" "battery"
+        (imap0 (i: _: "network#${toString i}") (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
+        (imap0 (i: _: "disk#${toString i}") context.variables.mounts)
+        "cpu" "temperature" "clock" "tray" ];
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = false;
@@ -566,25 +574,17 @@ in lib.mkMerge ([{
         format = "{icon}";
         format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
       };
-      temperature.hwmon-path = context.variables.hwmonPath;
+      temperature = {
+        format = "{temperatureC}°C {icon}";
+        format-icons = ["" "" "" "" ""];
+        critical-threshold = 80;
+      };
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
             activated = "";
             deactivated = "";
         };
-      };
-      network = {
-        interface = context.variables.networkInterface;
-        format = "{ifname}";
-        format-wifi = "{essid} ({signalStrength}%) ";
-        format-ethernet = "{ipaddr}/{cidr} ";
-        format-disconnected = "";
-        tooltip-format = "{ifname} via {gwaddr} ";
-        tooltip-format-wifi = "{essid} ({signalStrength}%) ";
-        tooltip-format-ethernet = "{ifname} ";
-        tooltip-format-disconnected = "Disconnected";
-        max-length = 50;
       };
       # "custom/dnd" = {
       #   interval = "once";
@@ -623,7 +623,19 @@ in lib.mkMerge ([{
         format-icons = ["" "" "" "" ""];
         max-length = 25;
       };
-    };
+    } // listToAttrs (imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v} {percentage_used}%"; path = v; }; }) context.variables.mounts)
+    // listToAttrs (imap0 (i: v: { name = "network#${toString i}"; value = {
+        interface = v;
+        format = "{ifname}";
+        format-wifi = "{essid} ({signalStrength}%) ";
+        format-ethernet = "{ipaddr}/{cidr} ";
+        format-disconnected = "";
+        tooltip-format = "{ifname} via {gwaddr} ";
+        tooltip-format-wifi = "{essid} ({signalStrength}%) ";
+        tooltip-format-ethernet = "{ifname} ";
+        tooltip-format-disconnected = "Disconnected";
+        max-length = 50;
+    }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
   };
   programs.waybar.systemd.enable = true;
   programs.waybar.systemd.target = "sway-session.target";
