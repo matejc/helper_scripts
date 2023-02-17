@@ -40,9 +40,8 @@ let
       email = "matej.cotman@eficode.com";
       signingkey = "E9DCD6F3A1CF9949995C43E09D45D4C00C8A5A48";
       locale.all = "en_GB.UTF-8";
-      networkInterface = "wlp0s20f3";
-      wirelessInterfaces = [];
-      ethernetInterfaces = [ networkInterface ];
+      wirelessInterfaces = [ "wlp0s20f3" ];
+      ethernetInterfaces = [ ];
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";

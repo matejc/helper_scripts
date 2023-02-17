@@ -574,11 +574,11 @@ in lib.mkMerge ([{
         format = "{icon}";
         format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
       };
-      temperature = {
+      temperature = ({
         format = "{temperatureC}°C {icon}";
         format-icons = ["" "" "" "" ""];
         critical-threshold = 80;
-      };
+      } // (optionalAttrs (builtins.hasAttr "hwmonPath" context.variables) { hwmon-path = context.variables.hwmonPath; }));
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
