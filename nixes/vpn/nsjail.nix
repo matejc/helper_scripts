@@ -8,8 +8,6 @@
 , vpnStart ? "openvpn --config /etc/openvpn/ovpn --daemon --log /root/openvpn.log --auth-user-pass /etc/openvpn/pass"
 , vpnStop ? "pkill openvpn"
 , openvpnConfig ? null
-, run ? null
-, runAsUser ? null
 , cmds ? [
   { start = "firefox --private-window --no-remote"; }
 ]
@@ -164,9 +162,9 @@ let
 
     mkdir -p ${homeDir}/.supervisord
 
-    trap 'kill $(cat ${homeDir}/.supervisord/.pid); kill $(jobs -rp)' SIGINT SIGTERM EXIT
+    trap 'echo "Be patient inside"' SIGINT
 
-    ${if run != null then run else if runAsUser != null then "ns_su ${uid} ${gid} ${runAsUser}" else "supervisord --configuration=${supervisorConf}"}
+    exec supervisord --configuration=${supervisorConf}
   '';
 
   script = writeScript "script.sh" ''
@@ -185,14 +183,14 @@ let
       nspid="$(cat ${homeDir}/.vpn/${name}/home/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
-        slirp4netns --disable-dns --configure --mtu=65520 --disable-host-loopback $nspid tap0
+        slirp4netns --disable-dns --configure --mtu=65520 --disable-host-loopback $nspid tap0 &
+        echo "$!" >${homeDir}/.vpn/${name}/home/.slirp4netns.pid
         break
       fi
       sleep 0.1
     done &
 
-    trap 'kill $(cat ${homeDir}/.vpn/${name}/home/.supervisord/.pid); kill $(jobs -rp)' EXIT
-    trap 'exit 0' SIGINT SIGTERM
+    trap 'echo Exiting slirp4netns ...; kill $(cat ${homeDir}/.vpn/${name}/home/.slirp4netns.pid)' EXIT
 
     ${nsjail}/bin/nsjail \
       -Mo \
@@ -254,6 +252,7 @@ let
       ${concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
       ${concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
       ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
+      --forward_signals \
       ${extraArgs} \
       -- ${insideCmd}
   '';
@@ -287,7 +286,7 @@ let
   buildInputs = [
       iproute2 slirp4netns curl fakeroot which sysctl procps kmod
       openvpn pstree util-linux fontconfig coreutils libcap strace less
-      python39Packages.supervisor gawk dnsutils iptables gnugrep
+      python3Packages.supervisor gawk dnsutils iptables gnugrep
       nsUtils shadow
   ] ++ packages;
 
