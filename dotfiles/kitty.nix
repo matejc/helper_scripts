@@ -1191,7 +1191,7 @@ include ./theme.conf
   target = "${variables.homeDir}/.config/kitty/theme.conf";
   source = pkgs.writeText "theme.conf" ''
 background #20211d
-foreground #fdfff1
+foreground #e3e5d8
 
 cursor #fdfff1
 cursor_text_color #000000
