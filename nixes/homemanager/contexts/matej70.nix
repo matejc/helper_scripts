@@ -61,8 +61,8 @@ let
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         browser = "${profileDir}/bin/chromium";
