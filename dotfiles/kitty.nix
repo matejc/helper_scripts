@@ -1190,13 +1190,20 @@ include ./theme.conf
 } {
   target = "${variables.homeDir}/.config/kitty/theme.conf";
   source = pkgs.writeText "theme.conf" ''
-background #3b3c35
+background #20211d
 foreground #fdfff1
 
 cursor #fdfff1
 cursor_text_color #000000
-selection_foreground #3b3c35
-selection_background #fdfff1
+selection_foreground none
+selection_background #636559
+
+active_tab_foreground   #20211d
+active_tab_background   #afb1a7
+active_tab_font_style   bold-italic
+inactive_tab_foreground #3b3c35
+inactive_tab_background #636559
+inactive_tab_font_style normal
 
 # dull black
 color0 #3b3c35
