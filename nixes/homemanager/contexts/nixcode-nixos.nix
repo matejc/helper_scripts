@@ -17,9 +17,9 @@ let
       "${helper_scripts}/dotfiles/mypassgen.nix"
       "${helper_scripts}/dotfiles/wofi.nix"
       "${helper_scripts}/dotfiles/nwgbar.nix"
-      "${helper_scripts}/dotfiles/wezterm.nix"
       "${helper_scripts}/dotfiles/countdown.nix"
       "${helper_scripts}/dotfiles/helix.nix"
+      "${helper_scripts}/dotfiles/kitty.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -53,8 +53,8 @@ let
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         slack = "${profileDir}/bin/slack --enable-features=WebRTCPipeWireCapturer";
@@ -126,7 +126,7 @@ let
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ google-chrome slack keepassxc zoom-us networkmanagerapplet wezterm ];
+      home.packages = [ google-chrome slack keepassxc zoom-us networkmanagerapplet ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";

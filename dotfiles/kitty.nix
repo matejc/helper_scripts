@@ -480,7 +480,7 @@
 
 #: Tab bar {{{
 
-  tab_bar_edge bottom
+  tab_bar_edge top
 
 #: Which edge to show the tab bar on, top or bottom
 
@@ -488,7 +488,7 @@
 
 #: The margin to the left and right of the tab bar (in pts)
 
-  tab_bar_style fade
+  tab_bar_style separator
 
 #: The tab bar style, can be one of: fade, separator, powerline, or
 #: hidden. In the fade style, each tab's edges fade into the
@@ -517,12 +517,12 @@
 #: can change the number of cells used by adding/removing entries to
 #: this list.
 
-  tab_separator " ┇"
+  tab_separator " ┇ "
 
 #: The separator between tabs in the tab bar when using separator as
 #: the tab_bar_style.
 
-  tab_title_template {title}
+  tab_title_template " {title} "
 
 #: A template to render the tab title. The default just renders the
 #: title. If you wish to include the tab-index as well, use something

@@ -145,6 +145,7 @@ in lib.mkMerge ([{
         '/node/' = ''
         '/yarn/' = ''
         'Alacritty' = ''
+        'kitty' = ''
         'org.wezfurlong.wezterm' = ''
         'ScratchTerm' = ''
       '';
@@ -183,7 +184,7 @@ in lib.mkMerge ([{
     gtk = {
       enable = true;
       font = {
-        package = nerdfonts.override { fonts = [ "SourceCodePro" ]; };
+        package = nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; };
         name = context.variables.font.family;
         size = builtins.floor context.variables.font.size;
       };

@@ -349,8 +349,14 @@ let
     ltex = ''
       nvim_lsp["ltex"].setup {
         on_attach = on_attach;
-        cmd = {"${ltex-ls}/bin/ltex-ls"};
+        cmd = {"${pkgs.ltex-ls}/bin/ltex-ls"};
         capabilities = capabilities;
+        settings = {
+          ltex = {
+            enabled = true,
+            language = "en-US",
+          },
+        },
       }
     '';
     terraformls = ''
