@@ -2,11 +2,11 @@
 with pkgs;
 stdenv.mkDerivation rec {
   pname = "teleport";
-  version = "12.0.1";
+  version = "12.0.2";
 
   src = builtins.fetchurl {
     url = "https://cdn.teleport.dev/teleport-v${version}-linux-amd64-bin.tar.gz";
-    sha256 = "sha256:0y5f6vgybd39zp5lhvhkbzcpgfyy34nz4ayylv56g5b14jg3v9dc";
+    sha256 = "sha256:0m56sy9qbd58jkjwv4a96pj2p9wp7bln67zi48zwyszlk0rinfi9";
   };
 
   nativeBuildInputs = [ makeWrapper ];

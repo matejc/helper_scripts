@@ -33,7 +33,7 @@ let
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
       temperatureFiles = [ hwmonPath ];
-      hwmonPath = "/sys/class/hwmon/hwmon8/temp1_input";
+      hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       lockscreen = "${homeDir}/bin/lockscreen";
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
@@ -126,7 +126,7 @@ let
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ google-chrome slack keepassxc zoom-us networkmanagerapplet ];
+      home.packages = [ google-chrome slack keepassxc zoom-us pulseaudio networkmanagerapplet ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
