@@ -162,9 +162,7 @@ in lib.mkMerge ([{
     home.packages = [
       font-awesome
       config.gtk.font.package
-      git
-      socat
-      cinnamon.nemo
+      git git-crypt
       zsh
       wl-clipboard
       xdg-utils
@@ -180,6 +178,7 @@ in lib.mkMerge ([{
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       _JAVA_AWT_WM_NONREPARENTING = "1";
     };
+    home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
     gtk = {
       enable = true;
