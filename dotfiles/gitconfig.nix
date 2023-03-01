@@ -49,5 +49,7 @@ in
         gpgsign = true
     [gpg]
         program = ${pkgs.gnupg}/bin/gpg
+    [credential]
+        helper = store
   '';
 }
