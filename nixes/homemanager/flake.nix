@@ -41,10 +41,10 @@
       url = "github:matejc/sway-scratchpad";
       flake = false;
     };
-    #jupyenv = {
-    #  url = "github:tweag/jupyenv/main";
-    #  inputs.nixpkgs.follows = "nixpkgs";
-    #};
+    nwg-displays = {
+      url = "github:nwg-piotr/nwg-displays/master";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }@inputs: {
@@ -74,17 +74,6 @@
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
             nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           }
-          #{
-          #  imports = [(import ../jupyenv.nix { jupyenv = inputs.jupyenv; })];
-          #  services.jupyenv.example = {
-          #    enable = true;
-          #    port = 18080;
-          #    attrs = {
-          #      kernel.python.example.enable = true;
-          #      kernel.postgres.example.enable = true;
-          #    };
-          #  };
-          #}
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {

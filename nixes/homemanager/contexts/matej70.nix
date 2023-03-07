@@ -25,7 +25,6 @@ let
       "${helper_scripts}/dotfiles/wezterm.nix"
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
-      "${helper_scripts}/dotfiles/nwgbar.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -94,7 +93,7 @@ let
         wallpaper = wallpaper;
         scale = 1.0;
       } {
-        criteria = "BNQ BenQ GL2480 ETPBL0133504U";
+        criteria = "ASUSTek COMPUTER INC ASUS VG24VQE 0x00002BFF";
         position = "1920,0";
         output = "HDMI-A-1";
         mode = "1920x1080";

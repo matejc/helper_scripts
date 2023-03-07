@@ -312,7 +312,8 @@ in lib.mkMerge ([{
             "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
             "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
             "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
-            "Control+Mod1+Delete" = "exec ${pkgs.nwg-launchers}/bin/nwgbar";
+            "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
+            "Control+Mod1+m" = "exec ${inputs.nwg-displays.packages."${pkgs.system}".default}/bin/nwg-displays";
             "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
             "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +3%";
             "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -3%";
@@ -640,31 +641,6 @@ in lib.mkMerge ([{
   programs.waybar.systemd.enable = true;
   programs.waybar.systemd.target = "sway-session.target";
   systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
-
-  programs.mako = {
-    enable = false;
-    font = "${context.variables.font.family} 9";
-    extraConfig = ''
-      max-icon-size=64
-      border-radius=10
-      background-color=#2e3440
-      border-size=2
-      border-color=#88c0d0
-
-      [urgency=low]
-      border-color=#cccccc
-
-      [urgency=normal]
-      border-color=#d08770
-
-      [urgency=high]
-      border-color=#bf616a
-      default-timeout=0
-
-      [mode=do-not-disturb]
-      invisible=1
-    '';
-  };
 
   #services.nextcloud-client.enable = true;
   #services.nextcloud-client.startInBackground = true;
