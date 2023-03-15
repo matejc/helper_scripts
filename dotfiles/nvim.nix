@@ -47,7 +47,8 @@ let
     #"omnisharp"
     "gopls"
     #"hls"
-    "sumneko_lua"
+    #"sumneko_lua"
+    "lua_lsp"
     #"pwsh"
     "robotframework_ls"
     "lemminx"
@@ -373,6 +374,22 @@ let
         capabilities = capabilities;
       }
     '';
+    lua_lsp = ''
+      nvim_lsp_configs["lua_lsp"] = {
+        default_config = {
+          cmd = { '${pkgs.luaPackages.lua-lsp}/bin/lua-lsp' };
+          capabilities = capabilities;
+          filetypes = { 'lua' };
+          root_dir = function(fname)
+            return nvim_lsp.util.find_git_ancestor(fname) or vim.fn.getcwd()
+          end,
+          settings = {};
+        };
+      }
+      nvim_lsp.lua_lsp.setup {
+        on_attach = on_attach;
+      }
+    '';
   };
 
   execCommand = pkgs.writeScript "exec" ''
@@ -605,6 +622,7 @@ EOF
     ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin'
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
+    let $LD_LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
     let $LESS = "iMRS"
 
     function! NoOP()
@@ -1105,7 +1123,7 @@ EOF
 
 lua << EOF
 local nvim_lsp = require('lspconfig')
-local nvim_lsp_configs = require('lspconfig/configs')
+local nvim_lsp_configs = require('lspconfig.configs')
 local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -2652,6 +2670,7 @@ EOF
           vimPlugins.LuaSnip
           vimPlugins.lspkind-nvim
           telescope-live-grep-args-nvim
+          vimPlugins.vim-jinja2-syntax
         ];
         opt = [
         ];
