@@ -1022,7 +1022,7 @@ EOF
     endfu
 
 
-lua << EOF
+lua <<EOF
 
 function myMove(pattern, forward)
   flags = 'W'
@@ -1309,7 +1309,9 @@ end
 local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 ${enabledNvimLsp}
+EOF
 
+lua <<EOF
 require("neo-tree").setup({
   close_if_last_window = false, -- Close Neo-tree if it is the last window left in the tab
   popup_border_style = "rounded",
@@ -1523,7 +1525,9 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     update_in_insert = true
   }
 )
+EOF
 
+lua <<EOF
 local gl = require('galaxyline')
 local colors = {
   bg = "#32302f",
@@ -1815,7 +1819,10 @@ require("bufferline").setup{
     always_show_bufferline = true,
   }
 }
+EOF
 
+
+lua <<EOF
 local previewers = require('telescope.previewers')
 
 local new_maker = function(filepath, bufnr, opts)
@@ -1866,7 +1873,9 @@ require("telescope").setup {
 require('telescope').load_extension('fzy_native')
 require"telescope".load_extension("frecency")
 require("telescope").load_extension("live_grep_args")
+EOF
 
+lua <<EOF
 require("scrollbar").setup({
     handle = {
         text = " ",
@@ -1921,14 +1930,18 @@ require("scrollbar").setup({
 --     separator = "\n",
 --   },
 -- })
+EOF
 
+lua <<EOF
 require('smart-splits').ignored_buftypes = { 'NvimTree' }
 require('smart-splits').ignored_filetypes = {
   'nofile',
   'quickfix',
   'prompt',
 }
+EOF
 
+lua <<EOF
 local parser_install_dir = vim.fn.stdpath("cache") .. "/treesitters"
 vim.fn.mkdir(parser_install_dir, "p")
 vim.opt.runtimepath:append(parser_install_dir)
@@ -2022,9 +2035,10 @@ require'treesitter-context'.setup{
 
     zindex = 20, -- The Z-index of the context window
 }
+EOF
 
-local saga = require 'lspsaga'
-saga.init_lsp_saga()
+lua <<EOF
+require("lspsaga").setup({})
 
 -- require('image').setup {
 --   min_padding = 5,
@@ -2108,9 +2122,11 @@ my_git_commits = function(opts)
   builtin.git_commits(opts)
 end
 
-vim.api.nvim_set_keymap("i", "<C-S-b>", "<cmd>lua my_git_bcommits()<CR>", {noremap = true, silent = true})
-vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>lua my_git_commits()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("i", "<C-S-b>", "<cmd>:lua my_git_bcommits()<CR>", {noremap = true, silent = true})
+vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {noremap = true, silent = true})
+
 EOF
+
     highlight! CmpItemMenu guifg=pink gui=italic
 
     " gray
