@@ -229,8 +229,8 @@ let
       --hostname RESTRICTED \
       --cwd / \
       --keep_caps \
-      --uid_mapping 0:200000:1 \
-      --gid_mapping 0:200000:1 \
+      --uid_mapping 0:100000:1 \
+      --gid_mapping 0:100000:1 \
       --uid_mapping 1000:1000:1 \
       --gid_mapping 1000:1000:1 \
       --rlimit_as 40960 \

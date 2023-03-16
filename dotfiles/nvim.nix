@@ -1214,6 +1214,9 @@ cmp.setup({
     ['<PageDown>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
     ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+    ['<C-z>'] = cmp.config.disable,
+    ['<C-n>'] = cmp.config.disable,
+    ['<C-p>'] = cmp.config.disable,
     ['<C-e>'] = cmp.mapping({
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
@@ -1991,23 +1994,23 @@ require('session_manager').setup({
 })
 
 -- require'treesitter-context'.setup{
---     enable = false, -- Enable this plugin (Can be enabled/disabled later via commands)
+--     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
 --     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
 --     patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
 --         -- For all filetypes
 --         -- Note that setting an entry here replaces all other patterns for this entry.
 --         -- By setting the 'default' entry below, you can control which nodes you want to
 --         -- appear in the context window.
---         default = {
---             'class',
---             'function',
---             'method',
---             -- 'for', -- These won't appear in the context
---             -- 'while',
---             -- 'if',
---             -- 'switch',
---             -- 'case',
---         },
+--         -- default = {
+--         --     'class',
+--         --     'function',
+--         --     'method',
+--         --     -- 'for', -- These won't appear in the context
+--         --     -- 'while',
+--         --     -- 'if',
+--         --     -- 'switch',
+--         --     -- 'case',
+--         -- },
 --         -- Example for a specific filetype.
 --         -- If a pattern is missing, *open a PR* so everyone can benefit.
 --         --   rust = {
@@ -2027,7 +2030,11 @@ require('session_manager').setup({
 EOF
 
 lua <<EOF
-require("lspsaga").setup({})
+require("lspsaga").setup({
+  symbol_in_winbar = {
+    enable = false,
+  },
+})
 
 -- require('image').setup {
 --   min_padding = 5,
@@ -2539,8 +2546,6 @@ EOF
 
     " highlight LineTooLongMarker guibg=Gray26
     " call matchadd('LineTooLongMarker', '\%81v', 100)
-
-    autocmd CursorHoldI * lua require('lspsaga.symbolwinbar'):get_winbar()
 
     autocmd UIEnter * source ${ginitVim}
 
