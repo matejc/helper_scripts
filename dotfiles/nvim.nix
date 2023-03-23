@@ -1205,7 +1205,6 @@ cmp.setup({
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Esc>'] = cmp.mapping({
       i = cmp.mapping.abort(),
-      c = cmp.mapping.close(),
     }),
     ['<Left>'] = function(fallback)
       local cmp = require('cmp')
