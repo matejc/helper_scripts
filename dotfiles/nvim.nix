@@ -12,25 +12,6 @@ let
 
   lemminx = import ../nixes/lemminx.nix { inherit pkgs; };
 
-  python-lsp-server = pkgs.python3Packages.python-lsp-server.overrideDerivation (old: rec {
-    pname = "python-lsp-server";
-    version = "1.2.1";
-    src = pkgs.fetchFromGitHub {
-      owner = "python-lsp";
-      repo = pname;
-      rev = "v${version}";
-      sha256 = "028zaf6hrridjjam63i1n3x9cayiwq09xg8adnz2lcwpfyawl9ag";
-    };
-  });
-
-  pyright = pkgs.pyright.overrideDerivation (old: rec {
-    version = "1.1.161";
-    src = pkgs.fetchurl {
-      url = "https://registry.npmjs.org/pyright/-/pyright-${version}.tgz";
-      sha256 = "sha256-wmek3/DSJm9j7CsK/LVNdOG6zj3AP47funm8r8eDmSA=";
-    };
-  });
-
   enabledNvimLsp = mkNvimLsp [
     #"kotlin_language_server"
     #"rnix"
@@ -1222,7 +1203,10 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    ['<Esc>'] = cmp.mapping.close(),
+    ['<Esc>'] = cmp.mapping({
+      i = cmp.mapping.abort(),
+      c = cmp.mapping.close(),
+    }),
     ['<Left>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
@@ -1231,6 +1215,20 @@ cmp.setup({
       fallback()
     end,
     ['<Right>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        cmp.close()
+      end
+      fallback()
+    end,
+    ['<Up>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        cmp.close()
+      end
+      fallback()
+    end,
+    ['<Down>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
         cmp.close()
@@ -2577,14 +2575,6 @@ EOF
         --prefix PATH : ${pkgs.jre}/bin
     '';
   };
-
-  ltex-ls = pkgs.runCommand "ltex-ls" {
-    buildInputs = [ pkgs.makeWrapper ];
-  } ''
-    mkdir -p $out/bin
-    makeWrapper ${pkgs.vscode-extensions.valentjn.vscode-ltex}/share/vscode/extensions/valentjn.vscode-ltex/lib/ltex-ls-*/bin/ltex-ls $out/bin/ltex-ls \
-      --prefix JAVACMD : ${pkgs.jre}/bin/java
-  '';
 
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
