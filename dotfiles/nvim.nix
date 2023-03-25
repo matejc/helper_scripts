@@ -1223,16 +1223,22 @@ cmp.setup({
     ['<Up>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
-        cmp.close()
+        if cmp.core.view:get_selected_entry() then
+          cmp.select_prev_item()
+        else
+          cmp.close()
+        end
+      else
+        fallback()
       end
-      fallback()
     end,
     ['<Down>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
-        cmp.close()
+        cmp.select_next_item()
+      else
+        fallback()
       end
-      fallback()
     end,
     ['<Tab>'] = cmp.mapping.select_next_item(),
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
