@@ -38,7 +38,7 @@ let
   sway-scratchpad = rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-aOKJAnaIYkf8p6KoqCH5FdZr7OUGhTumC2rn9HxP8xs=";
+    cargoSha256 = "sha256-RFXeVNg4pKHIWnOlKZTbZQFbT4nPYRTeDAeSjBb0UVs=";
   };
 
   swayncConfig = {
@@ -144,6 +144,7 @@ in lib.mkMerge ([{
         '/npm/' = ''
         '/node/' = ''
         '/yarn/' = ''
+        '/KeePassXC/' = ''
         'Alacritty' = ''
         'kitty' = ''
         'org.wezfurlong.wezterm' = ''
@@ -689,6 +690,10 @@ in lib.mkMerge ([{
       then
         exec dbus-run-session startsway
       fi
+    '';
+    envExtra = ''
+      setopt no_global_rcs
+      unset __HM_ZSH_SESS_VARS_SOURCED
     '';
     history = {
       expireDuplicatesFirst = true;

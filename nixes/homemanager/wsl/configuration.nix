@@ -18,6 +18,9 @@ in
     dconf
   ];
   system.activationScripts.specialfs = mkForce "true";
+  system.activationScripts.wslinterop = ''
+    ln -s /run/WSL/8_interop /run/WSL/2_interop || true
+  '';
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
@@ -55,10 +58,11 @@ in
 
   users.users.${defaultUser} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "docker" ];
     shell = pkgs.zsh;
     uid = 1000;
   };
+  programs.zsh.enable = true;
 
   users.users.root = {
     shell = "${syschdemd}/bin/syschdemd";

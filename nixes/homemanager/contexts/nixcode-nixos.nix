@@ -89,10 +89,11 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "syncthingtray"; delay = 3; group = "always"; }
+      { name = "nextcloud-client"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 1; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
+      { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
     home-configuration = {
@@ -122,11 +123,11 @@ let
       ];
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
-      services.syncthing.enable = true;
-      services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
+      services.nextcloud-client.enable = true;
+      services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ google-chrome slack keepassxc zoom-us pulseaudio networkmanagerapplet teams remmina ];
+      home.packages = [ google-chrome slack keepassxc zoom-us pulseaudio networkmanagerapplet teams remmina git-crypt ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
