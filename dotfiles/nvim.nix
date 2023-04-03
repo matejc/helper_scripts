@@ -545,10 +545,20 @@ EOF
     " inoremap <C-q> <esc>:qall
     "nnoremap <silent> <c-s> :w<CR>
     "inoremap <silent> <c-s> <C-o>:w<CR>
+
     nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
     inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
     inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR>
+    tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
+    tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
+
+    nnoremap <silent> <S-PageUp> :BufferLineCyclePrev<CR>
+    nnoremap <silent> <S-PageDown> :BufferLineCycleNext<CR>
+    inoremap <silent> <S-PageUp> <C-o>:BufferLineCyclePrev<CR>
+    inoremap <silent> <S-PageDown> <C-o>:BufferLineCycleNext<CR>
+    tnoremap <silent> <S-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
+    tnoremap <silent> <S-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
 
     nnoremap <silent><C-S-PageDown> :BufferLineMoveNext<CR>
     nnoremap <silent><C-S-PageUp> :BufferLineMovePrev<CR>
@@ -609,15 +619,15 @@ EOF
     vnoremap <silent> <PageUp> 10<up>
     vnoremap <silent> <PageDown> 10<down>
 
-    nnoremap <S-PageUp> v10<up>
-    nnoremap <S-PageDown> v10<down>
+    "nnoremap <S-PageUp> v10<up>
+    "nnoremap <S-PageDown> v10<down>
     nnoremap <S-Down> vj
     nnoremap <S-Up> vk
     nnoremap <S-Left> vh
     nnoremap <S-Right> vl
 
-    inoremap <S-PageUp> <C-o>v10<up>
-    inoremap <S-PageDown> <C-o>v10<down>
+    "inoremap <S-PageUp> <C-o>v10<up>
+    "inoremap <S-PageDown> <C-o>v10<down>
     inoremap <S-Down> <C-o>vj
     inoremap <S-Up> <C-o>vk
     inoremap <S-Left> <C-o>vh
@@ -625,8 +635,8 @@ EOF
     inoremap <S-Home> <C-o>v<Home>
     inoremap <S-End> <C-o>v<End>
 
-    vnoremap <S-PageUp> 10<up>
-    vnoremap <S-PageDown> 10<down>
+    "vnoremap <S-PageUp> 10<up>
+    "vnoremap <S-PageDown> 10<down>
     vnoremap <S-Down> j
     vnoremap <S-Up> k
     vnoremap <S-Left> h
@@ -2308,10 +2318,6 @@ EOF
     tnoremap <silent> <C-l> <C-\><C-n>
     tnoremap <C-v> <C-\><C-N>"+pi
     tnoremap <C-S-v> <C-\><C-N>"+pi
-
-    tnoremap <silent> <c-PageUp> <C-\><C-N>:bprev<cr>
-    tnoremap <silent> <c-PageDown> <C-\><C-N>:bnext<cr>
-
     tnoremap <silent> <a-left> <C-left>
     tnoremap <silent> <a-right> <C-right>
 
