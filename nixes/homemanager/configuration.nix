@@ -38,7 +38,7 @@ let
   sway-scratchpad = rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-RFXeVNg4pKHIWnOlKZTbZQFbT4nPYRTeDAeSjBb0UVs=";
+    cargoSha256 = "sha256-7MVAXThypxXF2wp6hFirqQeb8al/NuW2E2xGPK2ewT0=";
   };
 
   swayncConfig = {
@@ -149,6 +149,7 @@ in lib.mkMerge ([{
         'kitty' = ''
         'org.wezfurlong.wezterm' = ''
         'ScratchTerm' = ''
+        '/KeePassXC/' = '󰌆'
       '';
       mime.enable = true;
       systemDirs.config = [ "${swaynotificationcenter}/etc/xdg" ];

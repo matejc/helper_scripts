@@ -128,7 +128,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer solvespace nixgl.nixVulkanIntel nixgl.nixGLIntel ];
+      home.packages = [ super-slicer-latest solvespace nixgl.nixVulkanIntel nixgl.nixGLIntel ];
     };
   };
 in
