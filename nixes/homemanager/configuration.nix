@@ -101,6 +101,31 @@ let
     widgets = [ "title" "dnd" "notifications" "mpris" ];
   };
 
+  dbus-sway-environment = pkgs.writeTextFile {
+    name = "dbus-sway-environment";
+    destination = "/bin/dbus-sway-environment";
+    executable = true;
+    text = ''
+      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+      systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+    '';
+  };
+
+  configure-gtk = pkgs.writeTextFile {
+    name = "configure-gtk";
+    destination = "/bin/configure-gtk";
+    executable = true;
+    text = let
+      schema = pkgs.gsettings-desktop-schemas;
+      datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+    in ''
+      export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+      gnome_schema=org.gnome.desktop.interface
+      gsettings set $gnome_schema gtk-theme 'Breeze-Dark'
+    '';
+  };
+
   # https://nix-community.github.io/home-manager/options.html
 in lib.mkMerge ([{
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
@@ -149,7 +174,6 @@ in lib.mkMerge ([{
         'kitty' = ''
         'org.wezfurlong.wezterm' = ''
         'ScratchTerm' = ''
-        '/KeePassXC/' = '󰌆'
       '';
       mime.enable = true;
       systemDirs.config = [ "${swaynotificationcenter}/etc/xdg" ];
@@ -331,8 +355,10 @@ in lib.mkMerge ([{
           #{ command = "${mako}/bin/mako"; always = true; }
           { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
           { command = "${swayest}/bin/sworkstyle"; always = true; }
-          { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
+          { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
           { command = "hash ${pkgs.dbus}/bin/dbus-update-activation-environment 2>/dev/null && ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
+          { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
+          { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
         ];
         window = {
           border = 1;
@@ -612,8 +638,8 @@ in lib.mkMerge ([{
         };
         "return-type" = "json";
         "exec" = "${swaynotificationcenter}/bin/swaync-client -swb";
-        "on-click" = "${swaynotificationcenter}/bin/swaync-client -t -sw";
-        "on-click-right" = "${swaynotificationcenter}/bin/swaync-client -d -sw";
+        "on-click" = "${swaynotificationcenter}/bin/swaync-client -d -sw";
+        "on-click-right" = "${swaynotificationcenter}/bin/swaync-client -t -sw";
         "escape" = true;
       };
       battery = {

@@ -56,7 +56,8 @@ let
         terminal = "${pkgs.kitty}/bin/kitty";
         #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        #browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        browser = "${profileDir}/bin/firefox";
         slack = "${profileDir}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
@@ -127,7 +128,7 @@ let
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ google-chrome slack keepassxc zoom-us pulseaudio networkmanagerapplet teams remmina git-crypt ];
+      home.packages = [ slack keepassxc zoom-us pulseaudio networkmanagerapplet remmina git-crypt ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
