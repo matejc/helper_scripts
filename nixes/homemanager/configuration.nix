@@ -372,6 +372,7 @@ in lib.mkMerge ([{
             #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
             { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
             { command = "border pixel 1"; criteria = { con_mark = "SCRATCHPAD_terminal"; }; }
+            { command = "kill"; criteria = { app_id = "firefox"; title = "Firefox — Sharing Indicator"; }; }
           ];
         };
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);

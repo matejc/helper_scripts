@@ -64,7 +64,8 @@ let
         #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
-        browser = "${profileDir}/bin/chromium";
+        #browser = "${profileDir}/bin/chromium";
+        browser = "${profileDir}/bin/firefox";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -128,7 +129,8 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace nixgl.nixVulkanIntel nixgl.nixGLIntel ];
+      home.packages = [ super-slicer-latest solvespace ];
+      programs.firefox.enable = true;
     };
   };
 in
