@@ -19,7 +19,7 @@ let
       "${helper_scripts}/dotfiles/nwgbar.nix"
       "${helper_scripts}/dotfiles/countdown.nix"
       "${helper_scripts}/dotfiles/helix.nix"
-      "${helper_scripts}/dotfiles/kitty.nix"
+      "${helper_scripts}/dotfiles/wezterm.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -53,8 +53,8 @@ let
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
-        #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        #terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         browser = "${profileDir}/bin/firefox";

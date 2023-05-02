@@ -193,6 +193,8 @@ in lib.mkMerge ([{
       wl-clipboard
       xdg-utils
       dconf
+      rofi
+      wl-mirror
       (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
     ] ++ services-cmds;
     home.sessionVariables = {
@@ -347,6 +349,7 @@ in lib.mkMerge ([{
             "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
             "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
+            "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
           };
         modifier = "Mod4";
         startup = [
@@ -374,6 +377,11 @@ in lib.mkMerge ([{
             { command = "border pixel 1"; criteria = { con_mark = "SCRATCHPAD_terminal"; }; }
             { command = "kill"; criteria = { app_id = "firefox"; title = "Firefox — Sharing Indicator"; }; }
           ];
+        };
+        seat = {
+          "*" = {
+            hide_cursor = "when-typing disable";
+          };
         };
         output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
@@ -758,5 +766,38 @@ in lib.mkMerge ([{
   programs.command-not-found = {
     enable = true;
     dbPath = "${inputs.nixexprs}/programs.sqlite";
+  };
+  programs.foot = {
+    settings = {
+      main = {
+        term = "xterm-256color";
+        font = "${context.variables.font.family}:size=${toString context.variables.font.size}";
+        dpi-aware = "no";
+      };
+      mouse = {
+        hide-when-typing = "no";
+      };
+      colors = {
+        alpha = 0.9;
+        background = "20211d";
+        foreground = "FCFCFA";
+        regular0 = "403E41";
+        regular1 = "FF6188";
+        regular2 = "A9DC76";
+        regular3 = "FFD866";
+        regular4 = "FC9867";
+        regular5 = "AB9DF2";
+        regular6 = "78DCE8";
+        regular7 = "FCFCFA";
+        bright0 = "727072";
+        bright1 = "FF6188";
+        bright2 = "A9DC76";
+        bright3 = "FFD866";
+        bright4 = "FC9867";
+        bright5 = "AB9DF2";
+        bright6 = "78DCE8";
+        bright7 = "FCFCFA";
+      };
+    };
   };
 }] ++ [ context.home-configuration ])
