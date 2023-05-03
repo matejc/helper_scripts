@@ -264,12 +264,18 @@ in lib.mkMerge ([{
 
     services.kanshi = {
       #enable = true;
+      #profiles.default = {
+      #  exec = [
+      #    "${pkgs.sway}/bin/swaymsg output '*' scale_filter smart"
+      #    "${pkgs.sway}/bin/swaymsg output '*' subpixel none"
+      #  ];
+      #  outputs = map (o: { inherit (o) criteria position mode scale; }) context.variables.outputs;
+      #};
+      profiles.firstonly = {
+        outputs = [{ inherit (head context.variables.outputs) criteria position mode scale; status = "enable"; }];
+      };
       profiles.default = {
-        exec = [
-          "${pkgs.sway}/bin/swaymsg output '*' scale_filter smart"
-          "${pkgs.sway}/bin/swaymsg output '*' subpixel none"
-        ];
-        outputs = map (o: { inherit (o) criteria position mode scale; }) context.variables.outputs;
+        outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
       };
     };
 
@@ -383,7 +389,7 @@ in lib.mkMerge ([{
             hide_cursor = "when-typing disable";
           };
         };
-        output = builtins.listToAttrs (map (o: { name = o.output; value = { bg = "${o.wallpaper} fill"; mode = o.mode; scale = (toString o.scale); }; }) context.variables.outputs);
+        output = builtins.listToAttrs (map (o: { name = o.output; value = ({ bg = "${o.wallpaper} fill"; scale = (toString o.scale); } // (optionalAttrs (o.mode != null) { inherit (o) mode; })); }) context.variables.outputs);
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
       };
       extraConfig = ''
@@ -768,6 +774,7 @@ in lib.mkMerge ([{
     dbPath = "${inputs.nixexprs}/programs.sqlite";
   };
   programs.foot = {
+    enable = true;
     settings = {
       main = {
         term = "xterm-256color";

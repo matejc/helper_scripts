@@ -79,13 +79,23 @@ let
         g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "Unknown 0x4152 0x00000000";
+        criteria = "eDP-1";
         position = "0,0";
         output = "eDP-1";
         mode = "2880x1800";
         scale = 1.5;
         workspaces = [ "5" "6" "7" "8" ];
         wallpaper = wallpaper;
+        status = "disable";
+      }{
+        criteria = "HDMI-A-1";
+        position = "0,0";
+        output = "HDMI-A-1";
+        mode = null;
+        scale = 1.0;
+        workspaces = [ "1" "2" "3" "4" ];
+        wallpaper = wallpaper;
+        status = "enable";
       }];
     };
     services = [
