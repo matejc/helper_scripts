@@ -58,7 +58,6 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         browser = "${profileDir}/bin/firefox";
-        slack = "${profileDir}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -116,7 +115,7 @@ let
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.programs.slack}"; }
+        { command = "${self.variables.profileDir}/bin/slack"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         { command = "${clearprimary}/bin/clearprimary"; }
       ];
