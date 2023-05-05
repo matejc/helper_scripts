@@ -365,9 +365,9 @@ in lib.mkMerge ([{
           { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
           { command = "${swayest}/bin/sworkstyle"; always = true; }
           { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-          { command = "hash ${pkgs.dbus}/bin/dbus-update-activation-environment 2>/dev/null && ${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP"; }
-          { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
-          { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
+          { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
+          #{ command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
+          #{ command = "${configure-gtk}/bin/configure-gtk"; always = true; }
         ];
         window = {
           border = 1;

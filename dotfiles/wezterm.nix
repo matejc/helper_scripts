@@ -19,7 +19,7 @@
       warn_about_missing_glyphs = false,
       default_cursor_style = 'SteadyBar',
       window_background_opacity = 0.95,
-      color_scheme = 'Gruvbox dark, hard (base16)',
+      color_scheme = 'Monokai (terminal.sexy)',
       check_for_updates = false,
       window_decorations = 'RESIZE',
       keys = {

@@ -55,25 +55,25 @@ let
         style = "Bold";
         size = 10.0;
       };
-      i3-msg = "${programs.i3-msg}";
+      i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
-        #terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        #terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
         browser = "${profileDir}/bin/firefox";
-        editor = "${nano}/bin/nano";
+        editor = "${helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        window-center = dotFileAt "i3config.nix" 4;
-        window-size = dotFileAt "i3config.nix" 5;
-        i3-msg = "${profileDir}/bin/swaymsg";
-        nextcloud = "${nextcloud-client}/bin/nextcloud";
+        #window-center = dotFileAt "i3config.nix" 4;
+        #window-size = dotFileAt "i3config.nix" 5;
+        #i3-msg = "${profileDir}/bin/swaymsg";
+        #nextcloud = "${nextcloud-client}/bin/nextcloud";
         #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         tmux = "${pkgs.tmux}/bin/tmux";
       };
@@ -86,21 +86,23 @@ let
         g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "Samsung Electric Company S24F350 H4ZN501371";
+        criteria = "HDMI-A-2";
         position = "0,0";
         output = "HDMI-A-2";
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
         scale = 1.0;
+        status = "enable";
       } {
-        criteria = "ASUSTek COMPUTER INC ASUS VG24VQE 0x00002BFF";
+        criteria = "HDMI-A-1";
         position = "1920,0";
         output = "HDMI-A-1";
         mode = "1920x1080";
         workspaces = [ "5" ];
         wallpaper = wallpaper;
         scale = 1.0;
+        status = "enable";
       }];
     };
     services = [
