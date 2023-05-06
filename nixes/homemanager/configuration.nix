@@ -205,6 +205,8 @@ in lib.mkMerge ([{
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       _JAVA_AWT_WM_NONREPARENTING = "1";
+      GTK_USE_PORTAL = "1";
+      NIXOS_XDG_OPEN_USE_PORTAL = "1";
     };
     home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
@@ -289,6 +291,7 @@ in lib.mkMerge ([{
     wayland.windowManager.sway = {
       enable = true;
       systemdIntegration = true;
+      wrapperFeatures.gtk = true;
       config = rec {
         assigns = mkDefault {
           #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
@@ -364,10 +367,10 @@ in lib.mkMerge ([{
           #{ command = "${mako}/bin/mako"; always = true; }
           { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
           { command = "${swayest}/bin/sworkstyle"; always = true; }
-          { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-          { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-          #{ command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
-          #{ command = "${configure-gtk}/bin/configure-gtk"; always = true; }
+          #{ command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
+          #{ command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
+          { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
+          { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
         ];
         window = {
           border = 1;
