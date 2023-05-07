@@ -66,6 +66,8 @@
         font_size = ${toString (1.0 + variables.font.size)},
       },
       colors = {
+        selection_fg = 'none',
+        selection_bg = 'rgba(40% 40% 40% 40%)',
         tab_bar = {
           background = '#222222',
           active_tab = {
