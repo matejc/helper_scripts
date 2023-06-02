@@ -45,8 +45,8 @@ let
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
+        size = 12.0;
         style = "Bold";
-        size = 11.0;
       };
       i3-msg = "${programs.i3-msg}";
       term = null;
@@ -56,8 +56,9 @@ let
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        #browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
-        browser = "${profileDir}/bin/firefox";
+        browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
+        #browser = "${profileDir}/bin/google-chrome-stable";
         editor = "${nano}/bin/nano";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -73,9 +74,9 @@ let
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
+        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
-        g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
+        #g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "eDP-1";
@@ -83,16 +84,16 @@ let
         output = "eDP-1";
         mode = "2880x1800";
         scale = 1.5;
-        workspaces = [ "5" "6" "7" "8" ];
+        workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
         status = "disable";
       }{
         criteria = "HDMI-A-1";
-        position = "0,0";
+        position = "2880,0";
         output = "HDMI-A-1";
         mode = null;
         scale = 1.0;
-        workspaces = [ "1" "2" "3" "4" ];
+        workspaces = [ "5" "6" "7" "8" ];
         wallpaper = wallpaper;
         status = "enable";
       }];
@@ -106,38 +107,48 @@ let
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
-    home-configuration = {
+    home-configuration = rec {
       home.stateVersion = "22.05";
+      wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.assigns = {
         #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        "workspace number 6" = [{ class = "^Slack$"; }];
-        "workspace number 7" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        "workspace number 1" = [{ class = "^Logseq$"; }];
+        "workspace number 2" = [{ class = "^Slack$"; }];
+        "workspace number 3" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.profileDir}/bin/slack"; }
+        { command = "${self.variables.programs.slack}"; }
+        { command = "${self.variables.profileDir}/bin/logseq"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         { command = "${clearprimary}/bin/clearprimary"; }
       ];
       wayland.windowManager.sway.config.input = {
         "2:10:TPPS/2_Elan_TrackPoint" = { pointer_accel = "-0.3"; };
       };
-      services.kanshi.enable = true;
-      services.swayidle.enable = true;
       services.swayidle.timeouts = [
         {
           timeout = 100;
-          command = "${pkgs.brillo}/bin/brillo -U 40";
-          resumeCommand = "${pkgs.brillo}/bin/brillo -A 40";
+          command = "${pkgs.brillo}/bin/brillo -U 30";
+          resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
         }
       ];
+      programs.waybar.enable = true;
+      services.kanshi.enable = true;
+      services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [ slack keepassxc zoom-us pulseaudio networkmanagerapplet remmina git-crypt ];
+      home.packages = [
+        keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
+        logseq
+        #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
+        #google-chrome
+        #slack
+      ];
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";

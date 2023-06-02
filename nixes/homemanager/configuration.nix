@@ -201,12 +201,12 @@ in lib.mkMerge ([{
       #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
       QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
       QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
-      SDL_VIDEODRIVER = "wayland";
+      #SDL_VIDEODRIVER = "wayland";
       QT_QPA_PLATFORM = "wayland";
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       _JAVA_AWT_WM_NONREPARENTING = "1";
-      GTK_USE_PORTAL = "1";
-      NIXOS_XDG_OPEN_USE_PORTAL = "1";
+      #GTK_USE_PORTAL = "1";
+      #NIXOS_XDG_OPEN_USE_PORTAL = "1";
     };
     home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
@@ -289,7 +289,6 @@ in lib.mkMerge ([{
     #systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
 
     wayland.windowManager.sway = {
-      enable = true;
       systemdIntegration = true;
       wrapperFeatures.gtk = true;
       config = rec {
@@ -359,6 +358,7 @@ in lib.mkMerge ([{
             "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
             "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
+            "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
           };
         modifier = "Mod4";
         startup = [
@@ -387,11 +387,11 @@ in lib.mkMerge ([{
             { command = "kill"; criteria = { app_id = "firefox"; title = "Firefox — Sharing Indicator"; }; }
           ];
         };
-        seat = {
-          "*" = {
-            hide_cursor = "when-typing disable";
-          };
-        };
+        #seat = {
+        #  "*" = {
+        #    hide_cursor = "when-typing disable";
+        #  };
+        #};
         output = builtins.listToAttrs (map (o: { name = o.output; value = ({ bg = "${o.wallpaper} fill"; scale = (toString o.scale); } // (optionalAttrs (o.mode != null) { inherit (o) mode; })); }) context.variables.outputs);
         workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
       };
@@ -471,7 +471,7 @@ in lib.mkMerge ([{
     };
   };
 
-  programs.waybar.enable = true;
+  #programs.waybar.enable = true;
   programs.waybar.style = ''
     * {
         border: none;
@@ -682,6 +682,7 @@ in lib.mkMerge ([{
         tooltip-format-ethernet = "{ifname} ";
         tooltip-format-disconnected = "Disconnected";
         max-length = 50;
+        #on-click-right = "${connman-gtk}/bin/connman-gtk";
     }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
   };
   programs.waybar.systemd.enable = true;
@@ -777,7 +778,6 @@ in lib.mkMerge ([{
     dbPath = "${inputs.nixexprs}/programs.sqlite";
   };
   programs.foot = {
-    enable = true;
     settings = {
       main = {
         term = "xterm-256color";
