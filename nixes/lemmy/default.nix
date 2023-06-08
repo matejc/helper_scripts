@@ -195,7 +195,7 @@ in {
     # needed for now
     nixpkgs.config.permittedInsecurePackages = [
       "nodejs-14.21.3"
-      "openssl-1.1.1t"
+      "openssl-1.1.1u"
     ];
 
     system.activationScripts."make_sure_lemmy_user_owns_files" = ''
