@@ -19,11 +19,6 @@ in {
         description = "Domain";
       };
 
-      database.password = mkOption {
-        type = types.str;
-        description = "DB password";
-      };
-
       admin.username = mkOption {
         type = types.str;
         description = "Admin username";
@@ -167,18 +162,9 @@ in {
     };
 
     services.pict-rs = {
-      enable = true;
       port = cfg.pict-rs.port;
       dataDir = "${cfg.dataDir}/pict-rs";
       address = "127.0.0.1";
-    };
-
-    systemd.services.lemmy = {
-      requires = ["postgresql.service"];
-      after = ["postgresql.service"];
-      environment = {
-        LEMMY_DATABASE_URL = lib.mkForce "postgresql://lemmy@127.0.0.1:${toString config.services.postgresql.port}/lemmy";
-      };
     };
 
     services.lemmy = {
@@ -189,22 +175,6 @@ in {
         # TODO: Enable this much later when you tested everything.
         # N.B. you can't change your domain name after enabling this.
         federation.enabled = cfg.federation.enable;
-        # settings related to the postgresql database
-        database = {
-          user = "lemmy";
-          password = cfg.database.password;
-          host = "127.0.0.1";
-          port = config.services.postgresql.port;
-          database = "lemmy";
-          pool_size = 5;
-        };
-        # Pictrs image server configuration.
-        pictrs = {
-          # Address where pictrs is available (for image hosting)
-          url = "http://127.0.0.1:${toString cfg.pict-rs.port}/";
-          # TODO: Set a custom pictrs API key. ( Required for deleting images )
-          api_key = cfg.pict-rs.api_key;
-        };
         # TODO: Email sending configuration. All options except login/password are mandatory
         email = cfg.email;
         # TODO: Parameters for automatic configuration of new instance (only used at first start)
