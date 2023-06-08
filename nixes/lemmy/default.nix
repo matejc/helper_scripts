@@ -47,6 +47,11 @@ in {
         description = "Port";
       };
 
+      pict-rs.api_key = mkOption {
+        type = types.str;
+        description = "Api key";
+      };
+
       email = mkOption {
         type = types.attrs;
         description = "Config attribute set";
@@ -170,6 +175,13 @@ in {
         # TODO: Enable this much later when you tested everything.
         # N.B. you can't change your domain name after enabling this.
         federation.enabled = cfg.federation.enable;
+        # Pictrs image server configuration.
+        pictrs = {
+          # Address where pictrs is available (for image hosting)
+          url = "http://127.0.0.1:${toString cfg.pict-rs.port}/";
+          # TODO: Set a custom pictrs API key. ( Required for deleting images )
+          api_key = cfg.pict-rs.api_key;
+        };
         # TODO: Email sending configuration. All options except login/password are mandatory
         email = cfg.email;
         # TODO: Parameters for automatic configuration of new instance (only used at first start)
@@ -192,10 +204,16 @@ in {
       };
     };
 
-    # needed for now
-    nixpkgs.config.permittedInsecurePackages = [
-      "nodejs-14.21.3"
-      "openssl-1.1.1u"
-    ];
+    system.activationScripts."make_sure_lemmy_user_owns_files" = ''
+      uid='${config.users.users.lemmy.uid}';
+      gid='${config.users.groups.lemmy.gid}';
+      dir='${cfg.dataDir}'
+
+      mkdir -p "''${dir}"
+
+      if [[ "$(${pkgs.toybox}/bin/stat "''${dir}" -c '%u:%g' | tee /dev/stderr )" != "''${uid}:''${gid}" ]]; then
+        chown -R "''${uid}:''${gid}" "''${dir}"
+      fi
+    '';
   };
 }
