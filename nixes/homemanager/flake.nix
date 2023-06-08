@@ -25,10 +25,10 @@
       url = "github:matejc/clearprimary/main";
       flake = false;
     };
-    nixgl = {
-      url = "github:guibou/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    #nixgl = {
+    #  url = "github:guibou/nixGL";
+    #  inputs.nixpkgs.follows = "nixpkgs";
+    #};
     sway-workspace = {
       url = "github:matejc/sway-workspace";
       flake = false;
@@ -72,7 +72,7 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;
             home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
-            nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
+            #nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           }
         ];
       };

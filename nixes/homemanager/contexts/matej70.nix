@@ -62,10 +62,11 @@ let
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${profileDir}/bin/firefox";
+        browser = "${profileDir}/bin/chromium";
         editor = "${helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -75,15 +76,15 @@ let
         #i3-msg = "${profileDir}/bin/swaymsg";
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
         #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
-        tmux = "${pkgs.tmux}/bin/tmux";
+        #tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
+        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
-        g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
+        #g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "HDMI-A-2";
@@ -107,7 +108,7 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "syncthingtray"; delay = 3; group = "always"; }
+      #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 1; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
@@ -115,6 +116,7 @@ let
     config = {};
     home-configuration = {
       home.stateVersion = "20.09";
+      wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         #{ command = "${self.variables.programs.keepassxc}"; }
@@ -126,13 +128,14 @@ let
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
-      services.syncthing.tray.enable = true;
+      #services.syncthing.tray.enable = true;
+      programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace ];
-      programs.firefox.enable = true;
+      home.packages = [ super-slicer-latest solvespace keepassxc ];
+      programs.chromium.enable = true;
     };
   };
 in
