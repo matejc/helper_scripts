@@ -1,5 +1,5 @@
 { config, pkgs, lib, ... }:
-with pkgs;
+with lib;
 let
   cfg = config.services.mylemmy;
 in {
@@ -157,76 +157,75 @@ in {
           limit_req_zone $binary_remote_addr zone=lemmy_ratelimit:10m rate=1r/s;
         '';
       };
+    };
 
-      systemd.services.lemmy-ui = {
-        environment = {
-          LEMMY_UI_HOST = lib.mkForce "127.0.0.1:${toString cfg.ui.port}";
-          LEMMY_UI_LEMMY_INTERNAL_HOST = lib.mkForce "127.0.0.1:${toString cfg.port}";
-          LEMMY_UI_LEMMY_EXTERNAL_HOST = lib.mkForce cfg.domain;
-          LEMMY_UI_HTTPS="true";
-        };
+    systemd.services.lemmy-ui = {
+      environment = {
+        LEMMY_UI_HOST = lib.mkForce "127.0.0.1:${toString cfg.ui.port}";
+        LEMMY_UI_LEMMY_INTERNAL_HOST = lib.mkForce "127.0.0.1:${toString cfg.port}";
+        LEMMY_UI_LEMMY_EXTERNAL_HOST = lib.mkForce cfg.domain;
+        LEMMY_UI_HTTPS="true";
       };
+    };
 
-      services.pict-rs = {
-        enable = true;
-        port = cfg.pict-rs.port;
-        dataDir = "${cfg.dataDir}/pict-rs";
-        address = "127.0.0.1";
+    services.pict-rs = {
+      enable = true;
+      port = cfg.pict-rs.port;
+      dataDir = "${cfg.dataDir}/pict-rs";
+      address = "127.0.0.1";
+    };
+
+    systemd.services.lemmy = {
+      requires = ["postgresql.service"];
+      after = ["postgresql.service"];
+      environment = {
+        LEMMY_DATABASE_URL = lib.mkForce "postgresql://lemmy@127.0.0.1:${toString config.services.postgresql.port}/lemmy";
       };
+    };
 
-      systemd.services.lemmy = {
-        requires = ["postgresql.service"];
-        after = ["postgresql.service"];
-        environment = {
-          LEMMY_DATABASE_URL = lib.mkForce "postgresql://lemmy@127.0.0.1:${toString config.services.postgresql.port}/lemmy";
+    services.lemmy = {
+      enable = true;
+      ui.port = cfg.ui.port;
+      database.createLocally = true;
+      settings = {
+        # TODO: Enable this much later when you tested everything.
+        # N.B. you can't change your domain name after enabling this.
+        federation.enabled = cfg.federation.enable;
+        # settings related to the postgresql database
+        database = {
+          user = "lemmy";
+          password = cfg.database.password;
+          host = "127.0.0.1";
+          port = config.services.postgresql.port;
+          database = "lemmy";
+          pool_size = 5;
         };
-      };
-
-      services.lemmy = {
-        enable = true;
-        ui.port = cfg.ui.port;
-        database.createLocally = true;
-        settings = {
-          # TODO: Enable this much later when you tested everything.
-          # N.B. you can't change your domain name after enabling this.
-          federation.enabled = cfg.federation.enable;
-          # settings related to the postgresql database
-          database = {
-            user = "lemmy";
-            password = cfg.database.password;
-            host = "127.0.0.1";
-            port = config.services.postgresql.port;
-            database = "lemmy";
-            pool_size = 5;
-          };
-          # Pictrs image server configuration.
-          pictrs = {
-            # Address where pictrs is available (for image hosting)
-            url = "http://127.0.0.1:${toString cfg.pict-rs.port}/";
-            # TODO: Set a custom pictrs API key. ( Required for deleting images )
-            api_key = cfg.pict-rs.api_key;
-          };
-          # TODO: Email sending configuration. All options except login/password are mandatory
-          email = cfg.email;
-          # TODO: Parameters for automatic configuration of new instance (only used at first start)
-          setup = {
-            # Username for the admin user
-            admin_username = cfg.admin.username;
-            # Password for the admin user. It must be at least 10 characters.
-            admin_password = cfg.admin.password;
-            # Name of the site (can be changed later)
-            site_name = "Lemmy at ${cfg.domain}";
-          };
-          # the domain name of your instance (mandatory)
-          hostname = lemmy.domain;
-          # Address where lemmy should listen for incoming requests
-          bind = "127.0.0.1";
-          # Port where lemmy should listen for incoming requests
-          port = lemmy.port;
-          # Whether the site is available over TLS. Needs to be true for federation to work.
-          tls_enabled = true;
+        # Pictrs image server configuration.
+        pictrs = {
+          # Address where pictrs is available (for image hosting)
+          url = "http://127.0.0.1:${toString cfg.pict-rs.port}/";
+          # TODO: Set a custom pictrs API key. ( Required for deleting images )
+          api_key = cfg.pict-rs.api_key;
         };
-
+        # TODO: Email sending configuration. All options except login/password are mandatory
+        email = cfg.email;
+        # TODO: Parameters for automatic configuration of new instance (only used at first start)
+        setup = {
+          # Username for the admin user
+          admin_username = cfg.admin.username;
+          # Password for the admin user. It must be at least 10 characters.
+          admin_password = cfg.admin.password;
+          # Name of the site (can be changed later)
+          site_name = "Lemmy at ${cfg.domain}";
+        };
+        # the domain name of your instance (mandatory)
+        hostname = cfg.domain;
+        # Address where lemmy should listen for incoming requests
+        bind = "127.0.0.1";
+        # Port where lemmy should listen for incoming requests
+        port = cfg.port;
+        # Whether the site is available over TLS. Needs to be true for federation to work.
+        tls_enabled = true;
       };
 
       # needed for now
