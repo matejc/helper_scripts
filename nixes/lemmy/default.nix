@@ -82,9 +82,7 @@ in {
       upstreams."lemmy-ui".servers."127.0.0.1:${builtins.toString cfg.ui.port}" = {};
 
       virtualHosts."${cfg.domain}" = {
-        useACMEHost = "${cfg.domain}";
-        # inherit from config.security.acme.acmeRoot;
-        acmeRoot = null;
+        enableACME = true;
         # add redirects from http to https
         forceSSL = true;
         # this whole block was lifted from https://github.com/LemmyNet/lemmy/blob/ef1aa18fd20cc03d492a81cb70cc75cf3281649f/docker/nginx.conf#L21 lines 21-32
