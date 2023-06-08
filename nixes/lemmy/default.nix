@@ -153,10 +153,10 @@ in {
             '';
           };
         };
-        commonHttpConfig = ''
-          limit_req_zone $binary_remote_addr zone=lemmy_ratelimit:10m rate=1r/s;
-        '';
       };
+      commonHttpConfig = ''
+        limit_req_zone $binary_remote_addr zone=lemmy_ratelimit:10m rate=1r/s;
+      '';
     };
 
     systemd.services.lemmy-ui = {
