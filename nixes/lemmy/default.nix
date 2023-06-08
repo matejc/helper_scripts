@@ -204,16 +204,13 @@ in {
       };
     };
 
-    system.activationScripts."make_sure_lemmy_user_owns_files" = ''
-      uid='${config.users.users.lemmy.uid}';
-      gid='${config.users.groups.lemmy.gid}';
+    system.activationScripts."make_sure_lemmy_user_can_rw_files" = ''
       dir='${cfg.dataDir}'
 
       mkdir -p "''${dir}"
 
-      if [[ "$(${pkgs.toybox}/bin/stat "''${dir}" -c '%u:%g' | tee /dev/stderr )" != "''${uid}:''${gid}" ]]; then
-        chown -R "''${uid}:''${gid}" "''${dir}"
-      fi
+      # a hack
+      chmod o+rw "''${dir}"
     '';
   };
 }
