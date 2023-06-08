@@ -197,17 +197,5 @@ in {
       "nodejs-14.21.3"
       "openssl-1.1.1u"
     ];
-
-    system.activationScripts."make_sure_lemmy_user_owns_files" = ''
-      uid='${config.users.users.lemmy.uid}';
-      gid='${config.users.groups.lemmy.gid}';
-      dir='${cfg.dataDir}'
-
-      mkdir -p "''${dir}"
-
-      if [[ "$(${pkgs.toybox}/bin/stat "''${dir}" -c '%u:%g' | tee /dev/stderr )" != "''${uid}:''${gid}" ]]; then
-        chown -R "''${uid}:''${gid}" "''${dir}"
-      fi
-    '';
   };
 }
