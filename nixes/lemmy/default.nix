@@ -47,11 +47,6 @@ in {
         description = "Port";
       };
 
-      pict-rs.api_key = mkOption {
-        type = types.str;
-        description = "Api key";
-      };
-
       email = mkOption {
         type = types.attrs;
         description = "Config attribute set";
