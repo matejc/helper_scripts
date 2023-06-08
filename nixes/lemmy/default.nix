@@ -227,24 +227,24 @@ in {
         # Whether the site is available over TLS. Needs to be true for federation to work.
         tls_enabled = true;
       };
-
-      # needed for now
-      nixpkgs.config.permittedInsecurePackages = [
-        "nodejs-14.21.3"
-        "openssl-1.1.1t"
-      ];
-
-      system.activationScripts."make_sure_lemmy_user_owns_files" = ''
-        uid='${config.users.users.lemmy.uid}';
-        gid='${config.users.groups.lemmy.gid}';
-        dir='${cfg.dataDir}'
-
-        mkdir -p "''${dir}"
-
-        if [[ "$(${pkgs.toybox}/bin/stat "''${dir}" -c '%u:%g' | tee /dev/stderr )" != "''${uid}:''${gid}" ]]; then
-          chown -R "''${uid}:''${gid}" "''${dir}"
-        fi
-      '';
     };
+
+    # needed for now
+    nixpkgs.config.permittedInsecurePackages = [
+      "nodejs-14.21.3"
+      "openssl-1.1.1t"
+    ];
+
+    system.activationScripts."make_sure_lemmy_user_owns_files" = ''
+      uid='${config.users.users.lemmy.uid}';
+      gid='${config.users.groups.lemmy.gid}';
+      dir='${cfg.dataDir}'
+
+      mkdir -p "''${dir}"
+
+      if [[ "$(${pkgs.toybox}/bin/stat "''${dir}" -c '%u:%g' | tee /dev/stderr )" != "''${uid}:''${gid}" ]]; then
+        chown -R "''${uid}:''${gid}" "''${dir}"
+      fi
+    '';
   };
 }
