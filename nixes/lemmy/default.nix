@@ -7,12 +7,7 @@ in {
     services.mylemmy = {
       enable = mkEnableOption "Whether to enable My Lemmy.";
       federation.enable = mkEnableOption "Whether to enable Lemmy Federation.";
-
-      dataDir = mkOption {
-        type = types.str;
-        default = "/var/lib/lemmy";
-        description = "Data directory";
-      };
+      nginx.enable = mkEnableOption "Whether to enable Nginx.";
 
       domain = mkOption {
         type = types.str;
@@ -72,7 +67,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    services.nginx = {
+    services.nginx = mkIf cfg.nginx.enable {
       upstreams."lemmy".servers."127.0.0.1:${builtins.toString cfg.port}" = {};
       upstreams."lemmy-ui".servers."127.0.0.1:${builtins.toString cfg.ui.port}" = {};
 
@@ -157,15 +152,26 @@ in {
         LEMMY_UI_HOST = lib.mkForce "127.0.0.1:${toString cfg.ui.port}";
         LEMMY_UI_LEMMY_INTERNAL_HOST = lib.mkForce "127.0.0.1:${toString cfg.port}";
         LEMMY_UI_LEMMY_EXTERNAL_HOST = lib.mkForce cfg.domain;
-        LEMMY_UI_HTTPS="true";
+        LEMMY_UI_HTTPS = "true";
       };
     };
 
     services.pict-rs = {
       port = cfg.pict-rs.port;
-      dataDir = "${cfg.dataDir}/pict-rs";
       address = "127.0.0.1";
     };
+
+    systemd.services.lemmy.environment.LEMMY_DATABASE_URL = pkgs.lib.mkForce "postgres:///lemmy?host=/run/postgresql&user=lemmy";
+
+    nixpkgs.overlays = [(self: super: {
+      lemmy-server = super.lemmy-server.overrideAttrs (old: {
+        patches = (old.patches or []) ++ [(super.fetchpatch {
+          name = "fix-db-migrations.patch";
+          url = "https://raw.githubusercontent.com/nix-community/nur-combined/dfe6c70c76681ad80fd566aeedd73189dd38cdc2/repos/colinsane/pkgs/patched/lemmy-server/fix-db-migrations.patch";
+          hash = "sha256-zJ+3rkUtBogW8A4bH6jfBuNQbDiAoV68wxXfynda31A=";
+        })];
+      });
+    })];
 
     services.lemmy = {
       enable = true;
@@ -177,8 +183,6 @@ in {
         federation.enabled = cfg.federation.enable;
         # Pictrs image server configuration.
         pictrs = {
-          # Address where pictrs is available (for image hosting)
-          url = "http://127.0.0.1:${toString cfg.pict-rs.port}/";
           # TODO: Set a custom pictrs API key. ( Required for deleting images )
           api_key = cfg.pict-rs.api_key;
         };
@@ -203,14 +207,5 @@ in {
         tls_enabled = true;
       };
     };
-
-    system.activationScripts."make_sure_lemmy_user_can_rw_files" = ''
-      dir='${cfg.dataDir}'
-
-      mkdir -p "''${dir}"
-
-      # a hack
-      chmod o+rw "''${dir}"
-    '';
   };
 }

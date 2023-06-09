@@ -66,7 +66,7 @@
       matej70 = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
