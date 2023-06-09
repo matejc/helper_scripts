@@ -131,9 +131,6 @@ in {
               proxy_set_header Upgrade $http_upgrade;
               proxy_set_header Connection "upgrade";
 
-              # Rate limit
-              limit_req zone=lemmy_ratelimit burst=30 nodelay;
-
               ## Send actual client IP upstream
               #proxy_set_header X-Real-IP $remote_addr;
               #proxy_set_header Host $host;
@@ -142,9 +139,6 @@ in {
           };
         };
       };
-      commonHttpConfig = ''
-        limit_req_zone $binary_remote_addr zone=lemmy_ratelimit:10m rate=1r/s;
-      '';
     };
 
     systemd.services.lemmy-ui = {
