@@ -150,12 +150,11 @@ in {
       };
     };
 
+    systemd.services.pict-rs.environment.PICTRS__SERVER__API_KEY = pkgs.lib.mkForce cfg.pict-rs.api_key;
     services.pict-rs = {
       port = cfg.pict-rs.port;
       address = "127.0.0.1";
     };
-
-    systemd.services.lemmy.environment.LEMMY_DATABASE_URL = pkgs.lib.mkForce "postgres:///lemmy?host=/run/postgresql&user=lemmy";
 
     nixpkgs.overlays = [(self: super: {
       lemmy-server = super.lemmy-server.overrideAttrs (old: {
@@ -167,6 +166,7 @@ in {
       });
     })];
 
+    systemd.services.lemmy.environment.LEMMY_DATABASE_URL = pkgs.lib.mkForce "postgres:///lemmy?host=/run/postgresql&user=lemmy";
     services.lemmy = {
       enable = true;
       ui.port = cfg.ui.port;
@@ -177,6 +177,7 @@ in {
         federation.enabled = cfg.federation.enable;
         # Pictrs image server configuration.
         pictrs = {
+          url = "http://127.0.0.1:${cfg.pict-rs.port}";
           # TODO: Set a custom pictrs API key. ( Required for deleting images )
           api_key = cfg.pict-rs.api_key;
         };
