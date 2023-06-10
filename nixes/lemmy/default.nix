@@ -177,7 +177,7 @@ in {
         federation.enabled = cfg.federation.enable;
         # Pictrs image server configuration.
         pictrs = {
-          url = "http://127.0.0.1:${cfg.pict-rs.port}";
+          url = "http://127.0.0.1:${toString cfg.pict-rs.port}";
           # TODO: Set a custom pictrs API key. ( Required for deleting images )
           api_key = cfg.pict-rs.api_key;
         };
