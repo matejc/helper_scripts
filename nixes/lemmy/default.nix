@@ -160,8 +160,8 @@ in {
       lemmy-server = super.lemmy-server.overrideAttrs (old: {
         patches = (old.patches or []) ++ [(super.fetchpatch {
           name = "fix-db-migrations.patch";
-          url = "https://raw.githubusercontent.com/nix-community/nur-combined/dfe6c70c76681ad80fd566aeedd73189dd38cdc2/repos/colinsane/pkgs/patched/lemmy-server/fix-db-migrations.patch";
-          hash = "sha256-zJ+3rkUtBogW8A4bH6jfBuNQbDiAoV68wxXfynda31A=";
+          url = "https://gist.githubusercontent.com/matejc/9be474fa581c1a29592877ede461f1f2/raw/83886917153fcba127b43d9a94a49b3d90e635b3/fix-db-migrations.patch";
+          hash = "sha256-BvoA4K9v84n60lG96j1+91e8/ERn9WlVTGk4Z6Fj4iA=";
         })];
       });
     })];
