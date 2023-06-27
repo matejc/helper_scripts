@@ -6,7 +6,6 @@ in {
   options = {
     services.mylemmy = {
       enable = mkEnableOption "Whether to enable My Lemmy.";
-      federation.enable = mkEnableOption "Whether to enable Lemmy Federation.";
       nginx.enable = mkEnableOption "Whether to enable Nginx.";
 
       domain = mkOption {
@@ -172,9 +171,6 @@ in {
       ui.port = cfg.ui.port;
       database.createLocally = true;
       settings = {
-        # TODO: Enable this much later when you tested everything.
-        # N.B. you can't change your domain name after enabling this.
-        federation.enabled = cfg.federation.enable;
         # Pictrs image server configuration.
         pictrs = {
           url = "http://127.0.0.1:${toString cfg.pict-rs.port}";
