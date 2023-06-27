@@ -38,7 +38,7 @@ in
   services.dbus.enable = true;
   services.openssh = {
     enable = true;
-    settings.passwordAuthentication = false;
+    settings.PasswordAuthentication = false;
   };
 
   programs.mosh.enable = true;
