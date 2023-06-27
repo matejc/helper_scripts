@@ -289,7 +289,7 @@ in lib.mkMerge ([{
     #systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
 
     wayland.windowManager.sway = {
-      systemdIntegration = true;
+      systemd.enable = true;
       wrapperFeatures.gtk = true;
       config = rec {
         assigns = mkDefault {
