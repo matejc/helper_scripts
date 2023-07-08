@@ -136,6 +136,8 @@ let
       };
       home.packages = [ super-slicer-latest solvespace keepassxc ];
       programs.chromium.enable = true;
+      services.network-manager-applet.enable = true;
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
     };
   };
 in
