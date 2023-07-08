@@ -140,36 +140,19 @@ in {
       };
     };
 
-    systemd.services.lemmy-ui = {
-      environment = {
-        LEMMY_UI_HOST = lib.mkForce "127.0.0.1:${toString cfg.ui.port}";
-        LEMMY_UI_LEMMY_INTERNAL_HOST = lib.mkForce "127.0.0.1:${toString cfg.port}";
-        LEMMY_UI_LEMMY_EXTERNAL_HOST = lib.mkForce cfg.domain;
-        LEMMY_UI_HTTPS = "true";
-      };
-    };
-
     systemd.services.pict-rs.environment.PICTRS__SERVER__API_KEY = pkgs.lib.mkForce cfg.pict-rs.api_key;
     services.pict-rs = {
       port = cfg.pict-rs.port;
       address = "127.0.0.1";
     };
 
-    nixpkgs.overlays = [(self: super: {
-      lemmy-server = super.lemmy-server.overrideAttrs (old: {
-        patches = (old.patches or []) ++ [(super.fetchpatch {
-          name = "fix-db-migrations.patch";
-          url = "https://gist.githubusercontent.com/matejc/9be474fa581c1a29592877ede461f1f2/raw/83886917153fcba127b43d9a94a49b3d90e635b3/fix-db-migrations.patch";
-          hash = "sha256-BvoA4K9v84n60lG96j1+91e8/ERn9WlVTGk4Z6Fj4iA=";
-        })];
-      });
-    })];
-
-    systemd.services.lemmy.environment.LEMMY_DATABASE_URL = pkgs.lib.mkForce "postgres:///lemmy?host=/run/postgresql&user=lemmy";
     services.lemmy = {
       enable = true;
       ui.port = cfg.ui.port;
-      database.createLocally = true;
+      database = {
+        createLocally = true;
+        uri = "postgres:///lemmy?host=/run/postgresql&user=lemmy";
+      };
       settings = {
         # Pictrs image server configuration.
         pictrs = {
