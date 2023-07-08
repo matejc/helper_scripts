@@ -750,7 +750,7 @@ in lib.mkMerge ([{
       searchUpKey = "^[[A";
       searchDownKey = "^[[B";
     };
-    enableSyntaxHighlighting = true;
+    syntaxHighlighting.enable = true;
     enableAutosuggestions = true;
     autocd = true;
     defaultKeymap = "emacs";
