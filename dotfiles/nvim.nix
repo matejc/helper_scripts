@@ -800,7 +800,6 @@ EOF
     " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
     inoremap <C-/> <C-o>/
-    inoremap <C-S-?> <C-o>:%s/FIND/REPLACE/g
     inoremap <C-n> <C-o>n
     inoremap <C-S-n> <C-o>N
 
