@@ -2112,7 +2112,7 @@ local builtin = require('telescope.builtin')
 
 local delta = previewers.new_termopen_previewer {
   get_command = function(entry)
-    return { 'git', '-c', 'core.pager=delta', '-c', 'delta.side-by-side=false', 'diff', entry.value .. '^!', '--', entry.current_file }
+    return { '${pkgs.git}/bin/git', '-c', 'core.pager=${pkgs.delta}/bin/delta', '-c', 'delta.side-by-side=false', 'diff', entry.value .. '^!', '--', entry.current_file }
   end
 }
 
