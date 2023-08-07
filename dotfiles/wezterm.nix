@@ -25,6 +25,8 @@
       keys = {
         { key = 'PageUp', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(-1) },
         { key = 'PageDown', mods = 'CTRL|SHIFT', action = act.MoveTabRelative(1) },
+        { key = 'UpArrow', mods = 'SHIFT', action = act.ScrollByLine(-1) },
+        { key = 'DownArrow', mods = 'SHIFT', action = act.ScrollByLine(1) },
         {
           key = 'h',
           mods = 'ALT',

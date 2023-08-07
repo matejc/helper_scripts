@@ -8,7 +8,7 @@ let
   };
   insert = name: directory:
     {
-      target = "${variables.homeDir}/.SuperSlicer/${directory}/${name}";
+      target = "${variables.homeDir}/.config/SuperSlicer/${directory}/${name}";
       source = "${profile}/PrusaSlicer/${directory}/${name}";
     };
 in

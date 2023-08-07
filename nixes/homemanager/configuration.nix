@@ -519,7 +519,7 @@ in lib.mkMerge ([{
         background: #F92672;
     }
 
-    #mode, #clock, #battery, #taskbar, #pulseaudio, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk {
+    #mode, #clock, #battery, #taskbar, #wireplumber, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk {
         padding: 0 10px;
     }
 
@@ -573,7 +573,7 @@ in lib.mkMerge ([{
       modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
       modules-center = [ ];
       modules-right = flatten [
-        "custom/notification" "idle_inhibitor" "pulseaudio" "bluetooth" "battery"
+        "custom/notification" "idle_inhibitor" "wireplumber" "bluetooth" "battery"
         (imap0 (i: _: "network#${toString i}") (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
         (imap0 (i: _: "disk#${toString i}") context.variables.mounts)
         "cpu" "temperature" "clock" "tray" ];
@@ -582,7 +582,7 @@ in lib.mkMerge ([{
         all-outputs = false;
       };
       clock.format = "{:%a %d.%m.%Y, %H:%M}";
-      pulseaudio = {
+      wireplumber = {
         scroll-step = 3.0;
         format = "{volume}% {icon}";
         format-bluetooth = "{volume}% {icon}";
@@ -597,6 +597,7 @@ in lib.mkMerge ([{
             default = ["" ""];
         };
         on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
+        on-click-middle = "${pkgs.helvum}/bin/helvum";
         on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
       };
       keyboard-state = {
