@@ -6,6 +6,7 @@
 , luaPackages
 , tree-sitter
 , fetchgit
+, vimPlugins
 }:
 
 self: super: {
@@ -52,4 +53,7 @@ self: super: {
     #'';
   });
 
+  telescope-frecency-nvim = super.telescope-frecency-nvim.overrideAttrs (old: {
+    dependencies = [ vimPlugins.sqlite-lua self.telescope-nvim ];
+  });
 }

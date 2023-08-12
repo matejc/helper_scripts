@@ -1406,7 +1406,7 @@ require("neo-tree").setup({
         --"thumbs.db"
       },
     },
-    follow_current_file = true, -- This will find and focus the file in the active buffer every
+    follow_current_file = { enabled = true, }, -- This will find and focus the file in the active buffer every
                                  -- time the current file is changed while the tree is open.
     hijack_netrw_behavior = "disabled",
                           -- "open_default", -- netrw disabled, opening a directory opens neo-tree
@@ -1443,7 +1443,7 @@ require("neo-tree").setup({
     {
       event = "file_opened",
       handler = function(arg)
-        require("neo-tree").close_all()
+        require("neo-tree.command").execute({ action = "close" })
       end,
     }
   }
@@ -2667,7 +2667,7 @@ EOF
           vimPlugins.nvim-treesitter
           vimPlugins.nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
-          telescope-frecency-nvim
+          vimPlugins.telescope-frecency-nvim
           #vimPlugins.nvim-treesitter-context
           vimPlugins.novim-mode
           vimPlugins.lspsaga-nvim

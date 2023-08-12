@@ -6,7 +6,7 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      ${pkgs.swaylock-effects}/bin/swaylock -f --color=000000 --grace 2 --grace-no-mouse --grace-no-touch
+      ${pkgs.swaylock-effects}/bin/swaylock -f --color=000000 --grace-no-mouse --grace-no-touch $@
     fi
   '';
 } {

@@ -409,7 +409,7 @@ in lib.mkMerge ([{
       { event = "unlock"; command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
     ];
     timeouts = [
-      { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
+      { timeout = 120; command = "${context.variables.binDir}/lockscreen --grace 3"; }
       {
         timeout = 300;
         command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;

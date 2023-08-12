@@ -121,8 +121,14 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         #{ command = "${self.variables.programs.keepassxc}"; }
-        { command = "${pkgs.xiccd}/bin/xiccd"; }
+        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
+      wayland.windowManager.sway.config.input = {
+        "type:pointer" = {
+          pointer_accel = "-0.3";
+          #middle_emulation = "enabled";
+        };
+      };
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
