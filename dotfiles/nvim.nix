@@ -1155,6 +1155,10 @@ local on_attach = function(client, bufnr)
   --     augroup END
   --   ]], false)
   -- end
+
+  if vim.b.large_buf then
+    client.server_capabilities.semanticTokensProvider = nil
+  end
 end
 
 --cfg = {
@@ -1288,10 +1292,8 @@ local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   callback = function()
     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
-    if ok and stats and (stats.size > 999999) then
+    if ok and stats and (stats.size > 1000000000) then
       vim.b.large_buf = true
-      vim.cmd("syntax off")
-      vim.opt_local.spell = false
     else
       vim.b.large_buf = false
     end
@@ -1305,7 +1307,7 @@ local function setup_lsp(server, opts)
   conf.setup(opts)
   local try_add = conf.manager.try_add
   conf.manager.try_add = function (bufnr)
-    if not vim.b.large_buf then
+    if not vim.b.buf_large then
       return try_add(bufnr)
     end
   end
