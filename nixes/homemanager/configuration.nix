@@ -360,7 +360,7 @@ in lib.mkMerge ([{
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
             "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
             "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
-            "${modifier}+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk '{print $2\" / \"$NF}' | ${pkgs.wofi}/bin/wofi -p \"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
+            "${modifier}+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
           };
         modifier = "Mod4";
         startup = [
