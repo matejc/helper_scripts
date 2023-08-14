@@ -360,6 +360,7 @@ in lib.mkMerge ([{
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
             "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
             "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
+            "${modifier}+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk '{print $2\" / \"$NF}' | ${pkgs.wofi}/bin/wofi -p \"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
           };
         modifier = "Mod4";
         startup = [
@@ -520,8 +521,8 @@ in lib.mkMerge ([{
         background: #F92672;
     }
 
-    #mode, #clock, #battery, #taskbar, #wireplumber, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk, #custom-weather {
-        padding: 0 10px;
+    #mode,#clock,#battery,#taskbar,#wireplumber,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather {
+        padding: 0 5px;
     }
 
     #custom-sep {
@@ -592,9 +593,8 @@ in lib.mkMerge ([{
         "custom/sep"
         "battery"
         "custom/sep"
-        (imap0 (i: _: "network#${toString i}") (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
-        "custom/sep"
-        (imap0 (i: _: "disk#${toString i}") context.variables.mounts)
+        (imap0 (i: _: [ "network#${toString i}" "custom/sep" ]) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
+        (imap0 (i: _: [ "disk#${toString i}" "custom/sep" ]) context.variables.mounts)
         "cpu"
         "custom/sep"
         "temperature"
@@ -625,10 +625,10 @@ in lib.mkMerge ([{
           on-click-right = "mode";
           format = {
             months = "<span color='#ffead3'><b>{}</b></span>";
-            days = "<span color='#ecc6d9'><b>{}</b></span>";
+            days = "<span color='#FC9867'><b>{}</b></span>";
             weeks = "<span color='#99ffdd'><b>{}</b></span>";
-            weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-            today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+            weekdays = "<span color='#FFD866'><b>{}</b></span>";
+            today = "<span color='#FF6188'><b>{}</b></span>";
           };
         };
         actions = {
@@ -841,6 +841,9 @@ in lib.mkMerge ([{
       auto_sync = false;
       sync_address = "";
       update_check = false;
+      inline_height = 11;
+      style = "compact";
+      show_help = false;
     };
   };
   home.shellAliases = {
