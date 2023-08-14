@@ -188,6 +188,7 @@ in lib.mkMerge ([{
     home.packages = [
       font-awesome
       config.gtk.font.package
+      noto-fonts-emoji
       git git-crypt
       zsh
       wl-clipboard
@@ -519,8 +520,12 @@ in lib.mkMerge ([{
         background: #F92672;
     }
 
-    #mode, #clock, #battery, #taskbar, #wireplumber, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk {
+    #mode, #clock, #battery, #taskbar, #wireplumber, #idle_inhibitor, #keyboard-state, #bluetooth, #battery, #cpu, #temperature, #tray, #network, #custom-dnd, #custom-notification, #disk, #custom-weather {
         padding: 0 10px;
+    }
+
+    #custom-sep {
+        color: rgba(100, 90, 86, 0.9);
     }
 
     #window {
@@ -570,18 +575,70 @@ in lib.mkMerge ([{
       layer = "top";
       position = "bottom";
       height = 26;
-      modules-left = [ "sway/workspaces" "sway/mode" "sway/window" ];
+      modules-left = [
+        "sway/workspaces"
+        "sway/mode"
+        "sway/window"
+      ];
       modules-center = [ ];
       modules-right = flatten [
-        "custom/notification" "idle_inhibitor" "wireplumber" "bluetooth" "battery"
+        "custom/notification"
+        "custom/sep"
+        "idle_inhibitor"
+        "custom/sep"
+        "wireplumber"
+        "custom/sep"
+        "bluetooth"
+        "custom/sep"
+        "battery"
+        "custom/sep"
         (imap0 (i: _: "network#${toString i}") (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
+        "custom/sep"
         (imap0 (i: _: "disk#${toString i}") context.variables.mounts)
-        "cpu" "temperature" "clock" "tray" ];
+        "cpu"
+        "custom/sep"
+        "temperature"
+        "custom/sep"
+        "custom/weather"
+        "custom/sep"
+        "clock"
+        "custom/sep"
+        "tray"
+      ];
+      "custom/sep" = {
+        format = "";
+        interval = "once";
+        tooltip = false;
+      };
       "sway/workspaces" = {
         disable-scroll = true;
         all-outputs = false;
       };
-      clock.format = "{:%a %d.%m.%Y, %H:%M}";
+      clock = {
+        format = "{:%a %d.%m.%Y, %H:%M}";
+        tooltip-format = "<tt><small>{calendar}</small></tt>";
+        calendar = {
+          mode = "month";
+          mode-mon-col = 3;
+          weeks-pos = "left";
+          on-scroll = 1;
+          on-click-right = "mode";
+          format = {
+            months = "<span color='#ffead3'><b>{}</b></span>";
+            days = "<span color='#ecc6d9'><b>{}</b></span>";
+            weeks = "<span color='#99ffdd'><b>{}</b></span>";
+            weekdays = "<span color='#ffcc66'><b>{}</b></span>";
+            today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+          };
+        };
+        actions = {
+          on-click-right = "mode";
+          on-click-forward = "tz_up";
+          on-click-backward = "tz_down";
+          on-scroll-up = "shift_up";
+          on-scroll-down = "shift_down";
+        };
+      };
       wireplumber = {
         scroll-step = 3.0;
         format = "{volume}% {icon}";
@@ -660,6 +717,13 @@ in lib.mkMerge ([{
         "on-click" = "${swaynotificationcenter}/bin/swaync-client -d -sw";
         "on-click-right" = "${swaynotificationcenter}/bin/swaync-client -t -sw";
         "escape" = true;
+      };
+      "custom/weather" = {
+        format = "{}°C";
+        tooltip = true;
+        interval = 3600;
+        exec = "${pkgs.wttrbar}/bin/wttrbar --date-format '%d.%m.%Y' --hide-conditions";
+        return-type = "json";
       };
       battery = {
         interval = 60;
@@ -742,7 +806,7 @@ in lib.mkMerge ([{
       setopt no_global_rcs
       unset __HM_ZSH_SESS_VARS_SOURCED
     '';
-    history = {
+    /*history = {
       expireDuplicatesFirst = true;
       extended = true;
     };
@@ -750,7 +814,7 @@ in lib.mkMerge ([{
       enable = true;
       searchUpKey = "^[[A";
       searchDownKey = "^[[B";
-    };
+    };*/
     syntaxHighlighting.enable = true;
     enableAutosuggestions = true;
     autocd = true;
@@ -767,6 +831,16 @@ in lib.mkMerge ([{
       status.disabled = false;
       status.style = "fg:red";
       status.format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style) ";
+    };
+  };
+  programs.atuin = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+    settings = {
+      auto_sync = false;
+      sync_address = "";
+      update_check = false;
     };
   };
   home.shellAliases = {
