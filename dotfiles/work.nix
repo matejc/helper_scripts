@@ -9,6 +9,7 @@
   target = "${variables.homeDir}/bin/work-today";
   source = pkgs.writeScript "work-today.sh" ''
     #!${pkgs.stdenv.shell}
-    journalctl -t systemd-sleep -S today -o json | ${pkgs.jq}/bin/jq --slurp '(now-(.|map(select(.MESSAGE|contains("returned")))|first|.__REALTIME_TIMESTAMP|tonumber/1000000))/60/60'
+    diff=$(journalctl -t systemd-sleep -S today -o json | ${pkgs.jq}/bin/jq --slurp '(now-(.|map(select(.MESSAGE|contains("returned")))|first|.__REALTIME_TIMESTAMP|tonumber/1000000))'|cut -d "." -f 1)
+    echo "$(($diff / 3600))h $((($diff / 60) % 60))m $(($diff % 60))s"
   '';
 }]
