@@ -74,9 +74,11 @@ in
 
     # home
     bindkey '^[[H' beginning-of-line
+    bindkey '^[[1;5H' beginning-of-line
 
     # end
     bindkey '^[[F' end-of-line
+    bindkey '^[[1;5F' end-of-line
 
     WORDCHARS='*?_~=&;!#$%^{}<>'
     MOTION_WORDCHARS='*?_~=&;!#$%^{}<>'

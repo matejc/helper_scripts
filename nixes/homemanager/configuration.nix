@@ -331,7 +331,7 @@ in lib.mkMerge ([{
             "XF86Favorites" = "exec ${dropdown}";
             "F9" = "exec ${passwords}";
             "XF86Messenger" = "exec ${passwords}";
-            "Mod1+F4" = "kill";
+            "Control+Mod1+p" = "exec ${passwords}";
             "${modifier}+k" = "kill";
             "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
             "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
