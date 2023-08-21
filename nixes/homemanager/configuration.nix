@@ -360,7 +360,9 @@ in lib.mkMerge ([{
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
             "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
             "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
-            "${modifier}+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
+            "Control+Mod1+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
+            "${modifier}+s" = "exec ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')";
+            "${modifier}+q" = "exec ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')";
           };
         modifier = "Mod4";
         startup = [
@@ -860,12 +862,20 @@ in lib.mkMerge ([{
     enable = true;
     dbPath = "${inputs.nixexprs}/programs.sqlite";
   };
+  programs.zellij = {
+    enable = true;
+    settings = {
+      simplified_ui = true;
+      default_layout = "compact";
+    };
+  };
   programs.foot = {
     settings = {
       main = {
         term = "xterm-256color";
         font = "${context.variables.font.family}:size=${toString context.variables.font.size}";
         dpi-aware = "no";
+        shell="${context.variables.shell} -c 'sleep 0.1; ${pkgs.zellij}/bin/zellij'";
       };
       mouse = {
         hide-when-typing = "no";

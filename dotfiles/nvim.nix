@@ -2342,6 +2342,7 @@ EOF
     cnoremap <C-v> <C-r>+
 
     let g:NERDDefaultAlign = 'left'
+    let g:NERDSpaceDelims = 1
 
     nnoremap <C-o> :Neotree toggle reveal<CR>
     tnoremap <C-o> <C-\><C-N>:Neotree toggle reveal<CR>
