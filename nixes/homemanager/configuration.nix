@@ -857,6 +857,8 @@ in lib.mkMerge ([{
     ".." = "cd ..";
     "l" = "${pkgs.exa}/bin/exa -gal --git";
     "t" = "${pkgs.exa}/bin/exa -T --ignore-glob='.git' -L3";
+    "z" = "${pkgs.zellij}/bin/zellij";
+    "b" = "${pkgs.broot}/bin/broot";
   };
   programs.command-not-found = {
     enable = true;
