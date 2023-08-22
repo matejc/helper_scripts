@@ -21,6 +21,18 @@ in
   system.activationScripts.wslinterop = ''
     ln -s /run/WSL/8_interop /run/WSL/2_interop || true
   '';
+  system.activationScripts.setupLogin = stringAfter [ ] ''
+    echo "setting up /bin/login..."
+    mkdir -p /bin
+    ln -sf ${pkgs.shadow}/bin/login /bin/login
+  '';
+  system.activationScripts.runtimeDir = stringAfter [ ] ''
+    userId="$(${pkgs.stdenv.cc.libc.getent}/bin/getent passwd "${defaultUser}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
+    runtimeDir="/run/user/$userId"
+    echo "setting up $runtimeDir"
+    mkdir -p /run/user
+    ln -sf /mnt/wslg/runtime-dir "$runtimeDir"
+  '';
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = false;
@@ -76,6 +88,7 @@ in
   security.wrapperDir = "/wrappers";
 
   security.sudo.wheelNeedsPassword = false;
+  security.pam.services.runuser.startSession = true;
 
   # Disable systemd units that don't make sense on WSL
   systemd.services."serial-getty@ttyS0".enable = false;

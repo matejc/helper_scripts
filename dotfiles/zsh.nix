@@ -204,6 +204,8 @@ in
     #bindkey "^[[A" history-substring-search-up
     #bindkey "^[[B" history-substring-search-down
     HISTORY_SUBSTRING_SEARCH_ENSURE_UNIQUE=true
+    HISTORY_SUBSTRING_SEARCH_FUZZY=true
+    unset HISTORY_SUBSTRING_SEARCH_PREFIXED
 
     DISABLE_AUTO_TITLE="true"
 

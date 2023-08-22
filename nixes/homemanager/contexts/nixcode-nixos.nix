@@ -83,7 +83,7 @@ let
         criteria = "eDP-1";
         position = "0,0";
         output = "eDP-1";
-        mode = "2880x1800";
+        mode = "2880x1800@60.001Hz";
         scale = 1.5;
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
