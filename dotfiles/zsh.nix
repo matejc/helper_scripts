@@ -6,6 +6,75 @@ let
     rev = "fec94c5b2178b56de8726013f53bb09fb51311e6";
     sha256 = "1xm1gl2mmq5difl9m57k0nh6araxqgj9vwqkh7qhqa79jm8m6my4";
   };
+
+  atuinZsh = pkgs.writeScript "atuin.zsh" ''
+    export ATUIN_NOBIND="true"
+    eval "$(${pkgs.atuin}/bin/atuin init zsh)"
+
+    export ATUIN_ARROW_INDEX=-1
+    export ATUIN_SEARCH_BUFFER=""
+
+    upArrow() {
+
+      if [[ "$ATUIN_ARROW_INDEX" == "-1" ]] && [ -z "$ATUIN_SEARCH_BUFFER" ]
+      then
+        export ATUIN_SEARCH_BUFFER="$BUFFER"
+      fi
+
+      COMMAND=$(atuin search --limit 1 --offset $(( ATUIN_ARROW_INDEX + 1 )) --cmd-only -- $ATUIN_SEARCH_BUFFER)
+      if [[ "$?" == "0" ]]
+      then
+        LBUFFER="$COMMAND"
+        export ATUIN_ARROW_INDEX=$(( ATUIN_ARROW_INDEX + 1 ))
+      fi
+
+      return
+    }
+
+    downArrow() {
+      export ATUIN_ARROW_INDEX=$(( ATUIN_ARROW_INDEX - 1 ))
+
+      if [ $ATUIN_ARROW_INDEX -lt 0 ]; then
+        export ATUIN_ARROW_INDEX=-1
+        export ATUIN_SEARCH_BUFFER=""
+        LBUFFER=""
+        return
+      fi
+
+      COMMAND=$(atuin search --limit 1 --offset $ATUIN_ARROW_INDEX --cmd-only -- $ATUIN_SEARCH_BUFFER)
+      LBUFFER="$COMMAND"
+
+      return
+    }
+
+    returnKey() {
+      export ATUIN_ARROW_INDEX=-1
+      export ATUIN_SEARCH_BUFFER=""
+      zle accept-line
+    }
+
+    _atuin_precmd_2() {
+      if [[ "$?" == "130" ]]
+      then
+        export ATUIN_ARROW_INDEX=-1
+        export ATUIN_SEARCH_BUFFER=""
+      fi
+      return 0
+    }
+
+    autoload -Uz add-zsh-hook
+    add-zsh-hook precmd _atuin_precmd_2
+
+    zle -N upArrow
+    zle -N downArrow
+    zle -N returnKey
+
+    bindkey '^M' returnKey
+    bindkey '^[[A' upArrow
+    bindkey '^[OA' upArrow
+    bindkey '^[[B' downArrow
+    bindkey '^[OB' downArrow
+  '';
 in
 [{
   target = "${variables.homeDir}/.zshrc";
@@ -74,11 +143,11 @@ in
 
     # home
     bindkey '^[[H' beginning-of-line
-    bindkey '^[[1;5H' beginning-of-line
+    bindkey '^[OH' beginning-of-line
 
     # end
     bindkey '^[[F' end-of-line
-    bindkey '^[[1;5F' end-of-line
+    bindkey '^[OF' end-of-line
 
     WORDCHARS='*?_~=&;!#$%^{}<>'
     MOTION_WORDCHARS='*?_~=&;!#$%^{}<>'

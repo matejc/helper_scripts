@@ -276,9 +276,11 @@ in lib.mkMerge ([{
       #};
       profiles.firstonly = {
         outputs = [{ inherit (head context.variables.outputs) criteria position mode scale; status = "enable"; }];
+        exec = optionals (config.programs.waybar.enable) [ "${pkgs.systemd}/bin/systemctl --user restart waybar" ];
       };
       profiles.default = {
         outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
+        exec = optionals (config.programs.waybar.enable) [ "${pkgs.systemd}/bin/systemctl --user restart waybar" ];
       };
     };
 
@@ -681,11 +683,12 @@ in lib.mkMerge ([{
         format = "{icon}";
         format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
       };
-      temperature = ({
+      temperature = {
         format = "{temperatureC}°C {icon}";
         format-icons = ["" "" "" "" ""];
         critical-threshold = 80;
-      } // (optionalAttrs (builtins.hasAttr "hwmonPath" context.variables) { hwmon-path = context.variables.hwmonPath; }));
+        hwmon-path = mkIf (builtins.hasAttr "hwmonPath" context.variables) context.variables.hwmonPath;
+      };
       idle_inhibitor = {
         format = "{icon}";
         format-icons = {
@@ -776,7 +779,6 @@ in lib.mkMerge ([{
     enable = true;
     enableSshSupport = true;
     enableZshIntegration = true;
-    enableBashIntegration = true;
   };
 
   programs.bash = {
@@ -808,7 +810,7 @@ in lib.mkMerge ([{
       setopt no_global_rcs
       unset __HM_ZSH_SESS_VARS_SOURCED
     '';
-    /*history = {
+    history = {
       expireDuplicatesFirst = true;
       extended = true;
     };
@@ -816,7 +818,7 @@ in lib.mkMerge ([{
       enable = true;
       searchUpKey = "^[[A";
       searchDownKey = "^[[B";
-    };*/
+    };
     syntaxHighlighting.enable = true;
     enableAutosuggestions = true;
     autocd = true;
@@ -824,7 +826,6 @@ in lib.mkMerge ([{
   };
   programs.starship = {
     enable = true;
-    enableBashIntegration = true;
     enableZshIntegration = true;
     settings = {
       command_timeout = 2000;
@@ -835,17 +836,27 @@ in lib.mkMerge ([{
       status.format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style) ";
     };
   };
-  programs.atuin = {
+  # programs.atuin = {
+  #   enable = true;
+  #   # enableZshIntegration = true;
+  #   settings = {
+  #     auto_sync = false;
+  #     sync_address = "";
+  #     update_check = false;
+  #     inline_height = 11;
+  #     style = "compact";
+  #     show_help = false;
+  #   };
+  # };
+  programs.fzf = {
     enable = true;
-    enableBashIntegration = true;
     enableZshIntegration = true;
-    settings = {
-      auto_sync = false;
-      sync_address = "";
-      update_check = false;
-      inline_height = 11;
-      style = "compact";
-      show_help = false;
+    defaultOptions = [
+      "--no-info"
+    ];
+    colors = {
+      hl = "#FC9867";
+      "hl+" = "#FC9867";
     };
   };
   programs.gitui.enable = true;
@@ -877,7 +888,7 @@ in lib.mkMerge ([{
         term = "xterm-256color";
         font = "${context.variables.font.family}:size=${toString context.variables.font.size}";
         dpi-aware = "no";
-        shell="${context.variables.shell} -c 'sleep 0.1; ${pkgs.zellij}/bin/zellij'";
+        # shell="${context.variables.shell} -c 'sleep 0.1; ${pkgs.zellij}/bin/zellij'";
       };
       mouse = {
         hide-when-typing = "no";

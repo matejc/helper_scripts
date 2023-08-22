@@ -15,7 +15,6 @@ let
       "${helper_scripts}/dotfiles/scan.nix"
       "${helper_scripts}/dotfiles/swaylockscreen.nix"
       "${helper_scripts}/dotfiles/comma.nix"
-      "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
@@ -38,8 +37,6 @@ let
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
-      temperatureFiles = [ hwmonPath ];
-      hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
       lockscreen = "${homeDir}/bin/lockscreen";
       lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
       wallpaper = "${homeDir}/Pictures/pexels.png";
