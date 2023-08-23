@@ -24,8 +24,6 @@ in
         pager = ${pkgs.delta}/bin/delta
     [interactive]
         diffFilter = ${pkgs.delta}/bin/delta --color-only
-    [add.interactive]
-        useBuiltin = false
     [delta]
         navigate = true    # use n and N to move between diff sections
         light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
