@@ -495,7 +495,7 @@ EOF
       filetype plugin indent on
     endif
 
-    set clipboard=unnamedplus
+    set clipboard^=unnamed,unnamedplus
 
     set number
     set mouse=a
@@ -1881,9 +1881,8 @@ require("telescope").setup {
 require('telescope').load_extension('fzy_native')
 require"telescope".load_extension("frecency")
 require("telescope").load_extension("live_grep_args")
-EOF
 
-lua <<EOF
+
 require("scrollbar").setup({
     handle = {
         text = " ",
@@ -1938,18 +1937,16 @@ require("scrollbar").setup({
 --     separator = "\n",
 --   },
 -- })
-EOF
 
-lua <<EOF
+
 require('smart-splits').ignored_buftypes = { 'NvimTree' }
 require('smart-splits').ignored_filetypes = {
   'nofile',
   'quickfix',
   'prompt',
 }
-EOF
 
-lua <<EOF
+
 local parser_install_dir = vim.fn.stdpath("cache") .. "/treesitters"
 vim.fn.mkdir(parser_install_dir, "p")
 vim.opt.runtimepath:append(parser_install_dir)
@@ -2041,9 +2038,8 @@ require('session_manager').setup({
 --     --     you can safely ignore them.
 --     zindex = 20, -- The Z-index of the context window
 -- }
-EOF
 
-lua <<EOF
+
 require("lspsaga").setup({
   symbol_in_winbar = {
     enable = false,
@@ -2205,7 +2201,6 @@ EOF
 
     " nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
     inoremap <C-S-g> <C-o>:call gitblame#echo()<CR>
-
 
     " function! OpenCompletion()
     "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
@@ -2646,7 +2641,7 @@ EOF
           vimPlugins.git-blame-vim
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
-          vimPlugins.vim-fakeclip
+          # vimPlugins.vim-fakeclip
           #vim-matchup
           #vimPlugins.nvim-surround
           #nvim-compe
