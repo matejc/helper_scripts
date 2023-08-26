@@ -127,6 +127,15 @@ let
   };
 
   # https://nix-community.github.io/home-manager/options.html
+
+  nixmyConfig = {
+    nixpkgs = context.variables.nixmy.nixpkgs;
+    remote = context.variables.nixmy.remote;
+    backup = context.variables.nixmy.backup;
+    nixosConfig = "/etc/nixos/configuration.nix";
+    extraPaths = [ pkgs.gnumake ];
+    nix = pkgs.nix;
+  };
 in lib.mkMerge ([{
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
@@ -196,7 +205,7 @@ in lib.mkMerge ([{
       dconf
       rofi
       wl-mirror
-      (import "${inputs.nixmy}/default.nix" { inherit pkgs lib; config = args.config; })
+      (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
     ] ++ services-cmds;
     home.sessionVariables = {
       #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
@@ -294,7 +303,13 @@ in lib.mkMerge ([{
     wayland.windowManager.sway = {
       systemd.enable = true;
       wrapperFeatures.gtk = true;
-      config = rec {
+      config = let
+        dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.homeDir}/bin/terminal -m terminal";
+        passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
+        resizeModeName = "Resize: arrow keys";
+        mirrorModeName = "Mirror: c - create, f - toggle freeze";
+        signalModeName = "Mirror: s - stop, q - continue, k - terminate, 9 - kill";
+      in rec {
         assigns = mkDefault {
           #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
           "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
@@ -321,10 +336,7 @@ in lib.mkMerge ([{
           style = context.variables.font.style;
           size = context.variables.font.size;
         };
-        keybindings = let
-            dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.homeDir}/bin/terminal -m terminal";
-            passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
-          in mkOptionDefault {
+        keybindings = mkOptionDefault {
             "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
             "Mod1+Control+t" = "exec ${context.variables.programs.terminal}";
             "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
@@ -360,13 +372,37 @@ in lib.mkMerge ([{
             "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
             "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
             "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
-            "${modifier}+m" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror";
+            "${modifier}+m" = "mode \"${mirrorModeName}\"";
+            "${modifier}+s" = "mode \"${signalModeName}\"";
+            "${modifier}+r" = "mode \"${resizeModeName}\"";
             "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
             "Control+Mod1+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
-            "${modifier}+s" = "exec ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')";
-            "${modifier}+q" = "exec ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')";
           };
         modifier = "Mod4";
+        modes = mkOptionDefault {
+          "${resizeModeName}" = {
+            "Left" = "resize shrink width 10 px";
+            "Down" = "resize grow height 10 px";
+            "Up" = "resize shrink height 10 px";
+            "Right" = "resize grow width 10 px";
+            "Escape" = "mode default";
+            "Return" = "mode default";
+          };
+          "${mirrorModeName}" = {
+            "c" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror, mode \"default\"";
+            "f" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present toggle-freeze, mode \"default\"";
+            "Escape" = "mode default";
+            "Return" = "mode default";
+          };
+          "${signalModeName}" = {
+            "s" = "exec ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+            "q" = "exec ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+            "k" = "exec ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+            "9" = "exec ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+            "Escape" = "mode default";
+            "Return" = "mode default";
+          };
+        };
         startup = [
           { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
           { command = "${context.variables.profileDir}/bin/service-group-once start"; }

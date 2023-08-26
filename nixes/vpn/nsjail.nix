@@ -148,6 +148,8 @@ let
     #!${stdenv.shell}
     set -e
 
+    cat ${resolvConf} >/etc/resolv.conf
+
     echo -n "$$" > ${homeDir}/.ns.pid
 
     for i in {1..50}
@@ -223,7 +225,6 @@ let
       --mount none:/run/user/${uid}:tmpfs:rw \
       --bindmount /run/user/${uid}/${waylandDisplay}:/run/user/${uid}/${waylandDisplay} \
       --bindmount /run/user/${uid}/pulse:/run/user/${uid}/pulse \
-      --bindmount ${homeDir}/.vpn/${name}/.resolv.conf:/etc/resolv.conf \
       --disable_clone_newpid \
       --bindmount /proc:/proc \
       --hostname RESTRICTED \

@@ -103,6 +103,11 @@ let
         scale = 1.0;
         status = "enable";
       }];
+      nixmy = {
+        backup = "git@github.com/matejc/configurations.git";
+        remote = "https://github.com/matejc/nixpkgs";
+        nixpkgs = "/home/matejc/workarea/nixpkgs";
+      };
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
@@ -138,7 +143,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc ];
+      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
