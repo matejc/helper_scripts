@@ -1,5 +1,5 @@
 { inputs, contextFile }:
-{ pkgs, lib, config, ... }@args:
+{ pkgs, lib, config, ... }:
 with lib;
 with pkgs;
 let

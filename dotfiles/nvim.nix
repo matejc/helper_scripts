@@ -1292,7 +1292,7 @@ local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   callback = function()
     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
-    if ok and stats and (stats.size > 1000000000) then
+    if ok and stats and (stats.size > 100000000) then
       vim.b.large_buf = true
     else
       vim.b.large_buf = false
@@ -1839,7 +1839,7 @@ local new_maker = function(filepath, bufnr, opts)
   filepath = vim.fn.expand(filepath)
   vim.loop.fs_stat(filepath, function(_, stat)
     if not stat then return end
-    if stat.size > 10000 then
+    if stat.size > 1000000 then
       opts.use_ft_detect = false
       previewers.buffer_previewer_maker(filepath, bufnr, opts)
     else
@@ -1985,7 +1985,7 @@ require'nvim-treesitter.configs'.setup {
   },
 
   matchup = {
-    enable = false,
+    enable = true,
   },
 }
 
@@ -2041,8 +2041,15 @@ require('session_manager').setup({
 
 
 require("lspsaga").setup({
+  ui = {
+    devicon = false,
+    code_action = "A";
+  },
   symbol_in_winbar = {
     enable = false,
+  },
+  lightbulb = {
+    virtual_text = false,
   },
 })
 
@@ -2168,7 +2175,7 @@ EOF
     " au VimEnter * lua _G.self_color_gruvbox_dark()
 
     " inoremap <silent> <c-g>h <Cmd>:Lspsaga lsp_finder<CR>
-    inoremap <silent> <c-g>a <Cmd>:Lspsaga code_action<CR>
+    inoremap <silent> <c-g>a <Cmd>:lua vim.lsp.buf.code_action()<CR>
     inoremap <silent> <c-g>k <Cmd>:Lspsaga hover_doc<CR>
     inoremap <silent> <c-g>s <Cmd>:Lspsaga signature_help<CR>
     inoremap <silent> <c-g>r <Cmd>:Lspsaga rename<CR>
@@ -2549,10 +2556,13 @@ EOF
     "   autocmd ColorScheme * hi MatchParen guifg=Gray40
     "   autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
     " augroup END
-    " inoremap <C-S-m> <C-o><plug>(matchup-g%)
-    " let g:matchup_matchparen_deferred = 1
-    " let g:matchup_matchparen_deferred_show_delay = 200
-    " let g:matchup_matchparen_deferred_hide_delay = 600
+
+    let g:matchup_matchparen_deferred = 1
+    let g:matchup_matchparen_deferred_show_delay = 100
+    let g:matchup_matchparen_deferred_hide_delay = 500
+    inoremap <C-m> <C-o><plug>(matchup-%)
+    let g:matchup_matchparen_offscreen = {'method': 'popup'}
+    let g:matchup_matchparen_hi_surround_always = 1
 
     " augroup large_file_support
     "   autocmd!
@@ -2642,7 +2652,7 @@ EOF
           vimPlugins.nvim-web-devicons
           #nvim-tree-lua
           # vimPlugins.vim-fakeclip
-          #vim-matchup
+          vim-matchup
           #vimPlugins.nvim-surround
           #nvim-compe
           plenary-nvim
