@@ -15,7 +15,7 @@ let
   enabledNvimLsp = mkNvimLsp [
     #"kotlin_language_server"
     #"rnix"
-    "nil"
+    "nixd"
     "bashls"
     "dockerls"
     "yamlls"
@@ -66,6 +66,13 @@ let
       setup_lsp("rnix", {
         on_attach = on_attach;
         cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"};
+        capabilities = capabilities;
+      })
+    '';
+    nixd = ''
+      setup_lsp("nixd", {
+        on_attach = on_attach;
+        cmd = {"${pkgs.nixd}/bin/nixd"};
         capabilities = capabilities;
       })
     '';
@@ -1292,7 +1299,7 @@ local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   callback = function()
     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
-    if ok and stats and (stats.size > 100000000) then
+    if ok and stats and (stats.size > 10000000) then
       vim.b.large_buf = true
     else
       vim.b.large_buf = false
