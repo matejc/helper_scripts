@@ -99,6 +99,11 @@ let
         wallpaper = wallpaper;
         status = "enable";
       }];
+      nixmy = {
+        backup = "git@github.com/matejc/configurations.git";
+        remote = "https://github.com/matejc/nixpkgs";
+        nixpkgs = "/home/matejc/workarea/nixpkgs";
+      };
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }

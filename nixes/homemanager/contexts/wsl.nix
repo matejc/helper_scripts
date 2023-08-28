@@ -83,6 +83,11 @@ let
         scale = 1.0;
         wallpaper = "${pkgs.sway}/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png";
       }];
+      nixmy = {
+        backup = "git@github.com/matejc/configurations.git";
+        remote = "https://github.com/matejc/nixpkgs";
+        nixpkgs = "/home/matejc/workarea/nixpkgs";
+      };
     };
     services = [
       { name = "gnome-keyring"; delay = 1; group = "always"; }
