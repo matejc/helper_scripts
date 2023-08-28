@@ -2684,7 +2684,7 @@ EOF
           #vimPlugins.nvim-regexplainer
           vimPlugins.smart-splits-nvim
           vimPlugins.neo-tree-nvim
-          vimPlugins.nvim-treesitter
+          nvim-treesitter.withAllGrammars
           vimPlugins.nvim-treesitter-textobjects
           vimPlugins.neovim-session-manager
           vimPlugins.telescope-frecency-nvim
