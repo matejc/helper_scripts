@@ -2576,7 +2576,7 @@ EOF
     let g:matchup_matchparen_deferred_hide_delay = 500
     inoremap <C-m> <C-o><plug>(matchup-%)
     let g:matchup_matchparen_offscreen = {'method': 'popup'}
-    let g:matchup_matchparen_hi_surround_always = 1
+    let g:matchup_matchparen_hi_surround_always = 0
 
     " augroup large_file_support
     "   autocmd!
