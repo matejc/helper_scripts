@@ -1954,18 +1954,25 @@ require('smart-splits').ignored_filetypes = {
 }
 
 
-local parser_install_dir = vim.fn.stdpath("cache") .. "/treesitters"
-vim.fn.mkdir(parser_install_dir, "p")
+local parser_install_dir = "${pkgs.buildEnv {
+  name = "tree-sitter-all";
+  paths = pkgs.lib.mapAttrsToList (n: v: pkgs.runCommand "tree-sitter-${n}" {} ''
+    mkdir -p $out
+    ln -s ${v} $out/${n}
+  '') (pkgs.lib.filterAttrs (
+    n: v: pkgs.lib.hasPrefix "tree-sitter-" n
+  ) pkgs.vimPlugins.nvim-treesitter.builtGrammars);
+}}"
 vim.opt.runtimepath:append(parser_install_dir)
 
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = "all",
-  auto_install = true,
+  -- ensure_installed = "all",
+  -- auto_install = true,
   parser_install_dir = parser_install_dir,
 
   -- Install languages synchronously (only applied to `ensure_installed`)
-  sync_install = false,
+  -- sync_install = false,
 
   -- List of parsers to ignore installing
   -- ignore_install = { "javascript" },
