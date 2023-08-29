@@ -308,7 +308,7 @@ in lib.mkMerge ([{
         passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
         resizeModeName = "Resize: arrow keys";
         mirrorModeName = "Mirror: c - create, f - toggle freeze";
-        signalModeName = "Mirror: s - stop, q - continue, k - terminate, 9 - kill";
+        signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
       in rec {
         assigns = mkDefault {
           #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];

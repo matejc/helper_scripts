@@ -161,11 +161,11 @@ let
       }
     '';
     gopls = ''
-      nvim_lsp["gopls"].setup {
+      setup_lsp("gopls", {
         on_attach = on_attach;
         cmd = {"${pkgs.gopls}/bin/gopls"};
         capabilities = capabilities;
-      }
+      })
     '';
     hls = ''
       nvim_lsp["hls"].setup {
