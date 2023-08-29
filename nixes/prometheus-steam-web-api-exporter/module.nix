@@ -1,16 +1,15 @@
 { pkgs, lib, config, ... }:
 let
-  cfg = config.services.steam-exporter;
+  cfg = config.services.prometheus-steam-web-api-exporter;
   package = import ./default.nix { inherit pkgs; };
 in
 {
-  options.services.steam-exporter = {
+  options.services.prometheus-steam-web-api-exporter = {
     enable = lib.mkEnableOption "Enable steam-exporter";
-    userId = lib.mkOption {
-      type = lib.types.str;
+    userIDs = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
       description = ''
-        Steam user id (To get your Steam User ID. Login and go to 'view profile'.
-        It should be in the URL bar where xxxxxx is: https://steamcommunity.com/profiles/xxxxxx)
+        Steam user id list (To get your Steam User ID. Login and go to 'view profile'.
       '';
     };
     steamKeyPath = lib.mkOption {
@@ -18,38 +17,35 @@ in
       default = "/var/lib/steam-exporter/key";
       description = "To get a steam key, sign up for one here: https://steamcommunity.com/dev";
     };
-    sleep = lib.mkOption {
-      type = lib.types.int;
-      default = 300;
-      description = "How long to sleep in seconds";
-    };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 8000;
-      description = "Listening port";
+    collectors = lib.mkOption {
+      type = lib.types.listOf (lib.types.enum ["playtime" "price" "achievements"]);
+      default = [ "playtime" "achievements" ];
+      description = ''
+        List of collectors
+      '';
     };
   };
   config = lib.mkIf cfg.enable {
     users.users.steam-exporter = {
       isSystemUser = true;
-      group = "steam-exporter";
-      home = "/var/lib/steam-exporter";
+      group = "prometheus-steam-web-api-exporter";
+      home = "/var/lib/prometheus-steam-web-api-exporter";
       createHome = true;
     };
-    users.groups.steam-exporter = {};
-    systemd.services.steam-exporter = {
+    users.groups.prometheus-steam-web-api-exporter = {};
+    systemd.services.prometheus-steam-web-api-exporter = {
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       description = "Steam Exporter";
       serviceConfig = {
         Type = "simple";
-        User = "steam-exporter";
-        Group = "steam-exporter";
-        ExecStart = pkgs.writeScript "steam-exporter.sh" ''
+        User = "prometheus-steam-web-api-exporter";
+        Group = "prometheus-steam-web-api-exporter";
+        ExecStart = pkgs.writeScript "prometheus-steam-web-api-exporter.sh" ''
           #!${pkgs.stdenv.shell}
           set -e
-          export STEAM_KEY="$(cat ${cfg.steamKeyPath})"
-          ${package}/bin/steam-exporter ${cfg.userId} -port ${toString cfg.port} -sleep ${toString cfg.sleep}
+          export STEAM_API_KEY="$(cat ${cfg.steamKeyPath})"
+          ${package}/bin/prometheus-steam-web-api-exporter --steam-ids=${lib.concatStringsSep "," cfg.steamIDs} --collectors=${lib.concatStringsSep "," cfg.collectors}
         '';
         Restart = "always";
       };

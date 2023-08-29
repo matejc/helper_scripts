@@ -1,15 +1,15 @@
 { pkgs ? import <nixpkgs> {} }:
 with pkgs;
 buildGoModule rec {
-  pname = "prometheus-steam-web-api-exporter";
+  pname = "steam-exporter";
   version = "dev";
 
   src = fetchFromGitHub {
-    owner = "matejc";
-    repo = "prometheus-steam-web-api-exporter";
-    rev = "ea8ae49e25eb349b3f144d299e87aa16155ea7a5";
-    hash = "sha256-vq2rY2Pkmm1ei9hJF9Q4NoMYlJq5od+XtWy8fV+KbUk=";
+    owner = "michaelsergio";
+    repo = "steam-exporter";
+    rev = "79b2c2e6ae8de06b43d1f1945d89f25e1639b9ca";
+    hash = "sha256-6HO+oLRAvU0DxKSQVdP5UlHYzIbIvSDPIPYNcD6vjKM=";
   };
 
-  vendorHash = "sha256-yGv3zPAO844DHpV7iGe4KGhLAbyfMqaC3gGJCVZm4U4=";
+  vendorHash = "sha256-cy3z8sBpkbMK/6NSjqxfX9dBPt3amuEnJlRRGsJIi8s=";
 }
