@@ -495,7 +495,15 @@ EOF
     function! ProjectName()
       return substitute( getcwd(), '.*\/\([^\/]\+\)', '\1', ''' )
     endfunction
-    set titlestring=%{ProjectName()}\:\ %t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
+
+    function! SetTitleString()
+      set titlestring=%{ProjectName()}\:\ %t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
+    endfunction
+
+    augroup bufchange
+      autocmd!
+      autocmd BufRead,BufAdd,BufNew,BufEnter * call SetTitleString()
+    augroup END
 
     filetype plugin on
     if has ("autocmd")
@@ -553,12 +561,12 @@ EOF
     "nnoremap <silent> <c-s> :w<CR>
     "inoremap <silent> <c-s> <C-o>:w<CR>
 
-    nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
-    nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
-    inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
-    inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR>
-    tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
-    tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
+    nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>:call SetTitleString()<cr>
+    nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>:call SetTitleString()<cr>
+    inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR><C-o>:call SetTitleString()<cr>
+    inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR><C-o>:call SetTitleString()<cr>
+    tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR><C-\><C-N>:call SetTitleString()<cr>
+    tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR><C-\><C-N>:call SetTitleString()<cr>
 
     nnoremap <silent> <S-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <S-PageDown> :BufferLineCycleNext<CR>
@@ -567,10 +575,12 @@ EOF
     tnoremap <silent> <S-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
     tnoremap <silent> <S-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
 
-    nnoremap <silent><C-S-PageDown> :BufferLineMoveNext<CR>
-    nnoremap <silent><C-S-PageUp> :BufferLineMovePrev<CR>
-    inoremap <silent><C-S-PageDown> <C-o>:BufferLineMoveNext<CR>
-    inoremap <silent><C-S-PageUp> <C-o>:BufferLineMovePrev<CR>
+    nnoremap <silent> <C-S-PageDown> :BufferLineMoveNext<CR>
+    nnoremap <silent> <C-S-PageUp> :BufferLineMovePrev<CR>
+    inoremap <silent> <C-S-PageDown> <C-o>:BufferLineMoveNext<CR>
+    inoremap <silent> <C-S-PageUp> <C-o>:BufferLineMovePrev<CR>
+    tnoremap <silent> <C-S-PageDown> <C-\><C-N>:BufferLineMoveNext<CR>
+    tnoremap <silent> <C-S-PageUp> <C-\><C-N>:BufferLineMovePrev<CR>
 
     nnoremap <silent> <cr> o
     nnoremap <silent> <c-cr> o
