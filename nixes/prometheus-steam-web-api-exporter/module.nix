@@ -17,12 +17,20 @@ in
       default = "/var/lib/prometheus-steam-web-api-exporter/key";
       description = "To get a steam key, sign up for one here: https://steamcommunity.com/dev";
     };
+    port = lib.mkOption {
+      type = lib.types.port;
+      default = 6630;
+      description = "Listening port";
+    };
+    address = lib.mkOption {
+      type = lib.types.str;
+      default = "127.0.0.1";
+      description = "Listening address";
+    };
     collectors = lib.mkOption {
       type = lib.types.listOf (lib.types.enum ["playtime" "price" "achievements"]);
-      default = [ "playtime" "achievements" ];
-      description = ''
-        List of collectors
-      '';
+      default = [ "playtime" "achievements" "price" ];
+      description = "List of collectors";
     };
   };
   config = lib.mkIf cfg.enable {
@@ -45,7 +53,7 @@ in
           #!${pkgs.stdenv.shell}
           set -e
           export STEAM_API_KEY="$(cat ${cfg.steamKeyPath})"
-          ${package}/bin/prometheus-steam-web-api-exporter --steam-ids=${lib.concatStringsSep "," cfg.steamIDs} --collectors=${lib.concatStringsSep "," cfg.collectors}
+          ${package}/bin/prometheus-steam-web-api-exporter --port=${toString cfg.port} --address=${cfg.address} --steam-ids=${lib.concatStringsSep "," cfg.steamIDs} --collectors=${lib.concatStringsSep "," cfg.collectors}
         '';
         Restart = "always";
       };
