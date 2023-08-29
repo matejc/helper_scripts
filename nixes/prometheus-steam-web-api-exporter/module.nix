@@ -6,7 +6,7 @@ in
 {
   options.services.prometheus-steam-web-api-exporter = {
     enable = lib.mkEnableOption "Enable steam-exporter";
-    userIDs = lib.mkOption {
+    steamIDs = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       description = ''
         Steam user id list (To get your Steam User ID. Login and go to 'view profile'.
