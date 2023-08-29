@@ -26,21 +26,21 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    users.users.steam-exporter = {
+    users.users.prometheus-steam-exporter = {
       isSystemUser = true;
-      group = "prometheus-steam-web-api-exporter";
+      group = "prometheus-steam-exporter";
       home = "/var/lib/prometheus-steam-web-api-exporter";
       createHome = true;
     };
-    users.groups.prometheus-steam-web-api-exporter = {};
+    users.groups.prometheus-steam-exporter = {};
     systemd.services.prometheus-steam-web-api-exporter = {
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      description = "Steam Exporter";
+      description = "Prometheus Steam Web API Exporter";
       serviceConfig = {
         Type = "simple";
-        User = "prometheus-steam-web-api-exporter";
-        Group = "prometheus-steam-web-api-exporter";
+        User = "prometheus-steam-exporter";
+        Group = "prometheus-steam-exporter";
         ExecStart = pkgs.writeScript "prometheus-steam-web-api-exporter.sh" ''
           #!${pkgs.stdenv.shell}
           set -e
