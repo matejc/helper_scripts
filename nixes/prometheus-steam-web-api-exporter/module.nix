@@ -14,7 +14,7 @@ in
     };
     steamKeyPath = lib.mkOption {
       type = lib.types.str;
-      default = "/var/lib/steam-exporter/key";
+      default = "/var/lib/prometheus-steam-web-api-exporter/key";
       description = "To get a steam key, sign up for one here: https://steamcommunity.com/dev";
     };
     collectors = lib.mkOption {
