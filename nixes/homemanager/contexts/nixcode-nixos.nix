@@ -22,6 +22,7 @@ let
       "${helper_scripts}/dotfiles/wezterm.nix"
       "${helper_scripts}/dotfiles/work.nix"
       "${helper_scripts}/dotfiles/jwt.nix"
+      "${helper_scripts}/dotfiles/helix.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
