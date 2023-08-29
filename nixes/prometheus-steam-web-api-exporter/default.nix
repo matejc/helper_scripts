@@ -7,9 +7,9 @@ buildGoModule rec {
   src = fetchFromGitHub {
     owner = "matejc";
     repo = "prometheus-steam-web-api-exporter";
-    rev = "ea8ae49e25eb349b3f144d299e87aa16155ea7a5";
-    hash = "sha256-vq2rY2Pkmm1ei9hJF9Q4NoMYlJq5od+XtWy8fV+KbUk=";
+    rev = "3b716a97407da83bf96f164c3ead0e49874bbc8c";
+    hash = "sha256-cgsMHta7ZQ31fwxueckUiFBT6lci/pvlr3g4bWkWf/U=";
   };
 
-  vendorHash = "sha256-yGv3zPAO844DHpV7iGe4KGhLAbyfMqaC3gGJCVZm4U4=";
+  vendorHash = "sha256-wYq4cuKc7w8UoWG9OCuX2SotIcYJ/JHNQXnzl3cTyxM=";
 }
