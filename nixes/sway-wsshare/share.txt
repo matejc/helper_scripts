@@ -1,0 +1,2 @@
+{ swaymsg -t get_outputs | jq -er '.[]|select(.name|startswith("HEADLESS-"))|.name' || swaymsg create_output; } && export headlessOutput="$(swaymsg -t get_outputs | jq -er '.[]|select(.name|startswith("HEADLESS-"))|.name')" && swaymsg output "$headlessOutput" resolution 1920x1080 position 1920 0 && swaymsg workspace 100 output "$headlessOutput" && wayvnc -o "$headlessOutput"
+

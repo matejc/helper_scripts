@@ -68,6 +68,7 @@
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
+          ../../nixes/sway-wsshare/module.nix
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = false;

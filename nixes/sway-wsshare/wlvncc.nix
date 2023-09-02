@@ -10,8 +10,9 @@ stdenv.mkDerivation {
     sha256 = "sha256-0HbZEtDaLjr966RS+2GHc7N4nsivPIv57T/+AJliwUI=";
   };
 
-  nativeBuildInputs = [ meson cmake pkgconfig ninja ];
+  nativeBuildInputs = [ meson pkgconfig ninja ];
 
-  buildInputs = [ libxkbcommon pixman wayland libdrm mesa libglvnd ffmpeg aml lzo openssl zlib libjpeg libpng ];
-
+  buildInputs = [
+    libxkbcommon pixman wayland libdrm mesa libglvnd ffmpeg aml lzo openssl zlib libjpeg libpng
+  ];
 }

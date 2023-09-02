@@ -545,17 +545,28 @@ in lib.mkMerge ([{
     #workspaces button {
         padding: 0 5px;
         background: transparent;
-        color: white;
         border-bottom: 3px solid transparent;
     }
-
-    #workspaces button.focused {
-        background: #64727D;
-        border-bottom: 3px solid white;
+    #workspaces button.current_output label {
+        color: white;
+    }
+    #workspaces label {
+        color: gray;
     }
 
-    #workspaces button.visible {
+    #workspaces button.current_output.focused {
+        background: #666666;
         border-bottom: 3px solid white;
+    }
+    #workspaces button.focused {
+        background: #444444;
+    }
+
+    #workspaces button.current_output.visible {
+        border-bottom: 3px solid white;
+    }
+    #workspaces button.visible {
+        border-bottom: 3px solid #b3b3b3;
     }
 
     #workspaces button.urgent {
@@ -654,7 +665,7 @@ in lib.mkMerge ([{
       };
       "sway/workspaces" = {
         disable-scroll = true;
-        all-outputs = false;
+        all-outputs = true;
       };
       clock = {
         format = "{:%a %d.%m.%Y, %H:%M}";
