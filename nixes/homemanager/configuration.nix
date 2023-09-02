@@ -217,6 +217,7 @@ in lib.mkMerge ([{
       _JAVA_AWT_WM_NONREPARENTING = "1";
       #GTK_USE_PORTAL = "1";
       #NIXOS_XDG_OPEN_USE_PORTAL = "1";
+      MOZ_ENABLE_WAYLAND = "1";
     };
     home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
@@ -616,6 +617,7 @@ in lib.mkMerge ([{
       layer = "top";
       position = "bottom";
       height = 26;
+      output = map (o: o.output) context.variables.outputs;
       modules-left = [
         "sway/workspaces"
         "sway/mode"
@@ -916,6 +918,8 @@ in lib.mkMerge ([{
     settings = {
       simplified_ui = true;
       default_layout = "compact";
+      copy_command = "${pkgs.wl-clipboard}/bin/wl-copy";
+      default_shell = "${config.home.profileDirectory}/bin/zsh";
     };
   };
   programs.foot = {

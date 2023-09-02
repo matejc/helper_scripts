@@ -162,6 +162,7 @@ let
         LIBVA_DRIVER_NAME = "iHD";
       };
       programs.firefox.enable = true;
+      programs.firefox.package = pkgs.firefox-beta-bin;
     };
   };
 in
