@@ -1,9 +1,0 @@
-[Desktop Entry]
-Exec=/run/current-system/sw/bin/supervisord -c /home/matejc/.supervisord.conf
-Hidden=true
-Name=Supervisord - matej
-NoDisplay=false
-StartupNotify=false
-Terminal=false
-Type=Application
-Version=1.0
