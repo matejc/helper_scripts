@@ -1,4 +1,4 @@
-{ pkgs, lib, config, inputs, dotFileAt }:
+{ pkgs, lib, config, inputs, dotFileAt, helper_scripts, homeConfig }:
 with pkgs;
 let
   clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };

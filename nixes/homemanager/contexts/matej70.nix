@@ -1,4 +1,4 @@
-{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
+{ pkgs, lib, config, inputs, dotFileAt, helper_scripts, homeConfig }:
 with pkgs;
 let
   self = {
@@ -30,9 +30,9 @@ let
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
     variables = rec {
-      homeDir = config.home.homeDirectory;
-      user = config.home.username;
-      profileDir = config.home.profileDirectory;
+      homeDir = homeConfig.home.homeDirectory;
+      user = homeConfig.home.username;
+      profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";

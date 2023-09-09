@@ -10,6 +10,7 @@ in
   imports = [
     (import "${inputs.nixpkgs}/nixos/modules/profiles/minimal.nix")
     (import "${inputs.home-manager}/nixos")
+    (import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; })
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -34,9 +35,6 @@ in
     ln -sf /mnt/wslg/runtime-dir "$runtimeDir"
   '';
 
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = false;
-  home-manager.users.${defaultUser} = import ../configuration.nix { inherit inputs; contextFile = ../contexts/wsl.nix; };
   hardware.opengl.enable = true;
 
   programs.nix-ld.enable = true;

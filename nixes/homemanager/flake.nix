@@ -48,20 +48,20 @@
   };
 
   outputs = { self, ... }@inputs: {
-    homeConfigurations = {
-      wsl = inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-        modules = [
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
-        ];
-      };
-      nixcode = inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-        modules = [
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
-        ];
-      };
-    };
+    # homeConfigurations = {
+    #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
+    #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+    #     modules = [
+    #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
+    #     ];
+    #   };
+    #   nixcode = inputs.home-manager.lib.homeManagerConfiguration {
+    #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+    #     modules = [
+    #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
+    #     ];
+    #   };
+    # };
     nixosConfigurations = {
       matej70 = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -69,12 +69,10 @@
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
           ../../nixes/sway-wsshare/module.nix
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = false;
-            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; });
-            #nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
-          }
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; })
+          # {
+          #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
+          # }
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {
@@ -82,11 +80,7 @@
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           inputs.home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = false;
-            home-manager.users.matejc = (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; });
-          }
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
         ];
       };
     };
