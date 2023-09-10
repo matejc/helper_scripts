@@ -738,9 +738,9 @@ EOF
     vnoremap <silent> <C-Up> :<C-u>call MoveVisualUp()<CR>
     vnoremap <silent> <C-Down> :<C-u>call MoveVisualDown()<CR>
 
-    nnoremap <C-S-d> :copy .<cr>
-    vnoremap <C-S-d> :copy '><cr>
-    inoremap <C-S-d> <c-o>:copy .<cr>
+    nnoremap <C-S-D> :copy .<cr>
+    vnoremap <C-S-D> :copy '><cr>
+    inoremap <C-S-D> <c-o>:copy .<cr>
 
     vnoremap <Tab> >gv
     vnoremap <S-Tab> <gv
@@ -1980,12 +1980,15 @@ require("scrollbar").setup({
 -- })
 
 
-require('smart-splits').ignored_buftypes = { 'NvimTree' }
-require('smart-splits').ignored_filetypes = {
-  'nofile',
-  'quickfix',
-  'prompt',
-}
+require('smart-splits').setup({
+  multiplexer_integration = false,
+  ignored_buftypes = { 'NvimTree' },
+  ignored_filetypes = {
+    'nofile',
+    'quickfix',
+    'prompt',
+  },
+})
 
 
 local parser_install_dir = "${pkgs.buildEnv {
@@ -2430,6 +2433,11 @@ EOF
     inoremap <A-Down> <Cmd>:lua require('smart-splits').move_cursor_down()<CR>
     inoremap <A-Up> <Cmd>:lua require('smart-splits').move_cursor_up()<CR>
     inoremap <A-Right> <Cmd>:lua require('smart-splits').move_cursor_right()<CR>
+
+    inoremap <A-S-Left> <Cmd>:lua require('smart-splits').resize_left()<CR>
+    inoremap <A-S-Down> <Cmd>:lua require('smart-splits').resize_down()<CR>
+    inoremap <A-S-Up> <Cmd>:lua require('smart-splits').resize_up()<CR>
+    inoremap <A-S-Right> <Cmd>:lua require('smart-splits').resize_right()<CR>
 
     set redrawtime=3000
 
