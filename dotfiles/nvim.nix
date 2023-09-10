@@ -1232,7 +1232,20 @@ cmp.setup({
       i = cmp.mapping.abort(),
       c = cmp.mapping.close(),
     }),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<CR>'] = function(fallback)
+      if cmp.visible() and cmp.get_active_entry() then
+        cmp.confirm({ select = false })
+      else
+        fallback()
+      end
+    end,
+    ['<C-CR>'] = function(fallback)
+      if cmp.visible() and cmp.get_active_entry() then
+        cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+      else
+        fallback()
+     end
+    end,
     ['<Esc>'] = cmp.mapping({
       i = cmp.mapping.abort(),
     }),
@@ -1291,6 +1304,17 @@ cmp.setup({
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline({
+    ['<CR>'] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.close()
+        else
+          fallback()
+        end
+      end,
+    },
+  }),
   sources = cmp.config.sources({
     { name = 'path' },
   }, {
@@ -1299,7 +1323,17 @@ cmp.setup.cmdline(':', {
 })
 
 cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
+  mapping = cmp.mapping.preset.cmdline({
+    ['<CR>'] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.close()
+        else
+          fallback()
+        end
+      end,
+    },
+  }),
   sources = {
     { name = 'buffer' }
   }
