@@ -1323,17 +1323,7 @@ cmp.setup.cmdline(':', {
 })
 
 cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline({
-    ['<CR>'] = {
-      c = function(fallback)
-        if cmp.visible() then
-          cmp.close()
-        else
-          fallback()
-        end
-      end,
-    },
-  }),
+  mapping = cmp.mapping.preset.cmdline(),
   sources = {
     { name = 'buffer' }
   }

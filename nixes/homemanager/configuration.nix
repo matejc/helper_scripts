@@ -1,6 +1,5 @@
 { inputs, contextFile }:
 { pkgs, lib, config, ... }:
-with lib;
 with pkgs;
 let
   helper_scripts = ../..;
@@ -16,12 +15,12 @@ let
     { inherit pkgs lib config; };
 
   dotFileAt = file: at:
-    (elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
+    (lib.elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
   services-cmds = map (group: writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
     source "${context.variables.shellRc}"
-    ${concatMapStringsSep "\n" (s: ''{ sleep ${toString s.delay} && systemctl --user "$1" "${s.name}"; } &'') context.services}
+    ${lib.concatMapStringsSep "\n" (s: ''{ sleep ${toString s.delay} && systemctl --user "$1" "${s.name}"; } &'') context.services}
     wait
   '') (map (s: s.group) context.services);
 
@@ -159,7 +158,7 @@ in {
         enable = true;
         #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
         configFile."swaync/config.json".text = builtins.toJSON swayncConfig;
-        configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (readFile "${swaynotificationcenter}/etc/xdg/swaync/style.css");
+        configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${swaynotificationcenter}/etc/xdg/swaync/style.css");
         configFile."sworkstyle/config.toml".text = ''
           fallback = ''
 
@@ -199,7 +198,7 @@ in {
       };
       #systemd.user.services.gnome-keyring.Service.ExecStart = mkForce "/wrappers/gnome-keyring-daemon --start --foreground --components=secrets";
 
-      fonts.fontconfig.enable = mkForce true;
+      fonts.fontconfig.enable = lib.mkForce true;
       home.packages = [
         font-awesome
         config.gtk.font.package
@@ -291,7 +290,7 @@ in {
         #  outputs = map (o: { inherit (o) criteria position mode scale; }) context.variables.outputs;
         #};
         profiles.firstonly = {
-          outputs = [{ inherit (head context.variables.outputs) criteria position mode scale; status = "enable"; }];
+          outputs = [{ inherit (lib.head context.variables.outputs) criteria position mode scale; status = "enable"; }];
           # exec = optionals (config.programs.waybar.enable) [ "${pkgs.systemd}/bin/systemctl --user restart waybar" ];
         };
         profiles.default = {
@@ -317,7 +316,7 @@ in {
           mirrorModeName = "Mirror: c - create, f - toggle freeze";
           signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
         in rec {
-          assigns = mkDefault {
+          assigns = lib.mkDefault {
             #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
             "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
           };
@@ -343,7 +342,7 @@ in {
             style = context.variables.font.style;
             size = context.variables.font.size;
           };
-          keybindings = mkOptionDefault {
+          keybindings = lib.mkOptionDefault {
               "${modifier}+Control+t" = "exec ${context.variables.programs.terminal}";
               "Mod1+Control+t" = "exec ${context.variables.programs.terminal}";
               "${modifier}+Control+h" = "exec ${context.variables.programs.filemanager} '${context.variables.homeDir}'";
@@ -378,15 +377,15 @@ in {
               "XF86AudioMicMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
               "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
               "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
-              "${modifier}+p" = "output ${(head context.variables.outputs).output} toggle";
+              "${modifier}+p" = "output ${(lib.head context.variables.outputs).output} toggle";
               "${modifier}+m" = "mode \"${mirrorModeName}\"";
               "${modifier}+s" = "mode \"${signalModeName}\"";
               "${modifier}+r" = "mode \"${resizeModeName}\"";
               "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
-              "Control+Mod1+s" = mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
+              "Control+Mod1+s" = lib.mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
             };
           modifier = "Mod4";
-          modes = mkOptionDefault {
+          modes = lib.mkOptionDefault {
             "${resizeModeName}" = {
               "Left" = "resize shrink width 10 px";
               "Down" = "resize grow height 10 px";
@@ -441,8 +440,8 @@ in {
           #    hide_cursor = "when-typing disable";
           #  };
           #};
-          output = builtins.listToAttrs (map (o: { name = o.output; value = ({ bg = "${o.wallpaper} fill"; scale = (toString o.scale); } // (optionalAttrs (o.mode != null) { inherit (o) mode; })); }) context.variables.outputs);
-          workspaceOutputAssign = flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
+          output = lib.listToAttrs (map (o: { name = o.output; value = ({ bg = "${o.wallpaper} fill"; scale = (toString o.scale); } // (lib.optionalAttrs (o.mode != null) { inherit (o) mode; })); }) context.variables.outputs);
+          workspaceOutputAssign = lib.flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
         };
         extraConfig = ''
           focus_wrapping yes
@@ -454,15 +453,15 @@ in {
         events = [
           { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
           { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
-          { event = "after-resume"; command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
-          { event = "unlock"; command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
+          { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
+          { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
         ];
         timeouts = [
           { timeout = 120; command = "${context.variables.binDir}/lockscreen --grace 3"; }
           {
             timeout = 300;
-            command = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;
-            resumeCommand = concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs;
+            command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;
+            resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs;
           }
           { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
         ];
@@ -641,7 +640,7 @@ in {
             "sway/window"
           ];
           modules-center = [ ];
-          modules-right = flatten [
+          modules-right = lib.flatten [
             "custom/notification"
             "custom/sep"
             "idle_inhibitor"
@@ -652,8 +651,8 @@ in {
             "custom/sep"
             "battery"
             "custom/sep"
-            (imap0 (i: _: [ "network#${toString i}" "custom/sep" ]) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
-            (imap0 (i: _: [ "disk#${toString i}" "custom/sep" ]) context.variables.mounts)
+            (lib.imap0 (i: _: [ "network#${toString i}" "custom/sep" ]) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces))
+            (lib.imap0 (i: _: [ "disk#${toString i}" "custom/sep" ]) context.variables.mounts)
             "cpu"
             "custom/sep"
             "temperature"
@@ -742,7 +741,7 @@ in {
             format = "{temperatureC}°C {icon}";
             format-icons = ["" "" "" "" ""];
             critical-threshold = 80;
-            hwmon-path = mkIf (builtins.hasAttr "hwmonPath" context.variables) context.variables.hwmonPath;
+            hwmon-path = lib.mkIf (builtins.hasAttr "hwmonPath" context.variables) context.variables.hwmonPath;
           };
           idle_inhibitor = {
             format = "{icon}";
@@ -795,8 +794,8 @@ in {
             format-icons = ["" "" "" "" ""];
             max-length = 25;
           };
-        } // listToAttrs (imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v}{percentage_used}%"; path = v; }; }) context.variables.mounts)
-        // listToAttrs (imap0 (i: v: { name = "network#${toString i}"; value = {
+        } // lib.listToAttrs (lib.imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v}{percentage_used}%"; path = v; }; }) context.variables.mounts)
+        // lib.listToAttrs (lib.imap0 (i: v: { name = "network#${toString i}"; value = {
             interface = v;
             format = "{ifname}";
             format-wifi = "{essid} ({signalStrength}%) ";
@@ -824,7 +823,7 @@ in {
         $DRY_RUN_CMD ${dotfiles}/bin/dot-files-apply-homemanager
       '';
 
-      home.activation.checkLinkTargets = mkForce "true";
+      home.activation.checkLinkTargets = lib.mkForce "true";
 
       programs.gpg = {
         enable = true;
@@ -846,7 +845,7 @@ in {
         enable = true;
         enableVteIntegration = true;
         initExtra = ''
-          ${readFile (dotFileAt "zsh.nix" 0)}
+          ${lib.readFile (dotFileAt "zsh.nix" 0)}
 
           . "${pkgs.nix}/etc/profile.d/nix.sh"
 
@@ -854,7 +853,7 @@ in {
           . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh" || true
         '';
         loginExtra = ''
-          ${readFile (dotFileAt "zsh.nix" 1)}
+          ${lib.readFile (dotFileAt "zsh.nix" 1)}
 
           if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty3" ] && [ -f "$(${pkgs.which}/bin/which startsway)" ]
           then
