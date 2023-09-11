@@ -315,6 +315,7 @@ in {
           resizeModeName = "Resize: arrow keys";
           mirrorModeName = "Mirror: c - create, f - toggle freeze";
           signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
+          audioModeName = "Audio: s - speakers, m - mic, p - pavu, h - patchboard";
         in rec {
           assigns = lib.mkDefault {
             #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
@@ -381,8 +382,8 @@ in {
               "${modifier}+m" = "mode \"${mirrorModeName}\"";
               "${modifier}+s" = "mode \"${signalModeName}\"";
               "${modifier}+r" = "mode \"${resizeModeName}\"";
+              "${modifier}+a" = lib.mkForce "mode \"${audioModeName}\"";
               "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
-              "Control+Mod1+s" = lib.mkForce "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')";
             };
           modifier = "Mod4";
           modes = lib.mkOptionDefault {
@@ -405,6 +406,14 @@ in {
               "q" = "exec ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
               "k" = "exec ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
               "9" = "exec ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+              "Escape" = "mode default";
+              "Return" = "mode default";
+            };
+            "${audioModeName}" = {
+              "s" = "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}'), mode \"default\"";
+              "m" = "exec ${pkgs.pulseaudio}/bin/pactl set-default-source $(${pkgs.pulseaudio}/bin/pactl list short sources | ${pkgs.gawk}/bin/awk -v def_src=\"$(${pkgs.pulseaudio}/bin/pactl get-default-source)\" '/source/ {if ($2 == def_src) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}'), mode \"default\"";
+              "p" = "exec ${pkgs.pavucontrol}/bin/pavucontrol, mode \"default\"";
+              "h" = "exec ${pkgs.helvum}/bin/helvum, mode \"default\"";
               "Escape" = "mode default";
               "Return" = "mode default";
             };
