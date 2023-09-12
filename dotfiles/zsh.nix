@@ -214,10 +214,6 @@ in
     alias cdu='cd-gitroot'
     alias ...='cd-gitroot'
 
-    #alias l='${pkgs.exa}/bin/exa -gal --git'
-    #alias t='${pkgs.exa}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
-    #alias ..='cd ..'
-
     # include .profile if it exists
     if [ -f "$HOME/.profile" ]; then
         . "$HOME/.profile"

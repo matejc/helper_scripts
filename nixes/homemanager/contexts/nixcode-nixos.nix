@@ -59,7 +59,8 @@ let
         #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        # browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
+        browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
         slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         #browser = "${profileDir}/bin/google-chrome-stable";
         editor = "${nano}/bin/nano";
@@ -161,6 +162,7 @@ let
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
       };
+      programs.chromium.enable = true;
       programs.firefox.enable = true;
       programs.firefox.package = pkgs.firefox-beta-bin;
     };

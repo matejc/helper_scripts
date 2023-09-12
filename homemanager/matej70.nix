@@ -592,8 +592,8 @@ in
       alias cdu='cd-gitroot'
       alias ...='cd-gitroot'
 
-      alias l='${exa}/bin/exa -gal --git'
-      alias t='${exa}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
+      alias l='${eza}/bin/exa -gal --git'
+      alias t='${eza}/bin/exa -gal --git -T --ignore-glob=".git" -L3'
 
       alias ..='cd ..'
 

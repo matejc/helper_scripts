@@ -249,7 +249,6 @@ in {
       };
 
       programs.chromium = {
-        enable = true;
         extensions = [
           "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
           "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
@@ -929,8 +928,8 @@ in {
       };
       home.shellAliases = {
         ".." = "cd ..";
-        "l" = "${pkgs.exa}/bin/exa -gal --git";
-        "t" = "${pkgs.exa}/bin/exa -T --ignore-glob='.git' -L3";
+        "l" = "${pkgs.eza}/bin/eza -gal --git";
+        "t" = "${pkgs.eza}/bin/eza -T --ignore-glob='.git' -L3";
         "z" = "${pkgs.zellij}/bin/zellij";
         "b" = "${pkgs.broot}/bin/broot";
       };
