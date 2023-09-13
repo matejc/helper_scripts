@@ -80,6 +80,7 @@
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           inputs.home-manager.nixosModules.home-manager
+          ../../nixes/sway-wsshare/module.nix
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
         ];
       };

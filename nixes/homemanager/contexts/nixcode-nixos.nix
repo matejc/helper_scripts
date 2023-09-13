@@ -60,7 +60,8 @@ let
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         # browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
-        browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
+        # browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
+        browser = "${profileDir}/bin/firefox";
         slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
         #browser = "${profileDir}/bin/google-chrome-stable";
         editor = "${nano}/bin/nano";
