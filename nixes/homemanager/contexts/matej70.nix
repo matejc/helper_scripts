@@ -64,7 +64,7 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${profileDir}/bin/chromium";
+        browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";

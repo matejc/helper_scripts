@@ -261,7 +261,6 @@ in {
         profiles = {
           default = {
             extensions = with nur.repos.rycee.firefox-addons; [
-              #https-everywhere
               ublock-origin keepassxc-browser translate-web-pages multi-account-containers
             ];
             settings = {
