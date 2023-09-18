@@ -125,8 +125,6 @@ let
     '';
   };
 
-  # https://nix-community.github.io/home-manager/options.html
-
   nixmyConfig = {
     nixpkgs = context.variables.nixmy.nixpkgs;
     remote = context.variables.nixmy.remote;
@@ -136,10 +134,13 @@ let
     nix = pkgs.nix;
   };
 
-  wmName =
-    if config.home-manager.users.matejc.wayland.windowManager.hyprland.enable then "hyprland" else
-    if config.home-manager.users.matejc.wayland.windowManager.sway.enable then "sway" else
-    null;
+  setDefaultSink = pkgs.writeShellScript "set-default-sink" ''
+    ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink="$(${pkgs.pulseaudio}/bin/pactl get-default-sink)" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')
+  '';
+
+  setDefaultSource = pkgs.writeShellScript "set-default-source" ''
+    ${pkgs.pulseaudio}/bin/pactl set-default-source $(${pkgs.pulseaudio}/bin/pactl list short sources | ${pkgs.gawk}/bin/awk -v def_src="$(${pkgs.pulseaudio}/bin/pactl get-default-source)" '/source/ {if ($2 == def_src) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')
+  '';
 in {
 
   config = lib.mkMerge ([{
@@ -373,7 +374,7 @@ in {
                 "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output";
                 "Mod1+Control+Shift+Left" = "exec ${sway-workspace}/bin/sway-workspace --move prev-on-output";
                 "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
-                "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshoot-$(date +%Y-%m-%d_%H-%M-%S).png";
+                "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
                 "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
                 "Control+Mod1+m" = "exec ${inputs.nwg-displays.packages."${pkgs.system}".default}/bin/nwg-displays";
@@ -415,8 +416,8 @@ in {
                 "Return" = "mode default";
               };
               "${audioModeName}" = {
-                "s" = "exec ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink=\"$(${pkgs.pulseaudio}/bin/pactl get-default-sink)\" '{if ($2 == def_sink) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}'), mode \"default\"";
-                "m" = "exec ${pkgs.pulseaudio}/bin/pactl set-default-source $(${pkgs.pulseaudio}/bin/pactl list short sources | ${pkgs.gawk}/bin/awk -v def_src=\"$(${pkgs.pulseaudio}/bin/pactl get-default-source)\" '/source/ {if ($2 == def_src) {print $2\" / \"$NF\" / DEFAULT\"} else {print $2\" / \"$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}'), mode \"default\"";
+                "s" = "exec ${setDefaultSink}, mode \"default\"";
+                "m" = "exec ${setDefaultSource}, mode \"default\"";
                 "p" = "exec ${pkgs.pavucontrol}/bin/pavucontrol, mode \"default\"";
                 "h" = "exec ${pkgs.helvum}/bin/helvum, mode \"default\"";
                 "Escape" = "mode default";
@@ -506,11 +507,55 @@ in {
 
           binde=, XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+
           bindl=, XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-
+          bindl=, XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+          bindl=, XF86AudioMicMute, exec, wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+          binde = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 10
+          binde = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 10
+
+          bind = , Print, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
+          bind = SHIFT, Print, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${wl-clipboard}/bin/wl-copy --type image/png
+          bind = $mod, c, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy
+
+          bindl = $mod, p, exec, hyprctl keyword monitor "${(lib.head context.variables.outputs).output}, toggle"
 
           bindm = $mod, mouse:272, movewindow
           bindm = $mod, mouse:273, resizewindow
 
+          bind = $mod, r, submap, resize
+          submap=resize
+          binde=,right,resizeactive,10 0
+          binde=,left,resizeactive,-10 0
+          binde=,up,resizeactive,0 -10
+          binde=,down,resizeactive,0 10
+          bind=,escape,submap,reset
+          submap=reset
+
+          bind = $mod, s, submap, signal
+          submap=signal
+          bind =, s, exec, ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, q, exec, ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, k, exec, ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, 9, exec, ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind=,escape,submap,reset
+          submap=reset
+
+          bind = $mod, a, submap, audio
+          submap=audio
+          bind =, s, exec, ${setDefaultSink}
+          bind =, m, exec, ${setDefaultSource}
+          bind =, p, exec, ${pkgs.pavucontrol}/bin/pavucontrol
+          bind =, h, exec, ${pkgs.helvum}/bin/helvum
+          bind=,escape,submap,reset
+          submap=reset
+
           # workspaces
+          ${lib.concatMapStringsSep "\n" (o:
+          lib.concatMapStringsSep "\n" (w:
+          "workspace=${o.output},${w}"
+          ) o.workspaces
+          ) context.variables.outputs}
+
           # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
           ${builtins.concatStringsSep "\n" (builtins.genList (
             x: let
@@ -528,19 +573,19 @@ in {
           monitors {
             monitor=,preferred,auto,1
 
-            ${lib.concatMapStringsSep "\n" (o:
-            "monitor=${o.output},${o.mode},${builtins.replaceStrings [","] ["x"] o.position},${toString o.scale}"
-            ) context.variables.outputs}
+          ${lib.concatMapStringsSep "\n" (o:
+          "  monitor=${o.output},${o.mode},${builtins.replaceStrings [","] ["x"] o.position},${toString o.scale}"
+          ) context.variables.outputs}
           }
 
           exec-once = [workspace 4 silent] ${context.variables.programs.browser}
           exec-once = ${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
           exec-once = ${swaynotificationcenter}/bin/swaync
+          exec-once = ${context.variables.profileDir}/bin/service-group-once start
+          exec = ${context.variables.profileDir}/bin/service-group-always restart
 
           windowrulev2 = nofullscreenrequest,floating:0
           windowrulev2 = nomaximizerequest,floating:0
-
-          $activeMonitorId="$(hyprctl -j monitors | ${pkgs.jq}/bin/jq -r '.[] | select(.focused == true) | .id')"
 
           windowrulev2 = float, class:^(dropdown-terminal)$
           windowrulev2 = opacity 0.9 override 0.5 override, class:^(dropdown-terminal)$
@@ -717,7 +762,7 @@ in {
               background: #F92672;
           }
 
-          #mode,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather {
+          #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather {
               padding: 0 5px;
           }
 
@@ -774,9 +819,9 @@ in {
             height = 26;
             output = map (o: o.output) context.variables.outputs;
             modules-left = [
-              "${wmName}/workspaces"
-              "${wmName}/${if wmName == "sway" then "mode" else "submap"}"
-              "${wmName}/window"
+              "${context.variables.graphical.name}/workspaces"
+              "${context.variables.graphical.name}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
+              "${context.variables.graphical.name}/window"
             ];
             modules-center = [ ];
             modules-right = lib.flatten [
@@ -807,8 +852,9 @@ in {
               interval = "once";
               tooltip = false;
             };
-            "${wmName}/workspaces" = {
-              all-outputs = wmName == "sway";
+            "${context.variables.graphical.name}/workspaces" = {
+              all-outputs = context.variables.graphical.name == "sway";
+              show-special = lib.mkIf (context.variables.graphical.name != "sway") false;
             };
             clock = {
               format = "{:%a %d.%m.%Y, %H:%M}";
@@ -948,7 +994,7 @@ in {
           }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
         };
         programs.waybar.systemd.enable = true;
-        programs.waybar.systemd.target = if wmName == "sway" then "sway-session.target" else "graphical-session.target";
+        programs.waybar.systemd.target = context.variables.graphical.target;
         systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
 
         #services.nextcloud-client.enable = true;

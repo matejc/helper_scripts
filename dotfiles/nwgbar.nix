@@ -17,7 +17,7 @@ in
 [
   {
     "name": "Lock screen",
-    "exec": "swaylock -f -c 000000",
+    "exec": "${variables.binDir}/lockscreen",
     "icon": "${images}/system-lock-screen.svg.png"
   },
   {
@@ -27,7 +27,7 @@ in
   },
   {
     "name": "Logout",
-    "exec": "swaymsg exit",
+    "exec": "${variables.graphical.logout}",
     "icon": "${images}/system-log-out.svg.png"
   },
   {

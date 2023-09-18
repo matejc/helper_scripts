@@ -65,6 +65,21 @@ let
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
+      graphical = let
+        logoutCmd = pkgs.writeShellScript "logout.sh" ''
+          (  # execute in subshell so that `shopt` won't affect other scripts
+            shopt -s nullglob  # so that nothing is done if /tmp/hypr/ does not exist or is empty
+            for instance in /tmp/hypr/*; do
+              HYPRLAND_INSTANCE_SIGNATURE=''${instance##*/} ${profileDir}/bin/hyprctl dispatch exit \
+                || true  # ignore dead instance(s)
+            done
+          )
+        '';
+      in {
+        name = "hyprland";
+        logout = "${logoutCmd}";
+        target = "hyprland-session.target";
+      };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
@@ -97,6 +112,7 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
+      { name = "waybar"; delay = 3; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
     ];
@@ -104,7 +120,7 @@ let
     nixos-configuration = {
       xdg.portal = {
         enable = true;
-        wlr.enable = true;
+        wlr.enable = false;
         extraPortals = [ inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland ];
       };
       nix.settings = {
