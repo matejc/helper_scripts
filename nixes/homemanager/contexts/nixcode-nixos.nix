@@ -1,7 +1,9 @@
-{ pkgs, lib, config, inputs, dotFileAt, helper_scripts, homeConfig }:
+{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
 with pkgs;
 let
   clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
+
+  homeConfig = config.home-manager.users.matejc;
 
   self = {
     dotFilePaths = [
@@ -117,6 +119,7 @@ let
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
+    nixos-configuration = {};
     home-configuration = rec {
       home.stateVersion = "22.05";
       wayland.windowManager.sway.enable = true;

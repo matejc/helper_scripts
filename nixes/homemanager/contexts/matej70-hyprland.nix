@@ -7,7 +7,6 @@ let
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
       "${helper_scripts}/dotfiles/nvim.nix"
-      "${helper_scripts}/dotfiles/xfce4-terminal.nix"
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
       "${helper_scripts}/dotfiles/nix.nix"
@@ -15,9 +14,7 @@ let
       "${helper_scripts}/dotfiles/jstools.nix"
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
       "${helper_scripts}/dotfiles/comma.nix"
-      "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
@@ -27,6 +24,7 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
+      "${helper_scripts}/dotfiles/swaylockscreen.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -37,7 +35,6 @@ let
       profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
-      #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
       lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
@@ -55,28 +52,15 @@ let
         style = "Bold";
         size = 10.0;
       };
-      i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
         terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
-        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
-        #browser = "${profileDir}/bin/chromium";
+        dropdown = "${pkgs.procps}/bin/pgrep '.*wezterm.*dropdown.*' -fl || ${pkgs.wezterm}/bin/wezterm start --always-new-process --class dropdown-terminal";
+        passwords = "${pkgs.procps}/bin/pgrep 'keepassxc$' || ${pkgs.keepassxc}/bin/keepassxc";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        #window-center = dotFileAt "i3config.nix" 4;
-        #window-size = dotFileAt "i3config.nix" 5;
-        #i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
-        #tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -115,49 +99,57 @@ let
       { name = "kanshi"; delay = 2; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 1; group = "always"; }
-      { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
-      services.greetd = {
-        enable = true;
-        settings = {
-          default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
-          };
-        };
-        vt = 2;
-      };
       xdg.portal = {
         enable = true;
-        wlr = {
-          enable = true;
+        wlr.enable = true;
+        extraPortals = [ inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland ];
+      };
+      nix.settings = {
+        substituters = ["https://hyprland.cachix.org"];
+        trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+      };
+      services.greetd = {
+        enable = lib.mkDefault true;
+        settings = {
+          default_session = {
+            command = lib.mkForce "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+          };
         };
+        vt = lib.mkDefault 2;
       };
     };
     home-configuration = {
       home.stateVersion = "20.09";
-      wayland.windowManager.sway.enable = true;
-      wayland.windowManager.sway.config.startup = [
-        { command = "${self.variables.programs.browser}"; }
-        #{ command = "${self.variables.programs.keepassxc}"; }
-        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
-      ];
-      wayland.windowManager.sway.config.input = {
-        "type:pointer" = {
-          pointer_accel = "-0.3";
-          #middle_emulation = "enabled";
-        };
+      wayland.windowManager.hyprland.enable = true;
+
+      services.swayidle = {
+        enable = true;
+        events = lib.mkForce [
+          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "after-resume"; command = "hyprctl dispatch dpms on"; }
+          { event = "unlock"; command = "hyprctl dispatch dpms on"; }
+        ];
+        timeouts = lib.mkForce [
+          { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
+          {
+            timeout = 300;
+            command = "hyprctl dispatch dpms off";
+            resumeCommand = "hyprctl dispatch dpms on";
+          }
+          { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
+        ];
       };
+
+      programs.waybar.enable = true;
       services.kanshi.enable = true;
-      services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
-      #services.syncthing.tray.enable = true;
-      programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];

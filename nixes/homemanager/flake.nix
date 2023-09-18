@@ -45,6 +45,10 @@
       url = "github:nwg-piotr/nwg-displays/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { self, ... }@inputs: {
@@ -73,6 +77,14 @@
           # {
           #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           # }
+        ];
+      };
+      matej70-hyprland = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
+          inputs.home-manager.nixosModules.home-manager
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-hyprland.nix; })
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {
