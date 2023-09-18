@@ -854,7 +854,10 @@ in {
             };
             "${context.variables.graphical.name}/workspaces" = {
               all-outputs = context.variables.graphical.name == "sway";
-              show-special = lib.mkIf (context.variables.graphical.name != "sway") false;
+              show-special = lib.mkIf (context.variables.graphical.name == "hyprland") false;
+            };
+            "${context.variables.graphical.name}/window" = {
+              separate-outputs = lib.mkIf (context.variables.graphical.name == "hyprland") true;
             };
             clock = {
               format = "{:%a %d.%m.%Y, %H:%M}";
