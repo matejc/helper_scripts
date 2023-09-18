@@ -113,7 +113,7 @@ let
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
       { name = "waybar"; delay = 3; group = "always"; }
-      #{ name = "syncthingtray"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
     ];
     config = {};

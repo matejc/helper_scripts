@@ -501,6 +501,8 @@ in {
           bind = $mod, f, fullscreen,
           bind = $mod, k, killactive,
           bind = $mod SHIFT, E, exit,
+          bind = $mod SHIFT, R, exec, hyprctl reload
+          bind = $mod SHIFT, R, forcerendererreload,
 
           bind = CTRL ALT, n, exec, ${swaynotificationcenter}/bin/swaync-client -t -sw
           bind = CTRL ALT, Delete, exec, ${pkgs.nwg-bar}/bin/nwg-bar
