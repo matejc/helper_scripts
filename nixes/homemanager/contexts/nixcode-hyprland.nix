@@ -179,7 +179,6 @@ let
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       home.packages = [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
         logseq

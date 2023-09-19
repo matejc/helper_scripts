@@ -176,7 +176,6 @@ let
       home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       programs.firefox = {
         enable = true;
         package = pkgs.firefox-beta-bin;

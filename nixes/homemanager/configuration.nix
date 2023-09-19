@@ -996,6 +996,9 @@ in {
         #services.nextcloud-client.enable = true;
         #services.nextcloud-client.startInBackground = true;
         #systemd.user.services.nextcloud-client.Service.ExecStart = mkForce (exec "${nextcloud-client}/bin/nextcloud --background");
+        systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+        systemd.user.services.network-manager-applet.Unit.Requires = lib.mkForce [ "graphical-session-pre.target" ];
+
 
         services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" ];
 
