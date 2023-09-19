@@ -618,6 +618,7 @@ in {
         '';
 
         services.swayidle = {
+          systemdTarget = context.variables.graphical.target;
           #enable = true;
           events = [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }

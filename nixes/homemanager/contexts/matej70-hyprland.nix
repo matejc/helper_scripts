@@ -3,6 +3,16 @@ with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
+  hyprCmd = pkgs.writeShellScript "hypr-cmd.sh" ''
+    (  # execute in subshell so that `shopt` won't affect other scripts
+      shopt -s nullglob  # so that nothing is done if /tmp/hypr/ does not exist or is empty
+      for instance in /tmp/hypr/*; do
+        HYPRLAND_INSTANCE_SIGNATURE=''${instance##*/} ${self.variables.profileDir}/bin/hyprctl "$@" \
+          || true  # ignore dead instance(s)
+      done
+    )
+  '';
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -66,15 +76,7 @@ let
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       graphical = let
-        logoutCmd = pkgs.writeShellScript "logout.sh" ''
-          (  # execute in subshell so that `shopt` won't affect other scripts
-            shopt -s nullglob  # so that nothing is done if /tmp/hypr/ does not exist or is empty
-            for instance in /tmp/hypr/*; do
-              HYPRLAND_INSTANCE_SIGNATURE=''${instance##*/} ${profileDir}/bin/hyprctl dispatch exit \
-                || true  # ignore dead instance(s)
-            done
-          )
-        '';
+        logoutCmd = "${hyprCmd} dispatch exit";
       in {
         name = "hyprland";
         logout = "${logoutCmd}";
@@ -149,15 +151,15 @@ let
         events = lib.mkForce [
           { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
           { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "after-resume"; command = "hyprctl dispatch dpms on"; }
-          { event = "unlock"; command = "hyprctl dispatch dpms on"; }
+          { event = "after-resume"; command = "${hyprCmd} dispatch dpms on"; }
+          { event = "unlock"; command = "${hyprCmd} dispatch dpms on"; }
         ];
         timeouts = lib.mkForce [
           { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
           {
             timeout = 300;
-            command = "hyprctl dispatch dpms off";
-            resumeCommand = "hyprctl dispatch dpms on";
+            command = "${hyprCmd} dispatch dpms off";
+            resumeCommand = "${hyprCmd} dispatch dpms on";
           }
           { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
         ];
