@@ -287,21 +287,15 @@ in {
         home.homeDirectory = "/home/matejc";
 
         services.kanshi = {
-          #enable = true;
-          #profiles.default = {
-          #  exec = [
-          #    "${pkgs.sway}/bin/swaymsg output '*' scale_filter smart"
-          #    "${pkgs.sway}/bin/swaymsg output '*' subpixel none"
-          #  ];
-          #  outputs = map (o: { inherit (o) criteria position mode scale; }) context.variables.outputs;
-          #};
+          systemdTarget = context.variables.graphical.target;
           profiles.firstonly = {
-            outputs = [{ inherit (lib.head context.variables.outputs) criteria position mode scale; status = "enable"; }];
-            # exec = optionals (config.programs.waybar.enable) [ "${pkgs.systemd}/bin/systemctl --user restart waybar" ];
+            outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
           };
           profiles.default = {
             outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
-            # exec = optionals (config.programs.waybar.enable) [ "${pkgs.systemd}/bin/systemctl --user restart waybar" ];
+          };
+          profiles.all = {
+            outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
           };
         };
 
@@ -519,7 +513,8 @@ in {
           bind = SHIFT, Print, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${wl-clipboard}/bin/wl-copy --type image/png
           bind = $mod, c, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy
 
-          bindl = $mod, p, exec, hyprctl keyword monitor "${(lib.head context.variables.outputs).output}, toggle"
+          bindl = $mod, p, exec, ${pkgs.kanshi}/bin/kanshictl switch firstonly
+          bind = $mod SHIFT, p, exec, ${pkgs.kanshi}/bin/kanshictl switch default
 
           bindm = $mod, mouse:272, movewindow
           bindm = $mod, mouse:273, resizewindow
@@ -572,14 +567,6 @@ in {
           )
           10)}
 
-          monitors {
-            monitor=,preferred,auto,1
-
-          ${lib.concatMapStringsSep "\n" (o:
-          "  monitor=${o.output},${if o.mode == null then "preferred" else o.mode},${builtins.replaceStrings [","] ["x"] o.position},${toString o.scale}"
-          ) context.variables.outputs}
-          }
-
           exec-once = ${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
           exec-once = ${swaynotificationcenter}/bin/swaync
           exec-once = ${context.variables.profileDir}/bin/service-group-once start
@@ -622,6 +609,11 @@ in {
             animation = fade, 1, 3, default
             animation = workspaces, 1, 2, default
             animation = specialWorkspace, 1, 2, default, fade
+          }
+
+          misc {
+            disable_hyprland_logo = true
+            key_press_enables_dpms = true
           }
         '';
 
