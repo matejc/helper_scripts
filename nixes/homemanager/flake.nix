@@ -96,6 +96,14 @@
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
         ];
       };
+      nixcode-hyprland = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          inputs.home-manager.nixosModules.home-manager
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-hyprland.nix; })
+        ];
+      };
     };
     images = {
       wsl =

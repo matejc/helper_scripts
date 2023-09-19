@@ -9,22 +9,20 @@ let
       "${helper_scripts}/dotfiles/nvim.nix"
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
-      "${helper_scripts}/dotfiles/nix.nix"
-      "${helper_scripts}/dotfiles/oath.nix"
-      "${helper_scripts}/dotfiles/jstools.nix"
-      "${helper_scripts}/dotfiles/superslicer.nix"
-      "${helper_scripts}/dotfiles/scan.nix"
+      "${helper_scripts}/dotfiles/swaylockscreen.nix"
       "${helper_scripts}/dotfiles/comma.nix"
+      "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
       "${helper_scripts}/dotfiles/wofi.nix"
       "${helper_scripts}/dotfiles/nwgbar.nix"
-      "${helper_scripts}/dotfiles/wezterm.nix"
+      "${helper_scripts}/dotfiles/countdown.nix"
       "${helper_scripts}/dotfiles/helix.nix"
-      "${helper_scripts}/dotfiles/vlc.nix"
-      "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/wezterm.nix"
+      "${helper_scripts}/dotfiles/work.nix"
+      "${helper_scripts}/dotfiles/jwt.nix"
+      "${helper_scripts}/dotfiles/helix.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -35,23 +33,25 @@ let
       profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
+      #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
+      temperatureFiles = [ hwmonPath ];
+      hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       lockscreen = "${homeDir}/bin/lockscreen";
-      lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
-      email = "matej@matejc.com";
-      signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
-      locale.all = "en_US.UTF-8";
-      networkInterface = "br0";
-      wirelessInterfaces = [ "wlp3s0" ];
-      ethernetInterfaces = [ networkInterface ];
+      email = "matej.cotman@eficode.com";
+      signingkey = "E9DCD6F3A1CF9949995C43E09D45D4C00C8A5A48";
+      locale.all = "en_GB.UTF-8";
+      wirelessInterfaces = [ "wlp0s20f3" ];
+      ethernetInterfaces = [ ];
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
+        size = 12.0;
         style = "Bold";
-        size = 10.0;
       };
+      i3-msg = "${programs.i3-msg}";
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
@@ -61,6 +61,7 @@ let
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
+        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -82,26 +83,26 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
-        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
+        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "HDMI-A-2";
+        criteria = "eDP-1";
         position = "0,0";
-        output = "HDMI-A-2";
-        mode = "1920x1080";
+        output = "eDP-1";
+        mode = "2880x1800@60.001Hz";
+        scale = 1.5;
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
-        scale = 1.0;
-        status = "enable";
-      } {
+        status = "disable";
+      }{
         criteria = "HDMI-A-1";
-        position = "1920,0";
+        position = "2880,0";
         output = "HDMI-A-1";
-        mode = "1920x1080";
-        workspaces = [ "5" ];
-        wallpaper = wallpaper;
+        mode = null;
         scale = 1.0;
+        workspaces = [ "5" "6" "7" "8" ];
+        wallpaper = wallpaper;
         status = "enable";
       }];
       nixmy = {
@@ -112,9 +113,10 @@ let
     };
     services = [
       { name = "kanshi"; delay = 1; group = "always"; }
-      { name = "waybar"; delay = 2; group = "always"; }
-      { name = "network-manager-applet"; delay = 3; group = "always"; }
+      { name = "nextcloud-client"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
+      { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
@@ -138,11 +140,13 @@ let
         vt = lib.mkDefault 2;
       };
     };
-    home-configuration = {
-      home.stateVersion = "20.09";
+    home-configuration = rec {
+      home.stateVersion = "22.05";
       wayland.windowManager.hyprland.enable = true;
       wayland.windowManager.hyprland.extraConfig = ''
-        exec-once = [workspace 4] ${self.variables.binDir}/browser
+        exec-once = [workspace 1 silent] ${pkgs.logseq}/bin/logseq
+        exec-once = [workspace 2 silent] ${self.variables.binDir}/slack
+        exec-once = [workspace 3] ${self.variables.binDir}/browser
       '';
       services.swayidle = {
         enable = true;
@@ -153,6 +157,11 @@ let
           { event = "unlock"; command = "hyprctl dispatch dpms on"; }
         ];
         timeouts = lib.mkForce [
+          {
+            timeout = 100;
+            command = "${pkgs.brillo}/bin/brillo -U 30";
+            resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
+          }
           { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
           {
             timeout = 300;
@@ -167,20 +176,21 @@ let
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
-      services.syncthing.enable = true;
-      services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
-      programs.obs-studio = {
-        enable = true;
-        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
-      };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
-      programs.chromium.enable = true;
+      services.nextcloud-client.enable = true;
+      services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      programs.firefox = {
-        enable = true;
-        package = pkgs.firefox-beta-bin;
-      };
+      home.packages = [
+        keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
+        logseq
+      ];
+      # home.sessionVariables = {
+      #   XDG_CURRENT_DESKTOP = "sway";
+      #   LIBVA_DRIVER_NAME = "iHD";
+      # };
+      programs.chromium.enable = true;
+      programs.firefox.enable = true;
+      programs.firefox.package = pkgs.firefox-beta-bin;
     };
   };
 in

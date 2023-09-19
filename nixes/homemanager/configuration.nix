@@ -576,11 +576,10 @@ in {
             monitor=,preferred,auto,1
 
           ${lib.concatMapStringsSep "\n" (o:
-          "  monitor=${o.output},${o.mode},${builtins.replaceStrings [","] ["x"] o.position},${toString o.scale}"
+          "  monitor=${o.output},${if o.mode == null then "preferred" else o.mode},${builtins.replaceStrings [","] ["x"] o.position},${toString o.scale}"
           ) context.variables.outputs}
           }
 
-          exec-once = [workspace 4 silent] ${context.variables.programs.browser}
           exec-once = ${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
           exec-once = ${swaynotificationcenter}/bin/swaync
           exec-once = ${context.variables.profileDir}/bin/service-group-once start
