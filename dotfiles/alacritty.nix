@@ -122,10 +122,10 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) monospace
     #   - (Windows) Consolas
-    family: Source Code Pro
+    family: ${variables.font.family}
 
     # The `style` can be specified to pick a specific face.
-    style: Semibold
+    style: Normal
 
   # Bold font face
   bold:
@@ -161,7 +161,7 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 6.5
+  size: ${toString variables.font.size}
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -332,7 +332,7 @@ colors:
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.5
+window_opacity: 0.6
 
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
@@ -368,8 +368,8 @@ live_config_reload: true
 #   - (macOS) /bin/bash --login
 #   - (Linux) user login shell
 #   - (Windows) powershell
-#shell:
-#  program: /bin/bash
+shell:
+  program: ${pkgs.zellij}/bin/zellij
 #  args:
 #    - --login
 
@@ -429,7 +429,7 @@ mouse:
   # If this is `true`, the cursor is temporarily hidden when typing.
   hide_when_typing: true
 
-  url:
+  # url:
     # URL launcher
     #
     # This program is executed when clicking on a text which is recognized as a URL.
@@ -441,15 +441,15 @@ mouse:
     #   - (macOS) open
     #   - (Linux) xdg-open
     #   - (Windows) explorer
-    launcher:
-      program: xdg-open
+    # launcher:
+    #   program: xdg-open
     #  args: []
 
     # URL modifiers
     #
     # These are the modifiers that need to be held down for opening URLs when clicking
     # on them. The available modifiers are documented in the key binding section.
-    modifiers: Control
+    # modifiers: Control
 
 # Mouse bindings
 #
@@ -579,10 +579,7 @@ key_bindings:
   - { key: Insert,   mods: Shift,         action: PasteSelection   }
   - { key: Key0,     mods: Control,       action: ResetFontSize    }
   - { key: Equals,   mods: Control,       action: IncreaseFontSize }
-  - { key: Add,      mods: Control,       action: IncreaseFontSize }
-  - { key: Subtract, mods: Control,       action: DecreaseFontSize }
   - { key: Minus,    mods: Control,       action: DecreaseFontSize }
-  - { key: Return,   mods: Alt,           action: ToggleFullscreen }
 
   # (macOS only)
   #- { key: Key0,   mods: Command,         action: ResetFontSize    }
@@ -607,7 +604,7 @@ key_bindings:
   - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
   - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
 
-  - { key: T, mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$(${pkgs.xcwd}/bin/xcwd)\""] } }
+  - { key: T, mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$PWD\""] } }
   '';
 }
 

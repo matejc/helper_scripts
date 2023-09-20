@@ -627,6 +627,12 @@ in {
             animation = specialWorkspace, 1, 2, default, fade
           }
 
+          decoration {
+            blur {
+              enabled = false
+            }
+          }
+
           misc {
             disable_hyprland_logo = true
             key_press_enables_dpms = true
@@ -1136,6 +1142,7 @@ in {
             default_layout = "compact";
             copy_command = "${pkgs.wl-clipboard}/bin/wl-copy";
             default_shell = "${config.home.profileDirectory}/bin/zsh";
+            pane_frames = false;
           };
         };
         programs.foot = {

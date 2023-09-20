@@ -33,6 +33,7 @@ let
       "${helper_scripts}/dotfiles/work.nix"
       "${helper_scripts}/dotfiles/jwt.nix"
       "${helper_scripts}/dotfiles/helix.nix"
+      "${helper_scripts}/dotfiles/alacritty.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -65,8 +66,8 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        dropdown = "${pkgs.procps}/bin/pgrep '.*wezterm.*dropdown.*' -fl || ${pkgs.wezterm}/bin/wezterm start --always-new-process --class dropdown-terminal";
+        terminal = "${pkgs.alacritty}/bin/alacritty";
+        dropdown = "${pkgs.procps}/bin/pgrep '.*alacritty.*dropdown.*' -fl || ${pkgs.alacritty}/bin/alacritty --class dropdown-terminal";
         passwords = "${pkgs.procps}/bin/pgrep 'keepassxc$' || ${pkgs.keepassxc}/bin/keepassxc";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
