@@ -58,7 +58,7 @@ let
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
-        size = 12.0;
+        size = 11.0;
         style = "Bold";
       };
       i3-msg = "${programs.i3-msg}";

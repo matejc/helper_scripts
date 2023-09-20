@@ -273,7 +273,23 @@ in {
               ];
               settings = {
                 "general.smoothScroll" = false;
+                "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
               };
+              userChrome = ''
+                * {
+                   font-size: ${toString context.variables.font.size}pt !important;
+                }
+                #TabsToolbar, .tabbrowser-tab { max-height: 36px !important; }
+                #TabsToolbar > .toolbar-items > spacer { display: none; }
+                #TabsToolbar .tabs-newtab-button,
+                #TabsToolbar .tabbrowser-tab,
+                #TabsToolbar .tabbrowser-tab .tab-stack,
+                #TabsToolbar .tabbrowser-tab .tab-background,
+                #TabsToolbar .tabbrowser-tab .tab-content {
+                    border-top-left-radius: 0 !important;
+                    border-top-right-radius: 0 !important;
+                }
+              '';
             };
           };
         };
@@ -589,9 +605,9 @@ in {
           windowrulev2 = size 70% 70%, class:(keepassxc)
           windowrulev2 = centerwindow, class:(keepassxc)
           windowrulev2 = workspace special:passwords, class:(keepassxc)
-          bind = , F11, exec, ${context.variables.binDir}/passwords
-          bind = , F11, moveworkspacetomonitor, special:passwords current
-          bind = , F11, togglespecialworkspace,passwords
+          bind = CTRL ALT, p, exec, ${context.variables.binDir}/passwords
+          bind = CTRL ALT, p, moveworkspacetomonitor, special:passwords current
+          bind = CTRL ALT, p, togglespecialworkspace,passwords
 
           general {
             gaps_in = 0
