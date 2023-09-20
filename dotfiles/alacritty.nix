@@ -597,14 +597,19 @@ key_bindings:
 
   - { key: Paste,                    action: Paste                            }
   - { key: Copy,                     action: Copy                             }
-  - { key: L,         mods: Control, action: ClearLogNotice                   }
-  - { key: L,         mods: Control, chars: "\x0c"                            }
-  - { key: PageUp,    mods: Shift,   action: ScrollPageUp,   mode: ~Alt       }
-  - { key: PageDown,  mods: Shift,   action: ScrollPageDown, mode: ~Alt       }
-  - { key: Home,      mods: Shift,   action: ScrollToTop,    mode: ~Alt       }
-  - { key: End,       mods: Shift,   action: ScrollToBottom, mode: ~Alt       }
-
-  - { key: T, mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$PWD\""] } }
+  # - { key: L,         mods: Control, action: ClearLogNotice                   }
+  # - { key: L,         mods: Control, chars: "\x0c"                            }
+  - { key: N,        mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$PWD\""] } }
+  - { key: T,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "new-tab"] } }
+  - { key: W,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "close-tab"] } }
+  - { key: PageUp,   mods: Control, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "go-to-previous-tab"] } }
+  - { key: PageDown, mods: Control, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "go-to-next-tab"] } }
+  - { key: PageUp,   mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "half-page-scroll-up"] } }
+  - { key: PageDown, mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "half-page-scroll-down"] } }
+  - { key: Home,     mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "scroll-to-top"] } }
+  - { key: End,      mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "scroll-to-bottom"] } }
+  - { key: Up,       mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "scroll-up"] } }
+  - { key: Down,     mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "scroll-down"] } }
   '';
 }
 

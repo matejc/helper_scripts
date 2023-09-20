@@ -565,8 +565,8 @@ EOF
     nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>:call SetTitleString()<cr>
     inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR><C-o>:call SetTitleString()<cr>
     inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR><C-o>:call SetTitleString()<cr>
-    tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR><C-\><C-N>:call SetTitleString()<cr>
-    tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR><C-\><C-N>:call SetTitleString()<cr>
+    tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
+    tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
 
     nnoremap <silent> <S-PageUp> :BufferLineCyclePrev<CR>
     nnoremap <silent> <S-PageDown> :BufferLineCycleNext<CR>
