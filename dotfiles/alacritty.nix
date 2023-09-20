@@ -64,7 +64,7 @@ window:
   #
   # Values for `startup_mode` (macOS only):
   #   - SimpleFullscreen
-  #startup_mode: Windowed
+  startup_mode: Windowed
 
   # Window title
   #title: Alacritty
@@ -369,9 +369,11 @@ live_config_reload: true
 #   - (Linux) user login shell
 #   - (Windows) powershell
 shell:
-  program: ${pkgs.zellij}/bin/zellij
-#  args:
-#    - --login
+  program: ${variables.profileDir}/bin/zsh
+  args:
+  - --login
+  - -c
+  - ${pkgs.zellij}/bin/zellij
 
 # Startup directory
 #
