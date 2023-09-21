@@ -604,6 +604,7 @@ key_bindings:
   - { key: N,        mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$PWD\""] } }
   - { key: T,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "new-tab"] } }
   - { key: W,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "close-tab"] } }
+  - { key: F,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "switch-mode", "entersearch"] } }
   - { key: PageUp,   mods: Control, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "go-to-previous-tab"] } }
   - { key: PageDown, mods: Control, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "go-to-next-tab"] } }
   - { key: PageUp,   mods: Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "half-page-scroll-up"] } }
