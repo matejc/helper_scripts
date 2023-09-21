@@ -34,7 +34,7 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/waylockscreen.nix"
       "${helper_scripts}/dotfiles/alacritty.nix"
     ];
     activationScript = ''
