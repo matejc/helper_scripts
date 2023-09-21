@@ -369,7 +369,7 @@ live_config_reload: true
 #   - (Linux) user login shell
 #   - (Windows) powershell
 shell:
-  program: ${variables.profileDir}/bin/zsh
+  program: ${variables.shell}
   args:
   - --login
   - -c
@@ -601,7 +601,7 @@ key_bindings:
   - { key: Copy,                     action: Copy                             }
   # - { key: L,         mods: Control, action: ClearLogNotice                   }
   # - { key: L,         mods: Control, chars: "\x0c"                            }
-  - { key: N,        mods: Control|Shift, command: { program: "${pkgs.stdenv.shell}", args: ["-c", "${pkgs.alacritty}/bin/alacritty --working-directory=\"$PWD\""] } }
+  - { key: N,        mods: Control|Shift, command: { program: "${pkgs.alacritty}/bin/alacritty", args: ["--working-directory=\"$PWD\""] } }
   - { key: T,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "new-tab"] } }
   - { key: W,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "close-tab"] } }
   - { key: F,        mods: Control|Shift, command: { program: "${pkgs.zellij}/bin/zellij", args: ["action", "switch-mode", "entersearch"] } }

@@ -8,12 +8,11 @@
     default_shell "${variables.profileDir}/bin/zsh"
     pane_frames false
     keybinds {
-        normal {
-            bind "Ctrl PageDown" { GoToNextTab; }
-            bind "Ctrl PageUp" { GoToPreviousTab; }
-            bind "Ctrl Shift W" { CloseTab; }
-            bind "Ctrl Shift T" { NewTab; }
-        }
+      unbind "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b"
+      normal {
+        bind "Ctrl PageDown" { GoToNextTab; }
+        bind "Ctrl PageUp" { GoToPreviousTab; }
+      }
     }
   '';
 }

@@ -1144,11 +1144,11 @@ in {
             simplified_ui = true;
             default_layout = "compact";
             copy_command = "${pkgs.wl-clipboard}/bin/wl-copy";
-            default_shell = "${config.home.profileDirectory}/bin/zsh";
+            default_shell = "${context.variables.shell}";
             pane_frames = false;
-            keybinds = {
-              unbind = [ "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b" ];
-            };
+            # keybinds = {
+            #   unbind = [ "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b" ];
+            # };
           };
         };
         programs.foot = {
