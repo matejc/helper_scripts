@@ -35,7 +35,7 @@ let
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
       "${helper_scripts}/dotfiles/waylockscreen.nix"
-      "${helper_scripts}/dotfiles/alacritty.nix"
+      "${helper_scripts}/dotfiles/kitty.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -66,8 +66,8 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.alacritty}/bin/alacritty";
-        dropdown = "${pkgs.procps}/bin/pgrep '.*alacritty.*dropdown.*' -fl || ${pkgs.alacritty}/bin/alacritty --class dropdown-terminal";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        dropdown = "${pkgs.procps}/bin/pgrep '.*kitty.*dropdown.*' -fl || ${pkgs.kitty}/bin/kitty --class dropdown-terminal";
         passwords = "${pkgs.procps}/bin/pgrep 'keepassxc$' || ${pkgs.keepassxc}/bin/keepassxc";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
@@ -120,6 +120,9 @@ let
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
+    exec-once = [
+      { workspace = 4; command = "${self.variables.binDir}/browser"; }
+    ];
     config = {};
     nixos-configuration = {
       xdg.portal = {
@@ -145,10 +148,8 @@ let
     home-configuration = {
       home.stateVersion = "20.09";
       wayland.windowManager.hyprland.enable = true;
-      wayland.windowManager.hyprland.extraConfig = ''
-        exec-once = [workspace 4] ${self.variables.binDir}/browser
-      '';
       services.swayidle = {
+        extraArgs = [ "-d" ];
         enable = true;
         events = lib.mkForce [
           { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
