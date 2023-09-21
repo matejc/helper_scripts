@@ -122,6 +122,14 @@ let
       { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
+    exec-once = [
+      { workspace = "1 silent"; command = "${pkgs.logseq}/bin/logseq"; }
+      { workspace = "2 silent"; command = "${self.variables.binDir}/slack"; }
+      { workspace = 3; command = "${self.variables.binDir}/browser"; }
+      { workspace = "4 silent"; command = "${self.variables.homeDir}/workarea/start/4"; }
+      { workspace = "5 silent"; command = "${self.variables.homeDir}/workarea/start/5"; }
+      { workspace = "6 silent"; command = "${self.variables.binDir}/terminal"; }
+    ];
     config = {};
     nixos-configuration = {
       xdg.portal = {
@@ -142,15 +150,11 @@ let
         };
         vt = lib.mkDefault 2;
       };
+      security.pam.services.waylock.fprintAuth = true;
     };
     home-configuration = rec {
       home.stateVersion = "22.05";
       wayland.windowManager.hyprland.enable = true;
-      wayland.windowManager.hyprland.extraConfig = ''
-        exec-once = [workspace 1 silent] ${pkgs.logseq}/bin/logseq
-        exec-once = [workspace 2 silent] ${self.variables.binDir}/slack
-        exec-once = [workspace 3] ${self.variables.binDir}/browser
-      '';
       services.swayidle = {
         enable = true;
         events = lib.mkForce [

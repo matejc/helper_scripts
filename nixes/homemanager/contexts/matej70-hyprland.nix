@@ -140,6 +140,7 @@ let
         };
         vt = lib.mkDefault 2;
       };
+      security.pam.services.waylock.fprintAuth = true;
     };
     home-configuration = {
       home.stateVersion = "20.09";
