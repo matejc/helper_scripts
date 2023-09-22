@@ -127,9 +127,14 @@ let
       { workspace = "2 silent"; command = "${self.variables.binDir}/slack"; }
       { workspace = 3; command = "${self.variables.binDir}/browser"; }
       { workspace = "4 silent"; command = "${self.variables.homeDir}/workarea/start/4"; }
-      { workspace = "5 silent"; command = "${self.variables.homeDir}/workarea/start/5"; }
+      # { workspace = "5 silent"; command = "${self.variables.homeDir}/workarea/start/5"; }
       { workspace = "6 silent"; command = "${self.variables.binDir}/terminal"; }
     ];
+    exec = [];
+    popups = {
+      passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; width = "70%"; height = "70%"; };
+      terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; width = "96%"; height = "92%"; };
+    };
     config = {};
     nixos-configuration = {
       xdg.portal = {

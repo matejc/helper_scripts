@@ -508,6 +508,9 @@ in {
           bind = CTRL ALT SHIFT, Up,  movewindow, mon:l
           bind = CTRL ALT SHIFT, Down, movewindow, mon:r
 
+          bind = $mod, Tab, cyclenext
+          bind = $mod SHIFT, Tab, cyclenext, prev
+
           bind = $mod, f, fullscreen,
           bind = $mod, k, killactive,
           bind = $mod SHIFT, E, exit,
@@ -597,23 +600,16 @@ in {
           windowrulev2 = nofullscreenrequest,floating:0
           windowrulev2 = nomaximizerequest,floating:0
 
-          windowrulev2 = float, class:^(dropdown-terminal)$
-          windowrulev2 = opacity 0.9 override 0.5 override, class:^(dropdown-terminal)$
-          windowrulev2 = size 96% 92%, class:^(dropdown-terminal)$
-          windowrulev2 = centerwindow, class:^(dropdown-terminal)$
-          windowrulev2 = workspace special:terminal, class:^(dropdown-terminal)$
-          bind = , F12, exec, ${context.variables.binDir}/dropdown
-          bind = , F12, moveworkspacetomonitor, special:terminal current
-          bind = , F12, togglespecialworkspace, terminal
-
-          windowrulev2 = float, class:(keepassxc)
-          windowrulev2 = opacity 0.9 override 0.5 override, class:(keepassxc)
-          windowrulev2 = size 70% 70%, class:(keepassxc)
-          windowrulev2 = centerwindow, class:(keepassxc)
-          windowrulev2 = workspace special:passwords, class:(keepassxc)
-          bind = CTRL ALT, p, exec, ${context.variables.binDir}/passwords
-          bind = CTRL ALT, p, moveworkspacetomonitor, special:passwords current
-          bind = CTRL ALT, p, togglespecialworkspace,passwords
+          ${lib.concatMapStringsSep "\n" (p: ''
+          windowrulev2 = float, class:(${p.class})
+          windowrulev2 = opacity 0.9 override 0.5 override, class:(${p.class})
+          windowrulev2 = workspace special:${p.name}, class:(${p.class})
+          windowrulev2 = size ${p.width} ${p.height}, class:(${p.class})
+          windowrulev2 = centerwindow, class:(${p.class})
+          bind = ${toString p.mods}, ${p.key}, exec, ${p.exec}
+          bind = ${toString p.mods}, ${p.key}, moveworkspacetomonitor, special:${p.name} current
+          bind = ${toString p.mods}, ${p.key}, togglespecialworkspace, ${p.name}
+          '') (lib.mapAttrsToList (n: p: p // { name = n; }) context.popups)}
 
           general {
             gaps_in = 0
@@ -630,7 +626,7 @@ in {
             animation = borderangle, 1, 4, default
             animation = fade, 1, 3, default
             animation = workspaces, 1, 2, default
-            animation = specialWorkspace, 1, 2, default, fade
+            animation = specialWorkspace, 1, 2, default, slidefadeverty 20%
           }
 
           decoration {
