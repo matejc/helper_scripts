@@ -123,6 +123,7 @@ let
     exec-once = [
       { workspace = 4; command = "${self.variables.binDir}/browser"; }
     ];
+    exec = [];
     config = {};
     nixos-configuration = {
       xdg.portal = {

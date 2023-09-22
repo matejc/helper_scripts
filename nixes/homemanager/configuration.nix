@@ -588,8 +588,11 @@ in {
           exec-once = ${context.variables.profileDir}/bin/service-group-once start
           exec = ${context.variables.profileDir}/bin/service-group-always restart
           ${lib.concatMapStringsSep "\n" (e:
-          ''exec-once = [workspace ${toString e.workspace}] ${e.command}''
+          ''exec-once = ${lib.optionalString (builtins.hasAttr "workspace" e) "[workspace ${toString e.workspace}] "}${e.command}''
           ) context.exec-once}
+          ${lib.concatMapStringsSep "\n" (e:
+          ''exec = ${lib.optionalString (builtins.hasAttr "workspace" e) "[workspace ${toString e.workspace}] "}${e.command}''
+          ) context.exec}
 
           windowrulev2 = nofullscreenrequest,floating:0
           windowrulev2 = nomaximizerequest,floating:0
