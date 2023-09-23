@@ -120,9 +120,10 @@ let
       environment.systemPackages = with pkgs; [
         gnomeExtensions.appindicator gnomeExtensions.gsconnect gnome-extension-manager gnome.gnome-tweaks
         gnomeExtensions.espresso gnomeExtensions.unite
-        gnomeExtensions.no-title-bar gnomeExtensions.just-perfection
+        gnomeExtensions.just-perfection
         gnomeExtensions.forge gnome.gnome-terminal guake
         gnomeExtensions.only-window-maximize gnomeExtensions.syncthing-indicator
+        gnomeExtensions.toggle-window
       ];
     };
     home-configuration = {

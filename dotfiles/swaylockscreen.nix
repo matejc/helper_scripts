@@ -6,7 +6,7 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      ${pkgs.swaylock-effects}/bin/swaylock -f --effect-pixelate 30 -i ${variables.wallpaper} --grace-no-mouse --grace-no-touch $@
+      ${pkgs.swaylock}/bin/swaylock -f -c 000000 $@
     fi
   '';
 } {
