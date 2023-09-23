@@ -411,7 +411,8 @@ let
       GuiPopupmenu 0
       GuiTabline 0
       GuiFont! ${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
-      " call GuiClipboard()
+      "call GuiClipboard()
+      call rpcnotify(0, 'Gui', 'Clipboard', 1)
     endif
 
     if exists("g:neovide")

@@ -79,12 +79,12 @@
           # }
         ];
       };
-      matej70-hyprland = inputs.nixpkgs.lib.nixosSystem {
+      matej70-gnome = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-hyprland.nix; })
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-gnome.nix; })
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {

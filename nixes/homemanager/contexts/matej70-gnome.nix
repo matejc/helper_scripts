@@ -3,16 +3,6 @@ with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
-  hyprCmd = pkgs.writeShellScript "hypr-cmd.sh" ''
-    (  # execute in subshell so that `shopt` won't affect other scripts
-      shopt -s nullglob  # so that nothing is done if /tmp/hypr/ does not exist or is empty
-      for instance in /tmp/hypr/*; do
-        HYPRLAND_INSTANCE_SIGNATURE=''${instance##*/} ${self.variables.profileDir}/bin/hyprctl "$@" \
-          || true  # ignore dead instance(s)
-      done
-    )
-  '';
-
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -29,14 +19,11 @@ let
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
       "${helper_scripts}/dotfiles/wofi.nix"
-      "${helper_scripts}/dotfiles/nwgbar.nix"
-      "${helper_scripts}/dotfiles/wezterm.nix"
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/waylockscreen.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
-      "${helper_scripts}/dotfiles/eww.nix"
+      "${helper_scripts}/dotfiles/startup.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -67,13 +54,18 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty";
-        dropdown = "${pkgs.procps}/bin/pgrep '.*kitty.*dropdown.*' -fl || ${pkgs.kitty}/bin/kitty --class dropdown-terminal";
+        terminal = "${gnome.gnome-terminal}/bin/gnome-terminal --maximize";
+        dropdown = "${guake}/bin/guake";
         passwords = "${pkgs.procps}/bin/pgrep 'keepassxc$' || ${pkgs.keepassxc}/bin/keepassxc";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
+        copytext = ''${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy'';
       };
+      startup = [
+        "${self.variables.binDir}/browser"
+        "${self.variables.profileDir}/bin/service-group-once start"
+      ];
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
@@ -115,87 +107,38 @@ let
       };
     };
     services = [
-      { name = "kanshi"; delay = 1; group = "always"; }
-      { name = "waybar"; delay = 2; group = "always"; }
-      { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
-      { name = "swayidle"; delay = 1; group = "always"; }
+      { name = "syncthing"; delay = 1; group = "once"; }
     ];
-    exec-once = [
-      { workspace = 4; command = "${self.variables.binDir}/browser"; }
-      # { command = "${pkgs.eww-wayland}/bin/eww daemon"; }
-    ];
+    exec-once = [];
     exec = [];
-    popups = {
-      passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; width = "70%"; height = "70%"; };
-      terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; width = "96%"; height = "92%"; };
-    };
+    popups = {};
     config = {};
     nixos-configuration = {
-      xdg.portal = {
-        enable = true;
-        wlr.enable = false;
-        extraPortals = [ inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland ];
-      };
-      nix.settings = {
-        substituters = ["https://hyprland.cachix.org"];
-        trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
-      };
-      services.greetd = {
-        enable = lib.mkDefault true;
-        settings = {
-          default_session = {
-            command = lib.mkForce "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
-          };
-        };
-        vt = lib.mkDefault 2;
-      };
-      security.pam.services.waylock.fprintAuth = true;
+      services.xserver.enable = true;
+      services.xserver.displayManager.gdm.enable = true;
+      services.xserver.desktopManager.gnome.enable = true;
+      environment.systemPackages = with pkgs; [
+        gnomeExtensions.appindicator gnomeExtensions.gsconnect gnome-extension-manager gnome.gnome-tweaks
+        gnomeExtensions.espresso gnomeExtensions.unite
+        gnomeExtensions.no-title-bar gnomeExtensions.just-perfection
+        gnomeExtensions.forge gnome.gnome-terminal guake
+        gnomeExtensions.only-window-maximize gnomeExtensions.syncthing-indicator
+      ];
     };
     home-configuration = {
       home.stateVersion = "20.09";
-      wayland.windowManager.hyprland.enable = true;
-      services.swayidle = {
-        extraArgs = [ "-d" ];
-        enable = true;
-        events = lib.mkForce [
-          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "after-resume"; command = "${hyprCmd} dispatch dpms on"; }
-          { event = "unlock"; command = "${hyprCmd} dispatch dpms on"; }
-        ];
-        timeouts = lib.mkForce [
-          { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
-          {
-            timeout = 300;
-            command = "${hyprCmd} dispatch dpms off";
-            resumeCommand = "${hyprCmd} dispatch dpms on";
-          }
-          { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
-        ];
-      };
-
-      programs.waybar.enable = true;
-      services.kanshi.enable = true;
-      services.kdeconnect.enable = true;
-      services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       programs.obs-studio = {
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice eww-wayland ];
+      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
       programs.chromium.enable = true;
-      services.network-manager-applet.enable = true;
       programs.firefox = {
         enable = true;
         package = pkgs.firefox-beta-bin;
       };
-      # programs.eww = {
-      #   enable = true;
-      #   package = pkgs.eww-wayland;
-      # };
     };
   };
 in
