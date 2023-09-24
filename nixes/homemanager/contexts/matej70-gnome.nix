@@ -54,8 +54,9 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        terminal = "${gnome.gnome-terminal}/bin/gnome-terminal --maximize";
-        dropdown = "${guake}/bin/guake";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        # terminal = "${gnome.gnome-terminal}/bin/gnome-terminal --maximize";
+        dropdown = "${pkgs.guake}/bin/guake";
         passwords = "${pkgs.procps}/bin/pgrep 'keepassxc$' || ${pkgs.keepassxc}/bin/keepassxc";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
@@ -118,12 +119,13 @@ let
       services.xserver.displayManager.gdm.enable = true;
       services.xserver.desktopManager.gnome.enable = true;
       environment.systemPackages = with pkgs; [
-        gnomeExtensions.appindicator gnomeExtensions.gsconnect gnome-extension-manager gnome.gnome-tweaks
-        gnomeExtensions.espresso gnomeExtensions.unite
-        gnomeExtensions.just-perfection
-        gnomeExtensions.forge gnome.gnome-terminal guake
-        gnomeExtensions.only-window-maximize gnomeExtensions.syncthing-indicator
-        gnomeExtensions.toggle-window
+        gnomeExtensions.appindicator gnomeExtensions.gsconnect
+        gnome-extension-manager gnome.gnome-tweaks
+        gnomeExtensions.espresso
+        gnomeExtensions.pixel-saver
+        gnomeExtensions.only-window-maximize
+        gnomeExtensions.maximize-to-empty-workspace
+        gnome.gnome-terminal guake
       ];
     };
     home-configuration = {
