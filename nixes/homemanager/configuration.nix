@@ -599,15 +599,12 @@ in {
 
           windowrulev2 = nofullscreenrequest,floating:0
           windowrulev2 = nomaximizerequest,floating:0
+          windowrulev2 = noshadow,floating:0
 
           ${lib.concatMapStringsSep "\n" (p: ''
-          windowrulev2 = float, class:(${p.class})
-          windowrulev2 = opacity 0.9 override 0.5 override, class:(${p.class})
+          workspace = current, special:${p.name}
           windowrulev2 = workspace special:${p.name}, class:(${p.class})
-          windowrulev2 = size ${p.width} ${p.height}, class:(${p.class})
-          windowrulev2 = centerwindow, class:(${p.class})
           bind = ${toString p.mods}, ${p.key}, exec, ${p.exec}
-          bind = ${toString p.mods}, ${p.key}, moveworkspacetomonitor, special:${p.name} current
           bind = ${toString p.mods}, ${p.key}, togglespecialworkspace, ${p.name}
           '') (lib.mapAttrsToList (n: p: p // { name = n; }) context.popups)}
 
@@ -633,6 +630,7 @@ in {
             blur {
               enabled = false
             }
+            drop_shadow = false
           }
 
           misc {

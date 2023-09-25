@@ -132,8 +132,8 @@ let
     ];
     exec = [];
     popups = {
-      # passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; width = "70%"; height = "70%"; };
-      # terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; width = "96%"; height = "92%"; };
+      passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; };
+      terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; };
     };
     config = {};
     nixos-configuration = {
