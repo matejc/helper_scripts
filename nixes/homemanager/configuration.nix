@@ -572,6 +572,11 @@ in {
           ) o.workspaces
           ) context.variables.outputs}
 
+          monitor=,preferred,auto,1
+          ${lib.concatMapStringsSep "\n" (o:
+          ''monitor=${o.output},${if o.mode == null then "preferred" else o.mode},${lib.replaceStrings [","] ["x"] o.position},${toString o.scale}''
+          ) context.variables.outputs}
+
           # binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
           ${builtins.concatStringsSep "\n" (builtins.genList (
             x: let
@@ -606,7 +611,7 @@ in {
           windowrulev2 = workspace special:${p.name}, class:(${p.class})
           bind = ${toString p.mods}, ${p.key}, exec, ${p.exec}
           bind = ${toString p.mods}, ${p.key}, togglespecialworkspace, ${p.name}
-          '') (lib.mapAttrsToList (n: p: p // { name = n; }) context.popups)}
+          '') context.popups}
 
           general {
             gaps_in = 0

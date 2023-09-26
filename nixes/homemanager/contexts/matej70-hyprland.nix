@@ -125,10 +125,11 @@ let
       # { command = "${pkgs.eww-wayland}/bin/eww daemon"; }
     ];
     exec = [];
-    popups = {
-      passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; };
-      terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; };
-    };
+    popups = [
+      { name = "passwords"; mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; }
+      { name = "terminal"; mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; }
+      { name = "terminal"; mods = [ ]; key = "XF86Favorites"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; }
+    ];
     config = {};
     nixos-configuration = {
       xdg.portal = {

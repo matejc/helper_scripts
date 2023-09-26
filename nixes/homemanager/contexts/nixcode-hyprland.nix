@@ -72,7 +72,8 @@ let
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
+        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -94,7 +95,7 @@ let
         position = "0,0";
         output = "eDP-1";
         mode = "2880x1800@60.001Hz";
-        scale = 1.5;
+        scale = 1.45;
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
         status = "disable";
@@ -123,7 +124,7 @@ let
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     exec-once = [
-      { workspace = "1 silent"; command = "${pkgs.logseq}/bin/logseq"; }
+      { workspace = "1 silent"; command = "${self.variables.binDir}/logseq"; }
       { workspace = "2 silent"; command = "${self.variables.binDir}/slack"; }
       { workspace = 3; command = "${self.variables.binDir}/browser"; }
       { workspace = "4 silent"; command = "${self.variables.homeDir}/workarea/start/4"; }
@@ -131,10 +132,11 @@ let
       { workspace = "6 silent"; command = "${self.variables.binDir}/terminal"; }
     ];
     exec = [];
-    popups = {
-      passwords = { mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; };
-      terminal = { mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; };
-    };
+    popups = [
+      { name = "passwords"; mods = [ "CTRL" "ALT" ]; key = "p"; class = "keepassxc"; exec = "${self.variables.binDir}/passwords"; }
+      { name = "terminal"; mods = [ ]; key = "F12"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; }
+      { name = "terminal"; mods = [ ]; key = "XF86Favorites"; class = "dropdown-terminal"; exec = "${self.variables.binDir}/dropdown"; }
+    ];
     config = {};
     nixos-configuration = {
       xdg.portal = {
@@ -193,7 +195,6 @@ let
       services.network-manager-applet.enable = true;
       home.packages = [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        logseq
       ];
       # home.sessionVariables = {
       #   XDG_CURRENT_DESKTOP = "sway";

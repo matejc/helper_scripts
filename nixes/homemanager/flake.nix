@@ -21,10 +21,10 @@
     nur = {
       url = "github:nix-community/NUR";
     };
-    clearprimary = {
-      url = "github:matejc/clearprimary/main";
-      flake = false;
-    };
+    # clearprimary = {
+    #   url = "github:matejc/clearprimary/main";
+    #   flake = false;
+    # };
     #nixgl = {
     #  url = "github:guibou/nixGL";
     #  inputs.nixpkgs.follows = "nixpkgs";
