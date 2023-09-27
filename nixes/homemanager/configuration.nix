@@ -502,11 +502,11 @@ in {
           bind = CTRL ALT SHIFT, Left,  movetoworkspace, r-1
           bind = CTRL ALT SHIFT, Right, movetoworkspace, r+1
 
-          bind = CTRL ALT, Up,  focusmonitor, l
-          bind = CTRL ALT, Down, focusmonitor, r
+          bind = CTRL ALT, Up,  focusmonitor, -1
+          bind = CTRL ALT, Down, focusmonitor, +1
 
-          bind = CTRL ALT SHIFT, Up,  movewindow, mon:l
-          bind = CTRL ALT SHIFT, Down, movewindow, mon:r
+          bind = CTRL ALT SHIFT, Up,  movewindow, mon:-1
+          bind = CTRL ALT SHIFT, Down, movewindow, mon:+1
 
           bind = $mod, Tab, cyclenext
           bind = $mod SHIFT, Tab, cyclenext, prev
