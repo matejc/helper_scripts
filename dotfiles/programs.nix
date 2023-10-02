@@ -4,6 +4,6 @@ mapAttrsToList (name: exec: {
   target = "${variables.homeDir}/bin/${name}";
   source = pkgs.writeScript "${name}.sh" ''
     #!${pkgs.stdenv.shell}
-    ${exec} "$@"
+    exec ${exec} "$@"
   '';
 }) variables.programs

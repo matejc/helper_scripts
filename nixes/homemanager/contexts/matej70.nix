@@ -60,8 +60,8 @@ let
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
@@ -81,10 +81,15 @@ let
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
+      graphical = {
+        name = "sway";
+        logout = "${pkgs.sway}/bin/swaymsg exit";
+        target = "sway-session.target";
+      };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
-        g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
+        # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "HDMI-A-2";
@@ -133,6 +138,11 @@ let
         enable = true;
         wlr = {
           enable = true;
+          settings.screencast = {
+            max_fps = 30;
+            chooser_type = "simple";
+            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
+          };
         };
       };
     };
@@ -168,7 +178,7 @@ let
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       programs.firefox = {
         enable = true;
-        package = pkgs.firefox-beta-bin;
+        package = pkgs.firefox;
       };
     };
   };

@@ -106,8 +106,8 @@ let
     executable = true;
     text = ''
       dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-      systemctl --user stop pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
-      systemctl --user start pipewire pipewire-media-session xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
     '';
   };
 
@@ -326,8 +326,8 @@ in {
           systemd.enable = true;
           wrapperFeatures.gtk = true;
           config = let
-            dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.homeDir}/bin/terminal -m terminal";
-            passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 85 --height 80";
+            dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.binDir}/terminal -m terminal";
+            passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 75 --height 70";
             resizeModeName = "Resize: arrow keys";
             mirrorModeName = "Mirror: c - create, f - toggle freeze";
             signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
@@ -335,7 +335,7 @@ in {
           in rec {
             assigns = lib.mkDefault {
               #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-              "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+              # "workspace number 4" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
             };
             bars = [ ];
             #bars = [ {
@@ -453,7 +453,7 @@ in {
                 #{ command = "border pixel 1"; criteria = { class = ".nvim-qt-wrapped"; }; }
                 #{ command = "border pixel 1"; criteria = { class = "Firefox"; }; }
                 #{ command = "border pixel 1"; criteria = { class = "Chromium-browser"; }; }
-                { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
+                # { command = "inhibit_idle visible"; criteria = { title = "YouTube"; }; }
                 #{ command = "inhibit_idle fullscreen"; criteria = { shell = ".*"; }; }
                 { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
                 { command = "border pixel 1"; criteria = { con_mark = "SCRATCHPAD_terminal"; }; }
@@ -1074,11 +1074,6 @@ in {
           '';
           loginExtra = ''
             ${lib.readFile (dotFileAt "zsh.nix" 1)}
-
-            if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty3" ] && [ -f "$(${pkgs.which}/bin/which startsway)" ]
-            then
-              exec dbus-run-session startsway
-            fi
           '';
           envExtra = ''
             setopt no_global_rcs

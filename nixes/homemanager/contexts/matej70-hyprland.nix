@@ -184,12 +184,12 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice eww-wayland ];
+      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox = {
         enable = true;
-        package = pkgs.firefox-beta-bin;
+        package = pkgs.firefox;
       };
       # programs.eww = {
       #   enable = true;

@@ -6,7 +6,7 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      ${pkgs.swaylock}/bin/swaylock -f -c 000000 $@
+      ${pkgs.swaylock-effects}/bin/swaylock -f -c 000000 $@
     fi
   '';
 } {
