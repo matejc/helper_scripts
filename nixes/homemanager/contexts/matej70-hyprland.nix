@@ -156,7 +156,6 @@ let
       home.stateVersion = "20.09";
       wayland.windowManager.hyprland.enable = true;
       services.swayidle = {
-        extraArgs = [ "-d" ];
         enable = true;
         events = lib.mkForce [
           { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
@@ -165,7 +164,7 @@ let
           { event = "unlock"; command = "${hyprCmd} dispatch dpms on"; }
         ];
         timeouts = lib.mkForce [
-          { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
+          { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
           {
             timeout = 300;
             command = "${hyprCmd} dispatch dpms off";

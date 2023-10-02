@@ -143,6 +143,7 @@ let
         enable = true;
         wlr.enable = false;
         extraPortals = [ inputs.hyprland.packages.${pkgs.system}.xdg-desktop-portal-hyprland ];
+        xdgOpenUsePortal = true;
       };
       nix.settings = {
         substituters = ["https://hyprland.cachix.org"];
@@ -176,7 +177,7 @@ let
             command = "${pkgs.brillo}/bin/brillo -U 30";
             resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
           }
-          { timeout = 120; command = "${self.variables.binDir}/lockscreen --grace 3"; }
+          { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
           {
             timeout = 300;
             command = "${hyprCmd} dispatch dpms off";
@@ -202,7 +203,7 @@ let
       # };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
-      programs.firefox.package = pkgs.firefox-beta-bin;
+      programs.firefox.package = pkgs.firefox;
     };
   };
 in

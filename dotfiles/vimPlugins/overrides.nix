@@ -1,7 +1,7 @@
 { Cocoa
 , CoreFoundation
 , CoreServices
-, buildVimPluginFrom2Nix
+, buildVimPlugin
 , llvmPackages
 , luaPackages
 , tree-sitter

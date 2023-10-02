@@ -228,7 +228,7 @@ in {
           QT_QPA_PLATFORM = "wayland";
           QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
           _JAVA_AWT_WM_NONREPARENTING = "1";
-          #GTK_USE_PORTAL = "1";
+          GTK_USE_PORTAL = "1";
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
         };
@@ -550,18 +550,26 @@ in {
           bind = $mod, s, submap, signal
           submap=signal
           bind =, s, exec, ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, s, submap, reset
           bind =, q, exec, ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, q, submap, reset
           bind =, k, exec, ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, k, submap, reset
           bind =, 9, exec, ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, 9, submap, reset
           bind=,escape,submap,reset
           submap=reset
 
           bind = $mod, a, submap, audio
           submap=audio
           bind =, s, exec, ${setDefaultSink}
+          bind =, s, submap, reset
           bind =, m, exec, ${setDefaultSource}
+          bind =, m, submap, reset
           bind =, p, exec, ${pkgs.pavucontrol}/bin/pavucontrol
+          bind =, p, submap, reset
           bind =, h, exec, ${pkgs.helvum}/bin/helvum
+          bind =, h, submap, reset
           bind=,escape,submap,reset
           submap=reset
 
@@ -654,7 +662,7 @@ in {
             { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
           ];
           timeouts = [
-            { timeout = 120; command = "${context.variables.binDir}/lockscreen --grace 3"; }
+            { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
             {
               timeout = 300;
               command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;
