@@ -1196,7 +1196,7 @@ foreground #e3e5d8
 cursor #fdfff1
 cursor_text_color #000000
 selection_foreground none
-selection_background #636559
+selection_background #42433f
 
 active_tab_foreground   #20211d
 active_tab_background   #afb1a7
