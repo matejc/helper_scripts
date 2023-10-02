@@ -329,7 +329,7 @@ in {
             dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.binDir}/terminal -m terminal";
             passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 75 --height 70";
             resizeModeName = "Resize: arrow keys";
-            mirrorModeName = "Mirror: c - create, f - toggle freeze";
+            mirrorModeName = "Mirror: s - sway-wsshare, c - create, f - toggle freeze";
             signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
             audioModeName = "Audio: s - speakers, m - mic, p - pavu, h - patchboard";
           in rec {
@@ -412,6 +412,7 @@ in {
                 "Return" = "mode default";
               };
               "${mirrorModeName}" = {
+                "s" = "exec sway-wsshare, mode \"default\"";
                 "c" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror, mode \"default\"";
                 "f" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present toggle-freeze, mode \"default\"";
                 "Escape" = "mode default";
