@@ -274,6 +274,7 @@ in {
               settings = {
                 "general.smoothScroll" = false;
                 "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+                "ui.textScaleFactor" = 90;
               };
               userChrome = ''
                 * {
