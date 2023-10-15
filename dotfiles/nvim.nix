@@ -1023,7 +1023,8 @@ EOF
 
 lua <<EOF
 
-function myMove(pattern, forward)
+function wordMove(forward)
+  local pattern='[a-zA-Z0-9]\\+\\|^\\|$'
   flags = 'W'
   if forward == 0 then
     flags = flags .. 'b'
@@ -1058,27 +1059,18 @@ function myMove(pattern, forward)
   end
 end
 
-function wordMove(mode, forward)
-  local wpattern='[a-zA-Z0-9]\\+\\|^\\|$'
-  if mode == 'i' then
-    myMove(wpattern, forward)
-  else
-    myMove(wpattern, forward)
-  end
-end
+vim.keymap.set("n", '<c-right>', function() wordMove(1) end, { noremap = true, silent = true })
+vim.keymap.set("n", '<c-left>', function() wordMove(0) end, { noremap = true, silent = true })
 
-vim.keymap.set("n", '<c-right>', function() wordMove("n", 1) end, { noremap = true, silent = true })
-vim.keymap.set("n", '<c-left>', function() wordMove("n", 0) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-right>', function() wordMove(1) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-left>', function() wordMove(0) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-s-right>', function() wordMove(1) end, { noremap = true, silent = true })
+vim.keymap.set("v", '<c-s-left>', function() wordMove(0) end, { noremap = true, silent = true })
 
-vim.keymap.set("v", '<c-right>', function() wordMove("v", 1) end, { noremap = true, silent = true })
-vim.keymap.set("v", '<c-left>', function() wordMove("v", 0) end, { noremap = true, silent = true })
-vim.keymap.set("v", '<c-s-right>', function() wordMove("v", 1) end, { noremap = true, silent = true })
-vim.keymap.set("v", '<c-s-left>', function() wordMove("v", 0) end, { noremap = true, silent = true })
-
-vim.keymap.set("i", '<c-right>', function() wordMove("i", 1) end, { noremap = true, silent = true })
-vim.keymap.set("i", '<c-left>', function() wordMove("i", 0) end, { noremap = true, silent = true })
-vim.keymap.set("i", '<c-s-right>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('v',true,false,true),'x',false); wordMove("i", 1) end, { noremap = true, silent = true })
-vim.keymap.set("i", '<c-s-left>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('v',true,false,true),'x',false); wordMove("i", 0) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-right>', function() wordMove(1) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-left>', function() wordMove(0) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-s-right>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>v',true,false,true),'n',false); vim.fn.timer_start(10, function() wordMove(1) end) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-s-left>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>v',true,false,true),'n',false); vim.fn.timer_start(10, function() wordMove(0) end) end, { noremap = true, silent = true })
 
 EOF
     vnoremap <esc> <esc><esc>i
