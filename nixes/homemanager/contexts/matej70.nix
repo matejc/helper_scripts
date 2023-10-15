@@ -163,10 +163,6 @@ let
       };
       services.kanshi.enable = true;
       services.swayidle.enable = true;
-      services.swayidle.timeouts = lib.mkForce [
-        { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
-        { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
-      ];
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
