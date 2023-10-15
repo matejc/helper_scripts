@@ -127,7 +127,7 @@ let
       };
     };
     home-configuration = {
-      home.stateVersion = "20.09";
+      # home.stateVersion = "20.09";
       wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
