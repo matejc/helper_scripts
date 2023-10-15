@@ -2,6 +2,7 @@
   description = "home-manager system";
   inputs = {
     nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
+    # nixpkgs.url = "github:matejc/nixpkgs/mylocal266";
     nixexprs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
     nixos-configuration = {
       url = "path:/etc/nixos";
@@ -45,10 +46,10 @@
       url = "github:nwg-piotr/nwg-displays/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hyprland = {
-      url = "github:hyprwm/Hyprland";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # hyprland = {
+    #   url = "github:hyprwm/Hyprland";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   outputs = { self, ... }@inputs: {
