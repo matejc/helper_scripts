@@ -79,12 +79,13 @@
           # }
         ];
       };
-      matej70-hyprland = inputs.nixpkgs.lib.nixosSystem {
+      matej80 = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-hyprland.nix; })
+          ../../nixes/sway-wsshare/module.nix
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej80.nix; })
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {
