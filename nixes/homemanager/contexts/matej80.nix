@@ -36,10 +36,8 @@ let
       profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
-      #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
-      lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
@@ -58,24 +56,10 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
-        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
-        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
-        #browser = "${profileDir}/bin/chromium";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        #window-center = dotFileAt "i3config.nix" 4;
-        #window-size = dotFileAt "i3config.nix" 5;
-        #i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
-        #tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -87,8 +71,6 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
-        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
-        # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "HDMI-A-2";
@@ -117,7 +99,6 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 1; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
@@ -143,7 +124,6 @@ let
             chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
           };
         };
-        # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       };
     };
     home-configuration = {
@@ -151,13 +131,10 @@ let
       wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        #{ command = "${self.variables.programs.keepassxc}"; }
-        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
       wayland.windowManager.sway.config.input = {
         "type:pointer" = {
           pointer_accel = "-0.3";
-          #middle_emulation = "enabled";
         };
       };
       services.kanshi.enable = true;
@@ -166,13 +143,8 @@ let
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
-      #services.syncthing.tray.enable = true;
       programs.waybar.enable = true;
-      programs.obs-studio = {
-        enable = true;
-        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
-      };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice ];
+      home.packages = [ ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
