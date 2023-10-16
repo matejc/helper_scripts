@@ -147,9 +147,9 @@ in {
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
-      imports = [
-        inputs.hyprland.homeManagerModules.default
-      ];
+      # imports = [
+      #   inputs.hyprland.homeManagerModules.default
+      # ];
       config = lib.mkMerge ([{
         nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
@@ -476,7 +476,7 @@ in {
         };
 
         wayland.windowManager.hyprland.xwayland.enable = true;
-        wayland.windowManager.hyprland.systemdIntegration = true;
+        wayland.windowManager.hyprland.systemd.enable = true;
         wayland.windowManager.hyprland.extraConfig = ''
           $mod = SUPER
 

@@ -1,7 +1,7 @@
 { pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
 with pkgs;
 let
-  clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
+  # clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
 
   homeConfig = config.home-manager.users.matejc;
 
@@ -53,13 +53,13 @@ let
         size = 12.0;
         style = "Bold";
       };
-      i3-msg = "${programs.i3-msg}";
+      i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         # browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
         # browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
@@ -70,16 +70,21 @@ let
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        window-center = dotFileAt "i3config.nix" 4;
-        window-size = dotFileAt "i3config.nix" 5;
-        i3-msg = "${profileDir}/bin/swaymsg";
+        # window-center = dotFileAt "i3config.nix" 4;
+        # window-size = dotFileAt "i3config.nix" 5;
+        # i3-msg = "${profileDir}/bin/swaymsg";
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        tmux = "${pkgs.tmux}/bin/tmux";
-        tug = "${pkgs.turbogit}/bin/tug";
+        # tmux = "${pkgs.tmux}/bin/tmux";
+        # tug = "${pkgs.turbogit}/bin/tug";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
+      graphical = {
+        name = "sway";
+        logout = "${pkgs.sway}/bin/swaymsg exit";
+        target = "sway-session.target";
+      };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
@@ -119,7 +124,28 @@ let
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
-    nixos-configuration = {};
+    nixos-configuration = {
+      services.greetd = {
+        enable = true;
+        settings = {
+          default_session = {
+            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+          };
+        };
+        vt = 2;
+      };
+      xdg.portal = {
+        enable = true;
+        wlr = {
+          enable = true;
+          settings.screencast = {
+            max_fps = 30;
+            chooser_type = "simple";
+            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
+          };
+        };
+      };
+    };
     home-configuration = rec {
       home.stateVersion = "22.05";
       wayland.windowManager.sway.enable = true;
@@ -134,7 +160,7 @@ let
         { command = "${self.variables.programs.slack}"; }
         { command = "${self.variables.profileDir}/bin/logseq"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
-        { command = "${clearprimary}/bin/clearprimary"; }
+        # { command = "${clearprimary}/bin/clearprimary"; }
       ];
       wayland.windowManager.sway.config.input = {
         "2:10:TPPS/2_Elan_TrackPoint" = { pointer_accel = "-0.3"; };
@@ -168,7 +194,7 @@ let
       };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
-      programs.firefox.package = pkgs.firefox-beta-bin;
+      programs.firefox.package = pkgs.firefox;
     };
   };
 in
