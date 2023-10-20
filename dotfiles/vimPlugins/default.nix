@@ -1,26 +1,17 @@
-{ callPackage, config, lib, vimUtils, vim, darwin, llvmPackages, luaPackages, neovimUtils }:
+# TODO check that no license information gets lost
+{ callPackage, config, lib, vimUtils, vim, darwin, llvmPackages
+, neovimUtils
+, luaPackages
+}:
 
 let
 
   inherit (vimUtils.override {inherit vim;})
-    buildVimPlugin vimGenDocHook vimCommandCheckHook;
+    buildVimPlugin;
 
   inherit (lib) extends;
 
-  initialPackages = self: {
-    # Convert derivation to a vim plugin.
-    toVimPlugin = drv:
-      drv.overrideAttrs(oldAttrs: {
-
-        nativeBuildInputs = oldAttrs.nativeBuildInputs or [] ++ [
-          vimGenDocHook
-          vimCommandCheckHook
-        ];
-        passthru = (oldAttrs.passthru or {}) // {
-          vimPlugin = true;
-        };
-      });
-  };
+  initialPackages = self: { };
 
   plugins = callPackage ./generated.nix {
     inherit buildVimPlugin;
@@ -29,7 +20,7 @@ let
 
   # TL;DR
   # * Add your plugin to ./vim-plugin-names
-  # * run ~/workarea/nixpkgs/pkgs/applications/editors/vim/plugins/update.py -p 1 -n -i ./dotfiles/vimPlugins/vim-plugin-names -o ./dotfiles/vimPlugins/generated.nix
+  # * run ./update.py
   #
   # If additional modifications to the build process are required,
   # add to ./overrides.nix.
