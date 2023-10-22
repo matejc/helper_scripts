@@ -333,6 +333,13 @@ let
         on_attach = on_attach;
         cmd = {"${pkgs.rust-analyzer}/bin/rust-analyzer"};
         capabilities = capabilities;
+        settings = {
+          ['rust-analyzer'] = {
+            diagnostics = {
+              enable = true;
+            }
+          }
+        }
       }
     '';
     ltex = ''
