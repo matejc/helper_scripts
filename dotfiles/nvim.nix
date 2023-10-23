@@ -1233,14 +1233,14 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = function(fallback)
-      if cmp.visible() and cmp.get_active_entry() then
+      if cmp.visible() then
         cmp.confirm({ select = false })
       else
         fallback()
       end
     end,
     ['<C-CR>'] = function(fallback)
-      if cmp.visible() and cmp.get_active_entry() then
+      if cmp.visible() then
         cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
       else
         fallback()
