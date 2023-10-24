@@ -141,6 +141,49 @@ let
   setDefaultSource = pkgs.writeShellScript "set-default-source" ''
     ${pkgs.pulseaudio}/bin/pactl set-default-source $(${pkgs.pulseaudio}/bin/pactl list short sources | ${pkgs.gawk}/bin/awk -v def_src="$(${pkgs.pulseaudio}/bin/pactl get-default-source)" '/source/ {if ($2 == def_src) {print $2" / "$NF" / DEFAULT"} else {print $2" / "$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')
   '';
+
+  wp_volume = pkgs.writeShellScript "wp_volume" ''
+    set -e
+
+    # https://blog.dhampir.no/content/sleeping-without-a-subprocess-in-bash-and-how-to-sleep-forever
+    snore() {
+        local IFS
+        [[ -n "''${_snore_fd:-}" ]] || exec {_snore_fd}<> <(:)
+        read -r ''${1:+-t "$1"} -u $_snore_fd || :
+    }
+
+    DELAY=0.2
+
+    while snore $DELAY; do
+        WP_OUTPUT=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
+
+        if [[ $WP_OUTPUT =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
+            if [[ -n ''${BASH_REMATCH[3]} ]]; then
+                printf "MUTE\n"
+            else
+                VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
+                ICON=(
+                    ""
+                    ""
+                    ""
+                )
+
+                if [[ $VOLUME -gt 50 ]]; then
+                    printf "%s" "''${ICON[0]} "
+                elif [[ $VOLUME -gt 25 ]]; then
+                    printf "%s" "''${ICON[1]} "
+                elif [[ $VOLUME -ge 0 ]]; then
+                    printf "%s" "''${ICON[2]} "
+                fi
+
+                printf "$VOLUME%%\n"
+            fi
+        fi
+    done
+
+    exit 0
+  '';
+
 in {
 
   config = lib.mkMerge ([{
@@ -389,10 +432,10 @@ in {
                 "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
                 "Control+Mod1+m" = "exec ${inputs.nwg-displays.packages."${pkgs.system}".default}/bin/nwg-displays";
-                "XF86AudioMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
-                "XF86AudioRaiseVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ +3%";
-                "XF86AudioLowerVolume" = "exec ${pkgs.pulseaudio}/bin/pactl set-sink-volume @DEFAULT_SINK@ -3%";
-                "XF86AudioMicMute" = "exec ${pkgs.pulseaudio}/bin/pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+                "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+                "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+";
+                "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-";
+                "XF86AudioMicMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
                 "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
                 "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
                 "${modifier}+p" = "output ${(lib.head context.variables.outputs).output} toggle";
@@ -793,7 +836,7 @@ in {
               background: #F92672;
           }
 
-          #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather {
+          #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather,#custom-pipewire {
               padding: 0 5px;
           }
 
@@ -860,7 +903,7 @@ in {
               "custom/sep"
               "idle_inhibitor"
               "custom/sep"
-              "pulseaudio"
+              "custom/pipewire"
               "custom/sep"
               "bluetooth"
               "custom/sep"
@@ -932,7 +975,13 @@ in {
               };
               on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
               on-click-middle = "${pkgs.helvum}/bin/helvum";
-              on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+              on-click-right = "${pkgs.easyeffects}/bin/easyeffects";
+            };
+            "custom/pipewire" = {
+              exec = "${wp_volume}";
+              tooltip = false;
+              on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+              on-click-right = "${pkgs.easyeffects}/bin/easyeffects";
             };
             keyboard-state = {
               capslock = true;
