@@ -163,7 +163,7 @@ let
         # { command = "${clearprimary}/bin/clearprimary"; }
       ];
       wayland.windowManager.sway.config.input = {
-        "2:10:TPPS/2_Elan_TrackPoint" = { pointer_accel = "-0.3"; };
+        "2:10:TPPS/2_Elan_TrackPoint" = { accel_profile = "flat"; };
       };
       services.swayidle.timeouts = [
         {

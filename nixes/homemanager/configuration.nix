@@ -241,8 +241,25 @@ in {
             'org.wezfurlong.wezterm' = ''
             'ScratchTerm' = ''
           '';
-          mime.enable = true;
           systemDirs.config = [ "${swaynotificationcenter}/etc/xdg" ];
+          mime.enable = true;
+          mimeApps = {
+            enable = true;
+            defaultApplications = {
+              "x-scheme-handler/https" = [ "browser.desktop" ];
+              "x-scheme-handler/http" = [ "browser.desktop" ];
+            };
+          };
+          desktopEntries = {
+            browser = {
+              name = "Web Browser";
+              genericName = "Web Browser";
+              exec = "${context.variables.binDir}/browser %U";
+              terminal = false;
+              categories = [ "Application" "Network" "WebBrowser" ];
+              mimeType = [ "x-scheme-handler/https" "x-scheme-handler/http" ];
+            };
+          };
         };
 
         services.gnome-keyring = {
