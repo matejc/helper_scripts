@@ -998,7 +998,10 @@ in {
               exec = "${wp_volume}";
               tooltip = false;
               on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-              on-click-right = "${pkgs.easyeffects}/bin/easyeffects";
+              on-click-middle = "${pkgs.helvum}/bin/helvum";
+              on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
+              on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+";
+              on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-";
             };
             keyboard-state = {
               capslock = true;
