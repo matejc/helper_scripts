@@ -68,9 +68,12 @@ in
     shebangs = ["groovy"]
     roots = []
     comment-token = "//"
-    language-server = { command = "${groovyls}/bin/groovy-language-server" }
+    language-servers = [ "groovy-language-server" ]
     indent = { tab-width = 2, unit = "  " }
     grammar = "groovy"
+
+    [language-server.groovy-language-server]
+    command = "${groovyls}/bin/groovy-language-server"
 
     [[grammar]]
     name = "groovy"
@@ -83,18 +86,15 @@ in
     file-types = ["xml"]
     indent = { tab-width = 2, unit = "  " }
     roots = []
-    language-server = { command = "${lemminx}/bin/lemminx" }
+    language-servers = [ "lemminx" ]
 
-    [[language]]
-    name = "javascript"
+    [language-server.lemminx]
+    command = "${lemminx}/bin/lemminx"
+
+    [language-server.typescript-language-server]
     config = { tsserver = { path = "${pkgs.nodePackages_latest.typescript}/bin/tsserver" } }
 
-    [[language]]
-    name = "typescript"
-    config = { tsserver = { path = "${pkgs.nodePackages_latest.typescript}/bin/tsserver" } }
-
-    [[language]]
-    name = "python"
+    [language-server.pylsp]
     config = { pylsp = { configurationSources = ["pycodestyle", "flake8"], plugins = { pycodestyle = { enabled = true }, flake8 = { enabled = true, executable = "${pkgs.python3Packages.flake8}/bin/flake8" } } } }
 
     [[language]]
@@ -103,8 +103,11 @@ in
     injection-regex = "md|markdown|latex|tex"
     file-types = ["md", "markdown", "tex", "txt"]
     roots = []
-    language-server = { command = "${ltex-ls}/bin/ltex-ls" }
+    language-servers = [ "ltex-ls" ]
     indent = { tab-width = 2, unit = "  " }
+
+    [language-server.ltex-ls]
+    command = "${ltex-ls}/bin/ltex-ls"
 
     [[language]]
     name = "yaml"
@@ -113,8 +116,12 @@ in
     roots = []
     comment-token = "#"
     indent = { tab-width = 2, unit = "  " }
-    language-server = { command = "yaml-language-server", args = ["--stdio"] }
+    language-servers = [ "yaml-language-server" ]
     injection-regex = "yml|yaml"
+
+    [language-server.yaml-language-server]
+    command = "yaml-language-server"
+    args = ["--stdio"]
     config = { redhat = { telemetry = { enabled = false } }, yaml = { schemas = { "https://json.schemastore.org/github-workflow.json" = "/.github/workflows/*", "https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json" = "/*k8s*" } } }
 
     [[language]]
@@ -123,8 +130,11 @@ in
     injection-regex = "robot"
     file-types = ["robot"]
     roots = []
-    language-server = { command = "robotframework_ls" }
+    language-servers = [ "robotframework_ls" ]
     indent = { tab-width = 4, unit = "    " }
+
+    [language-server.robotframework_ls]
+    command = "robotframework_ls"
 
     [[grammar]]
     name = "robot"

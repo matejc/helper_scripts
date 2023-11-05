@@ -42,10 +42,10 @@
       url = "github:matejc/sway-scratchpad";
       flake = false;
     };
-    nwg-displays = {
-      url = "github:nwg-piotr/nwg-displays/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nwg-displays = {
+    #   url = "github:nwg-piotr/nwg-displays/master";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     # hyprland = {
     #   url = "github:hyprwm/Hyprland";
     #   inputs.nixpkgs.follows = "nixpkgs";

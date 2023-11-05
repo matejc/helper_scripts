@@ -448,7 +448,7 @@ in {
                 "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
                 "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
-                "Control+Mod1+m" = "exec ${inputs.nwg-displays.packages."${pkgs.system}".default}/bin/nwg-displays";
+                "Control+Mod1+m" = "exec ${pkgs.nwg-displays}/bin/nwg-displays";
                 "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
                 "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+";
                 "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-";

@@ -51,7 +51,7 @@ let
     kotlin_language_server = ''
       setup_lsp("kotlin_language_server", {
         on_attach = on_attach;
-        cmd = {"${kotlin-language-server}/bin/kotlin-language-server"};
+        cmd = {"${pkgs.kotlin-language-server}/bin/kotlin-language-server"};
         capabilities = capabilities;
       })
     '';
@@ -79,21 +79,21 @@ let
     bashls = ''
       nvim_lsp["bashls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/bash-language-server", "start"};
+        cmd = {"${pkgs.nodePackages.bash-language-server}/bin/bash-language-server", "start"};
         capabilities = capabilities;
       }
     '';
     dockerls = ''
       nvim_lsp["dockerls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/docker-langserver", "--stdio"};
+        cmd = {"${pkgs.dockerfile-language-server-nodejs}/bin/docker-langserver", "--stdio"};
         capabilities = capabilities;
       }
     '';
     yamlls = ''
       nvim_lsp["yamlls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/yaml-language-server", "--stdio"};
+        cmd = {"${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio"};
         capabilities = capabilities;
         filetypes = { 'yaml', 'yaml.docker-compose' };
         root_dir = function(fname)
@@ -114,35 +114,42 @@ let
     tsserver = ''
       nvim_lsp["tsserver"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/typescript-language-server", "--stdio"};
+        cmd = {"${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
     jsonls = ''
       nvim_lsp["jsonls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/vscode-json-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver", "--stdio"};
         capabilities = capabilities;
       }
     '';
     vimls = ''
       nvim_lsp["vimls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/vim-language-server", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vim-language-server}/bin/vim-language-server", "--stdio"};
+        capabilities = capabilities;
+      }
+    '';
+    phpactor = ''
+      nvim_lsp["phpactor"].setup {
+        on_attach = on_attach;
+        cmd = {"${pkgs.phpactor}/bin/phpactor", "language-server"};
         capabilities = capabilities;
       }
     '';
     html = ''
       nvim_lsp["html"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/html-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-json-languageserver}/bin/html-languageserver", "--stdio"};
         capabilities = capabilities;
       }
     '';
     cssls = ''
       nvim_lsp["cssls"].setup {
         on_attach = on_attach;
-        cmd = {"${variables.homeDir}/.npm-packages/bin/css-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver", "--stdio"};
         capabilities = capabilities;
       }
     '';
@@ -290,7 +297,7 @@ let
     ansiblels = ''
       nvim_lsp["ansiblels"].setup {
         on_attach = on_attach;
-        cmd = { '${variables.homeDir}/.npm-packages/bin/ansible-language-server', '--stdio' };
+        cmd = { '${pkgs.ansible-language-server}/bin/ansible-language-server', '--stdio' };
         capabilities = capabilities;
         settings = {
           ansible = {
@@ -2658,25 +2665,6 @@ EOF
     " autocmd SessionLoadPost * call SetColumnToStart()
   '';
 
-  kotlin-language-server = pkgs.stdenv.mkDerivation rec {
-    pname = "kotlin-language-server";
-    version = "0.7.0";
-
-    src = pkgs.fetchzip {
-      url = "https://github.com/fwcd/kotlin-language-server/releases/download/${version}/server.zip";
-      sha256 = "1nsfird6mxzi2cx6k2dlvlsn3ipdf4l1grd4iwz42y3ihm8drgpa";
-    };
-
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-
-    installPhase = ''
-      install -D $src/bin/kotlin-language-server -t $out/bin
-      cp -r $src/lib $out/lib
-      wrapProgram $out/bin/kotlin-language-server \
-        --prefix PATH : ${pkgs.jre}/bin
-    '';
-  };
-
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
@@ -2781,57 +2769,6 @@ EOF
     };
   };
 in [{
-  target = "${variables.homeDir}/bin/nvim-lsp-install";
-  source = pkgs.writeScript "nvim-lsp-install" ''
-    #!${pkgs.stdenv.shell}
-
-    if [[ "$1" == "clean" ]]
-    then
-      rm -vrf ${variables.homeDir}/.npm-packages/*
-      rm -vrf ${variables.homeDir}/.py-packages/*
-      exit 0
-    fi
-
-    export NPM_PACKAGES="${variables.homeDir}/.npm-packages"
-    export PY_PACKAGES="${variables.homeDir}/.py-packages"
-
-    npm_global_install() {
-      mkdir -p $NPM_PACKAGES
-      ${pkgs.nodejs}/bin/npm install -g --prefix="$NPM_PACKAGES" "$@"
-    }
-
-    pip_install() {
-      ${pkgs.python3Packages.python}/bin/python -m venv "$PY_PACKAGES"
-      $PY_PACKAGES/bin/python -m pip install --upgrade pip
-      $PY_PACKAGES/bin/pip install "$@"
-    }
-
-    npm_global_install \
-      bash-language-server \
-      dockerfile-language-server-nodejs \
-      typescript \
-      typescript-language-server \
-      yaml-language-server \
-      vscode-json-languageserver \
-      vim-language-server \
-      vscode-html-languageserver-bin \
-      vscode-css-languageserver-bin \
-      coc-powershell \
-      ansible-language-server
-
-    pip_install \
-      robotframework-lsp
-
-    function ensure_lsp_link() {
-      local name="$1"
-      local path="$2"
-      local cmdbasename="$(${pkgs.coreutils}/bin/basename $path)"
-      local destination="${variables.homeDir}/.cache/nvim/nvim_lsp/$name/bin"
-      mkdir -p "$destination"
-      ln -svf "$path" "$destination/$cmdbasename"
-    }
-  '';
-} {
   target = "${variables.homeDir}/bin/nvim";
   source = "${neovim}/bin/nvim";
   #source = pkgs.writeScript "nvim" ''
