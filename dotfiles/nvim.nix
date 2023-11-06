@@ -30,11 +30,12 @@ let
     #"hls"
     #"sumneko_lua"
     "lua_lsp"
-    #"pwsh"
+    "powershell_es"
     "robotframework_ls"
     "lemminx"
     #"pylsp"
     "pyright"
+    #"jedi_language_server"
     #"python_language_server"
     #"ansiblels"
     "solargraph"
@@ -208,11 +209,18 @@ let
         },
       }
     '';
+    powershell_es = ''
+      setup_lsp("powershell_es", {
+        on_attach = on_attach;
+        cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${pkgs.vscode-extensions.ms-vscode.powershell}/share/vscode/extensions/ms-vscode.PowerShell/modules/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
+        capabilities = capabilities;
+      })
+    '';
     pwsh = ''
       if not nvim_lsp["pwsh"] then
         nvim_lsp_configs.pwsh = {
           default_config = {
-            cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
+            cmd = {"${pkgs.powershell}/bin/pwsh", "-NoLogo", "-NoProfile", "-Command", "${pkgs.vscode-extensions.ms-vscode.powershell}/share/vscode/extensions/ms-vscode.PowerShell/modules/PowerShellEditorServices/Start-EditorServices.ps1 -BundledModulesPath ${variables.homeDir}/.npm-packages/lib/node_modules/coc-powershell/PowerShellEditorServices -LogPath ${variables.homeDir}/.pwsh-logs.log -SessionDetailsPath ${variables.homeDir}/.pwsh-session.json -FeatureFlags @() -AdditionalModules @() -HostName 'My Client' -HostProfileId 'myclient' -HostVersion 1.0.0 -Stdio -LogLevel Normal"};
             filetypes = {'ps1'};
             root_dir = function(fname)
               return nvim_lsp.util.find_git_ancestor(fname) or vim.loop.os_homedir()
@@ -293,6 +301,13 @@ let
         }
       end
       nvim_lsp["python_language_server"].setup { on_attach = on_attach; }
+    '';
+    jedi_language_server = ''
+      setup_lsp("jedi_language_server", {
+        on_attach = on_attach;
+        cmd = {"${pkgs.python3Packages.jedi-language-server}/bin/jedi-language-server"};
+        capabilities = capabilities;
+      })
     '';
     ansiblels = ''
       nvim_lsp["ansiblels"].setup {
@@ -616,9 +631,8 @@ EOF
 
     inoremap <C-U> <Cmd>:UndotreeToggle<CR>
 
-    let $PATH .= ':${lib.makeBinPath [
+    let $PATH = $PATH . ":${lib.makeBinPath [
       pkgs.stdenv.cc
-      pkgs.python3Packages.python
       pkgs.perl
       pkgs.nodejs
       pkgs.gnugrep
@@ -627,13 +641,11 @@ EOF
       pkgs.sshpass
       pkgs.openssh
       pkgs.jdk11
-      pkgs.graphviz
       pkgs.python3Packages.docutils
       pkgs.shellcheck
       pkgs.tree-sitter
       pkgs.coreutils-full
-      pkgs.delta
-    ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin'
+    ]}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin"
     let $CC = "${pkgs.stdenv.cc}/bin/cc"
     let $LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"
     let $LD_LIBRARY_PATH .= ":${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.stdenv.cc.libc}/lib"

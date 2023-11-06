@@ -33,6 +33,7 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , nsjail ? "${homeDir}/.vpn/bin/nsjail"
+, extraSlirp4netnsArgs ? "--disable-host-loopback"
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
 with pkgs;
 with lib;
@@ -185,7 +186,7 @@ let
       nspid="$(cat ${homeDir}/.vpn/${name}/home/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
-        slirp4netns --disable-dns --configure --mtu=65520 --disable-host-loopback $nspid tap0 &
+        slirp4netns --disable-dns --configure --mtu=65520 ${extraSlirp4netnsArgs} $nspid tap0 &
         echo "$!" >${homeDir}/.vpn/${name}/home/.slirp4netns.pid
         break
       fi

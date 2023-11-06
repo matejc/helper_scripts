@@ -138,10 +138,17 @@ let
         enable = true;
         wlr = {
           enable = true;
-          settings.screencast = {
-            max_fps = 30;
-            chooser_type = "simple";
-            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
+          settings = {
+            screencast = let
+              chooserCmd = pkgs.writeScript "chooser.sh" ''
+                #!${pkgs.stdenv.shell}
+                ${pkgs.sway}/bin/swaymsg -s "$(${pkgs.coreutils}/bin/realpath /run/user/$(${pkgs.coreutils}/bin/id -u)/sway*.sock)" -t get_outputs | ${pkgs.jq}/bin/jq -r '.[] | .name' | ${pkgs.wofi}/bin/wofi -d
+              '';
+            in {
+              chooser_type = "dmenu";
+              chooser_cmd = "${chooserCmd}";
+              max_fps = 30;
+            };
           };
         };
       };
@@ -184,10 +191,16 @@ let
       home.packages = [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
         logseq
+        proxychains
+        (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome
         #slack
       ];
+      programs.direnv = {
+        enable = true;
+        enableZshIntegration = true;
+      };
       home.sessionVariables = {
         XDG_CURRENT_DESKTOP = "sway";
         LIBVA_DRIVER_NAME = "iHD";
