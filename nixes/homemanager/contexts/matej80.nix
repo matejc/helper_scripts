@@ -73,9 +73,9 @@ let
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
       };
       outputs = [{
-        criteria = "HDMI-A-2";
+        criteria = "eDP-1";
         position = "0,0";
-        output = "HDMI-A-2";
+        output = "eDP-1";
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
@@ -99,12 +99,27 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
+      { name = "kdeconnect"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 1; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
+      hardware.opengl.enable = true;
+      hardware.opengl.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+      networking.networkmanager.enable = true;
+      services.dbus.packages = [ pkgs.dconf ];
+      services.gnome.at-spi2-core.enable = true;
+      services.gnome.gnome-keyring.enable = true;
+      services.accounts-daemon.enable = true;
+      fonts.packages = [ pkgs.corefonts pkgs.font-awesome (pkgs.nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; }) ];
+      nixpkgs.config.allowUnfree = true;
+      environment.systemPackages = with pkgs; [
+        vulkan-tools
+        wl-clipboard
+      ];
       services.greetd = {
         enable = true;
         settings = {
@@ -114,17 +129,27 @@ let
         };
         vt = 2;
       };
-      xdg.portal = {
+      security.rtkit.enable = true;
+      services.pipewire = {
         enable = true;
-        wlr = {
-          enable = true;
-          settings.screencast = {
-            max_fps = 30;
-            chooser_type = "simple";
-            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
-          };
-        };
+        alsa.enable = true;
+        alsa.support32Bit = true;
+        pulse.enable = true;
       };
+      networking.firewall = {
+        allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
+        allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
+      };
+      services.fprintd.enable = true;
+      services.fprintd.tod.enable = true;
+      services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
+      security.pam.services.swaylock.fprintAuth = true;
+      services.tailscale.enable = true;
+      services.udev.extraRules = ''
+        ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness"
+        ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+      '';
+      hardware.bluetooth.enable = true;
     };
     home-configuration = {
       home.stateVersion = "23.05";
@@ -133,9 +158,7 @@ let
         { command = "${self.variables.programs.browser}"; }
       ];
       wayland.windowManager.sway.config.input = {
-        "type:pointer" = {
-          pointer_accel = "-0.3";
-        };
+        "1267:47:Elan_TrackPoint" = { accel_profile = "flat"; };
       };
       services.kanshi.enable = true;
       services.swayidle.enable = true;

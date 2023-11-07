@@ -184,9 +184,33 @@ let
     exit 0
   '';
 
+  chooserCmd = pkgs.writeShellScriptBin "sway-wsshare-chooser" ''
+    export PATH="${pkgs.sway}/bin:${pkgs.jq}/bin:${pkgs.wofi}/bin:${pkgs.coreutils}/bin:$PATH"
+    export SWAYSOCK="$(ls /run/user/"$(id -u)"/sway-ipc.* | head -n 1)"
+    swaymsg -t get_outputs | jq -r '.[]|.name' | wofi -d
+  '';
 in {
-
   config = lib.mkMerge ([{
+    xdg.portal = {
+      enable = true;
+      wlr = {
+        enable = true;
+        settings.screencast = {
+          max_fps = 30;
+          chooser_type = pkgs.lib.mkDefault "dmenu";
+          chooser_cmd = pkgs.lib.mkDefault "${chooserCmd}";
+        };
+      };
+    };
+    services.tlp = {
+      enable = true;
+      settings = {
+        START_CHARGE_THRESH_BAT0 = 90;
+        STOP_CHARGE_THRESH_BAT0 = 95;
+        CPU_SCALING_GOVERNOR_ON_AC = "performance";
+        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+      };
+    };
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
@@ -284,7 +308,7 @@ in {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
           QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
           QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
-          #SDL_VIDEODRIVER = "wayland";
+          SDL_VIDEODRIVER = "wayland";
           QT_QPA_PLATFORM = "wayland";
           QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
           _JAVA_AWT_WM_NONREPARENTING = "1";
@@ -529,6 +553,7 @@ in {
             #};
             output = lib.listToAttrs (map (o: { name = o.output; value = ({ bg = "${o.wallpaper} fill"; scale = (toString o.scale); } // (lib.optionalAttrs (o.mode != null) { inherit (o) mode; })); }) context.variables.outputs);
             workspaceOutputAssign = lib.flatten (map (o: map (w: { workspace = w; inherit (o) output; }) o.workspaces) context.variables.outputs);
+            window.titlebar = false;
           };
           extraConfig = ''
             focus_wrapping yes
