@@ -41,11 +41,12 @@ let
       wallpaper = "${homeDir}/Pictures/pexels.png";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
-      signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
+      signingkey = "E05DF91D31D5B667B0DDAB4B5F456C729CD54863";
       locale.all = "en_US.UTF-8";
       networkInterface = "br0";
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
+      hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
@@ -60,6 +61,7 @@ let
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
+        caprine = "${pkgs.caprine-bin}/bin/caprine --ozone-platform-hint=auto";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -167,7 +169,7 @@ let
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       programs.waybar.enable = true;
-      home.packages = [ ];
+      home.packages = [ networkmanagerapplet ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
