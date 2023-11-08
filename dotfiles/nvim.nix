@@ -13,7 +13,7 @@ let
   lemminx = import ../nixes/lemminx.nix { inherit pkgs; };
 
   enabledNvimLsp = mkNvimLsp [
-    #"kotlin_language_server"
+    "kotlin_language_server"
     #"rnix"
     "nixd"
     "bashls"
@@ -25,7 +25,7 @@ let
     "html"
     "cssls"
     "ccls"
-    #"omnisharp"
+    "omnisharp"
     "gopls"
     #"hls"
     #"sumneko_lua"
@@ -2220,6 +2220,36 @@ end
 vim.api.nvim_set_keymap("i", "<C-S-b>", "<cmd>:lua my_git_bcommits()<CR>", {noremap = true, silent = true})
 vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {noremap = true, silent = true})
 
+
+require("chatgpt").setup({
+  openai_params = {
+    model = "gpt-3.5-turbo",
+  },
+  openai_edit_params = {
+    model = "gpt-3.5-turbo",
+  },
+})
+
+local wk = require("which-key")
+wk.register({
+  c = {
+    name = "ChatGPT",
+    c = { "<cmd>ChatGPT<CR>", "ChatGPT" },
+    e = { "<cmd>ChatGPTEditWithInstruction<CR>", "Edit with instruction", mode = { "n", "v" } },
+    g = { "<cmd>ChatGPTRun grammar_correction<CR>", "Grammar Correction", mode = { "n", "v" } },
+    t = { "<cmd>ChatGPTRun translate<CR>", "Translate", mode = { "n", "v" } },
+    k = { "<cmd>ChatGPTRun keywords<CR>", "Keywords", mode = { "n", "v" } },
+    d = { "<cmd>ChatGPTRun docstring<CR>", "Docstring", mode = { "n", "v" } },
+    a = { "<cmd>ChatGPTRun add_tests<CR>", "Add Tests", mode = { "n", "v" } },
+    o = { "<cmd>ChatGPTRun optimize_code<CR>", "Optimize Code", mode = { "n", "v" } },
+    s = { "<cmd>ChatGPTRun summarize<CR>", "Summarize", mode = { "n", "v" } },
+    f = { "<cmd>ChatGPTRun fix_bugs<CR>", "Fix Bugs", mode = { "n", "v" } },
+    x = { "<cmd>ChatGPTRun explain_code<CR>", "Explain Code", mode = { "n", "v" } },
+    r = { "<cmd>ChatGPTRun roxygen_edit<CR>", "Roxygen Edit", mode = { "n", "v" } },
+    l = { "<cmd>ChatGPTRun code_readability_analysis<CR>", "Code Readability Analysis", mode = { "n", "v" } },
+  },
+}, { prefix = "c", mode = { "n", "v" } })
+
 EOF
 
     highlight! CmpItemMenu guifg=pink gui=italic
@@ -2774,6 +2804,8 @@ EOF
           vimPlugins.lspkind-nvim
           telescope-live-grep-args-nvim
           vimPlugins.vim-jinja2-syntax
+          vimPlugins.ChatGPT-nvim
+          vimPlugins.which-key-nvim
         ];
         opt = [
         ];

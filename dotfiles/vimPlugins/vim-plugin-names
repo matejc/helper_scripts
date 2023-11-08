@@ -1,4 +1,5 @@
 repo,branch,alias
+https://github.com/jackMort/ChatGPT.nvim/,main,
 https://github.com/L3MON4D3/LuaSnip/,,
 https://github.com/goolord/alpha-nvim/,main,
 https://github.com/akinsho/bufferline.nvim/,main,
@@ -60,4 +61,4 @@ https://github.com/hashivim/vim-hashicorp-tools/,,
 https://github.com/glench/vim-jinja2-syntax/,,
 https://github.com/sickill/vim-pasta/,,
 https://github.com/nfvs/vim-perforce/,,
-https://github.com/lifepillar/vim-solarized8/,,
+https://github.com/folke/which-key.nvim/,main,
