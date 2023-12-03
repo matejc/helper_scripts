@@ -201,6 +201,7 @@ in {
           chooser_cmd = pkgs.lib.mkDefault "${chooserCmd}";
         };
       };
+      config.common.default = "*";
     };
     services.tlp = {
       enable = true;
@@ -980,7 +981,7 @@ in {
               format = "{:%a %d.%m.%Y, %H:%M}";
               tooltip-format = "<tt><small>{calendar}</small></tt>";
               calendar = {
-                mode = "month";
+                mode = "year";
                 mode-mon-col = 3;
                 weeks-pos = "left";
                 on-scroll = 1;
@@ -990,7 +991,7 @@ in {
                   days = "<span color='#FC9867'><b>{}</b></span>";
                   weeks = "<span color='#99ffdd'><b>{}</b></span>";
                   weekdays = "<span color='#FFD866'><b>{}</b></span>";
-                  today = "<span color='#FF6188'><b>{}</b></span>";
+                  today = "<span color='#009933'><b>{}</b></span>";
                 };
               };
               actions = {
