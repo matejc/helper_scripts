@@ -2655,6 +2655,8 @@ EOF
     au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = "${pkgs.plantuml}/lib/plantuml.jar"
     let g:plantuml_previewer#viewer_path = "${variables.homeDir}/.plantuml-previewer-vim"
     let g:plantuml_previewer#debug_mode = 1
+    let g:plantuml_previewer#save_format = "png"
+    let g:plantuml_previewer#java_path = "${pkgs.jre}/bin/java"
 
     " augroup matchup_matchparen_highlight
     "   autocmd!

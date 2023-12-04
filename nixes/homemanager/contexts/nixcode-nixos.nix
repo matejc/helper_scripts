@@ -193,6 +193,7 @@ let
         logseq
         proxychains
         (import inputs.devenv).packages.${builtins.currentSystem}.devenv
+        shell_gpt
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome
         #slack

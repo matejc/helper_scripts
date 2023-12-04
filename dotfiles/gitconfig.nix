@@ -52,5 +52,7 @@ in
         program = ${pkgs.gnupg}/bin/gpg
     [credential]
         helper = store
+    [include]
+        path = ~/workarea/.gitconfig_include
   '';
 }
