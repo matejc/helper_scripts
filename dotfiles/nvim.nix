@@ -42,7 +42,8 @@ let
     "groovyls"
     "rust_analyzer"
     "ltex"
-    "terraform_lsp"
+    "terraformls"
+    "tflint"
   ];
 
   mkNvimLsp = enabled:
@@ -378,11 +379,18 @@ let
       }
     '';
     terraformls = ''
-      nvim_lsp["terraformls"].setup {
+      setup_lsp("terraformls", {
         on_attach = on_attach;
         cmd = {"${pkgs.terraform-ls}/bin/terraform-ls", "serve"};
         capabilities = capabilities;
-      }
+      })
+    '';
+    tflint = ''
+      setup_lsp("tflint", {
+        on_attach = on_attach;
+        cmd = {"${pkgs.tflint}/bin/tflint", "--langserver"};
+        capabilities = capabilities;
+      })
     '';
     terraform_lsp = ''
       nvim_lsp["terraform_lsp"].setup {
@@ -1889,8 +1897,19 @@ require("bufferline").setup{
 }
 EOF
 
-
 lua <<EOF
+require("filetype").setup {
+  overrides = {
+    extensions = {
+      tf = "terraform",
+      tfvars = "terraform",
+      tfstate = "json",
+      sh = "sh",
+    },
+  },
+}
+vim.g.did_load_filetypes = 1
+
 local previewers = require('telescope.previewers')
 
 local new_maker = function(filepath, bufnr, opts)
@@ -2808,6 +2827,7 @@ EOF
           vimPlugins.vim-jinja2-syntax
           vimPlugins.ChatGPT-nvim
           vimPlugins.which-key-nvim
+          vimPlugins.filetype-nvim
         ];
         opt = [
         ];
