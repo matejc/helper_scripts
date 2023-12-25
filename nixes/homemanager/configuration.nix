@@ -212,6 +212,7 @@ in {
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
       };
     };
+    services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
@@ -1150,6 +1151,7 @@ in {
           enable = true;
           enableSshSupport = true;
           enableZshIntegration = true;
+          pinentryFlavor = "gnome3";
         };
 
         programs.bash = {

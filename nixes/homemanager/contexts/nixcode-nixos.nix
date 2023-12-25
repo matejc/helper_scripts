@@ -160,7 +160,7 @@ let
         #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
         "workspace number 1" = [{ class = "^Logseq$"; }];
         "workspace number 2" = [{ class = "^Slack$"; }];
-        "workspace number 3" = [{ class = "^Firefox$"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        "workspace number 3" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }

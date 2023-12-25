@@ -49,6 +49,7 @@ let
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
+      # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -119,7 +120,7 @@ let
       { name = "kanshi"; delay = 2; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 1; group = "always"; }
+      { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
@@ -149,16 +150,18 @@ let
     home-configuration = {
       home.stateVersion = "20.09";
       wayland.windowManager.sway.enable = true;
+      wayland.windowManager.sway.config.assigns = {
+        "workspace number 1" = [{ class = "^Caprine$"; }];
+        "workspace number 4" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+      };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
+        { command = "${pkgs.caprine-bin}/bin/caprine"; }
         #{ command = "${self.variables.programs.keepassxc}"; }
         #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
       wayland.windowManager.sway.config.input = {
-        "type:pointer" = {
-          pointer_accel = "-0.3";
-          #middle_emulation = "enabled";
-        };
+        "type:pointer" = { accel_profile = "flat"; };
       };
       services.kanshi.enable = true;
       services.swayidle.enable = true;
@@ -172,7 +175,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice shell_gpt ];
+      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice shell_gpt caprine-bin ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
