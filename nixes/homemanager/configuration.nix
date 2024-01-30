@@ -1570,9 +1570,11 @@ in {
               Ctrl+Alt+Right { focus-monitor-right; }
 
               Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+              Alt+Shift+Ctrl+Left  { move-window-to-monitor-left; }
               Mod+Shift+Ctrl+Down  { move-window-to-monitor-down; }
               Mod+Shift+Ctrl+Up    { move-window-to-monitor-up; }
               Mod+Shift+Ctrl+Right { move-window-to-monitor-right; }
+              Alt+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
               Ctrl+Alt+Up        { focus-workspace-up; }
               Ctrl+Alt+Down      { focus-workspace-down; }
