@@ -36,7 +36,6 @@ let
       profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
-      #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
       lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
@@ -49,7 +48,6 @@ let
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
-      # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -59,37 +57,21 @@ let
       term = null;
       programs = {
         filemanager = "${pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
-        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
-        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
-        #browser = "${profileDir}/bin/chromium";
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        #window-center = dotFileAt "i3config.nix" 4;
-        #window-size = dotFileAt "i3config.nix" 5;
-        #i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
-        #tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       graphical = {
-        name = "sway";
-        logout = "${pkgs.sway}/bin/swaymsg exit";
-        target = "sway-session.target";
+        name = "niri";
+        logout = "loginctl terminate-user ${self.variables.user}";
+        target = "graphical-session.target";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
-        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
-        # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "HDMI-A-2";
@@ -118,8 +100,8 @@ let
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
-      #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
@@ -129,56 +111,39 @@ let
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
+            user = "greeter";
           };
         };
         vt = 2;
       };
+      users.users.matejc.extraGroups = [ "video" ];
+      programs.niri.enable = true;
       xdg.portal = {
-        enable = true;
-        wlr = {
-          enable = true;
-          settings.screencast = {
-            max_fps = 30;
-            chooser_type = "simple";
-            chooser_cmd = "${pkgs.slurp}/bin/slurp -f %o -or";
-          };
-        };
-        # extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        config.common.default = "gnome;gtk;";
+        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       };
     };
     home-configuration = {
       home.stateVersion = "20.09";
-      wayland.windowManager.sway.enable = true;
-      wayland.windowManager.sway.config.assigns = {
-        "workspace number 1" = [{ class = "^Caprine$"; }];
-        "workspace number 4" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
-      };
-      wayland.windowManager.sway.config.startup = [
-        { command = "${self.variables.programs.browser}"; }
-        { command = "${pkgs.caprine-bin}/bin/caprine"; }
-        #{ command = "${self.variables.programs.keepassxc}"; }
-        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
-      ];
-      wayland.windowManager.sway.config.input = {
-        "type:pointer" = { accel_profile = "flat"; };
-      };
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
-      #services.syncthing.tray.enable = true;
       programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice shell_gpt caprine-bin freetube ];
+      home.packages = [ cage super-slicer-latest solvespace keepassxc libreoffice shell_gpt caprine-bin freetube ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
+      systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
       programs.firefox = {
         enable = true;
         package = pkgs.firefox;

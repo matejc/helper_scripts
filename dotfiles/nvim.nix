@@ -1905,6 +1905,7 @@ require("filetype").setup {
       tfvars = "terraform",
       tfstate = "json",
       sh = "sh",
+      xml = "xml",
     },
   },
 }

@@ -111,6 +111,17 @@ let
     '';
   };
 
+  dbus-niri-environment = pkgs.writeTextFile {
+    name = "dbus-niri-environment";
+    destination = "/bin/dbus-niri-environment";
+    executable = true;
+    text = ''
+      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri
+      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-gnome
+      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-gnome
+    '';
+  };
+
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
@@ -194,14 +205,14 @@ in {
     xdg.portal = {
       enable = true;
       wlr = {
-        enable = true;
+        # enable = true;
         settings.screencast = {
           max_fps = 30;
           chooser_type = pkgs.lib.mkDefault "dmenu";
           chooser_cmd = pkgs.lib.mkDefault "${chooserCmd}";
         };
       };
-      config.common.default = "*";
+      # config.common.default = "*";
     };
     services.tlp = {
       enable = true;
@@ -314,7 +325,7 @@ in {
           QT_QPA_PLATFORM = "wayland";
           QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
           _JAVA_AWT_WM_NONREPARENTING = "1";
-          GTK_USE_PORTAL = "1";
+          #GTK_USE_PORTAL = "1";
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
         };
@@ -1290,6 +1301,370 @@ in {
             };
           };
         };
+
+        programs.niri.config = ''
+          // This config is in the KDL format: https://kdl.dev
+          // "/-" comments out the following node.
+
+          input {
+              keyboard {
+                  xkb {
+                      // You can set rules, model, layout, variant and options.
+                      // For more information, see xkeyboard-config(7).
+
+                      // For example:
+                      // layout "us,ru"
+                      // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+                  }
+
+                  // You can set the keyboard repeat parameters. The defaults match wlroots and sway.
+                  // Delay is in milliseconds before the repeat starts. Rate is in characters per second.
+                  // repeat-delay 600
+                  // repeat-rate 25
+
+                  // Niri can remember the keyboard layout globally (the default) or per-window.
+                  // - "global" - layout change is global for all windows.
+                  // - "window" - layout is tracked for each window individually.
+                  // track-layout "global"
+              }
+
+              // Next sections include libinput settings.
+              // Omitting settings disables them, or leaves them at their default values.
+              touchpad {
+                  tap
+                  // dwt
+                  natural-scroll
+                  // accel-speed 0.2
+                  // accel-profile "flat"
+                  // tap-button-map "left-middle-right"
+              }
+
+              mouse {
+                  // natural-scroll
+                  // accel-speed 0.2
+                  // accel-profile "flat"
+              }
+
+              tablet {
+                  // Set the name of the output (see below) which the tablet will map to.
+                  // If this is unset or the output doesn't exist, the tablet maps to one of the
+                  // existing outputs.
+                  // map-to-output "eDP-1"
+              }
+
+              // By default, niri will take over the power button to make it sleep
+              // instead of power off.
+              // Uncomment this if you would like to configure the power button elsewhere
+              // (i.e. logind.conf).
+              // disable-power-key-handling
+          }
+
+          // You can configure outputs by their name, which you can find
+          // by running `niri msg outputs` while inside a niri instance.
+          // The built-in laptop monitor is usually called "eDP-1".
+          // Remember to uncommend the node by removing "/-"!
+          /-output "eDP-1" {
+              // Uncomment this line to disable this output.
+              // off
+
+              // Scale is a floating-point number, but at the moment only integer values work.
+              scale 2.0
+
+              // Resolution and, optionally, refresh rate of the output.
+              // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
+              // If the refresh rate is omitted, niri will pick the highest refresh rate
+              // for the resolution.
+              // If the mode is omitted altogether or is invalid, niri will pick one automatically.
+              // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
+              mode "1920x1080@144"
+
+              // Position of the output in the global coordinate space.
+              // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
+              // The cursor can only move between directly adjacent outputs.
+              // Output scale has to be taken into account for positioning:
+              // outputs are sized in logical, or scaled, pixels.
+              // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
+              // so to put another output directly adjacent to it on the right, set its x to 1920.
+              // It the position is unset or results in an overlap, the output is instead placed
+              // automatically.
+              position x=1280 y=0
+          }
+
+          ${lib.concatMapStringsSep "\n" (o:
+          ''
+          output "${o.output}" {
+            scale ${toString o.scale}
+            ${if o.mode == null then "" else "mode \"${o.mode}\""}
+            ${let
+              pos = lib.splitString "," o.position;
+              x = builtins.elemAt pos 0;
+              y = builtins.elemAt pos 1;
+            in ''
+            position x=${x} y=${y}
+            ''
+            }
+          }
+          ''
+          ) context.variables.outputs}
+
+          layout {
+              // You can change how the focus ring looks.
+              focus-ring {
+                  // Uncomment this line to disable the focus ring.
+                  // off
+
+                  // How many logical pixels the ring extends out from the windows.
+                  width 1
+
+                  // Color of the ring on the active monitor: red, green, blue, alpha.
+                  active-color 127 200 255 255
+
+                  // Color of the ring on inactive monitors: red, green, blue, alpha.
+                  inactive-color 80 80 80 255
+              }
+
+              // You can also add a border. It's similar to the focus ring, but always visible.
+              border {
+                  // The settings are the same as for the focus ring.
+                  // If you enable the border, you probably want to disable the focus ring.
+                  off
+
+                  width 4
+                  active-color 255 200 127 255
+                  inactive-color 80 80 80 255
+              }
+
+              // You can customize the widths that "switch-preset-column-width" (Mod+R) toggles between.
+              preset-column-widths {
+                  // Proportion sets the width as a fraction of the output width, taking gaps into account.
+                  // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
+                  // The default preset widths are 1/3, 1/2 and 2/3 of the output.
+                  proportion 0.33333
+                  proportion 0.5
+                  proportion 0.66667
+
+                  // Fixed sets the width in logical pixels exactly.
+                  // fixed 1920
+              }
+
+              // You can change the default width of the new windows.
+              default-column-width { proportion 0.5; }
+              // If you leave the brackets empty, the windows themselves will decide their initial width.
+              // default-column-width {}
+
+              // Set gaps around windows in logical pixels.
+              gaps 1
+
+              // Struts shrink the area occupied by windows, similarly to layer-shell panels.
+              // You can think of them as a kind of outer gaps. They are set in logical pixels.
+              // Left and right struts will cause the next window to the side to always be visible.
+              // Top and bottom struts will simply add outer gaps in addition to the area occupied by
+              // layer-shell panels and regular gaps.
+              struts {
+                  // left 64
+                  // right 64
+                  // top 64
+                  // bottom 64
+              }
+
+              // When to center a column when changing focus, options are:
+              // - "never", default behavior, focusing an off-screen column will keep at the left
+              //   or right edge of the screen.
+              // - "on-overflow", focusing a column will center it if it doesn't fit
+              //   together with the previously focused column.
+              // - "always", the focused column will always be centered.
+              center-focused-column "never"
+          }
+
+          // Add lines like this to spawn processes at startup.
+          // Note that running niri as a session supports xdg-desktop-autostart,
+          // which may be more convenient to use.
+          // spawn-at-startup "${dbus-niri-environment}/bin/dbus-niri-environment"
+          spawn-at-startup "${configure-gtk}/bin/configure-gtk"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaynotificationcenter}/bin/swaync"
+
+          cursor {
+              // Change the theme and size of the cursor as well as set the
+              // `XCURSOR_THEME` and `XCURSOR_SIZE` env variables.
+              // xcursor-theme "default"
+              // xcursor-size 24
+          }
+
+          // Uncomment this line to ask the clients to omit their client-side decorations if possible.
+          // If the client will specifically ask for CSD, the request will be honored.
+          // Additionally, clients will be informed that they are tiled, removing some rounded corners.
+          prefer-no-csd
+
+          // You can change the path where screenshots are saved.
+          // A ~ at the front will be expanded to the home directory.
+          // The path is formatted with strftime(3) to give you the screenshot date and time.
+          screenshot-path "~/Pictures/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+          // You can also set this to null to disable saving screenshots to disk.
+          // screenshot-path null
+
+          // Settings for the "Important Hotkeys" overlay.
+          hotkey-overlay {
+              // Uncomment this line if you don't want to see the hotkey help at niri startup.
+              skip-at-startup
+          }
+
+          binds {
+              // Keys consist of modifiers separated by + signs, followed by an XKB key name
+              // in the end. To find an XKB name for a particular key, you may use a program
+              // like wev.
+              //
+              // "Mod" is a special modifier equal to Super when running on a TTY, and to Alt
+              // when running as a winit window.
+
+              // Mod-Shift-/, which is usually the same as Mod-?,
+              // shows a list of important hotkeys.
+              Mod+Shift+Slash { show-hotkey-overlay; }
+
+              // Suggested binds for running programs: terminal, app launcher, screen locker.
+              Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
+              Ctrl+Alt+Space { spawn "${context.variables.binDir}/launcher"; }
+              Ctrl+Alt+L { spawn "${context.variables.binDir}/lockscreen"; }
+              Ctrl+Alt+Delete { spawn "${pkgs.nwg-bar}/bin/nwg-bar"; }
+              Ctrl+Alt+M { spawn "${pkgs.nwg-displays}/bin/nwg-displays"; }
+              Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"; }
+
+              // You can also use a shell:
+              // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
+
+              // Example volume keys mappings for PipeWire & WirePlumber.
+              XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
+              XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+
+              Mod+K { close-window; }
+
+              Mod+Left  { focus-column-left; }
+              Mod+Down  { focus-window-down; }
+              Mod+Up    { focus-window-up; }
+              Mod+Right { focus-column-right; }
+
+              Mod+Shift+Left  { move-column-left; }
+              Mod+Shift+Down  { move-window-down; }
+              Mod+Shift+Up    { move-window-up; }
+              Mod+Shift+Right { move-column-right; }
+
+              // Alternative commands that move across workspaces when reaching
+              // the first or last window in a column.
+              // Mod+J     { focus-window-or-workspace-down; }
+              // Mod+K     { focus-window-or-workspace-up; }
+              // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
+              // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
+
+              Mod+Home { focus-column-first; }
+              Mod+End  { focus-column-last; }
+              Mod+Shift+Home { move-column-to-first; }
+              Mod+Shift+End  { move-column-to-last; }
+
+              Mod+Ctrl+Left  { focus-monitor-left; }
+              Ctrl+Alt+Left  { focus-monitor-left; }
+              Mod+Ctrl+Down  { focus-monitor-down; }
+              Mod+Ctrl+Up    { focus-monitor-up; }
+              Mod+Ctrl+Right { focus-monitor-right; }
+              Ctrl+Alt+Right { focus-monitor-right; }
+
+              Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+              Mod+Shift+Ctrl+Down  { move-window-to-monitor-down; }
+              Mod+Shift+Ctrl+Up    { move-window-to-monitor-up; }
+              Mod+Shift+Ctrl+Right { move-window-to-monitor-right; }
+
+              Ctrl+Alt+Up        { focus-workspace-up; }
+              Ctrl+Alt+Down      { focus-workspace-down; }
+              Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
+              Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
+
+              Mod+1 { focus-workspace 1; }
+              Mod+2 { focus-workspace 2; }
+              Mod+3 { focus-workspace 3; }
+              Mod+4 { focus-workspace 4; }
+              Mod+5 { focus-workspace 5; }
+              Mod+6 { focus-workspace 6; }
+              Mod+7 { focus-workspace 7; }
+              Mod+8 { focus-workspace 8; }
+              Mod+9 { focus-workspace 9; }
+              Mod+Shift+1 { move-window-to-workspace 1; }
+              Mod+Shift+2 { move-window-to-workspace 2; }
+              Mod+Shift+3 { move-window-to-workspace 3; }
+              Mod+Shift+4 { move-window-to-workspace 4; }
+              Mod+Shift+5 { move-window-to-workspace 5; }
+              Mod+Shift+6 { move-window-to-workspace 6; }
+              Mod+Shift+7 { move-window-to-workspace 7; }
+              Mod+Shift+8 { move-window-to-workspace 8; }
+              Mod+Shift+9 { move-window-to-workspace 9; }
+
+              Mod+Comma  { consume-window-into-column; }
+              Mod+Period { expel-window-from-column; }
+
+              Mod+R { switch-preset-column-width; }
+              Mod+F { maximize-column; }
+              Mod+Ctrl+F { fullscreen-window; }
+              Mod+C { center-column; }
+
+              // Finer width adjustments.
+              // This command can also:
+              // * set width in pixels: "1000"
+              // * adjust width in pixels: "-5" or "+5"
+              // * set width as a percentage of screen width: "25%"
+              // * adjust width as a percentage of screen width: "-10%" or "+10%"
+              // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
+              // set-column-width "100" will make the column occupy 200 physical screen pixels.
+              Mod+Minus { set-column-width "-10%"; }
+              Mod+Equal { set-column-width "+10%"; }
+
+              // Finer height adjustments when in column with other windows.
+              Mod+Ctrl+Minus { set-window-height "-10%"; }
+              Mod+Ctrl+Equal { set-window-height "+10%"; }
+
+              // Actions to switch layouts.
+              // Note: if you uncomment these, make sure you do NOT have
+              // a matching layout switch hotkey configured in xkb options above.
+              // Having both at once on the same hotkey will break the switching,
+              // since it will switch twice upon pressing the hotkey (once by xkb, once by niri).
+              // Mod+Space       { switch-layout "next"; }
+              // Mod+Shift+Space { switch-layout "prev"; }
+
+              Ctrl+Print { screenshot; }
+              Alt+Print { screenshot-window; }
+
+              Mod+Shift+E { quit; }
+              // Mod+Shift+P { power-off-monitors; }
+
+              // Mod+Shift+Ctrl+T { toggle-debug-tint; }
+          }
+
+          // Settings for debugging. Not meant for normal use.
+          // These can change or stop working at any point with little notice.
+          debug {
+              // Make niri take over its DBus services even if it's not running as a session.
+              // Useful for testing screen recording changes without having to relogin.
+              // The main niri instance will *not* currently take back the services; so you will
+              // need to relogin in the end.
+              // dbus-interfaces-in-non-session-instances
+
+              // Wait until every frame is done rendering before handing it over to DRM.
+              // wait-for-frame-completion-before-queueing
+
+              // Enable direct scanout into overlay planes.
+              // May cause frame drops during some animations on some hardware.
+              // enable-overlay-planes
+
+              // Disable the use of the cursor plane.
+              // The cursor will be rendered together with the rest of the frame.
+              // disable-cursor-plane
+
+              // Slow down animations by this factor.
+              // animation-slowdown 3.0
+
+              // Override the DRM device that niri will use for all rendering.
+              // render-drm-device "/dev/dri/renderD129"
+          }
+        '';
       }] ++ [ context.home-configuration ]);
     };
   }] ++ [ context.nixos-configuration ]);

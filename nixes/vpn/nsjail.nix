@@ -18,11 +18,11 @@
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
   { from = "${homeDir}/.vpn/openvpns"; to = "/etc/openvpn"; }
-  { from = "/tmp/.X11-unix/X0"; to = "/tmp/.X11-unix/X0"; }
+  # { from = "/tmp/.X11-unix/X0"; to = "/tmp/.X11-unix/X0"; }
 ]
 , symlinks ? [ ]
 , variables ? [
-  { name = "DISPLAY"; value = ":0"; }
+  # { name = "DISPLAY"; value = ":0"; }
   { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
 ]
 , waylandDisplay ? "wayland-1"
@@ -32,7 +32,6 @@
 , homeDir ? "/home/${user}"
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
-, nsjail ? "${homeDir}/.vpn/bin/nsjail"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
 with pkgs;

@@ -48,7 +48,6 @@ in
         /var/lib/satisfactory/SatisfactoryDedicatedServer/Engine/Binaries/Linux/UE4Server-Linux-Shipping FactoryGame
       '';
       serviceConfig = {
-        Nice = "-5";
         Restart = "always";
         User = "satisfactory";
         WorkingDirectory = "/var/lib/satisfactory";

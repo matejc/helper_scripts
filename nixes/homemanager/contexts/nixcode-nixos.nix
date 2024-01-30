@@ -192,7 +192,7 @@ let
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
         logseq
         proxychains
-        (import inputs.devenv).packages.${builtins.currentSystem}.devenv
+        # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         shell_gpt
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome

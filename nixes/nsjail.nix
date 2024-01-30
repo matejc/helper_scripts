@@ -5,5 +5,7 @@
 pkgs.nsjail.overrideDerivation (old: {
   preBuild = ''
     makeFlagsArray+=(USER_DEFINES='-DNEWUIDMAP_PATH=${newuidmap} -DNEWGIDMAP_PATH=${newgidmap}')
+
+    substituteInPlace ./Makefile --replace "-Wall -Wextra -Werror" ""
   '';
 })

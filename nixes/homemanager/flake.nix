@@ -49,13 +49,18 @@
     #   url = "github:hyprwm/Hyprland";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    devenv.url = "github:cachix/devenv";
+    # devenv.url = "github:cachix/devenv";
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.niri-src.url = "github:YaLTeR/niri";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  nixConfig = {
-    extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-    extra-substituters = "https://devenv.cachix.org";
-  };
+  # nixConfig = {
+  #   extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
+  #   extra-substituters = "https://devenv.cachix.org";
+  # };
 
   outputs = { self, ... }@inputs: {
     # homeConfigurations = {
@@ -83,6 +88,15 @@
           # {
           #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           # }
+        ];
+      };
+      matej70-niri = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
+          inputs.home-manager.nixosModules.home-manager
+          inputs.niri.nixosModules.niri
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-niri.nix; })
         ];
       };
       matej80 = inputs.nixpkgs.lib.nixosSystem {
