@@ -1401,7 +1401,7 @@ in {
               // You can change how the focus ring looks.
               focus-ring {
                   // Uncomment this line to disable the focus ring.
-                  // off
+                  off
 
                   // How many logical pixels the ring extends out from the windows.
                   width 1
@@ -1417,10 +1417,10 @@ in {
               border {
                   // The settings are the same as for the focus ring.
                   // If you enable the border, you probably want to disable the focus ring.
-                  off
+                  // off
 
-                  width 4
-                  active-color 255 200 127 255
+                  width 2
+                  active-color 127 200 255 255
                   inactive-color 80 80 80 255
               }
 
@@ -1443,7 +1443,7 @@ in {
               // default-column-width {}
 
               // Set gaps around windows in logical pixels.
-              gaps 1
+              gaps 0
 
               // Struts shrink the area occupied by windows, similarly to layer-shell panels.
               // You can think of them as a kind of outer gaps. They are set in logical pixels.
