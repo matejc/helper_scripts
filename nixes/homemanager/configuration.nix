@@ -111,17 +111,6 @@ let
     '';
   };
 
-  dbus-niri-environment = pkgs.writeTextFile {
-    name = "dbus-niri-environment";
-    destination = "/bin/dbus-niri-environment";
-    executable = true;
-    text = ''
-      dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri
-      systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-gnome
-      systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-gtk xdg-desktop-portal-gnome
-    '';
-  };
-
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
     destination = "/bin/configure-gtk";
@@ -213,7 +202,7 @@ in {
           chooser_cmd = pkgs.lib.mkDefault "${chooserCmd}";
         };
       };
-      # config.common.default = "*";
+      config.common.default = pkgs.lib.mkDefault "*";
     };
     services.tlp = {
       enable = true;
@@ -1474,7 +1463,7 @@ in {
               // - "on-overflow", focusing a column will center it if it doesn't fit
               //   together with the previously focused column.
               // - "always", the focused column will always be centered.
-              center-focused-column "never"
+              center-focused-column "on-overflow"
           }
 
           // Add lines like this to spawn processes at startup.

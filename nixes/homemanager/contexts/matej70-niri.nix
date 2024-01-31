@@ -61,6 +61,8 @@ let
         browser = "${profileDir}/bin/firefox";
         editor = "${helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
+        caprine = "${caprine-bin}/bin/caprine --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        freetube = "${freetube}/bin/freetube --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -97,12 +99,18 @@ let
         remote = "https://github.com/matejc/nixpkgs";
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
+      startup = [
+        "${self.variables.profileDir}/bin/keepassxc"
+        "${self.variables.binDir}/browser"
+        "${self.variables.profileDir}/bin/service-group-once start"
+        "${self.variables.profileDir}/bin/service-group-always restart"
+      ];
     };
     services = [
-      { name = "kanshi"; delay = 2; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
-      { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 2; group = "always"; }
+      { name = "kanshi"; delay = 1; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
+      { name = "network-manager-applet"; delay = 4; group = "always"; }
+      { name = "waybar"; delay = 3; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
@@ -138,7 +146,7 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ cage super-slicer-latest solvespace keepassxc libreoffice shell_gpt caprine-bin freetube ];
+      home.packages = [ cage super-slicer-latest solvespace keepassxc libreoffice shell_gpt ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";

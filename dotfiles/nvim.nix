@@ -1838,7 +1838,7 @@ end
 vim.opt.termguicolors = true
 
 require("themer").setup({
-  colorscheme = "monokai",
+  colorscheme = "gruvbox",
   remaps = {
     highlights = {
       gruvbox = {
