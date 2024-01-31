@@ -132,7 +132,8 @@ let
     in ''
       export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
       gnome_schema=org.gnome.desktop.interface
-      gsettings set $gnome_schema gtk-theme 'Breeze-Dark'
+      ${pkgs.glib}/bin/gsettings set $gnome_schema gtk-theme 'Breeze-Dark'
+      ${pkgs.glib}/bin/gsettings set $gnome_schema color-scheme 'prefer-dark'
     '';
   };
 
@@ -371,7 +372,7 @@ in {
               settings = {
                 "general.smoothScroll" = false;
                 "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-                "ui.textScaleFactor" = 90;
+                # "ui.textScaleFactor" = 90;
               };
               userChrome = ''
                 * {
@@ -1341,8 +1342,8 @@ in {
 
               mouse {
                   // natural-scroll
-                  // accel-speed 0.2
-                  // accel-profile "flat"
+                  accel-speed 0.2
+                  accel-profile "flat"
               }
 
               tablet {
@@ -1479,11 +1480,13 @@ in {
           // Add lines like this to spawn processes at startup.
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
-          // spawn-at-startup "${dbus-niri-environment}/bin/dbus-niri-environment"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaybg}/bin/swaybg -o '*' -m stretch -i '${context.variables.wallpaper}'"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaynotificationcenter}/bin/swaync"
+
+          ${lib.concatMapStringsSep "\n" (i: ''
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
+          '') context.variables.startup}
 
           cursor {
               // Change the theme and size of the cursor as well as set the
@@ -1545,6 +1548,11 @@ in {
               Mod+Up    { focus-window-up; }
               Mod+Right { focus-column-right; }
 
+              Ctrl+Alt+Left  { focus-column-left; }
+              Ctrl+Alt+Right { focus-column-right; }
+              Ctrl+Alt+Shift+Left  { move-column-left; }
+              Ctrl+Alt+Shift+Right { move-column-right; }
+
               Mod+Shift+Left  { move-column-left; }
               Mod+Shift+Down  { move-window-down; }
               Mod+Shift+Up    { move-window-up; }
@@ -1563,11 +1571,9 @@ in {
               Mod+Shift+End  { move-column-to-last; }
 
               Mod+Ctrl+Left  { focus-monitor-left; }
-              Ctrl+Alt+Left  { focus-monitor-left; }
               Mod+Ctrl+Down  { focus-monitor-down; }
               Mod+Ctrl+Up    { focus-monitor-up; }
               Mod+Ctrl+Right { focus-monitor-right; }
-              Ctrl+Alt+Right { focus-monitor-right; }
 
               Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
               Alt+Shift+Ctrl+Left  { move-window-to-monitor-left; }

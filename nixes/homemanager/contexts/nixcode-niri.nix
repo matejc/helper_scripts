@@ -36,7 +36,6 @@ let
       profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
-      #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
       temperatureFiles = [ hwmonPath ];
       hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
@@ -51,52 +50,38 @@ let
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
-        size = 12.0;
+        size = 16.0;
         style = "Bold";
       };
       i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
-        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        # browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
-        # browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
         browser = "${profileDir}/bin/firefox";
-        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
-        #browser = "${profileDir}/bin/google-chrome-stable";
+        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
         editor = "${nano}/bin/nano";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        # window-center = dotFileAt "i3config.nix" 4;
-        # window-size = dotFileAt "i3config.nix" 5;
-        # i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        # tmux = "${pkgs.tmux}/bin/tmux";
-        # tug = "${pkgs.turbogit}/bin/tug";
+        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       graphical = {
-        name = "sway";
-        logout = "${pkgs.sway}/bin/swaymsg exit";
-        target = "sway-session.target";
+        name = "niri";
+        logout = "loginctl terminate-user ${self.variables.user}";
+        target = "niri.service";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
-        #g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         criteria = "eDP-1";
         position = "0,0";
         output = "eDP-1";
-        mode = "2880x1800@60.001Hz";
-        scale = 1.5;
+        mode = "2880x1800";
+        scale = 1.0;
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
         status = "disable";
@@ -115,12 +100,21 @@ let
         remote = "https://github.com/matejc/nixpkgs";
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
+      startup = [
+        "${self.variables.binDir}/logseq"
+        "${self.variables.binDir}/slack"
+        "${self.variables.binDir}/browser"
+        "${self.variables.profileDir}/bin/service-group-once start"
+        "${self.variables.profileDir}/bin/service-group-always restart"
+        "${self.variables.profileDir}/bin/keepassxc"
+      ];
     };
     services = [
       { name = "kanshi"; delay = 2; group = "always"; }
       { name = "nextcloud-client"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 1; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
+      { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
@@ -130,49 +124,23 @@ let
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
+            user = "greeter";
           };
         };
         vt = 2;
       };
+      users.users.matejc.extraGroups = [ "video" ];
+      programs.niri.enable = true;
       xdg.portal = {
         enable = true;
-        wlr = {
-          enable = true;
-          settings = {
-            screencast = let
-              chooserCmd = pkgs.writeScript "chooser.sh" ''
-                #!${pkgs.stdenv.shell}
-                ${pkgs.sway}/bin/swaymsg -s "$(${pkgs.coreutils}/bin/realpath /run/user/$(${pkgs.coreutils}/bin/id -u)/sway*.sock)" -t get_outputs | ${pkgs.jq}/bin/jq -r '.[] | .name' | ${pkgs.wofi}/bin/wofi -d
-              '';
-            in {
-              chooser_type = "dmenu";
-              chooser_cmd = "${chooserCmd}";
-              max_fps = 30;
-            };
-          };
-        };
+        config.common.default = "gnome;gtk;";
+        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       };
     };
     home-configuration = rec {
       home.stateVersion = "22.05";
-      wayland.windowManager.sway.enable = true;
-      wayland.windowManager.sway.config.assigns = {
-        #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        "workspace number 1" = [{ class = "^Logseq$"; }];
-        "workspace number 2" = [{ class = "^Slack$"; }];
-        "workspace number 3" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
-      };
-      wayland.windowManager.sway.config.startup = [
-        { command = "${self.variables.programs.browser}"; }
-        { command = "${self.variables.programs.slack}"; }
-        { command = "${self.variables.profileDir}/bin/logseq"; }
-        #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
-        # { command = "${clearprimary}/bin/clearprimary"; }
-      ];
-      wayland.windowManager.sway.config.input = {
-        "2:10:TPPS/2_Elan_TrackPoint" = { accel_profile = "flat"; };
-      };
       services.swayidle.timeouts = [
         {
           timeout = 100;
@@ -189,22 +157,24 @@ let
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
+      systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
       home.packages = [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        logseq
         proxychains
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         shell_gpt
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome
         #slack
+        cage
       ];
       programs.direnv = {
         enable = true;
         enableZshIntegration = true;
       };
       home.sessionVariables = {
-        XDG_CURRENT_DESKTOP = "sway";
+        XDG_CURRENT_DESKTOP = "niri";
         LIBVA_DRIVER_NAME = "iHD";
       };
       programs.chromium.enable = true;

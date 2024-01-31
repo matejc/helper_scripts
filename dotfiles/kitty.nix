@@ -459,7 +459,7 @@
 #: operating system sends events corresponding to the start and end of
 #: a resize, this number is ignored.
 
-  # resize_draw_strategy static
+# resize_draw_strategy static
 
 #: Choose how kitty draws a window while a resize is in progress. A
 #: value of static means draw the current window contents, mostly
@@ -1063,7 +1063,7 @@
 
   map kitty_mod+equal     change_font_size all +2.0
   map kitty_mod+minus     change_font_size all -2.0
-  map kitty_mod+backspace change_font_size all 0
+  map kitty_mod+)         change_font_size all 0
 
 #: To setup shortcuts for specific font sizes::
 

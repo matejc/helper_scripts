@@ -117,6 +117,15 @@
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
         ];
       };
+      nixcode-niri = inputs.nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          inputs.home-manager.nixosModules.home-manager
+          inputs.niri.nixosModules.niri
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-niri.nix; })
+        ];
+      };
       nixcode-hyprland = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
