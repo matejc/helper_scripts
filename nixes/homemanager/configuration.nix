@@ -1563,6 +1563,8 @@ in {
               Mod+Ctrl+Down  { focus-monitor-down; }
               Mod+Ctrl+Up    { focus-monitor-up; }
               Mod+Ctrl+Right { focus-monitor-right; }
+              Ctrl+Alt+Page_Up  { focus-monitor-left; }
+              Ctrl+Alt+Page_Down { focus-monitor-right; }
 
               Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
               Alt+Shift+Ctrl+Left  { move-window-to-monitor-left; }
