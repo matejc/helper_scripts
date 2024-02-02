@@ -1,5 +1,4 @@
 { pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
 let
   # clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
 
@@ -58,25 +57,12 @@ let
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
-        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        # browser = "${pkgs.google-chrome}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
-        # browser = "${pkgs.chromium}/bin/chromium --enable-features=WebRTCPipeWireCapturer";
         browser = "${profileDir}/bin/firefox";
-        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer";
-        #browser = "${profileDir}/bin/google-chrome-stable";
-        editor = "${nano}/bin/nano";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
+        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        # window-center = dotFileAt "i3config.nix" 4;
-        # window-size = dotFileAt "i3config.nix" 5;
-        # i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        # tmux = "${pkgs.tmux}/bin/tmux";
-        # tug = "${pkgs.turbogit}/bin/tug";
+        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -88,7 +74,7 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
-        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
+        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
         #g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
@@ -166,7 +152,7 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.slack}"; }
-        { command = "${self.variables.profileDir}/bin/logseq"; }
+        { command = "${self.variables.binDir}/logseq"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         # { command = "${clearprimary}/bin/clearprimary"; }
       ];
@@ -188,10 +174,9 @@ let
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      home.packages = [
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      home.packages = with pkgs; [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        logseq
         proxychains
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         shell_gpt

@@ -95,7 +95,6 @@
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
           inputs.home-manager.nixosModules.home-manager
-          inputs.niri.nixosModules.niri
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-niri.nix; })
         ];
       };
@@ -122,7 +121,6 @@
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           inputs.home-manager.nixosModules.home-manager
-          inputs.niri.nixosModules.niri
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-niri.nix; })
         ];
       };

@@ -4,6 +4,8 @@ with pkgs;
 let
   helper_scripts = ../..;
 
+  nixosConfig = config;
+
   context = import contextFile { inherit pkgs lib config inputs dotFileAt helper_scripts; };
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
@@ -192,6 +194,9 @@ let
     swaymsg -t get_outputs | jq -r '.[]|.name' | wofi -d
   '';
 in {
+  imports = [
+    inputs.niri.nixosModules.niri
+  ];
   config = lib.mkMerge ([{
     xdg.portal = {
       enable = true;
@@ -1293,7 +1298,7 @@ in {
           };
         };
 
-        programs.niri.config = ''
+        programs.niri.config = pkgs.lib.mkIf (nixosConfig.programs.niri.enable) ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
 
@@ -1476,7 +1481,7 @@ in {
 
           ${lib.concatMapStringsSep "\n" (i: ''
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
-          '') context.variables.startup}
+          '') (pkgs.lib.optionals (context.variables ? startup) context.variables.startup)}
 
           cursor {
               // Change the theme and size of the cursor as well as set the
