@@ -123,6 +123,7 @@ let
       gnome_schema=org.gnome.desktop.interface
       ${pkgs.glib}/bin/gsettings set $gnome_schema gtk-theme 'Breeze-Dark'
       ${pkgs.glib}/bin/gsettings set $gnome_schema color-scheme 'prefer-dark'
+      ${pkgs.glib}/bin/gsettings set $gnome_schema font-name '${context.variables.font.family} ${toString context.variables.font.size}'
     '';
   };
 
@@ -1463,7 +1464,7 @@ in {
               // - "on-overflow", focusing a column will center it if it doesn't fit
               //   together with the previously focused column.
               // - "always", the focused column will always be centered.
-              center-focused-column "on-overflow"
+              center-focused-column "never"
           }
 
           // Add lines like this to spawn processes at startup.
@@ -1526,9 +1527,12 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              // Example volume keys mappings for PipeWire & WirePlumber.
-              XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
-              XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+              XF86AudioMute { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+"; }
+              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-"; }
+              XF86AudioMicMute { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+              XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
+              XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
 
               Mod+K { close-window; }
 
@@ -1563,8 +1567,11 @@ in {
               Mod+Ctrl+Down  { focus-monitor-down; }
               Mod+Ctrl+Up    { focus-monitor-up; }
               Mod+Ctrl+Right { focus-monitor-right; }
+
               Ctrl+Alt+Page_Up  { focus-monitor-left; }
               Ctrl+Alt+Page_Down { focus-monitor-right; }
+              Ctrl+Shift+Alt+Page_Up  { move-window-to-monitor-left; }
+              Ctrl+Shift+Alt+Page_Down { move-window-to-monitor-right; }
 
               Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
               Alt+Shift+Ctrl+Left  { move-window-to-monitor-left; }
