@@ -125,19 +125,9 @@ let
         enable = true;
         wlr = {
           enable = true;
-          settings = {
-            screencast = let
-              chooserCmd = pkgs.writeScript "chooser.sh" ''
-                #!${pkgs.stdenv.shell}
-                ${pkgs.sway}/bin/swaymsg -s "$(${pkgs.coreutils}/bin/realpath /run/user/$(${pkgs.coreutils}/bin/id -u)/sway*.sock)" -t get_outputs | ${pkgs.jq}/bin/jq -r '.[] | .name' | ${pkgs.wofi}/bin/wofi -d
-              '';
-            in {
-              chooser_type = "dmenu";
-              chooser_cmd = "${chooserCmd}";
-              max_fps = 30;
-            };
-          };
         };
+        config.common.default = "wlr;";
+        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
     };
     home-configuration = rec {
