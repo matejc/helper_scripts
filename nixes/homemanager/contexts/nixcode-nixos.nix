@@ -127,7 +127,6 @@ let
           enable = true;
         };
         config.common.default = "wlr;";
-        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
     };
     home-configuration = rec {

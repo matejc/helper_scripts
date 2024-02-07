@@ -188,7 +188,7 @@ let
     exit 0
   '';
 
-  chooserCmd = pkgs.writeShellScript "sway-wsshare-chooser" ''
+  chooserCmd = pkgs.writeShellScript "sway-output-chooser" ''
     export PATH="${pkgs.sway}/bin:${pkgs.jq}/bin:${pkgs.wofi}/bin:${pkgs.coreutils}/bin:$PATH"
     export SWAYSOCK="$(ls /run/user/"$(id -u)"/sway-ipc.* | head -n 1)"
     swaymsg -t get_outputs | jq -r '.[]|.name' | wofi -d
@@ -209,6 +209,7 @@ in {
         };
       };
       config.common.default = pkgs.lib.mkDefault "*";
+      config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
     };
     services.tlp = {
       enable = true;
