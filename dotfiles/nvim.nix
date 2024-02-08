@@ -1906,6 +1906,7 @@ require("filetype").setup {
       tfstate = "json",
       sh = "sh",
       xml = "xml",
+      puml = "plantuml",
     },
   },
 }

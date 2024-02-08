@@ -112,7 +112,11 @@ let
     ];
     config = {};
     nixos-configuration = {
-      services.greetd = {
+      services.greetd = let
+        swayExec = pkgs.writeShellScript "sway-session" ''
+          env XDG_CURRENT_DESKTOP=sway dbus-run-session sway
+        '';
+      in {
         enable = true;
         settings = {
           default_session = {
