@@ -107,7 +107,8 @@ let
     destination = "/bin/dbus-sway-environment";
     executable = true;
     text = ''
-      dbus-update-activation-environment --systemd WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
+      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway
+      systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway
       systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
       systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
     '';
@@ -210,6 +211,10 @@ in {
       };
       config.common.default = pkgs.lib.mkDefault "*";
       config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+      config.sway = {
+        default = "wlr;";
+        "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+      };
     };
     services.tlp = {
       enable = true;
@@ -531,6 +536,8 @@ in {
               };
             };
             startup = [
+              { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
+              { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-once start"; }
               #{ command = "${mako}/bin/mako"; always = true; }
@@ -538,8 +545,6 @@ in {
               { command = "${swayest}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-              { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
-              { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
             ];
             window = {
               border = 1;

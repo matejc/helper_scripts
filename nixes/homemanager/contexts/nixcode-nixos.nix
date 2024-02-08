@@ -126,7 +126,6 @@ let
         wlr = {
           enable = true;
         };
-        config.common.default = "wlr;";
       };
     };
     home-configuration = rec {
