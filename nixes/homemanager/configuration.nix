@@ -214,7 +214,9 @@ in {
       config.sway = {
         default = "wlr;";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+        "org.freedesktop.impl.portal.FileChooser" = "gtk";
       };
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
     services.tlp = {
       enable = true;
