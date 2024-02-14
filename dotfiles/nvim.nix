@@ -2830,6 +2830,7 @@ EOF
           vimPlugins.ChatGPT-nvim
           vimPlugins.which-key-nvim
           vimPlugins.filetype-nvim
+          markdown-preview-nvim
         ];
         opt = [
         ];
