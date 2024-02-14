@@ -265,7 +265,6 @@ in
     fpath=(${pkgs.zsh-completions}/share/zsh/site-functions $fpath)
     source ${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh
     fpath=(${pkgs.nix-zsh-completions}/share/zsh/site-functions $fpath)
-    fpath=(${pkgs.turbogit}/share/zsh/site-functions $fpath)
 
     # source ${pkgs.zsh-z}/share/zsh-z/zsh-z.plugin.zsh
 
