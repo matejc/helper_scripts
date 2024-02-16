@@ -1907,6 +1907,7 @@ require("filetype").setup {
       sh = "sh",
       xml = "xml",
       puml = "plantuml",
+      tex = "tex",
     },
   },
 }
