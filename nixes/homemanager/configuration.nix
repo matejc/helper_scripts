@@ -227,6 +227,7 @@ in {
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
       };
     };
+    programs.dconf.enable = true;
     services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
@@ -355,6 +356,11 @@ in {
             package = vanilla-dmz;
             size = 16;
           };
+        };
+
+        qt = {
+          enable = true;
+          platformTheme = "gtk";
         };
 
         programs.chromium = {

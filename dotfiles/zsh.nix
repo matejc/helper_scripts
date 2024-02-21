@@ -132,8 +132,14 @@ in
     # alt+del
     bindkey '^[[3;3~' kill-word
 
+    # ctrl+del
+    bindkey '^[[3;5~' kill-word
+
     # alt+backspace
     bindkey '^[^?' backward-kill-word
+
+    # ctrl+backspace
+    bindkey '^H' backward-kill-word
 
     # alt+u
     bindkey '^[u' undo
