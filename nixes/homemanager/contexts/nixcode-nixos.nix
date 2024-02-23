@@ -25,6 +25,7 @@ let
       "${helper_scripts}/dotfiles/jwt.nix"
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
+      "${helper_scripts}/dotfiles/vlc.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -83,7 +84,7 @@ let
         output = "eDP-1";
         mode = "2880x1800@60.001Hz";
         scale = 1.5;
-        workspaces = [ "1" "2" "3" "4" ];
+        workspaces = [ "1" "2" "3" "4" "5" "6" ];
         wallpaper = wallpaper;
         status = "disable";
       }{
@@ -92,7 +93,7 @@ let
         output = "HDMI-A-1";
         mode = null;
         scale = 1.0;
-        workspaces = [ "5" "6" "7" "8" ];
+        workspaces = [ "7" "8" ];
         wallpaper = wallpaper;
         status = "enable";
       }];
@@ -137,8 +138,8 @@ let
       wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.assigns = {
         #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        "workspace number 1" = [{ class = "^Logseq$"; }];
-        "workspace number 2" = [{ class = "^Slack$"; }];
+        "workspace number 1" = [{ app_id = "Logseq"; }];
+        "workspace number 2" = [{ app_id = "Slack"; }];
         "workspace number 3" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
@@ -172,6 +173,7 @@ let
         proxychains
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         shell_gpt
+        vlc
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome
         #slack

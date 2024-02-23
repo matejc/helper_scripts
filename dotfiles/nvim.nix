@@ -1909,6 +1909,9 @@ require("filetype").setup {
       puml = "plantuml",
       tex = "tex",
     },
+    complex = {
+      ["Dockerfile%..*"] = "dockerfile",
+    },
   },
 }
 vim.g.did_load_filetypes = 1
