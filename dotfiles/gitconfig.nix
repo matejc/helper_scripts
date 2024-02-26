@@ -44,6 +44,7 @@ in
         inplace-rebase = !git checkout $1 && git rebase $2 && git checkout - && echo
         stash-pull = !git stash && git pull origin $1 && git stash pop && echo
         grep-history = !git rev-list --all --date-order | PAGER=cat xargs git grep -n
+        grep-all = !git show-ref | ${pkgs.gawk}/bin/awk '{print $2}' | PAGER=cat xargs git grep -n
     [pull]
         rebase = true
     [commit]
