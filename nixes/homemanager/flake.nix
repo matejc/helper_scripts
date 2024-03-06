@@ -52,7 +52,11 @@
     # devenv.url = "github:cachix/devenv";
     niri = {
       url = "github:sodiboo/niri-flake";
-      inputs.niri-src.url = "github:YaLTeR/niri";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    jupyenv = {
+      # url = "github:tweag/jupyenv/main";
+      url = "path:/home/matejc/workarea/jupyenv";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

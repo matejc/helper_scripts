@@ -263,7 +263,6 @@ in {
             --env PATH=${pkgs.lib.makeBinPath libraries} \
             --env HOME=/home/j${name} \
             --env USER=j${name} \
-            --env LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath libraries} \
             --rlimit_fsize 512 \
             --rlimit_nofile 512 \
             -- ${runJupyterLab}; } 2> >(${pkgs.gnused}/bin/sed \
