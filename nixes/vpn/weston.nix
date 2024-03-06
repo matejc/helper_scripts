@@ -52,8 +52,6 @@
 , interactiveShell ? "${pkgs.stdenv.shell}" }:
 with pkgs.lib;
 let
-  nsUtils = import ./ns_utils.nix { inherit pkgs; };
-
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
 
   preCmd = pkgs.writeShellScript "pre-cmd.sh" ''
@@ -332,7 +330,7 @@ let
   buildInputs = with pkgs; [
     iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
-    gnugrep nsUtils shadow pkgs.weston
+    gnugrep shadow pkgs.weston
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
