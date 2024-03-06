@@ -29,9 +29,7 @@
   { from = "${home.outside}/.vpn/openvpns"; to = "/etc/openvpn"; }
 ]
 , symlinks ? [ ]
-, variables ? [
-  { name = "MOZ_ENABLE_WAYLAND"; value = "1"; }
-]
+, variables ? [ ]
 , wayland ? {
   outside = "wayland-1";
   inside = "wayland-9";
@@ -49,7 +47,7 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
-, interactiveShell ? "${pkgs.stdenv.shell}" }:
+, interactiveShell ? "${pkgs.bashInteractive}/bin/bash" }:
 with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
