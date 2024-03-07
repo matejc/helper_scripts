@@ -13,11 +13,10 @@
   stop = "pkill openvpn";
 }
 , weston ? {
-  start = "weston -B wayland --display=${wayland.outside} --socket=/run/user/${uid}/${wayland.inside} --xwayland --no-config";
+  start = "weston -B wayland --display=${wayland.outside} --socket=/run/user/${uid}/${wayland.inside} --xwayland --config=${westonConfigFile}";
   stop = "pkill weston";
 }
 , cmds ? [
-  { start = "firefox --private-window --no-remote"; }
 ]
 , preCmds ? []
 , packages ? with pkgs; [ firefox ]
@@ -47,7 +46,36 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
-, interactiveShell ? "${pkgs.bashInteractive}/bin/bash" }:
+, interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
+, launchers ? [
+  {
+    icon = "${pkgs.firefox}/share/icons/hicolor/32x32/apps/firefox.png";
+    exec = "firefox --no-remote";
+  }
+  {
+    icon = "${pkgs.vscodium}/share/pixmaps/vscodium.png";
+    exec = "codium --no-sandbox";
+  }
+]
+, westonConfig ? ''
+[core]
+xwayland=true
+
+[keyboard]
+keymap_layout=us
+
+[launcher]
+icon=/share/weston/terminal.png
+path=/usr/bin/weston-terminal
+
+${pkgs.lib.concatImapStringsSep "\n" (i: l: ''
+[launcher]
+icon=${pkgs.runCommand "icon${toString i}.png" { buildInputs = [pkgs.imagemagick]; } "convert ${l.icon} -resize 24x24! $out"}
+path=${pkgs.writeShellScript "launcher${toString i}.sh" "${l.exec}"}
+'') launchers}
+''
+, westonConfigFile ? pkgs.writeText "weston.ini" westonConfig
+}:
 with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -262,6 +290,7 @@ let
       --symlink ${binPath}/bin:/usr/bin \
       --symlink ${pkgs.bash}/bin/bash:/bin/bash \
       --symlink ${pkgs.bash}/bin/sh:/bin/sh \
+      --symlink ${sharePath}/share:/share \
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
@@ -277,10 +306,7 @@ let
       --gid_mapping 0:100000:1 \
       --uid_mapping ${uid}:${uid}:1 \
       --gid_mapping ${gid}:${gid}:1 \
-      --rlimit_as 40960 \
-      --rlimit_cpu 10000 \
-      --rlimit_nofile 5120 \
-      --rlimit_fsize 10240 \
+      --disable_rlimits \
       --bindmount_ro /etc/fonts:/etc/fonts \
       --env FONTCONFIG_FILE=/etc/fonts/fonts.conf \
       --env FC_CONFIG_FILE=/etc/fonts/fonts.conf \
@@ -337,6 +363,11 @@ let
     name = "PATH";
     paths = buildInputs;
     pathsToLink = [ "/bin" ];
+  };
+  sharePath = pkgs.buildEnv {
+    name = "share";
+    paths = buildInputs;
+    pathsToLink = [ "/share" ];
   };
 in
   pkgs.mkShell {
