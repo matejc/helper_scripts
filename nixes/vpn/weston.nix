@@ -52,10 +52,6 @@
     icon = "${pkgs.firefox}/share/icons/hicolor/32x32/apps/firefox.png";
     exec = "firefox --no-remote";
   }
-  {
-    icon = "${pkgs.vscodium}/share/pixmaps/vscodium.png";
-    exec = "codium --no-sandbox";
-  }
 ]
 , westonConfig ? ''
 [core]
@@ -64,8 +60,14 @@ xwayland=true
 [keyboard]
 keymap_layout=us
 
+[shell]
+close-animation=none
+focus-animation=none
+startup-animation=none
+background-color=0xff555555
+
 [launcher]
-icon=/share/weston/terminal.png
+icon=/usr/share/weston/terminal.png
 path=/usr/bin/weston-terminal
 
 ${pkgs.lib.concatImapStringsSep "\n" (i: l: ''
@@ -287,10 +289,10 @@ let
       --symlink ${pkgs.openresolv}/bin/resolvconf:/sbin/resolvconf \
       --tmpfsmount /bin \
       --tmpfsmount /usr \
-      --symlink ${binPath}/bin:/usr/bin \
+      --symlink ${paths}/bin:/usr/bin \
       --symlink ${pkgs.bash}/bin/bash:/bin/bash \
       --symlink ${pkgs.bash}/bin/sh:/bin/sh \
-      --symlink ${sharePath}/share:/share \
+      --symlink ${paths}/share:/usr/share \
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
@@ -311,6 +313,7 @@ let
       --env FONTCONFIG_FILE=/etc/fonts/fonts.conf \
       --env FC_CONFIG_FILE=/etc/fonts/fonts.conf \
       --env XDG_RUNTIME_DIR=/run/user/${uid} \
+      --env XDG_DATA_DIRS=/usr/share \
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
       --env PATH=${binPaths} \
@@ -354,20 +357,15 @@ let
   buildInputs = with pkgs; [
     iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
-    gnugrep shadow pkgs.weston
+    gnugrep shadow pkgs.weston xfce.xfce4-icon-theme
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
 
-  binPath = pkgs.buildEnv {
-    name = "PATH";
+  paths = pkgs.buildEnv {
+    name = "paths";
     paths = buildInputs;
-    pathsToLink = [ "/bin" ];
-  };
-  sharePath = pkgs.buildEnv {
-    name = "share";
-    paths = buildInputs;
-    pathsToLink = [ "/share" ];
+    pathsToLink = [ "/bin" "/share" ];
   };
 in
   pkgs.mkShell {
