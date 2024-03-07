@@ -55,8 +55,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     jupyenv = {
-      # url = "github:tweag/jupyenv/main";
-      url = "path:/home/matejc/workarea/jupyenv";
+      url = "github:tweag/jupyenv/main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
