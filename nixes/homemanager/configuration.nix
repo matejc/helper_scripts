@@ -195,9 +195,9 @@ let
     swaymsg -t get_outputs | jq -r '.[]|.name' | wofi -d
   '';
 in {
-  imports = [
-    inputs.niri.nixosModules.niri
-  ];
+  # imports = [
+  #   inputs.niri.nixosModules.niri
+  # ];
   config = lib.mkMerge ([{
     xdg.portal = {
       enable = true;
@@ -1312,7 +1312,8 @@ in {
           };
         };
 
-        programs.niri.config = pkgs.lib.mkIf (nixosConfig.programs.niri.enable) ''
+      } (pkgs.lib.optionalAttrs (context.variables.graphical.name == "niri") {
+        programs.niri.config = ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
 
@@ -1690,7 +1691,7 @@ in {
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
-      }] ++ [ context.home-configuration ]);
+      }) ] ++ [ context.home-configuration ]);
     };
   }] ++ [ context.nixos-configuration ]);
 }

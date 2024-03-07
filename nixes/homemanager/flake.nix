@@ -50,14 +50,14 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # devenv.url = "github:cachix/devenv";
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    jupyenv = {
-      url = "github:tweag/jupyenv/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # niri = {
+    #   url = "github:sodiboo/niri-flake";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
+    # jupyenv = {
+    #   url = "github:tweag/jupyenv/main";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
   # nixConfig = {
@@ -91,16 +91,28 @@
           # {
           #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           # }
+          # {
+          #   imports = [(import ../jupyenv.nix { jupyenv = import inputs.jupyenv; })];
+          #   services.jupyenv.my = {
+          #     enable = false;
+          #     port = 9980;
+          #     token = "'token'";
+          #     attrs = {
+          #       kernel.python.minimal.enable = true;
+          #       kernel.nix.minimal.enable = true;
+          #     };
+          #   };
+          # }
         ];
       };
-      matej70-niri = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
-          inputs.home-manager.nixosModules.home-manager
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-niri.nix; })
-        ];
-      };
+      # matej70-niri = inputs.nixpkgs.lib.nixosSystem {
+      #   system = "x86_64-linux";
+      #   modules = [
+      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
+      #     inputs.home-manager.nixosModules.home-manager
+      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-niri.nix; })
+      #   ];
+      # };
       matej80 = inputs.nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
@@ -119,22 +131,22 @@
           (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
         ];
       };
-      nixcode-niri = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-          inputs.home-manager.nixosModules.home-manager
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-niri.nix; })
-        ];
-      };
-      nixcode-hyprland = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-          inputs.home-manager.nixosModules.home-manager
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-hyprland.nix; })
-        ];
-      };
+      # nixcode-niri = inputs.nixpkgs.lib.nixosSystem {
+      #   system = "x86_64-linux";
+      #   modules = [
+      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+      #     inputs.home-manager.nixosModules.home-manager
+      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-niri.nix; })
+      #   ];
+      # };
+      # nixcode-hyprland = inputs.nixpkgs.lib.nixosSystem {
+      #   system = "x86_64-linux";
+      #   modules = [
+      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+      #     inputs.home-manager.nixosModules.home-manager
+      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-hyprland.nix; })
+      #   ];
+      # };
     };
     images = {
       wsl =
