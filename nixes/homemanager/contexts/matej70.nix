@@ -169,7 +169,9 @@ let
         enable = true;
         plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ super-slicer-latest solvespace keepassxc libreoffice shell_gpt caprine-bin vlc freetube ];
+      home.packages = [
+        solvespace keepassxc libreoffice shell_gpt caprine-bin vlc freetube
+      ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";

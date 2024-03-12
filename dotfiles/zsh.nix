@@ -293,12 +293,12 @@ in
       setopt EXTENDED_GLOB
 
       # zcompile the completion cache; siginificant speedup.
-      for file in ${variables.homeDir}/.zcomp^(*.zwc)(.); do
+      for file in $HOME/.zcomp^(*.zwc)(.); do
         zcompare ''${file}
       done
 
       # zcompile .zshrc
-      zcompare ${variables.homeDir}/.zshrc
+      zcompare $HOME/.zshrc
     ) &!
   '';
 }]

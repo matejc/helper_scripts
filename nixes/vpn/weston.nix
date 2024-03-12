@@ -9,7 +9,7 @@
 , timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
 , vpn ? {
-  start = "openvpn --config /etc/openvpn/ovpn --daemon --log /root/openvpn.log --auth-user-pass /etc/openvpn/pass";
+  start = "openvpn --config /etc/openvpn/ovpn --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
 , weston ? {
@@ -30,6 +30,7 @@
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
   { from = "${home.outside}/.vpn/openvpns"; to = "/etc/openvpn"; }
+  { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
 ]
 , symlinks ? [ ]
 , variables ? [ ]
@@ -393,7 +394,7 @@ let
     iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
     gnugrep shadow pkgs.weston xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
-    openssl dconf srelay netcat
+    openssl dconf srelay netcat vanilla-dmz
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
