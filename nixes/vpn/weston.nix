@@ -9,7 +9,7 @@
 , timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
 , vpn ? {
-  start = "openvpn --config /etc/openvpn/ovpn --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
+  start = "openvpn --config /etc/openvpn/ovpn --pull-filter ignore 'ifconfig-ipv6' --pull-filter ignore 'route-ipv6' --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
 , weston ? {
@@ -21,7 +21,10 @@
 ]
 , preCmds ? {
   outside = [];
-  inside = [];
+  inside = [
+    "echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6"
+    "echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6"
+  ];
 }
 , packages ? with pkgs; [ firefox ]
 , stateDir ? "${home.outside}/.vpn/${name}"
@@ -394,7 +397,7 @@ let
     iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
     gnugrep shadow pkgs.weston xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
-    openssl dconf srelay netcat vanilla-dmz
+    openssl dconf srelay netcat vanilla-dmz inetutils gnused
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
