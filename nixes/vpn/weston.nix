@@ -17,8 +17,12 @@
   stop = "pkill weston";
 }
 , cmds ? [
+  { start = "srelay -fi 0.0.0.0:9050"; }
 ]
-, preCmds ? []
+, preCmds ? {
+  outside = [];
+  inside = [];
+}
 , packages ? with pkgs; [ firefox ]
 , stateDir ? "${home.outside}/.vpn/${name}"
 , chroot ? "${stateDir}/chroot"
@@ -46,6 +50,7 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
+, hostFwds ? [ { host_port = 9050; guest_port = 9050; } ]
 , interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
 , launchers ? [
   {
@@ -82,8 +87,12 @@ with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
 
-  preCmd = pkgs.writeShellScript "pre-cmd.sh" ''
-    ${concatMapStringsSep "\n" (c: "${c}") preCmds}
+  preCmdOutside = pkgs.writeShellScript "pre-cmd-outside.sh" ''
+    ${concatMapStringsSep "\n" (c: "${c}") preCmds.outside}
+  '';
+
+  preCmdInside = pkgs.writeShellScript "pre-cmd-inside.sh" ''
+    ${concatMapStringsSep "\n" (c: "${c}") preCmds.inside}
   '';
 
   mkCmd = name: { start, stop ? "" }: pkgs.writeShellScript "start-${name}.sh" ''
@@ -237,8 +246,16 @@ let
 
     trap 'echo "Be patient inside"' SIGINT
 
+    ${preCmdInside}
+
     exec supervisord --configuration=${supervisorConf}
   '';
+
+  slirp4netnsExecute =
+  let
+    slirp4netnsHostFwds = map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) hostFwds;
+  in
+    slirp4netnsHostFwds;
 
   script = pkgs.writeShellScript "script.sh" ''
     set -e
@@ -248,15 +265,20 @@ let
     cat ${resolvConf} >${stateDir}/.resolv.conf
     touch ${stateDir}/home/.ns.pid
 
-    ${preCmd}
+    ${preCmdOutside}
 
     for i in {1..50}
     do
       nspid="$(cat ${stateDir}/home/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
-        slirp4netns --disable-dns --configure --mtu=65520 ${extraSlirp4netnsArgs} $nspid tap0 &
+        slirp4netns --disable-dns --configure --mtu=65520 --api-socket /tmp/slirp4netns.sock ${extraSlirp4netnsArgs} $nspid tap0 &
         echo "$!" >${stateDir}/home/.slirp4netns.pid
+
+        json='{"execute": "list_hostfwd"}'
+        while ! echo $json | nc -U /tmp/slirp4netns.sock; do sleep 0.1; done
+
+        ${concatMapStringsSep "\n" (e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock'') slirp4netnsExecute}
         break
       fi
       sleep 0.1
@@ -293,6 +315,7 @@ let
       --symlink ${pkgs.bash}/bin/bash:/bin/bash \
       --symlink ${pkgs.bash}/bin/sh:/bin/sh \
       --symlink ${paths}/share:/usr/share \
+      --tmpfsmount /var/run \
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
@@ -310,6 +333,8 @@ let
       --gid_mapping ${gid}:${gid}:1 \
       --disable_rlimits \
       --bindmount_ro /etc/fonts:/etc/fonts \
+      --bindmount_ro ${paths}/lib:/lib \
+      --bindmount_ro ${paths}/libexec:/libexec \
       --env FONTCONFIG_FILE=/etc/fonts/fonts.conf \
       --env FC_CONFIG_FILE=/etc/fonts/fonts.conf \
       --env XDG_RUNTIME_DIR=/run/user/${uid} \
@@ -317,6 +342,8 @@ let
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
       --env PATH=${binPaths} \
+      --env LD_LIBRARY_PATH=/lib \
+      --env GIO_EXTRA_MODULES=/lib/gio/modules \
       ${concatMapStringsSep " " (c: "--cap ${c}") caps} \
       ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
       ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
@@ -354,10 +381,19 @@ let
 
   hostnameFile = pkgs.writeText "hostname" ''RESTRICTED'';
 
+  pullClipboard = pkgs.writeShellScriptBin "clipboard-pull" ''
+    WAYLAND_DISPLAY=${wayland.outside} wl-paste | WAYLAND_DISPLAY=${wayland.inside} wl-copy
+  '';
+
+  pushClipboard = pkgs.writeShellScriptBin "clipboard-push" ''
+    WAYLAND_DISPLAY=${wayland.inside} wl-paste | WAYLAND_DISPLAY=${wayland.outside} wl-copy
+  '';
+
   buildInputs = with pkgs; [
     iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
-    gnugrep shadow pkgs.weston xfce.xfce4-icon-theme
+    gnugrep shadow pkgs.weston xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
+    openssl dconf srelay netcat
   ] ++ packages;
 
   binPaths = makeBinPath buildInputs;
@@ -365,7 +401,7 @@ let
   paths = pkgs.buildEnv {
     name = "paths";
     paths = buildInputs;
-    pathsToLink = [ "/bin" "/share" ];
+    pathsToLink = [ "/bin" "/share" "/lib" "/libexec" ];
   };
 in
   pkgs.mkShell {
