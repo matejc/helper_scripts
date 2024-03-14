@@ -9,7 +9,7 @@
 , timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
 , vpn ? {
-  start = "openvpn --config /etc/openvpn/ovpn --pull-filter ignore 'ifconfig-ipv6' --pull-filter ignore 'route-ipv6' --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
+  start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
 , weston ? {
@@ -20,11 +20,8 @@
   { start = "srelay -fi 0.0.0.0:9050"; }
 ]
 , preCmds ? {
-  outside = [];
-  inside = [
-    "echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6"
-    "echo 1 > /proc/sys/net/ipv6/conf/default/disable_ipv6"
-  ];
+  outside = [ ];
+  inside = [ ];
 }
 , packages ? with pkgs; [ firefox ]
 , stateDir ? "${home.outside}/.vpn/${name}"
@@ -60,6 +57,10 @@
   {
     icon = "${pkgs.firefox}/share/icons/hicolor/32x32/apps/firefox.png";
     exec = "firefox --no-remote";
+  }
+  {
+    icon = "${pkgs.kitty}/share/icons/hicolor/256x256/apps/kitty.png";
+    exec = "kitty";
   }
 ]
 , westonConfig ? ''
