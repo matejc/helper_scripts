@@ -14,8 +14,7 @@ let
 
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
-    #"rnix"
-    "nixd"
+    "nil"
     "bashls"
     "dockerls"
     "yamlls"
@@ -2880,18 +2879,48 @@ in [{
   target = "${variables.homeDir}/bin/${name}";
   source = pkgs.writeScript "open-nvim" ''
     #!${pkgs.stdenv.shell}
-    function open_nvim {
-      ${value} "$@"
-    }
-    if [[ $1 == "-g" ]]
+    set -e
+
+    while getopts "gp" o; do
+    case "$o" in
+        g)
+            gitfiles=1
+            ;;
+        p)
+            pickfiles=1
+            ;;
+        *)
+            echo "Invalid argument: $o"
+            exit 1
+            ;;
+        esac
+    done
+    args="''${@:$OPTIND}"
+
+    first="''${@:$OPTIND:1}"
+    if [ -d "$first" ]
     then
-      open_nvim $(${pkgs.git}/bin/git diff --name-only HEAD)
-    elif [ -d "$1" ]
+        filedir="$first"
+    elif [ -z "$first" ]
     then
-      cd "$1"
-      open_nvim "''${@:2}"
+        filedir="$PWD"
     else
-      open_nvim "$@"
+        filedir="$(dirname "$first")"
     fi
+
+    gitdir="$(git -C "$filedir" rev-parse --show-toplevel || echo "$filedir")"
+    cd "$gitdir"
+
+    if [ ! -z "$gitfiles" ]
+    then
+        args="$args $(${pkgs.git}/bin/git diff --name-only HEAD)"
+    fi
+
+    if [ ! -z "$pickfiles" ]
+    then
+        args="$args $(${pkgs.xplr}/bin/xplr)"
+    fi
+
+    ${value} $args
   '';
 }) (variables.vims or {}))

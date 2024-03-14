@@ -1172,7 +1172,7 @@ in {
           enable = true;
           enableSshSupport = true;
           enableZshIntegration = true;
-          pinentryFlavor = "gnome3";
+          pinentryPackage = pkgs.pinentry-gnome3;
         };
 
         programs.bash = {
@@ -1257,8 +1257,9 @@ in {
           ".." = "cd ..";
           "l" = "${pkgs.eza}/bin/eza -gal --git";
           "t" = "${pkgs.eza}/bin/eza -T --ignore-glob='.git' -L3";
-          "z" = "${pkgs.zellij}/bin/zellij";
-          "b" = "${pkgs.broot}/bin/broot";
+          "c" = "${pkgs.bat}/bin/bat";
+          "d" = "${pkgs.delta}/bin/delta";
+          "e" = "${pkgs.xplr}/bin/xplr";
         };
         programs.command-not-found = {
           enable = true;
