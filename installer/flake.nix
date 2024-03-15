@@ -15,7 +15,8 @@
     system = "x86_64-linux";
     pkgs = nixpkgs.legacyPackages."${system}";
   in {
-    packages.x86_64-linux = {
+    packages."${system}" = {
+      disko = disko.packages."${system}".disko;
       pxe-system = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
@@ -50,7 +51,7 @@
           --port 64172 --status-port 64172 "$@"
       '';
       image = nixos-generators.nixosGenerate {
-        system = "x86_64-linux";
+        inherit system;
         modules = [
           ./configuration.nix
         ];
@@ -66,6 +67,14 @@
         # you can also define your own custom formats
         # customFormats = { "myFormat" = <myFormatModule>; ... };
         # format = "myFormat";
+      };
+      vm = nixos-generators.nixosGenerate {
+        inherit system;
+        modules = [
+          ./configuration.nix
+        ];
+        format = "vm";
+        specialArgs = { inherit disko; };
       };
     };
   };
