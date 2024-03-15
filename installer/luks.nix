@@ -22,7 +22,7 @@
                 type = "luks";
                 name = "crypted";
                 settings.allowDiscards = true;
-                passwordFile = "/tmp/secret.key";
+                passwordFile = "/tmp/installer/secret.key";
                 content = {
                   type = "filesystem";
                   format = "ext4";
