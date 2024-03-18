@@ -1209,7 +1209,7 @@ in {
             searchDownKey = "^[[B";
           };
           syntaxHighlighting.enable = true;
-          enableAutosuggestions = true;
+          autosuggestion.enable = true;
           autocd = true;
           defaultKeymap = "emacs";
         };
