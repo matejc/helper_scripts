@@ -17,11 +17,13 @@ let
     trap 'rm -rf /tmp/installer' EXIT
     sed "s|/dev/vdb|$1|" "${disko_luks_nix}" > /tmp/installer/disko.nix
 
+    echo "Review disko configuration ..."
     cat /tmp/installer/disko.nix
-    read -p "Partition now? (type yes to continue)" confirmation
+    echo
+    read -p "Partition now? (type yes to continue): " confirmation
     if [[ "$confirmation" == "yes" ]]
     then
-      sudo ${disko.packages."${system}".disko}/bin/disko -- --mode disko /tmp/installer/luks.nix
+      sudo ${disko.packages."${system}".disko}/bin/disko --mode disko /tmp/installer/disko.nix
     fi
   '';
 in {

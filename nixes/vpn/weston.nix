@@ -12,12 +12,13 @@
   start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
+, gpconnectArgs ? null
 , weston ? {
   start = "weston -B wayland --display=${wayland.outside} --socket=/run/user/${uid}/${wayland.inside} --xwayland --config=${westonConfigFile}";
   stop = "pkill weston";
 }
+, socksproxy ? { hostPort = 9050; }
 , cmds ? [
-  { start = "srelay -fi 0.0.0.0:9050"; }
 ]
 , preCmds ? {
   outside = [ ];
@@ -33,7 +34,9 @@
   { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
 ]
 , symlinks ? [ ]
-, variables ? [ ]
+, variables ? [
+  { name = "HISTFILE"; value = "${home.inside}/.zsh_history"; }
+]
 , wayland ? {
   outside = "wayland-1";
   inside = "wayland-9";
@@ -51,7 +54,7 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
-, hostFwds ? [ { host_port = 9050; guest_port = 9050; } ]
+, hostFwds ? [] ++ (pkgs.lib.optionals (socksproxy != null) [{ host_port = socksproxy.hostPort; guest_port = 9050; }])
 , interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
 , launchers ? [
   {
@@ -91,6 +94,12 @@ path=${pkgs.writeShellScript "launcher${toString i}.sh" "${l.exec}"}
 with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
+
+  gpconnect = pkgs.writeShellScriptBin "gpconnect" ''
+    eval $(${pkgs.gp-saml-gui}/bin/gp-saml-gui --$1 --clientos=Linux $2)
+    echo $HOST; echo $USER; echo $COOKIE; echo $OS
+    echo "$COOKIE" | ${pkgs.openconnect}/bin/openconnect --protocol=gp -u "$USER" --os="$OS" --passwd-on-stdin --useragent='PAN GlobalProtect' --csd-wrapper=${pkgs.openconnect}/libexec/openconnect/hipreport.sh "$HOST"
+  '';
 
   preCmdOutside = pkgs.writeShellScript "pre-cmd-outside.sh" ''
     ${concatMapStringsSep "\n" (c: "${c}") preCmds.outside}
@@ -189,6 +198,26 @@ let
     stdout_logfile_maxbytes = 0
     '' else ""}
 
+    ${if gpconnectArgs != null then ''
+    [program:gpconnect]
+    command = ${mkCmd "gpconnect" { start = "gpconnect ${gpconnectArgs}"; stop = "pkill gpconnect";}}
+    priority = 0
+    directory = /root
+    user = root
+    numprocs = 1
+    autostart = true
+    autorestart = unexpected
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/gpconnect.log
+    stdout_logfile_maxbytes = 0
+    '' else ""}
+
     ${if weston != null then ''
     [program:weston]
     command = ${mkWestonCmd}
@@ -206,6 +235,26 @@ let
     killasgroup = true
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/weston.log
+    stdout_logfile_maxbytes = 0
+    '' else ""}
+
+    ${if socksproxy != null then ''
+    [program:socksproxy]
+    command = ${mkCmd "socksproxy" {start = "srelay -fvi 0.0.0.0:9050"; stop = "pkill srelay";}}
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = true
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/socksproxy.log
     stdout_logfile_maxbytes = 0
     '' else ""}
 
@@ -230,12 +279,10 @@ let
     '') cmds}
   '';
 
-  insideCmd = pkgs.writeShellScript "inside.sh" ''
+  insideCmd = pkgs.writeShellScript "inside-${name}.sh" ''
     set -e
 
     cat ${resolvConf} >/etc/resolv.conf
-
-    echo -n "$$" > ${home.inside}/.ns.pid
 
     for i in {1..50}
     do
@@ -268,20 +315,28 @@ let
     mkdir -p ${stateDir}/home
 
     cat ${resolvConf} >${stateDir}/.resolv.conf
-    touch ${stateDir}/home/.ns.pid
+    echo -n "" > ${stateDir}/.ns.pid
 
     ${preCmdOutside}
 
     for i in {1..50}
     do
-      nspid="$(cat ${stateDir}/home/.ns.pid || echo "")"
+      nspid="$(cat ${stateDir}/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
         slirp4netns --disable-dns --configure --mtu=65520 --api-socket /tmp/slirp4netns.sock ${extraSlirp4netnsArgs} $nspid tap0 &
         echo "$!" >${stateDir}/home/.slirp4netns.pid
 
         json='{"execute": "list_hostfwd"}'
-        while ! echo $json | nc -U /tmp/slirp4netns.sock; do sleep 0.1; done
+        for i in {1..50}
+        do
+          if echo $json | nc -U /tmp/slirp4netns.sock
+          then
+            break
+          else
+            sleep 0.1
+          fi
+        done
 
         ${concatMapStringsSep "\n" (e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock'') slirp4netnsExecute}
         break
@@ -294,11 +349,20 @@ let
     ${nsjail}/bin/nsjail \
       -Mo \
       --tmpfsmount / \
-      --disable_proc \
       --bindmount ${stateDir}/home:${home.inside} \
       --tmpfsmount /root \
-      --bindmount /dev:/dev \
-      --bindmount /sys:/sys \
+      --tmpfsmount /dev \
+      --disable_proc \
+      --mount none:/proc:proc \
+      --bindmount /dev/urandom:/dev/urandom \
+      --bindmount /dev/null:/dev/null:rw \
+      --bindmount /dev/net/tun:/dev/net/tun \
+      --bindmount /dev/dri:/dev/dri \
+      --mount none:/dev/shm:tmpfs:rw,mode=1777,size=65536k \
+      --mount none:/dev/pts:devpts:ptmxmode=0666 \
+      --symlink /dev/pts/ptmx:/dev/ptmx \
+      --mount none:/dev/mqueue:mqueue:rw \
+      --mount none:/sys:sysfs \
       --mount none:/tmp:tmpfs:rw \
       --mount none:/tmp/.X11-unix:tmpfs:rw \
       --tmpfsmount /nix \
@@ -327,8 +391,6 @@ let
       --env WAYLAND_DISPLAY=${wayland.inside} \
       ${if x11 != null then "--bindmount_ro /tmp/.X11-unix/${replaceStrings [":"] ["X"] x11}:/tmp/.X11-unix/${replaceStrings [":"] ["X"] x11} --env DISPLAY=${x11}" else "--env DISPLAY=:0"} \
       ${if enablePulse then "--bindmount_ro /run/user/${uid}/pulse:/run/user/${uid}/pulse --env PULSE_SERVER=/run/user/${uid}/pulse/native" else ""} \
-      --disable_clone_newpid \
-      --bindmount /proc:/proc \
       --hostname RESTRICTED \
       --cwd / \
       --keep_caps \
@@ -357,7 +419,10 @@ let
       ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
       --forward_signals \
       ${extraArgs} \
-      -- ${insideCmd}
+      -- ${insideCmd} & nsjail_pid=$!
+      sleep 0.1
+      ps -o pid,cmd -u 100000 | awk '$3 == "${insideCmd}" {printf $1}' > ${stateDir}/.ns.pid
+      wait $nsjail_pid
   '';
 
   resolvConf = pkgs.writeText "resolv.conf" ''
@@ -399,7 +464,7 @@ let
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
     gnugrep shadow pkgs.weston xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
     openssl dconf srelay netcat vanilla-dmz inetutils gnused
-  ] ++ packages;
+  ] ++ packages ++ (optionals (gpconnectArgs != null) gpconnect);
 
   binPaths = makeBinPath buildInputs;
 

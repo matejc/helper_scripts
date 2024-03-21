@@ -157,7 +157,7 @@ let
         read -r ''${1:+-t "$1"} -u $_snore_fd || :
     }
 
-    DELAY=0.2
+    DELAY=1
 
     while snore $DELAY; do
         WP_OUTPUT=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)

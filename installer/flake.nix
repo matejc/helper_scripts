@@ -17,6 +17,7 @@
   in {
     packages."${system}" = {
       disko = disko.packages."${system}".disko;
+
       pxe-system = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
@@ -50,6 +51,7 @@
           --debug --dhcp-no-bind \
           --port 64172 --status-port 64172 "$@"
       '';
+
       image = nixos-generators.nixosGenerate {
         inherit system;
         modules = [
@@ -68,7 +70,8 @@
         # customFormats = { "myFormat" = <myFormatModule>; ... };
         # format = "myFormat";
       };
-      vm = nixos-generators.nixosGenerate {
+
+      test = nixos-generators.nixosGenerate {
         inherit system;
         modules = [
           ./configuration.nix

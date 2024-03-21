@@ -55,6 +55,7 @@ $ nano -wc /mnt/etc/nixos/configuration.nix
 ## Install
 
 ```shell
+$ nix-channel --update
 $ nixos-install
 ```
 
