@@ -17,7 +17,7 @@
   start = "weston -B wayland --display=${wayland.outside} --socket=/run/user/${uid}/${wayland.inside} --xwayland --config=${westonConfigFile}";
   stop = "pkill weston";
 }
-, socksproxy ? { hostPort = 9050; }
+, socksproxy ? { guestPort = 9050; }
 , cmds ? [
 ]
 , preCmds ? {
@@ -26,7 +26,6 @@
 }
 , packages ? with pkgs; [ firefox ]
 , stateDir ? "${home.outside}/.vpn/${name}"
-, chroot ? "${stateDir}/chroot"
 , mounts ? [ ]
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
@@ -54,7 +53,8 @@
 , newuidmap ? "/run/wrappers/bin/newuidmap"
 , newgidmap ? "/run/wrappers/bin/newgidmap"
 , extraSlirp4netnsArgs ? "--disable-host-loopback"
-, hostFwds ? [] ++ (pkgs.lib.optionals (socksproxy != null) [{ host_port = socksproxy.hostPort; guest_port = 9050; }])
+, hostFwds ? []
+, slirp4netnsHostFwds ? []
 , interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
 , launchers ? [
   {
@@ -161,6 +161,8 @@ let
     wait $weston_pid
   '';
 
+  hostFwds' = if hostFwds == null then null else (optionals (socksproxy != null) [{ host_port = 9050; guest_port = socksproxy.guestPort; }]) ++ hostFwds;
+
   supervisorConf = pkgs.writeText "supervisord.conf" ''
     [supervisord]
     directory = ${home.inside}/.supervisord
@@ -240,7 +242,7 @@ let
 
     ${if socksproxy != null then ''
     [program:socksproxy]
-    command = ${mkCmd "socksproxy" {start = "srelay -fvi 0.0.0.0:9050"; stop = "pkill srelay";}}
+    command = ${mkCmd "socksproxy" {start = "srelay -fvi 0.0.0.0:${toString socksproxy.guestPort}"; stop = "pkill srelay";}}
     priority = 0
     directory = ${home.inside}
     user = ${user.inside}
@@ -257,6 +259,26 @@ let
     stdout_logfile = ${home.inside}/.supervisord/socksproxy.log
     stdout_logfile_maxbytes = 0
     '' else ""}
+
+    ${concatMapStringsSep "\n" (f: ''
+    [program:socket${toString f.host_port}]
+    command = ${mkCmd "socket-${toString f.host_port}" {start = "socat UNIX-LISTEN:${home.inside}/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${if f ? guest_addr then f.guest_addr else "127.0.0.1"}:${toString f.guest_port}";}}
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = true
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/socket-${toString f.host_port}.log
+    stdout_logfile_maxbytes = 0
+    '') hostFwds'}
 
     ${concatImapStringsSep "\n" (i: p: ''
     [program:p${toString i}]
@@ -304,20 +326,28 @@ let
   '';
 
   slirp4netnsExecute =
-  let
-    slirp4netnsHostFwds = map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) hostFwds;
-  in
-    slirp4netnsHostFwds;
+    map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) slirp4netnsHostFwds;
 
   script = pkgs.writeShellScript "script.sh" ''
     set -e
 
-    mkdir -p ${stateDir}/home
+    mkdir -p ${stateDir}/home/fwd
 
     cat ${resolvConf} >${stateDir}/.resolv.conf
     echo -n "" > ${stateDir}/.ns.pid
 
     ${preCmdOutside}
+
+    ${if hostFwds' != null then ''
+    inotifywait -r -m ${stateDir}/home/fwd |
+      while read a b file; do
+      ${concatMapStringsSep "\n" (f: ''
+        [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/home/fwd/${toString f.host_port}.sock &";
+        [[ $b == *DELETE* ]] && [[ $file == *${toString f.host_port}.sock ]] && fuser -k ${toString f.host_port}/TCP;
+      '') hostFwds'}
+      done &
+    echo -n "$!" > ${stateDir}/.inotifywait.pid
+    '' else ""}
 
     for i in {1..50}
     do
@@ -344,7 +374,15 @@ let
       sleep 0.1
     done &
 
-    trap 'echo Exiting slirp4netns ...; kill $(cat ${stateDir}/home/.slirp4netns.pid)' EXIT
+    function exiting() {
+      set +e
+      echo Exiting ...
+      kill $(cat ${stateDir}/home/.slirp4netns.pid)
+      rm ${stateDir}/home/.slirp4netns.pid
+      kill $(cat ${stateDir}/.inotifywait.pid)
+      rm ${stateDir}/.inotifywait.pid
+    }
+    trap exiting EXIT
 
     ${nsjail}/bin/nsjail \
       -Mo \
@@ -460,11 +498,14 @@ let
   '';
 
   buildInputs = with pkgs; [
-    iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn pstree
+    iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
     gnugrep shadow pkgs.weston xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
-    openssl dconf srelay netcat vanilla-dmz inetutils gnused
-  ] ++ packages ++ (optionals (gpconnectArgs != null) gpconnect);
+    openssl dconf netcat vanilla-dmz inetutils gnused openssh socat psmisc inotify-tools
+  ]
+    ++ packages
+    ++ (optionals (socksproxy != null) [srelay])
+    ++ (optionals (gpconnectArgs != null) [gpconnect]);
 
   binPaths = makeBinPath buildInputs;
 
