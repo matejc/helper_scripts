@@ -12,7 +12,7 @@
   start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
-, gpconnectArgs ? null
+, gpconnect ? null
 , weston ? {
   start = "weston -B wayland --display=${wayland.outside} --socket=/run/user/${uid}/${wayland.inside} --xwayland --config=${westonConfigFile}";
   stop = "pkill weston";
@@ -95,9 +95,10 @@ with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
 
-  gpconnect = pkgs.writeShellScriptBin "gpconnect" ''
+  gp-connect = pkgs.writeShellScriptBin "gp-connect" ''
+    { sleep 2; chown -R ${uid}:${gid} "/run/user/${uid}"; } &
     eval $(${pkgs.gp-saml-gui}/bin/gp-saml-gui --$1 --clientos=Linux $2)
-    echo $HOST; echo $USER; echo $COOKIE; echo $OS
+    echo $HOST; echo $USER; echo $OS
     echo "$COOKIE" | ${pkgs.openconnect}/bin/openconnect --protocol=gp -u "$USER" --os="$OS" --passwd-on-stdin --useragent='PAN GlobalProtect' --csd-wrapper=${pkgs.openconnect}/libexec/openconnect/hipreport.sh "$HOST"
   '';
 
@@ -200,9 +201,9 @@ let
     stdout_logfile_maxbytes = 0
     '' else ""}
 
-    ${if gpconnectArgs != null then ''
-    [program:gpconnect]
-    command = ${mkCmd "gpconnect" { start = "gpconnect ${gpconnectArgs}"; stop = "pkill gpconnect";}}
+    ${if gpconnect != null then ''
+    [program:gp-connect]
+    command = ${mkCmd "gp-connect" { start = "gp-connect ${gpconnect.type} ${gpconnect.server}"; stop = "pkill gp-connect";}}
     priority = 0
     directory = /root
     user = root
@@ -216,7 +217,7 @@ let
     stopasgroup = true
     killasgroup = true
     redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/gpconnect.log
+    stdout_logfile = ${home.inside}/.supervisord/gp-connect.log
     stdout_logfile_maxbytes = 0
     '' else ""}
 
@@ -389,11 +390,10 @@ let
       --tmpfsmount / \
       --bindmount ${stateDir}/home:${home.inside} \
       --tmpfsmount /root \
-      --tmpfsmount /dev \
       --disable_proc \
       --mount none:/proc:proc \
       --bindmount /dev/urandom:/dev/urandom \
-      --bindmount /dev/null:/dev/null:rw \
+      --bindmount /dev/null:/dev/null \
       --bindmount /dev/net/tun:/dev/net/tun \
       --bindmount /dev/dri:/dev/dri \
       --mount none:/dev/shm:tmpfs:rw,mode=1777,size=65536k \
@@ -505,7 +505,7 @@ let
   ]
     ++ packages
     ++ (optionals (socksproxy != null) [srelay])
-    ++ (optionals (gpconnectArgs != null) [gpconnect]);
+    ++ (optionals (gpconnect != null) [gp-connect]);
 
   binPaths = makeBinPath buildInputs;
 
