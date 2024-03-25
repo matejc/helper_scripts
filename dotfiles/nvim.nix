@@ -1292,7 +1292,7 @@ cmp.setup({
     ['<Up>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
-        if cmp.core.view:get_selected_entry() then
+        if cmp.get_active_entry() then
           cmp.select_prev_item()
         else
           cmp.close()
@@ -1343,7 +1343,7 @@ cmp.setup.cmdline(':', {
     ['<Up>'] = function(fallback)
       local cmp = require('cmp')
       if cmp.visible() then
-        if cmp.core.view:get_selected_entry() then
+        if cmp.get_active_entry() then
           cmp.select_prev_item()
         else
           cmp.close()
