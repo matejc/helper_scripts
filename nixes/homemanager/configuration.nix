@@ -160,11 +160,25 @@ let
     DELAY=1
 
     while snore $DELAY; do
-        WP_OUTPUT=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
+        if [ -f $HOME/.rec.pid ]
+        then
+            printf "%s" " "
+        fi
 
-        if [[ $WP_OUTPUT =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
+        WP_OUTPUT_SOURCE=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
+        if [[ $WP_OUTPUT_SOURCE =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
             if [[ -n ''${BASH_REMATCH[3]} ]]; then
-                printf "MUTE\n"
+                printf " "
+            else
+                VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
+
+                printf " $VOLUME%% "
+            fi
+        fi
+        WP_OUTPUT_SINK=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
+        if [[ $WP_OUTPUT_SINK =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
+            if [[ -n ''${BASH_REMATCH[3]} ]]; then
+                printf " "
             else
                 VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
                 ICON=(
@@ -174,16 +188,15 @@ let
                 )
 
                 if [[ $VOLUME -gt 50 ]]; then
-                    printf "%s" "''${ICON[0]} "
+                    printf "%s $VOLUME%%" "''${ICON[0]}"
                 elif [[ $VOLUME -gt 25 ]]; then
-                    printf "%s" "''${ICON[1]} "
+                    printf "%s $VOLUME%%" "''${ICON[1]}"
                 elif [[ $VOLUME -ge 0 ]]; then
-                    printf "%s" "''${ICON[2]} "
+                    printf "%s $VOLUME%%" "''${ICON[2]}"
                 fi
-
-                printf "$VOLUME%%\n"
             fi
         fi
+        printf "\n"
     done
 
     exit 0
@@ -193,6 +206,24 @@ let
     export PATH="${pkgs.sway}/bin:${pkgs.jq}/bin:${pkgs.wofi}/bin:${pkgs.coreutils}/bin:$PATH"
     export SWAYSOCK="$(ls /run/user/"$(id -u)"/sway-ipc.* | head -n 1)"
     swaymsg -t get_outputs | jq -r '.[]|.name' | wofi -d
+  '';
+
+  recordCmd = pkgs.writeShellScript "record.sh" ''
+    if [ -f "$HOME/.rec.pid" ]
+    then
+      rec_pid="$(cat "$HOME/.rec.pid")"
+      kill -INT "$rec_pid"
+      wait "$rec_pid"
+      rm "$HOME/.rec.pid"
+    else
+      export GST_PLUGIN_SYSTEM_PATH_1_0="${lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" [ pkgs.gst_all_1.gstreamer pkgs.gst_all_1.gst-plugins-base pkgs.gst_all_1.gst-plugins-good ]}"
+      export PATH="${lib.makeBinPath [ pkgs.gst_all_1.gstreamer pkgs.pulseaudio ]}:$PATH"
+      mkdir -p "$HOME/Audio"
+      rec_path="$HOME/Audio/recording_$(date +%Y-%m-%d_%H-%M-%S).wav"
+      gst-launch-1.0 -e audiomixer name=mixer ! queue ! audioconvert ! wavenc ! filesink location="$rec_path" pulsesrc device="$(pactl get-default-source)" ! queue ! audioconvert ! mixer.  pulsesrc device="$(pactl get-default-sink).monitor" ! queue ! audioconvert ! mixer. &
+      rec_pid="$!"
+      echo -n "$rec_pid" > "$HOME/.rec.pid"
+    fi
   '';
 in {
   # imports = [
@@ -439,7 +470,7 @@ in {
             resizeModeName = "Resize: arrow keys";
             mirrorModeName = "Mirror: s - sway-wsshare, c - create, f - toggle freeze";
             signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
-            audioModeName = "Audio: s - speakers, m - mic, p - pavu, h - patchboard";
+            audioModeName = "Audio: s - speakers, m - mic, r - toggle recording";
           in rec {
             assigns = lib.mkDefault {
               #"workspace number 1" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
@@ -537,8 +568,7 @@ in {
               "${audioModeName}" = {
                 "s" = "exec ${setDefaultSink}, mode \"default\"";
                 "m" = "exec ${setDefaultSource}, mode \"default\"";
-                "p" = "exec ${pkgs.pavucontrol}/bin/pavucontrol, mode \"default\"";
-                "h" = "exec ${pkgs.helvum}/bin/helvum, mode \"default\"";
+                "r" = "exec ${recordCmd}, mode \"default\"";
                 "Escape" = "mode default";
                 "Return" = "mode default";
               };

@@ -1259,14 +1259,14 @@ cmp.setup({
       c = cmp.mapping.close(),
     }),
     ['<CR>'] = function(fallback)
-      if cmp.visible() then
+      if cmp.visible() and cmp.get_active_entry() then
         cmp.confirm({ select = false })
       else
         fallback()
       end
     end,
     ['<C-CR>'] = function(fallback)
-      if cmp.visible() then
+      if cmp.visible() and cmp.get_active_entry() then
         cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
       else
         fallback()
@@ -1333,13 +1333,33 @@ cmp.setup.cmdline(':', {
   mapping = cmp.mapping.preset.cmdline({
     ['<CR>'] = {
       c = function(fallback)
-        if cmp.visible() then
+        if cmp.visible() and cmp.get_active_entry() then
           cmp.close()
         else
           fallback()
         end
       end,
     },
+    ['<Up>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        if cmp.core.view:get_selected_entry() then
+          cmp.select_prev_item()
+        else
+          cmp.close()
+        end
+      else
+        fallback()
+      end
+    end,
+    ['<Down>'] = function(fallback)
+      local cmp = require('cmp')
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end,
   }),
   sources = cmp.config.sources({
     { name = 'path' },
@@ -1907,6 +1927,7 @@ require("filetype").setup {
       xml = "xml",
       puml = "plantuml",
       tex = "tex",
+      html = "html",
     },
     complex = {
       ["Dockerfile%..*"] = "dockerfile",
