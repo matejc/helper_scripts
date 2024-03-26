@@ -110,9 +110,8 @@ in {
               if ($request_method = POST) {
                 set $proxpass "http://lemmy";
               }
-              if ($proxpass = false) {
+              if ($proxpass = "http://lemmy-ui") {
                 set $authentication "Administrator’s Area";
-                set $proxpass "http://lemmy-ui";
               }
               auth_basic           $authentication;
               auth_basic_user_file /var/lib/lemmy-ui.htpasswd;
