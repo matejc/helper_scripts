@@ -140,66 +140,65 @@ let
   };
 
   setDefaultSink = pkgs.writeShellScript "set-default-sink" ''
-    ${pkgs.pulseaudio}/bin/pactl set-default-sink $(${pkgs.pulseaudio}/bin/pactl list short sinks | ${pkgs.gawk}/bin/awk -v def_sink="$(${pkgs.pulseaudio}/bin/pactl get-default-sink)" '{if ($2 == def_sink) {print $2" / "$NF" / DEFAULT"} else {print $2" / "$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')
+    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sinks | jq '.|[.[]|select(.properties."device.class"=="sound")]')"
+    paindex="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg def "$(${pkgs.pulseaudio}/bin/pactl get-default-sink)" -r '.|sort_by(.index)[]|"\(.index)\(if ($def == .name) then " [DEFAULT]" else "" end) \(.description)"' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')"
+    paname="$(echo -n "$pajson" | jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
+    if [ ! -z "$paname" ]
+    then
+      ${pkgs.pulseaudio}/bin/pactl set-default-sink "$paname"
+    fi
   '';
 
   setDefaultSource = pkgs.writeShellScript "set-default-source" ''
-    ${pkgs.pulseaudio}/bin/pactl set-default-source $(${pkgs.pulseaudio}/bin/pactl list short sources | ${pkgs.gawk}/bin/awk -v def_src="$(${pkgs.pulseaudio}/bin/pactl get-default-source)" '/source/ {if ($2 == def_src) {print $2" / "$NF" / DEFAULT"} else {print $2" / "$NF}}' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')
+    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sources | jq '.|[.[]|select(.properties."device.class"=="sound")]')"
+    paindex="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg def "$(${pkgs.pulseaudio}/bin/pactl get-default-source)" -r '.|sort_by(.index)[]|"\(.index)\(if ($def == .name) then " [DEFAULT]" else "" end) \(.description)"' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')"
+    paname="$(echo -n "$pajson" | jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
+    if [ ! -z "$paname" ]
+    then
+      ${pkgs.pulseaudio}/bin/pactl set-default-source "$paname"
+    fi
   '';
 
   wp_volume = pkgs.writeShellScript "wp_volume" ''
     set -e
 
-    # https://blog.dhampir.no/content/sleeping-without-a-subprocess-in-bash-and-how-to-sleep-forever
-    snore() {
-        local IFS
-        [[ -n "''${_snore_fd:-}" ]] || exec {_snore_fd}<> <(:)
-        read -r ''${1:+-t "$1"} -u $_snore_fd || :
-    }
+    if [ -f $HOME/.rec.pid ]
+    then
+        printf "%s" " "
+    fi
 
-    DELAY=1
+    WP_OUTPUT_SOURCE=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
+    if [[ $WP_OUTPUT_SOURCE =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
+        if [[ -n ''${BASH_REMATCH[3]} ]]; then
+            printf " "
+        else
+            VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
 
-    while snore $DELAY; do
-        if [ -f $HOME/.rec.pid ]
-        then
-            printf "%s" " "
+            printf " $VOLUME%% "
         fi
+    fi
+    WP_OUTPUT_SINK=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
+    if [[ $WP_OUTPUT_SINK =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
+        if [[ -n ''${BASH_REMATCH[3]} ]]; then
+            printf " "
+        else
+            VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
+            ICON=(
+                ""
+                ""
+                ""
+            )
 
-        WP_OUTPUT_SOURCE=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
-        if [[ $WP_OUTPUT_SOURCE =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
-            if [[ -n ''${BASH_REMATCH[3]} ]]; then
-                printf " "
-            else
-                VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
-
-                printf " $VOLUME%% "
+            if [[ $VOLUME -gt 50 ]]; then
+                printf "%s $VOLUME%%" "''${ICON[0]}"
+            elif [[ $VOLUME -gt 25 ]]; then
+                printf "%s $VOLUME%%" "''${ICON[1]}"
+            elif [[ $VOLUME -ge 0 ]]; then
+                printf "%s $VOLUME%%" "''${ICON[2]}"
             fi
         fi
-        WP_OUTPUT_SINK=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
-        if [[ $WP_OUTPUT_SINK =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
-            if [[ -n ''${BASH_REMATCH[3]} ]]; then
-                printf " "
-            else
-                VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
-                ICON=(
-                    ""
-                    ""
-                    ""
-                )
-
-                if [[ $VOLUME -gt 50 ]]; then
-                    printf "%s $VOLUME%%" "''${ICON[0]}"
-                elif [[ $VOLUME -gt 25 ]]; then
-                    printf "%s $VOLUME%%" "''${ICON[1]}"
-                elif [[ $VOLUME -ge 0 ]]; then
-                    printf "%s $VOLUME%%" "''${ICON[2]}"
-                fi
-            fi
-        fi
-        printf "\n"
-    done
-
-    exit 0
+    fi
+    printf "\n"
   '';
 
   chooserCmd = pkgs.writeShellScript "sway-output-chooser" ''
@@ -527,10 +526,10 @@ in {
                 "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
                 "Control+Mod1+m" = "exec ${pkgs.nwg-displays}/bin/nwg-displays";
-                "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
-                "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+";
-                "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-";
-                "XF86AudioMicMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle";
+                "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle, exec pkill -SIGRTMIN+8 waybar";
+                "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+, exec pkill -SIGRTMIN+8 waybar";
+                "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-, exec pkill -SIGRTMIN+8 waybar";
+                "XF86AudioMicMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle, exec pkill -SIGRTMIN+8 waybar";
                 "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
                 "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
                 "${modifier}+p" = "output ${(lib.head context.variables.outputs).output} toggle";
@@ -566,9 +565,9 @@ in {
                 "Return" = "mode default";
               };
               "${audioModeName}" = {
-                "s" = "exec ${setDefaultSink}, mode \"default\"";
-                "m" = "exec ${setDefaultSource}, mode \"default\"";
-                "r" = "exec ${recordCmd}, mode \"default\"";
+                "s" = "exec ${setDefaultSink}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
+                "m" = "exec ${setDefaultSource}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
+                "r" = "exec ${recordCmd}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
                 "Escape" = "mode default";
                 "Return" = "mode default";
               };
@@ -1074,12 +1073,14 @@ in {
             };
             "custom/pipewire" = {
               exec = "${wp_volume}";
+              interval = 5;
               tooltip = false;
-              on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+              on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -SIGRTMIN+8 waybar";
               on-click-middle = "${pkgs.helvum}/bin/helvum";
               on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
-              on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+";
-              on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-";
+              on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; pkill -SIGRTMIN+8 waybar";
+              on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; pkill -SIGRTMIN+8 waybar";
+              signal = 8;
             };
             keyboard-state = {
               capslock = true;
