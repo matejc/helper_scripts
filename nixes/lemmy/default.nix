@@ -98,7 +98,7 @@ in {
             extraConfig = ''
               # distinguish between ui requests and backend
               # don't change lemmy-ui or lemmy here, they refer to the upstream definitions on top
-              # set $proxpass "http://lemmy-ui";
+              set $proxpass "http://lemmy-ui";
               set $authentication off;
 
               if ($http_accept = "application/activity+json") {
