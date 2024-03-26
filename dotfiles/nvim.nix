@@ -1497,7 +1497,7 @@ require("neo-tree").setup({
     },
     follow_current_file = { enabled = true, }, -- This will find and focus the file in the active buffer every
                                  -- time the current file is changed while the tree is open.
-    hijack_netrw_behavior = "disabled",
+    hijack_netrw_behavior = "open_default",
                           -- "open_default", -- netrw disabled, opening a directory opens neo-tree
                                             -- in whatever position is specified in window.position
                           -- "open_current",  -- netrw disabled, opening a directory opens within the
@@ -2939,7 +2939,7 @@ in [{
 
     if [ ! -z "$pickfiles" ]
     then
-        args="$args $(${pkgs.xplr}/bin/xplr)"
+        args="$args $(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
     fi
 
     ${value} $args
