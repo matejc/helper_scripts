@@ -99,6 +99,7 @@ in {
               # distinguish between ui requests and backend
               # don't change lemmy-ui or lemmy here, they refer to the upstream definitions on top
               # set $proxpass "http://lemmy-ui";
+              set $authentication off;
 
               if ($http_accept = "application/activity+json") {
                 set $proxpass "http://lemmy";
@@ -110,10 +111,11 @@ in {
                 set $proxpass "http://lemmy";
               }
               if ($proxypass = false) {
-                auth_basic           "Administrator’s Area";
-                auth_basic_user_file /var/lib/lemmy-ui.htpasswd;
+                set $authentication "Administrator’s Area";
                 set $proxpass "http://lemmy-ui";
               }
+              auth_basic           $authentication;
+              auth_basic_user_file /var/lib/lemmy-ui.htpasswd;
               proxy_pass $proxpass;
 
               # Cuts off the trailing slash on URLs to make them valid
