@@ -2939,7 +2939,7 @@ in [{
 
     if [ ! -z "$pickfiles" ]
     then
-        args="$args $(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
+        args="$args $(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
     fi
 
     ${value} $args

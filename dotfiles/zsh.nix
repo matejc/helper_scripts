@@ -258,7 +258,7 @@ in
     first-tab() {
         if [[ $#BUFFER == 0 ]]
         then
-            cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t/ -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
+            cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t. -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
             zle reset-prompt
         else
             zle expand-or-complete
