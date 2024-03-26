@@ -98,7 +98,7 @@ in {
             extraConfig = ''
               # distinguish between ui requests and backend
               # don't change lemmy-ui or lemmy here, they refer to the upstream definitions on top
-              set $proxpass "http://lemmy-ui";
+              # set $proxpass "http://lemmy-ui";
               set $authentication off;
 
               if ($http_accept = "application/activity+json") {
@@ -110,7 +110,7 @@ in {
               if ($request_method = POST) {
                 set $proxpass "http://lemmy";
               }
-              if ($proxypass = "http://lemmy-ui") {
+              if ($proxpass = false) {
                 set $authentication "Administrator’s Area";
                 set $proxpass "http://lemmy-ui";
               }
