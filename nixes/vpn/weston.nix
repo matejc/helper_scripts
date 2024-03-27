@@ -58,6 +58,14 @@
 , interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
 , launchers ? [
   {
+    icon = "${pkgs.xfce.xfce4-icon-theme}/share/icons/gnome/32x32/actions/down.png";
+    exec = "/usr/bin/clipboard-pull >/dev/null 2>/dev/null </dev/null";
+  }
+  {
+    icon = "${pkgs.xfce.xfce4-icon-theme}/share/icons/gnome/32x32/actions/up.png";
+    exec = "/usr/bin/clipboard-push >/dev/null 2>/dev/null </dev/null";
+  }
+  {
     icon = "${pkgs.firefox}/share/icons/hicolor/32x32/apps/firefox.png";
     exec = "firefox --no-remote";
   }
@@ -339,7 +347,7 @@ let
 
     ${preCmdOutside}
 
-    ${if hostFwds' != null then ''
+    ${if hostFwds' != null && hostFwds' != [] then ''
     inotifywait -r -m ${stateDir}/home/fwd |
       while read a b file; do
       ${concatMapStringsSep "\n" (f: ''
@@ -490,11 +498,13 @@ let
   hostnameFile = pkgs.writeText "hostname" ''RESTRICTED'';
 
   pullClipboard = pkgs.writeShellScriptBin "clipboard-pull" ''
-    WAYLAND_DISPLAY=${wayland.outside} wl-paste | WAYLAND_DISPLAY=${wayland.inside} wl-copy
+    export XDG_RUNTIME_DIR=/run/user/${uid}
+    WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.inside} /usr/bin/wl-copy -n
   '';
 
   pushClipboard = pkgs.writeShellScriptBin "clipboard-push" ''
-    WAYLAND_DISPLAY=${wayland.inside} wl-paste | WAYLAND_DISPLAY=${wayland.outside} wl-copy
+    export XDG_RUNTIME_DIR=/run/user/${uid}
+    WAYLAND_DISPLAY=${wayland.inside} /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
   '';
 
   buildInputs = with pkgs; [
