@@ -75,6 +75,23 @@ let
     bindkey '^[[B' downArrow
     bindkey '^[OB' downArrow
   '';
+
+  fdz-dir = pkgs.writeShellScript "fdz-dir.sh" ''
+    export PATH="${lib.makeBinPath (with pkgs; [ fre fd fzf gawk gnused coreutils ])}"
+
+    set -o errexit
+    set -o nounset
+
+    fzf_result="$({
+      fre --sorted | sed -e "s|$PWD|\.|" -e '/^.$/d'
+      fd -t d --min-depth 1 --max-depth 4 "" "." | awk -F/ '{print NF,$0}' | sort -n | cut -d' ' -f 2-
+    } | awk '!x[$0]++' | fzf +m --reverse --height 15 --tiebreak=index --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
+
+    if [ -n "$fzf_result" ]
+    then
+      fre --add "$(realpath -s $fzf_result)" && echo -n "$fzf_result"
+    fi
+  '';
 in
 [{
   target = "${variables.homeDir}/.zshrc";
@@ -258,7 +275,8 @@ in
     first-tab() {
         if [[ $#BUFFER == 0 ]]
         then
-            cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t. -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
+            # cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t. -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
+            cd "$(${fdz-dir})"
             zle reset-prompt
         else
             zle expand-or-complete
