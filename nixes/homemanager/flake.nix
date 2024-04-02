@@ -61,8 +61,14 @@
   };
 
   # nixConfig = {
-  #   extra-trusted-public-keys = "devenv.cachix.org-1:w1cLUi8dv3hnoSPGAuibQv+f9TZLr6cv/Hm9XgU50cw=";
-  #   extra-substituters = "https://devenv.cachix.org";
+  #   extra-substituters = [
+  #     "https://nix-community.cachix.org"
+  #     "https://hydra.nixos.org"
+  #   ];
+  #   extra-trusted-public-keys = [
+  #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+  #     "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
+  #   ];
   # };
 
   outputs = { self, ... }@inputs: {

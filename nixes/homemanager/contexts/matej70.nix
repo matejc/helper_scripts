@@ -3,6 +3,9 @@ with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
+  looking-glass-client = pkgs.callPackage ../../looking-glass-client.nix {};
+  looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -167,7 +170,7 @@ let
       programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
-        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
+        plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
       home.packages = [
         solvespace keepassxc libreoffice shell_gpt caprine-bin vlc freetube
