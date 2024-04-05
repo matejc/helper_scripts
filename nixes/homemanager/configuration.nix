@@ -1280,10 +1280,6 @@ in {
           };
         };
         programs.gitui.enable = true;
-        programs.broot = {
-          enable = true;
-          enableZshIntegration = true;
-        };
         home.shellAliases = {
           ".." = "cd ..";
           "l" = "${pkgs.eza}/bin/eza -gal --git";

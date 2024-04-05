@@ -177,6 +177,7 @@ let
         #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
         #google-chrome
         #slack
+        oxker dive
       ];
       programs.direnv = {
         enable = true;
