@@ -29,7 +29,7 @@
 , mounts ? [ ]
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
-  { from = "${home.outside}/.vpn/openvpns"; to = "/etc/openvpn"; }
+  { from = "${home.outside}/.vpn/${name}/openvpn"; to = "/etc/openvpn"; }
   { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
 ]
 , symlinks ? [ ]

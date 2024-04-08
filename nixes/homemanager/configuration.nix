@@ -140,9 +140,9 @@ let
   };
 
   setDefaultSink = pkgs.writeShellScript "set-default-sink" ''
-    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sinks | jq '.|[.[]|select(.properties."device.class"=="sound")]')"
+    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sinks | ${pkgs.jq}/bin/jq '.|[.[]|select(.properties."device.class"=="sound")]')"
     paindex="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg def "$(${pkgs.pulseaudio}/bin/pactl get-default-sink)" -r '.|sort_by(.index)[]|"\(.index)\(if ($def == .name) then " [DEFAULT]" else "" end) \(.description)"' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')"
-    paname="$(echo -n "$pajson" | jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
+    paname="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
     if [ ! -z "$paname" ]
     then
       ${pkgs.pulseaudio}/bin/pactl set-default-sink "$paname"
@@ -150,9 +150,9 @@ let
   '';
 
   setDefaultSource = pkgs.writeShellScript "set-default-source" ''
-    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sources | jq '.|[.[]|select(.properties."device.class"=="sound")]')"
+    pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sources | ${pkgs.jq}/bin/jq '.|[.[]|select(.properties."device.class"=="sound")]')"
     paindex="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg def "$(${pkgs.pulseaudio}/bin/pactl get-default-source)" -r '.|sort_by(.index)[]|"\(.index)\(if ($def == .name) then " [DEFAULT]" else "" end) \(.description)"' | ${pkgs.wofi}/bin/wofi -W 70% -p Mic -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')"
-    paname="$(echo -n "$pajson" | jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
+    paname="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg index "$paindex" -r '.[]|select(($index|tonumber)==.index)|.name')"
     if [ ! -z "$paname" ]
     then
       ${pkgs.pulseaudio}/bin/pactl set-default-source "$paname"

@@ -153,7 +153,8 @@ let
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
-        { command = "${pkgs.caprine-bin}/bin/caprine"; }
+        { command = "${self.variables.profileDir}/bin/chromium"; }
+        # { command = "${pkgs.caprine-bin}/bin/caprine"; }
         #{ command = "${self.variables.programs.keepassxc}"; }
         #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
