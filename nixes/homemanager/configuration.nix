@@ -406,26 +406,45 @@ in {
           profiles = {
             default = {
               extensions = with nur.repos.rycee.firefox-addons; [
-                ublock-origin keepassxc-browser translate-web-pages multi-account-containers
+                keepassxc-browser translate-web-pages multi-account-containers
+                tree-style-tab adnauseam
               ];
               settings = {
                 "general.smoothScroll" = false;
                 "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
                 "ui.textScaleFactor" = 90;
+                "browser.tabs.drawInTitlebar" = false;
               };
               userChrome = ''
                 * {
                    font-size: ${toString context.variables.font.size}pt !important;
                 }
-                #TabsToolbar, .tabbrowser-tab { max-height: 36px !important; }
-                #TabsToolbar > .toolbar-items > spacer { display: none; }
-                #TabsToolbar .tabs-newtab-button,
-                #TabsToolbar .tabbrowser-tab,
-                #TabsToolbar .tabbrowser-tab .tab-stack,
-                #TabsToolbar .tabbrowser-tab .tab-background,
-                #TabsToolbar .tabbrowser-tab .tab-content {
-                    border-top-left-radius: 0 !important;
-                    border-top-right-radius: 0 !important;
+
+                /* Hide main tabs toolbar */
+                #main-window[tabsintitlebar="true"]:not([extradragspace="true"]) #TabsToolbar > .toolbar-items {
+                    opacity: 0;
+                    pointer-events: none;
+                }
+                #main-window:not([tabsintitlebar="true"]) #TabsToolbar {
+                    visibility: collapse !important;
+                }
+
+                /*Collapse in default state and add transition*/
+                #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] {
+                  overflow: hidden;
+                  min-width: 100px !important;
+                  max-width: 100px !important;
+                  transition: all 0.1s ease;
+                  border-right: 1px solid #0c0c0d;
+                  z-index: 2;
+                }
+
+                /*Expand to 260px on hover*/
+                #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]:hover,
+                #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar {
+                  min-width: 400px !important;
+                  max-width: 400px !important;
+                  z-index: 1;
                 }
               '';
             };
