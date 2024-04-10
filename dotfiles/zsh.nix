@@ -84,7 +84,7 @@ let
 
     fzf_result="$({
       fre --store_name dir_history --sorted | sed -e "s|$PWD|\.|" -e '/^.$/d'
-      fd -t d --min-depth 1 --max-depth 4 "" "." --exec echo {} | awk -F/ '{print NF,$0}' | sort -n | cut -d' ' -f 2-
+      fd -t d --min-depth 1 --max-depth 3 "" "." --exec echo {} | awk -F/ '{print NF,$0}' | sort -n | cut -d' ' -f 2-
     } | awk '!x[$0]++' | fzf +m --reverse --height 15 --tiebreak=index --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
 
     if [ -n "$fzf_result" ]

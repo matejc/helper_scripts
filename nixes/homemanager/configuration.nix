@@ -434,7 +434,7 @@ in {
                   overflow: hidden;
                   min-width: 100px !important;
                   max-width: 100px !important;
-                  transition: all 0.1s ease;
+                  transition: all 0.2s ease;
                   border-right: 1px solid #0c0c0d;
                   z-index: 2;
                 }
