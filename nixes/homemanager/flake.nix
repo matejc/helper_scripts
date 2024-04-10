@@ -60,16 +60,14 @@
     # };
   };
 
-  # nixConfig = {
-  #   extra-substituters = [
-  #     "https://nix-community.cachix.org"
-  #     "https://hydra.nixos.org"
-  #   ];
-  #   extra-trusted-public-keys = [
-  #     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-  #     "hydra.nixos.org-1:CNHJZBh9K4tP3EKF6FkkgeVYsS3ohTl+oS0Qa8bezVs="
-  #   ];
-  # };
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.matejc.com"
+    ];
+    extra-trusted-public-keys = [
+      "cache.matejc.com-1:1gX7YfpZK4zkYf5MRrz9HPsJq9XZBC6bJgDySZmzbUM="
+    ];
+  };
 
   outputs = { self, ... }@inputs: {
     # homeConfigurations = {

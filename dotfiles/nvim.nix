@@ -14,7 +14,7 @@ let
 
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
-    "nil"
+    "nixd"
     "bashls"
     "dockerls"
     "yamlls"
@@ -1917,24 +1917,24 @@ require("bufferline").setup{
 EOF
 
 lua <<EOF
-require("filetype").setup {
-  overrides = {
-    extensions = {
-      tf = "terraform",
-      tfvars = "terraform",
-      tfstate = "json",
-      sh = "sh",
-      xml = "xml",
-      puml = "plantuml",
-      tex = "tex",
-      html = "html",
-    },
-    complex = {
-      ["Dockerfile%..*"] = "dockerfile",
-    },
-  },
-}
-vim.g.did_load_filetypes = 1
+-- require("filetype").setup {
+--   overrides = {
+--     extensions = {
+--       tf = "terraform",
+--       tfvars = "terraform",
+--       tfstate = "json",
+--       sh = "sh",
+--       xml = "xml",
+--       puml = "plantuml",
+--       tex = "tex",
+--       html = "html",
+--     },
+--     complex = {
+--       ["Dockerfile%..*"] = "dockerfile",
+--     },
+--   },
+-- }
+-- vim.g.did_load_filetypes = 1
 
 local previewers = require('telescope.previewers')
 
