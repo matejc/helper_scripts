@@ -153,6 +153,11 @@
       #   ];
       # };
     };
+    hydraJobs = {
+      matej70 = self.nixosConfigurations.matej70;
+      matej80 = self.nixosConfigurations.matej80;
+      nixcode = self.nixosConfigurations.nixcode;
+    };
     images = {
       wsl =
         let
