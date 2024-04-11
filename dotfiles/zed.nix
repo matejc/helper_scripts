@@ -12,13 +12,23 @@
       metrics = false;
       diagnostics = false;
     };
-    ui_font_size = 16;
-    buffer_font_size = 16;
+    buffer_font_family = variables.font.family;
+    buffer_font_size = variables.font.size + 3;
+    project_panel = {
+      default_width = 180;
+      file_icons = false;
+      folder_icons = false;
+    };
+    nix.lsp.local.path = "${pkgs.nixd}/bin/nixd";
   });
 } {
   target = "${variables.homeDir}/.config/zed/keymap.json";
   source = pkgs.writeText "keymap.json" (builtins.toJSON [
     {
+      bindings = {
+        ctrl-o = "project_panel::ToggleFocus";
+      };
+    } {
       context = "Editor";
       bindings = {
         pageup = "editor::MovePageUp";
@@ -26,6 +36,7 @@
         ctrl-enter = "editor::NewlineBelow";
         ctrl-up = "editor::MoveLineUp";
         ctrl-down = "editor::MoveLineDown";
+        ctrl-o = "project_panel::ToggleFocus";
       };
     }
   ]);

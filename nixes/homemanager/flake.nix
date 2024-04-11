@@ -1,7 +1,8 @@
 {
   description = "home-manager system";
   inputs = {
-    nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
+    nixpkgs.url = "github:matejc/nixpkgs/latest";
+    # nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
     nixexprs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
     nixos-configuration = {
       url = "path:/etc/nixos";

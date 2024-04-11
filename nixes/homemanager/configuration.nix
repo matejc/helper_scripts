@@ -257,6 +257,7 @@ in {
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
       };
     };
+    programs.nix-ld.enable = true;
     programs.dconf.enable = true;
     services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
     home-manager.useGlobalPkgs = true;

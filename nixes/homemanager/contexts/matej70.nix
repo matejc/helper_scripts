@@ -29,6 +29,7 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
+      "${helper_scripts}/dotfiles/zed.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -175,6 +176,7 @@ let
       };
       home.packages = [
         solvespace keepassxc libreoffice shell_gpt caprine-bin vlc freetube
+        zed-editor discord
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

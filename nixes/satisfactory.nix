@@ -50,6 +50,7 @@ in
       serviceConfig = {
         Restart = "always";
         User = "satisfactory";
+        Group = "satisfactory";
         WorkingDirectory = "/var/lib/satisfactory";
       };
       environment = {
