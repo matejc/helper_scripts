@@ -1,9 +1,13 @@
 { config, pkgs, ... }:
 {
+  boot.loader.grub.devices = [ "/dev/sda" ];
+  fileSystems."/" = {
+    device = "/dev/sda";
+    fsType = "ext4";
+  };
   users.users.matejc = {
     uid = 1000;
     isNormalUser = true;
-    shell = pkgs.zsh;
     group = "matejc";
   };
   users.groups.matejc.gid = 1000;
