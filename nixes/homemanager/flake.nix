@@ -70,7 +70,22 @@
     ];
   };
 
-  outputs = { self, ... }@inputs: {
+  outputs = { self, ... }@inputs: let
+    system = "x86_64-linux";
+    nixosBuild = name:
+    let
+      nixosSystem = inputs.nixpkgs.lib.nixosSystem {
+        inherit system;
+        modules = [
+          ./minimal-configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          ../../nixes/sway-wsshare/module.nix
+          (import ./configuration.nix { inherit inputs; contextFile = ./contexts + "/${name}.nix"; })
+        ];
+      };
+    in
+      nixosSystem.config.system.build.toplevel;
+  in {
     # homeConfigurations = {
     #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
     #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
@@ -154,9 +169,7 @@
       # };
     };
     hydraJobs = {
-      matej70 = self.nixosConfigurations.matej70;
-      matej80 = self.nixosConfigurations.matej80;
-      nixcode = self.nixosConfigurations.nixcode;
+      matej70 = nixosBuild "matej70";
     };
     images = {
       wsl =
