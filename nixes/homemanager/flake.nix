@@ -172,6 +172,7 @@
       matej70 = nixosBuild "matej70";
       matej80 = nixosBuild "matej80";
       nixcode = nixosBuild "nixcode-nixos";
+      wsl = self.images.wsl.tarball;
     };
     images = {
       wsl =
