@@ -1,6 +1,8 @@
 { pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
 with pkgs;
 let
+  homeConfig = config.home-manager.users.matejc;
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -22,9 +24,9 @@ let
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
     variables = rec {
-      homeDir = config.home.homeDirectory;
-      user = config.home.username;
-      profileDir = config.home.profileDirectory;
+      homeDir = homeConfig.home.homeDirectory;
+      user = homeConfig.home.username;
+      profileDir = homeConfig.home.profileDirectory;
       prefix = "${homeDir}/workarea/helper_scripts";
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
@@ -88,15 +90,21 @@ let
         remote = "https://github.com/matejc/nixpkgs";
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
+      graphical = {
+        name = "sway";
+        logout = "${pkgs.sway}/bin/swaymsg exit";
+        target = "sway-session.target";
+      };
     };
     services = [
       { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
+    nixos-configuration = { };
     home-configuration = {
-      home.stateVersion = "22.11";
+      home.stateVersion = "23.11";
       home.sessionVariables.WSL_INTEROP = "$(realpath /run/WSL/*_interop | head -n 1)";
-      home.sessionVariables.QT_QPA_PLATFORM = "xcb";
+      home.sessionVariables.QT_QPA_PLATFORM = pkgs.lib.mkForce "xcb";
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
       ];

@@ -1,12 +1,9 @@
-{ inputs }:
-{ config, pkgs, lib, ... }:
-
-with lib;
+{ config, pkgs, ... }:
 
 let
    pkgs2storeContents = l : map (x: { object = x; symlink = "none"; }) l;
 
-   nixpkgs = lib.cleanSource pkgs.path;
+   nixpkgs = pkgs.lib.cleanSource pkgs.path;
 
    channelSources = pkgs.runCommand "nixos-${config.system.nixos.version}"
      { preferLocalBuild = true; }
@@ -17,9 +14,7 @@ let
       if [ ! -e $out/nixos/nixpkgs ]; then
         ln -s . $out/nixos/nixpkgs
       fi
-      echo -n ${config.system.nixos.revision} > $out/nixos/.git-revision
       echo -n ${config.system.nixos.versionSuffix} > $out/nixos/.version-suffix
-      echo ${config.system.nixos.versionSuffix} | sed -e s/pre// > $out/nixos/svn-revision
     '';
 
    preparer = pkgs.writeShellScriptBin "wsl-prepare" ''
@@ -50,18 +45,14 @@ let
      touch ./etc/NIXOS
    '';
 in
-{  system.build.tarball = pkgs.callPackage "${inputs.nixpkgs}/nixos/lib/make-system-tarball.nix" {
-    # No contents, structure will be added by prepare script
+{  system.build.tarball = pkgs.callPackage "${nixpkgs}/nixos/lib/make-system-tarball.nix" {
     contents = [];
 
     storeContents = pkgs2storeContents [
       config.system.build.toplevel
       pkgs.stdenv
       channelSources
-      preparer
     ];
-
-    extraCommands = "${preparer}/bin/wsl-prepare";
 
     # Use gzip
     compressCommand = "gzip";

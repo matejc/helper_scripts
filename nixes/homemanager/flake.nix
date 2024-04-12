@@ -59,6 +59,7 @@
     #   url = "github:tweag/jupyenv/main";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
+    NixOS-WSL.url = "github:nix-community/NixOS-WSL/main";
   };
 
   nixConfig = {
@@ -180,16 +181,18 @@
           build = import "${inputs.nixpkgs}/nixos" {
             configuration = {
               imports = [
+                inputs.NixOS-WSL.nixosModules.wsl
+                inputs.home-manager.nixosModules.home-manager
                 (import ./wsl/configuration.nix { inherit inputs; defaultUser = "matejc"; })
-                (import ./wsl/build-tarball.nix { inherit inputs; })
-                ./modules/wayvnc.nix
+                (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
               ];
-              services.wayvnc.enable = true;
-              services.wayvnc.user = "matejc";
             };
             system = "x86_64-linux";
           };
-        in { system = build.system; tarball = build.config.system.build.tarball; };
+        in {
+          system = build.system;
+          tarball = (import ./wsl/build-tarball.nix { inherit (build) config pkgs; }).system.build.tarball;
+        };
     };
   };
 }
