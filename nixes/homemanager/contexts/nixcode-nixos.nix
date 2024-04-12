@@ -63,7 +63,7 @@ let
         slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        # logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -145,7 +145,7 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.slack}"; }
-        # { command = "${self.variables.binDir}/logseq"; }
+        { command = "${self.variables.binDir}/logseq"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         # { command = "${clearprimary}/bin/clearprimary"; }
       ];

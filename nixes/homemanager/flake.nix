@@ -170,6 +170,8 @@
     };
     hydraJobs = {
       matej70 = nixosBuild "matej70";
+      matej80 = nixosBuild "matej80";
+      nixcode = nixosBuild "nixcode-nixos";
     };
     images = {
       wsl =
