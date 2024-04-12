@@ -23,8 +23,8 @@
     },
     "nixexprs": {
       "locked": {
-        "lastModified": 1712691445,
-        "narHash": "sha256-LQbioTP3HMb2sMpFM4ivO5hneDcKX05r9bD9Ncl+3d0=",
+        "lastModified": 1712889167,
+        "narHash": "sha256-cNiLakHWNS8xVi3nAvHefBTNymGsnDiWY3DVPn8ZQXo=",
         "type": "tarball",
         "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
       },
@@ -53,8 +53,8 @@
     "nixos-configuration": {
       "flake": false,
       "locked": {
-        "lastModified": 1712168001,
-        "narHash": "sha256-ivpG8vNRLNw8A/LU0kxUzz9wtDO/roLV7tIH30ApMSA=",
+        "lastModified": 1710932668,
+        "narHash": "sha256-LoIsp/A655nCKQpdr6fSnfl6jmWCjtlE4rPFkAl5enA=",
         "path": "/etc/nixos",
         "type": "path"
       },
@@ -97,11 +97,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1712854108,
-        "narHash": "sha256-OjN257gKfm3NcRnprcij8a7iVYpZcrlfTPAXWqVwoHE=",
+        "lastModified": 1712903918,
+        "narHash": "sha256-ludd2VsqKgue64wGt+0NhTZShc5rMdX0XYb7VpYRiIA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "bea305ed23150d80f17f011a0d1edc5a43dc65d2",
+        "rev": "627d5706d44cb34b510615e927cb27c9887f9367",
         "type": "github"
       },
       "original": {

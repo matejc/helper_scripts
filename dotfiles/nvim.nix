@@ -10,8 +10,6 @@ let
     echo -n "$@" | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}'
    '';
 
-  lemminx = import ../nixes/lemminx.nix { inherit pkgs; };
-
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
     "nixd"
@@ -254,7 +252,7 @@ let
     lemminx = ''
       nvim_lsp["lemminx"].setup {
         on_attach = on_attach;
-        cmd = {"${lemminx}/bin/lemminx"};
+        cmd = {"${pkgs.lemminx}/bin/lemminx"};
         capabilities = capabilities;
         filetypes = {'xml'};
         root_dir = function(fname)
