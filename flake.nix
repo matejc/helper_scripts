@@ -122,6 +122,7 @@
           ./nixos/minimal-configuration.nix
         ];
       }).config.system.build.toplevel;
+      wsl = self.images.wsl.tarball;
     };
     nixosConfigurations = {
       matej70 = nixosBuild {
