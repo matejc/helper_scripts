@@ -25,12 +25,6 @@ let
     cargoSha256 = "sha256-DRUd2nSdfgiIiCrBUiF6UTPYb6i8POQGo1xU5CdXuUY=";
   };
 
-  swayest = rustPlatform.buildRustPackage {
-    name = "swayest";
-    src = inputs.swayest;
-    cargoSha256 = "sha256-B1dRU3cqDuQi/kXDbRAvNf+wnut+wpFXf7Lq54Xav9A=";
-  };
-
   sway-scratchpad = rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
@@ -593,7 +587,7 @@ in {
               { command = "${context.variables.profileDir}/bin/service-group-once start"; }
               #{ command = "${mako}/bin/mako"; always = true; }
               { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
-              { command = "${swayest}/bin/sworkstyle"; always = true; }
+              { command = "${swayest-workstyle}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               { command = "${wl-clipboard}/bin/wl-paste --primary --watch ${wl-clipboard}/bin/wl-copy --primary --clear"; }
