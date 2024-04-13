@@ -1,0 +1,18 @@
+{
+  "matej70": {
+    "enabled": 1,
+    "hidden": true,
+    "description": "NixOS",
+    "nixexprinput": "src",
+    "nixexprpath": "build.nix",
+    "checkinterval": 600,
+    "schedulingshares": 100,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 3,
+    "inputs": {
+      "src": { "type": "git", "value": "git://github.com/matejc/helper_scripts.git", "emailresponsible": false },
+      "context": { "type": "string", "value": "matej70", "emailresponsible": false }
+    }
+  }
+}
