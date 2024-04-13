@@ -1214,6 +1214,8 @@ in {
           enableZshIntegration = true;
           pinentryPackage = pkgs.pinentry-gnome3;
         };
+        services.ssh-agent.enable = true;
+        programs.ssh.addKeysToAgent = "10m";
 
         programs.bash = {
           enable = true;
