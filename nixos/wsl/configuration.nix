@@ -1,5 +1,4 @@
-{ inputs, defaultUser }:
-{ lib, pkgs, config, ... }:
+{ lib, pkgs, config, defaultUser, ... }:
 
 with lib;
 

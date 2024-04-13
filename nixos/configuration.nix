@@ -219,10 +219,9 @@ let
       echo -n "$rec_pid" > "$HOME/.rec.pid"
     fi
   '';
+
+  sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
 in {
-  imports = [
-    # inputs.niri.nixosModules.niri
-  ] + (pkgs.lib.optionals (context.variables.graphical.name == "sway") [../nixes/sway-wsshare/module.nix]);
   config = lib.mkMerge ([{
     xdg.portal = {
       enable = true;
@@ -347,7 +346,7 @@ in {
           dconf
           rofi
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
-        ] ++ services-cmds;
+        ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
           QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
