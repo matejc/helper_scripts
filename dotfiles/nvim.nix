@@ -12,7 +12,7 @@ let
 
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
-    "nixd"
+    "nil"
     "bashls"
     "dockerls"
     "yamlls"
@@ -58,13 +58,6 @@ let
       setup_lsp("nil_ls", {
         on_attach = on_attach;
         cmd = {"${pkgs.nil}/bin/nil"};
-        capabilities = capabilities;
-      })
-    '';
-    rnix = ''
-      setup_lsp("rnix", {
-        on_attach = on_attach;
-        cmd = {"${pkgs.rnix-lsp}/bin/rnix-lsp"};
         capabilities = capabilities;
       })
     '';

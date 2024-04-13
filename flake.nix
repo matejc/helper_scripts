@@ -4,6 +4,10 @@
     nixpkgs.url = "github:matejc/nixpkgs/latest";
     # nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
     nixexprs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
     nixos-configuration = {
       url = "path:/etc/nixos";
       flake = false;
@@ -73,15 +77,17 @@
 
   outputs = { self, ... }@inputs: let
     system = "x86_64-linux";
-    nixosBuild = name:
-    let
+    helper_scripts = ./.;
+    defaultUser = "matejc";
+    nixosBuild = { context, modules ? [] }: let
       nixosSystem = inputs.nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [
-          ./minimal-configuration.nix
+        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts + "/${context}.nix"; };
+        modules = modules + [
+          ./nixos/minimal-configuration.nix
           inputs.home-manager.nixosModules.home-manager
-          ../../nixes/sway-wsshare/module.nix
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts + "/${name}.nix"; })
+          ./nixes/sway-wsshare/module.nix
+          ./nixos/configuration.nix
         ];
       };
     in
@@ -103,12 +109,13 @@
     # };
     nixosConfigurations = {
       matej70 = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
+        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
         modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           inputs.home-manager.nixosModules.home-manager
-          ../../nixes/sway-wsshare/module.nix
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70.nix; })
+          ./nixes/sway-wsshare/module.nix
+          ./nixos/configuration.nix
           # {
           #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
           # }
@@ -126,72 +133,43 @@
           # }
         ];
       };
-      # matej70-niri = inputs.nixpkgs.lib.nixosSystem {
-      #   system = "x86_64-linux";
-      #   modules = [
-      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
-      #     inputs.home-manager.nixosModules.home-manager
-      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej70-niri.nix; })
-      #   ];
-      # };
       matej80 = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
+        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej80.nix; };
         modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; helper_scripts = ../..; })
+          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           inputs.home-manager.nixosModules.home-manager
-          ../../nixes/sway-wsshare/module.nix
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/matej80.nix; })
+          ./nixes/sway-wsshare/module.nix
+          ./nixos/configuration.nix
         ];
       };
       nixcode = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
+        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/nixcode-nixos.nix; };
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           inputs.home-manager.nixosModules.home-manager
-          ../../nixes/sway-wsshare/module.nix
-          (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-nixos.nix; })
+          ./nixes/sway-wsshare/module.nix
+          import ./nixos/configuration.nix
         ];
       };
-      # nixcode-niri = inputs.nixpkgs.lib.nixosSystem {
-      #   system = "x86_64-linux";
-      #   modules = [
-      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-      #     inputs.home-manager.nixosModules.home-manager
-      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-niri.nix; })
-      #   ];
-      # };
-      # nixcode-hyprland = inputs.nixpkgs.lib.nixosSystem {
-      #   system = "x86_64-linux";
-      #   modules = [
-      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-      #     inputs.home-manager.nixosModules.home-manager
-      #     (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode-hyprland.nix; })
-      #   ];
-      # };
-    };
-    hydraJobs = {
-      matej70 = nixosBuild "matej70";
-      matej80 = nixosBuild "matej80";
-      nixcode = nixosBuild "nixcode-nixos";
-      wsl = self.images.wsl.tarball;
     };
     images = {
       wsl =
         let
-          build = import "${inputs.nixpkgs}/nixos" {
-            configuration = {
-              imports = [
-                inputs.NixOS-WSL.nixosModules.wsl
-                inputs.home-manager.nixosModules.home-manager
-                (import ./wsl/configuration.nix { inherit inputs; defaultUser = "matejc"; })
-                (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
-              ];
-            };
-            system = "x86_64-linux";
+          build = inputs.nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/wsl.nix; };
+            modules = [
+              inputs.NixOS-WSL.nixosModules.wsl
+              inputs.home-manager.nixosModules.home-manager
+              ./nixos/wsl/configuration.nix
+              ./nixos/configuration.nix
+            ];
           };
         in {
-          system = build.system;
-          tarball = (import ./wsl/build-tarball.nix { inherit (build) config pkgs; }).system.build.tarball;
+          system = build.config.system.build.toplevel;
+          tarball = (import ./nixos/wsl/build-tarball.nix { inherit (build) config pkgs; }).system.build.tarball;
         };
     };
   };

@@ -3,7 +3,7 @@ with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
-  looking-glass-client = pkgs.callPackage ../../looking-glass-client.nix {};
+  looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
   looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
 
   self = {

@@ -1,11 +1,6 @@
-{ inputs, contextFile }:
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs, contextFile, helper_scripts, ... }:
 with pkgs;
 let
-  helper_scripts = ../..;
-
-  nixosConfig = config;
-
   context = import contextFile { inherit pkgs lib config inputs dotFileAt helper_scripts; };
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
