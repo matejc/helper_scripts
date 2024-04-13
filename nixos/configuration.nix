@@ -220,9 +220,9 @@ let
     fi
   '';
 in {
-  # imports = [
-  #   inputs.niri.nixosModules.niri
-  # ];
+  imports = [
+    # inputs.niri.nixosModules.niri
+  ] + (pkgs.lib.optionals (context.variables.graphical.name == "sway") [../nixes/sway-wsshare/module.nix]);
   config = lib.mkMerge ([{
     xdg.portal = {
       enable = true;

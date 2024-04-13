@@ -84,9 +84,7 @@
         inherit system;
         specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts + "/${context}.nix"; };
         modules = modules + [
-          ./nixos/minimal-configuration.nix
           inputs.home-manager.nixosModules.home-manager
-          ./nixes/sway-wsshare/module.nix
           ./nixos/configuration.nix
         ];
       };
@@ -107,52 +105,69 @@
     #     ];
     #   };
     # };
+    hydraJobs = {
+      matej70 = nixosBuild {
+        context = "matej70";
+        modules = [
+          ./nixos/minimal-configuration.nix
+        ];
+      };
+      matej80 = nixosBuild {
+        context = "matej80";
+        modules = [
+          ./nixos/minimal-configuration.nix
+        ];
+      };
+      nixcode = nixosBuild {
+        context = "nixcode-nixos";
+        modules = [
+          ./nixos/minimal-configuration.nix
+        ];
+      };
+    };
     nixosConfigurations = {
-      matej70 = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
+      matej70 = nixosBuild {
+        context = "matej70";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-          inputs.home-manager.nixosModules.home-manager
-          ./nixes/sway-wsshare/module.nix
-          ./nixos/configuration.nix
-          # {
-          #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
-          # }
-          # {
-          #   imports = [(import ../jupyenv.nix { jupyenv = import inputs.jupyenv; })];
-          #   services.jupyenv.my = {
-          #     enable = false;
-          #     port = 9980;
-          #     token = "'token'";
-          #     attrs = {
-          #       kernel.python.minimal.enable = true;
-          #       kernel.nix.minimal.enable = true;
-          #     };
-          #   };
-          # }
         ];
       };
-      matej80 = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej80.nix; };
+      matej80 = nixosBuild {
+        context = "matej80";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-          inputs.home-manager.nixosModules.home-manager
-          ./nixes/sway-wsshare/module.nix
-          ./nixos/configuration.nix
         ];
       };
-      nixcode = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/nixcode-nixos.nix; };
+      nixcode = nixosBuild {
+        context = "nixcode-nixos";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-          inputs.home-manager.nixosModules.home-manager
-          ./nixes/sway-wsshare/module.nix
-          import ./nixos/configuration.nix
         ];
       };
+      # matej70 = inputs.nixpkgs.lib.nixosSystem {
+      #   inherit system;
+      #   specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
+      #   modules = [
+      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
+      #     inputs.home-manager.nixosModules.home-manager
+      #     ./nixos/configuration.nix
+      #     # {
+      #     #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
+      #     # }
+      #     # {
+      #     #   imports = [(import ../jupyenv.nix { jupyenv = import inputs.jupyenv; })];
+      #     #   services.jupyenv.my = {
+      #     #     enable = false;
+      #     #     port = 9980;
+      #     #     token = "'token'";
+      #     #     attrs = {
+      #     #       kernel.python.minimal.enable = true;
+      #     #       kernel.nix.minimal.enable = true;
+      #     #     };
+      #     #   };
+      #     # }
+      #   ];
+      # };
     };
     images = {
       wsl =
