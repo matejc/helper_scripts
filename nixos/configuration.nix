@@ -596,6 +596,7 @@ in {
               { command = "${swayest}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
+              { command = "${wl-clipboard}/bin/wl-paste --primary --watch ${wl-clipboard}/bin/wl-copy --primary --clear"; }
             ];
             window = {
               border = 1;
