@@ -9,7 +9,7 @@
 , timeZone ? "UTC"
 , nameservers ? [ "1.1.1.1" ]
 , vpn ? {
-  start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log /dev/stdout --auth-user-pass /etc/openvpn/pass";
+  start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log ${home.inside}/.openvpn.log --auth-user-pass /etc/openvpn/pass";
   stop = "pkill openvpn";
 }
 , gpconnect ? null

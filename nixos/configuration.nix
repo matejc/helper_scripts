@@ -1215,7 +1215,10 @@ in {
           pinentryPackage = pkgs.pinentry-gnome3;
         };
         services.ssh-agent.enable = true;
-        programs.ssh.addKeysToAgent = "10m";
+        programs.ssh = {
+          enable = true;
+          addKeysToAgent = "10m";
+        };
 
         programs.bash = {
           enable = true;
