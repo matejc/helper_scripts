@@ -18,7 +18,7 @@ let
       "${helper_scripts}/dotfiles/jstools.nix"
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/waylockscreen.nix"
       "${helper_scripts}/dotfiles/comma.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
@@ -30,6 +30,7 @@ let
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
       "${helper_scripts}/dotfiles/zed.nix"
+      "${helper_scripts}/dotfiles/protonge.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -49,7 +50,7 @@ let
       email = "matej@matejc.com";
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
       locale.all = "en_US.UTF-8";
-      networkInterface = "br0";
+      networkInterface = "eno1";
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
@@ -96,18 +97,18 @@ let
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "HDMI-A-2";
+        criteria = "HDMI-A-1";
         position = "0,0";
-        output = "HDMI-A-2";
+        output = "HDMI-A-1";
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = wallpaper;
         scale = 1.0;
         status = "enable";
       } {
-        criteria = "HDMI-A-1";
+        criteria = "DP-1";
         position = "1920,0";
-        output = "HDMI-A-1";
+        output = "DP-1";
         mode = "1920x1080";
         workspaces = [ "5" ];
         wallpaper = wallpaper;
@@ -175,8 +176,8 @@ let
         plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
       home.packages = [
-        solvespace keepassxc libreoffice shell_gpt caprine-bin vlc freetube
-        zed-editor discord
+        solvespace keepassxc libreoffice shell_gpt vlc
+        discord wineWowPackages.stableFull lutris winetricks protontricks
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
