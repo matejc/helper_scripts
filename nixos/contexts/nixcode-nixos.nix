@@ -172,12 +172,8 @@ let
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
         proxychains
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
-        shell_gpt
-        vlc
-        #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
-        #google-chrome
-        #slack
-        oxker dive
+        helix
+        aichat shell_gpt
       ];
       programs.direnv = {
         enable = true;

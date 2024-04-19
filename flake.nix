@@ -60,6 +60,10 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     NixOS-WSL.url = "github:nix-community/NixOS-WSL/main";
+    nixd = {
+      url = "github:nix-community/nixd/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {

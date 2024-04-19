@@ -217,6 +217,11 @@ let
   sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
 in {
   config = lib.mkMerge ([{
+    nixpkgs.overlays = [
+      (final: prev: {
+        nixd = inputs.nixd.packages.${pkgs.system}.nixd;
+      })
+    ];
     xdg.portal = {
       enable = true;
       wlr = {
@@ -379,7 +384,7 @@ in {
 
         qt = {
           enable = true;
-          platformTheme = "gtk";
+          platformTheme.name = "gtk";
         };
 
         programs.chromium = {

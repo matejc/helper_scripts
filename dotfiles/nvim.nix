@@ -12,7 +12,7 @@ let
 
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
-    "nil"
+    "nixd"
     "bashls"
     "dockerls"
     "yamlls"
@@ -2844,7 +2844,6 @@ EOF
           vimPlugins.vim-jinja2-syntax
           vimPlugins.ChatGPT-nvim
           vimPlugins.which-key-nvim
-          vimPlugins.filetype-nvim
           markdown-preview-nvim
         ];
         opt = [
