@@ -1171,15 +1171,15 @@ local on_attach = function(client, bufnr)
   -- end
 
   -- Set autocommands conditional on server_capabilities
-  if client.server_capabilities.documentHighlightProvider then
-    vim.api.nvim_exec([[
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-    ]], false)
-  end
+  -- if client.server_capabilities.documentHighlightProvider then
+  --   vim.api.nvim_exec([[
+  --     augroup lsp_document_highlight
+  --       autocmd! * <buffer>
+  --       autocmd CursorHold,CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+  --       autocmd CursorMoved,CursorMovedI <buffer> lua vim.lsp.buf.clear_references()
+  --     augroup END
+  --   ]], false)
+  -- end
 
   -- if client.resolved_capabilities.signature_help then
   --   vim.api.nvim_exec([[

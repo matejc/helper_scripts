@@ -118,6 +118,23 @@ in
     [[grammar]]
     name = "robot"
     source = { git = "https://github.com/Hubro/tree-sitter-robot", rev = "f1142bfaa6acfce95e25d2c6d18d218f4f533927" }
+
+    [[language]]
+    name = "nix"
+    scope = "source.nix"
+    injection-regex = "nix"
+    file-types = ["nix"]
+    shebangs = []
+    comment-token = "#"
+    language-servers = [ "nixd" ]
+    indent = { tab-width = 2, unit = "  " }
+
+    [[grammar]]
+    name = "nix"
+    source = { git = "https://github.com/nix-community/tree-sitter-nix", rev = "1b69cf1fa92366eefbe6863c184e5d2ece5f187d" }
+
+    [language-server.nixd]
+    command = "${pkgs.nixd}/bin/nixd"
   '';
 } {
   target = "${variables.homeDir}/.config/helix/config.toml";
