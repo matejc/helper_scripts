@@ -125,7 +125,7 @@ let
     backup = context.variables.nixmy.backup;
     nixosConfig = "/etc/nixos/configuration.nix";
     extraPaths = [ pkgs.gnumake ];
-    nix = pkgs.nix;
+    nix = config.nix.package;
   };
 
   setDefaultSink = pkgs.writeShellScript "set-default-sink" ''
@@ -235,9 +235,11 @@ in {
       config.common.default = pkgs.lib.mkDefault "*";
       config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       config.sway = {
-        default = "wlr;";
+        default = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
         "org.freedesktop.impl.portal.FileChooser" = "gtk";
+        "org.freedesktop.impl.portal.ScreenCast" = "wlr";
+        "org.freedesktop.impl.portal.Screenshot" = "wlr";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
@@ -344,12 +346,13 @@ in {
           xdg-utils
           dconf
           rofi
+          qt6.qtwayland
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
-          QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
-          QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
+          # QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
+          # QT_QPA_PLATFORM_PLUGIN_PATH = "${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";
           SDL_VIDEODRIVER = "wayland";
           QT_QPA_PLATFORM = "wayland";
           QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";

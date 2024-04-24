@@ -6,6 +6,12 @@ let
   looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
   looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
 
+  nixos-artwork-wallpaper = pkgs.fetchurl {
+    name = "nix-wallpaper-nineish-dark-gray.png";
+    url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
+    hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -45,7 +51,7 @@ let
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
       lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
-      wallpaper = "${homeDir}/Pictures/pexels.png";
+      wallpaper = "${nixos-artwork-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
@@ -145,6 +151,8 @@ let
           enable = true;
         };
       };
+      boot.kernelPackages = pkgs.linuxPackages_lqx;
+      nix.package = pkgs.nixVersions.nix_2_21;
     };
     home-configuration = {
       home.stateVersion = "20.09";
