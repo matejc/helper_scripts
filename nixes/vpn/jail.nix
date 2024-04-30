@@ -493,12 +493,12 @@ let
 
   pullClipboard = pkgs.writeShellScriptBin "clipboard-pull" ''
     export XDG_RUNTIME_DIR=/run/user/${uid}
-    WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.inside} /usr/bin/wl-copy -n
+    WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-paste -n | /usr/bin/wl-copy -n
   '';
 
   pushClipboard = pkgs.writeShellScriptBin "clipboard-push" ''
     export XDG_RUNTIME_DIR=/run/user/${uid}
-    WAYLAND_DISPLAY=${wayland.inside} /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
+    /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
   '';
 
   buildInputs = with pkgs; [

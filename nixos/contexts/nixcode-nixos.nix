@@ -4,6 +4,12 @@ let
 
   homeConfig = config.home-manager.users.matejc;
 
+  nixos-wallpaper = pkgs.fetchurl {
+    name = "nix-wallpaper.png";
+    url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/wallpapers/nix-wallpaper-binary-black.png";
+    hash = "sha256-mhSh0wz2ntH/kri3PF5ZrFykjjdQLhmlIlDDGFQIYWw=";
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -41,7 +47,7 @@ let
       temperatureFiles = [ hwmonPath ];
       hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       lockscreen = "${homeDir}/bin/lockscreen";
-      wallpaper = "${homeDir}/Pictures/pexels.png";
+      wallpaper = "${nixos-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";
       signingkey = "E9DCD6F3A1CF9949995C43E09D45D4C00C8A5A48";
