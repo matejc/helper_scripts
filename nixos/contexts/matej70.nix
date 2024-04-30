@@ -36,7 +36,7 @@ let
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
       "${helper_scripts}/dotfiles/zed.nix"
-      "${helper_scripts}/dotfiles/protonge.nix"
+      "${helper_scripts}/dotfiles/proton.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -185,7 +185,8 @@ let
       };
       home.packages = [
         solvespace keepassxc libreoffice shell_gpt vlc
-        discord wineWowPackages.stableFull lutris winetricks protontricks
+        discord
+        lutris
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
