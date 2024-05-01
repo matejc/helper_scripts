@@ -255,6 +255,8 @@ in {
     programs.nix-ld.enable = true;
     programs.dconf.enable = true;
     services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
+    programs.command-not-found.enable = false;
+    programs.nix-index-database.comma.enable = true;
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
@@ -1311,8 +1313,12 @@ in {
           "e" = "${pkgs.xplr}/bin/xplr";
         };
         programs.command-not-found = {
-          enable = true;
           dbPath = "${inputs.nixexprs}/programs.sqlite";
+        };
+        programs.nix-index = {
+          enable = true;
+          enableZshIntegration = true;
+          enableBashIntegration = true;
         };
         programs.zellij = {
           enable = true;

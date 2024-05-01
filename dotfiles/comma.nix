@@ -1,16 +1,17 @@
 { variables, config, pkgs, lib }:
 [{
-  target = "${variables.homeDir}/bin/rebuild-nix-index";
-  source = pkgs.writeScript "rebuild-nix-index.sh" ''
-    #!${pkgs.stdenv.shell}
-    set -e
-    rm -rf "${variables.homeDir}/.cache/nix-index"
-    env NIX_PATH="nixpkgs=${variables.nixpkgs}" ${pkgs.nix-index}/bin/nix-index --db "${variables.homeDir}/.cache/nix-index"
+  target = "${variables.homeDir}/bin/nix-index-database-download";
+  source = pkgs.writeShellScript "nix-index-rebuild.sh" ''
+    filename="index-$(uname -m | sed 's/^arm64$/aarch64/')-$(uname | tr A-Z a-z)"
+    mkdir -p ~/.cache/nix-index && cd ~/.cache/nix-index
+    # -N will only download a new version if there is an update.
+    wget -q -N https://github.com/nix-community/nix-index-database/releases/latest/download/$filename
+    ln -f $filename files
   '';
 } {
   target = "${variables.homeDir}/bin/,";
-  source = pkgs.writeScript "comma.sh" ''
+  source = pkgs.writeShellScript "comma.sh" ''
     #!${pkgs.stdenv.shell}
-    exec env NIX_PATH="nixpkgs=${variables.nixpkgs}" ${pkgs.comma}/bin/, $@
+    exec ${pkgs.comma}/bin/, $@
   '';
 }]

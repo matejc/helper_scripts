@@ -25,7 +25,6 @@ let
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
       "${helper_scripts}/dotfiles/waylockscreen.nix"
-      "${helper_scripts}/dotfiles/comma.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
