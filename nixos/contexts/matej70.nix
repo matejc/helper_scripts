@@ -171,7 +171,17 @@ let
         "type:pointer" = { accel_profile = "flat"; };
       };
       services.kanshi.enable = true;
-      services.swayidle.enable = true;
+      services.swayidle = {
+        enable = true;
+        timeouts = lib.mkForce [
+          { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
+          {
+            timeout = 300;
+            command = lib.concatMapStringsSep "; " (o: ''${self.variables.i3-msg} "output ${o.output} dpms off"'') self.variables.outputs;
+            resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.i3-msg} "output ${o.output} dpms on"'') self.variables.outputs;
+          }
+        ];
+      };
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
