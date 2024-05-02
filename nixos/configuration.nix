@@ -220,6 +220,7 @@ in {
     nixpkgs.overlays = [
       (final: prev: {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
+        nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
       })
     ];
     xdg.portal = {
@@ -255,8 +256,15 @@ in {
     programs.nix-ld.enable = true;
     programs.dconf.enable = true;
     services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
+
     programs.command-not-found.enable = false;
+    programs.nix-index = {
+      enable = true;
+      enableZshIntegration = true;
+      enableBashIntegration = true;
+    };
     programs.nix-index-database.comma.enable = true;
+
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
@@ -1311,14 +1319,6 @@ in {
           "c" = "${pkgs.bat}/bin/bat";
           "d" = "${pkgs.delta}/bin/delta";
           "e" = "${pkgs.xplr}/bin/xplr";
-        };
-        programs.command-not-found = {
-          dbPath = "${inputs.nixexprs}/programs.sqlite";
-        };
-        programs.nix-index = {
-          enable = true;
-          enableZshIntegration = true;
-          enableBashIntegration = true;
         };
         programs.zellij = {
           enable = true;
