@@ -1,5 +1,4 @@
-{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
+{ pkgs, lib, config, helper_scripts, inputs, ... }:
 let
   homeConfig = config.home-manager.users.matejc;
 
@@ -68,7 +67,7 @@ let
       i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
-        filemanager = "${pcmanfm}/bin/pcmanfm";
+        filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
@@ -77,7 +76,7 @@ let
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
         browser = "${profileDir}/bin/firefox";
-        editor = "${helix}/bin/hx";
+        editor = "${pkgs.helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
@@ -150,7 +149,7 @@ let
           enable = true;
         };
       };
-      boot.kernelPackages = pkgs.linuxPackages_lqx;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       nix.package = pkgs.nixVersions.nix_2_21;
     };
     home-configuration = {
@@ -192,18 +191,20 @@ let
         enable = true;
         plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [
-        solvespace keepassxc libreoffice shell_gpt vlc
+      home.packages = with pkgs; [
+        inputs.deploy-rs.packages.${system}.deploy-rs
+        solvespace keepassxc libreoffice aichat vlc
         discord
-        lutris
+        lutris protontricks winetricks
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       programs.firefox = {
         enable = true;
         package = pkgs.firefox;
       };
+      home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };
 in

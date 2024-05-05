@@ -1,5 +1,4 @@
 { pkgs, lib, config, inputs, contextFile, helper_scripts, ... }:
-with pkgs;
 let
   context = import contextFile { inherit pkgs lib config inputs dotFileAt helper_scripts; };
 
@@ -12,27 +11,27 @@ let
   dotFileAt = file: at:
     (lib.elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
 
-  services-cmds = map (group: writeScriptBin "service-group-${group}" ''
+  services-cmds = map (group: pkgs.writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
     source "${context.variables.shellRc}"
     ${lib.concatMapStringsSep "\n" (s: ''{ sleep ${toString s.delay} && systemctl --user "$1" "${s.name}"; } &'') context.services}
     wait
   '') (map (s: s.group) context.services);
 
-  sway-workspace = rustPlatform.buildRustPackage {
+  sway-workspace = pkgs.rustPlatform.buildRustPackage {
     name = "sway-workspace";
     src = inputs.sway-workspace;
     cargoSha256 = "sha256-DRUd2nSdfgiIiCrBUiF6UTPYb6i8POQGo1xU5CdXuUY=";
   };
 
-  sway-scratchpad = rustPlatform.buildRustPackage {
+  sway-scratchpad = pkgs.rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
     cargoSha256 = "sha256-7MVAXThypxXF2wp6hFirqQeb8al/NuW2E2xGPK2ewT0=";
   };
 
   swayncConfig = {
-    "\$schema" = "${swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
+    "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
     control-center-height = 600;
     control-center-margin-bottom = 0;
     control-center-margin-left = 0;
@@ -288,7 +287,7 @@ in {
           enable = true;
           #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
           configFile."swaync/config.json".text = builtins.toJSON swayncConfig;
-          configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${swaynotificationcenter}/etc/xdg/swaync/style.css");
+          configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${pkgs.swaynotificationcenter}/etc/xdg/swaync/style.css");
           configFile."sworkstyle/config.toml".text = ''
             fallback = ''
 
@@ -319,7 +318,7 @@ in {
             'org.wezfurlong.wezterm' = ''
             'ScratchTerm' = ''
           '';
-          systemDirs.config = [ "${swaynotificationcenter}/etc/xdg" ];
+          systemDirs.config = [ "${pkgs.swaynotificationcenter}/etc/xdg" ];
           mime.enable = true;
           mimeApps = {
             enable = true;
@@ -347,16 +346,16 @@ in {
 
         fonts.fontconfig.enable = lib.mkForce true;
         home.packages = [
-          font-awesome
+          pkgs.font-awesome
           config.gtk.font.package
-          noto-fonts-emoji
-          git git-crypt
-          zsh
-          wl-clipboard
-          xdg-utils
-          dconf
-          rofi
-          qt6.qtwayland
+          pkgs.noto-fonts-emoji
+          pkgs.git pkgs.git-crypt
+          pkgs.zsh
+          pkgs.wl-clipboard
+          pkgs.xdg-utils
+          pkgs.dconf
+          pkgs.rofi
+          pkgs.qt6.qtwayland
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
@@ -376,21 +375,21 @@ in {
         gtk = {
           enable = true;
           font = {
-            package = nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; };
+            package = pkgs.nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; };
             name = context.variables.font.family;
             size = builtins.floor context.variables.font.size;
           };
           iconTheme = {
             name = "breeze-dark";
-            package = breeze-icons;
+            package = pkgs.breeze-icons;
           };
           theme = {
             name = "Breeze-Dark";
-            package = breeze-gtk;
+            package = pkgs.breeze-gtk;
           };
           cursorTheme = {
             name = "Vanilla-DMZ";
-            package = vanilla-dmz;
+            package = pkgs.vanilla-dmz;
             size = 16;
           };
         };
@@ -421,6 +420,7 @@ in {
                 "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
                 "ui.textScaleFactor" = 90;
                 "browser.tabs.drawInTitlebar" = false;
+                "browser.toolbars.bookmarks.visibility" = "never";
               };
               userChrome = ''
                 * {
@@ -539,7 +539,7 @@ in {
                 "${modifier}+l" = "exec ${context.variables.binDir}/lockscreen";
                 "Mod1+Control+l" = "exec ${context.variables.binDir}/lockscreen";
                 "Control+Tab" = "workspace back_and_forth";
-                "Mod1+Control+n" = "exec ${swaynotificationcenter}/bin/swaync-client -t -sw";
+                "Mod1+Control+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
                 "Mod1+Control+Up" = "exec ${sway-workspace}/bin/sway-workspace prev-output";
                 "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
                 "Mod1+Control+Shift+Up" = "exec ${sway-workspace}/bin/sway-workspace --move prev-output";
@@ -548,8 +548,8 @@ in {
                 "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output";
                 "Mod1+Control+Shift+Left" = "exec ${sway-workspace}/bin/sway-workspace --move prev-on-output";
                 "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
-                "Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
-                "Shift+Print" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${wl-clipboard}/bin/wl-copy --type image/png";
+                "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
+                "Shift+Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
                 "Control+Mod1+m" = "exec ${pkgs.nwg-displays}/bin/nwg-displays";
                 "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle, exec pkill -SIGRTMIN+8 waybar";
@@ -563,7 +563,7 @@ in {
                 "${modifier}+s" = "mode \"${signalModeName}\"";
                 "${modifier}+r" = "mode \"${resizeModeName}\"";
                 "${modifier}+a" = lib.mkForce "mode \"${audioModeName}\"";
-                "${modifier}+c" = "exec ${grim}/bin/grim -g \"$(${slurp}/bin/slurp)\" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy";
+                "${modifier}+c" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy";
               };
             modifier = "Mod4";
             modes = lib.mkOptionDefault {
@@ -577,16 +577,16 @@ in {
               };
               "${mirrorModeName}" = {
                 "s" = "exec sway-wsshare, mode \"default\"";
-                "c" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present mirror, mode \"default\"";
-                "f" = "exec env PATH=${rofi}/bin:$PATH ${wl-mirror}/bin/wl-present toggle-freeze, mode \"default\"";
+                "c" = "exec env PATH=${pkgs.rofi}/bin:$PATH ${pkgs.wl-mirror}/bin/wl-present mirror, mode \"default\"";
+                "f" = "exec env PATH=${pkgs.rofi}/bin:$PATH ${pkgs.wl-mirror}/bin/wl-present toggle-freeze, mode \"default\"";
                 "Escape" = "mode default";
                 "Return" = "mode default";
               };
               "${signalModeName}" = {
-                "s" = "exec ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
-                "q" = "exec ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
-                "k" = "exec ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
-                "9" = "exec ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+                "s" = "exec ${pkgs.coreutils}/bin/kill -SIGSTOP $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+                "q" = "exec ${pkgs.coreutils}/bin/kill -SIGCONT $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+                "k" = "exec ${pkgs.coreutils}/bin/kill -SIGTERM $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
+                "9" = "exec ${pkgs.coreutils}/bin/kill -SIGKILL $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid'), mode \"default\"";
                 "Escape" = "mode default";
                 "Return" = "mode default";
               };
@@ -604,11 +604,11 @@ in {
               { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-once start"; }
               #{ command = "${mako}/bin/mako"; always = true; }
-              { command = "${swaynotificationcenter}/bin/swaync"; always = true; }
-              { command = "${swayest-workstyle}/bin/sworkstyle"; always = true; }
+              { command = "${pkgs.swaynotificationcenter}/bin/swaync"; always = true; }
+              { command = "${pkgs.swayest-workstyle}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-              { command = "${wl-clipboard}/bin/wl-paste --primary --watch ${wl-clipboard}/bin/wl-copy --primary --clear"; }
+              { command = "${pkgs.wl-clipboard}/bin/wl-paste --primary --watch ${pkgs.wl-clipboard}/bin/wl-copy --primary --clear"; }
             ];
             window = {
               border = 1;
@@ -683,7 +683,7 @@ in {
           bind = $mod SHIFT, R, exec, hyprctl reload
           bind = $mod SHIFT, R, forcerendererreload,
 
-          bind = CTRL ALT, n, exec, ${swaynotificationcenter}/bin/swaync-client -t -sw
+          bind = CTRL ALT, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
           bind = CTRL ALT, Delete, exec, ${pkgs.nwg-bar}/bin/nwg-bar
 
           binde=, XF86AudioRaiseVolume, exec, wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+
@@ -694,9 +694,9 @@ in {
           binde = , XF86MonBrightnessUp, exec, ${pkgs.brillo}/bin/brillo -A 10
           binde = , XF86MonBrightnessDown, exec, ${pkgs.brillo}/bin/brillo -U 10
 
-          bind = , Print, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
-          bind = SHIFT, Print, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${wl-clipboard}/bin/wl-copy --type image/png
-          bind = $mod, c, exec, ${grim}/bin/grim -g "$(${slurp}/bin/slurp)" - | ${tesseract5}/bin/tesseract stdin stdout | ${wl-clipboard}/bin/wl-copy
+          bind = , Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png
+          bind = SHIFT, Print, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png
+          bind = $mod, c, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy
 
           bindl = $mod, p, exec, ${pkgs.kanshi}/bin/kanshictl switch firstonly
           bind = $mod SHIFT, p, exec, ${pkgs.kanshi}/bin/kanshictl switch default
@@ -715,13 +715,13 @@ in {
 
           bind = $mod, s, submap, signal
           submap=signal
-          bind =, s, exec, ${coreutils}/bin/kill -SIGSTOP $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, s, exec, ${pkgs.coreutils}/bin/kill -SIGSTOP $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
           bind =, s, submap, reset
-          bind =, q, exec, ${coreutils}/bin/kill -SIGCONT $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, q, exec, ${pkgs.coreutils}/bin/kill -SIGCONT $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
           bind =, q, submap, reset
-          bind =, k, exec, ${coreutils}/bin/kill -SIGTERM $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, k, exec, ${pkgs.coreutils}/bin/kill -SIGTERM $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
           bind =, k, submap, reset
-          bind =, 9, exec, ${coreutils}/bin/kill -SIGKILL $(${sway}/bin/swaymsg -t get_tree | ${jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
+          bind =, 9, exec, ${pkgs.coreutils}/bin/kill -SIGKILL $(${pkgs.sway}/bin/swaymsg -t get_tree | ${pkgs.jq}/bin/jq '.. | select(.type?) | select(.focused==true).pid')
           bind =, 9, submap, reset
           bind=,escape,submap,reset
           submap=reset
@@ -765,8 +765,8 @@ in {
           )
           10)}
 
-          exec-once = ${swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
-          exec-once = ${swaynotificationcenter}/bin/swaync
+          exec-once = ${pkgs.swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
+          exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
           exec-once = ${context.variables.profileDir}/bin/service-group-once start
           exec = ${context.variables.profileDir}/bin/service-group-always restart
           ${lib.concatMapStringsSep "\n" (e:
@@ -1125,7 +1125,7 @@ in {
               tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
               tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
               #on-click-right = "${blueman}/bin/blueman-manager";
-              on-click-right = "${blueberry}/bin/blueberry";
+              on-click-right = "${pkgs.blueberry}/bin/blueberry";
             };
             cpu = {
               format = "{icon}";
@@ -1166,9 +1166,9 @@ in {
                 "dnd-none" = "";
               };
               "return-type" = "json";
-              "exec" = "${swaynotificationcenter}/bin/swaync-client -swb";
-              "on-click" = "${swaynotificationcenter}/bin/swaync-client -d -sw";
-              "on-click-right" = "${swaynotificationcenter}/bin/swaync-client -t -sw";
+              "exec" = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+              "on-click" = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+              "on-click-right" = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
               "escape" = true;
             };
             "custom/weather" = {
@@ -1547,8 +1547,8 @@ in {
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaybg}/bin/swaybg -o '*' -m stretch -i '${context.variables.wallpaper}'"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${swaynotificationcenter}/bin/swaync"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m stretch -i '${context.variables.wallpaper}'"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync"
 
           ${lib.concatMapStringsSep "\n" (i: ''
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"

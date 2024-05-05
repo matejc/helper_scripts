@@ -68,20 +68,23 @@
     check_args 2
     action="$1"
 
-    export PATH="${lib.makeBinPath (with pkgs; [ winetricks wineWowPackages.stableFull ])}:$PATH"
     export SDL_VIDEODRIVER=x11
 
     export WINE="${pkgs.wineWowPackages.stableFull}/bin/wine"
     export WINEPREFIX="$2"
+    export WINEARCH=win64
 
     if [[ "$action" = "init" ]]
     then
       mkdir -p "$WINEPREFIX"
-      env SDL_VIDEODRIVER=$SDL_VIDEODRIVER WINEPREFIX=$WINEPREFIX WINEDLLPATH=$WINEDLLPATH WINEARCH=win64 "$WINE" wineboot
+      "$WINE" wineboot
     elif [[ "$action" = "run" ]]
     then
       check_args 3
-      env SDL_VIDEODRIVER=$SDL_VIDEODRIVER WINEPREFIX=$WINEPREFIX WINEDLLPATH=$WINEDLLPATH WINEARCH=win64 "$WINE" "''${@:3}"
+      "$WINE" "''${@:3}"
+    elif [[ "$action" = "winetricks" ]]
+    then
+      ${pkgs.winetricks}/bin/winetricks "''${@:3}"
     else
       usage
     fi
@@ -117,7 +120,6 @@
     app_id="$1"
     action="$2"
 
-    export PATH="${lib.makeBinPath (with pkgs; [ winetricks protontricks ])}:$PATH"
     export SDL_VIDEODRIVER=x11
 
     if [[ "$action" = "launch" ]]
@@ -126,6 +128,12 @@
     elif [[ "$action" = "run" ]]
     then
       protontricks -c "''${@:3}" "$app_id"
+    elif [[ "$action" = "protontricks" ]]
+    then
+      ${pkgs.protontricks}/bin/protontricks "''${@:3}"
+    elif [[ "$action" = "winetricks" ]]
+    then
+      ${pkgs.winetricks}/bin/winetricks "''${@:3}"
     else
       usage
     fi
