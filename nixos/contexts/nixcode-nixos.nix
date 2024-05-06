@@ -179,7 +179,7 @@ let
         proxychains
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         helix
-        aichat shell_gpt
+        aichat
       ];
       programs.direnv = {
         enable = true;
