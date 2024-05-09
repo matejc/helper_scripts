@@ -1,7 +1,7 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, lib }:
 
 let
-  vimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
+  myVimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
     llvmPackages = pkgs.llvmPackages_6;
   });
 
@@ -2748,103 +2748,60 @@ EOF
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
     configure = {
       inherit customRC;
-      packages.myVimPackage = with pkgs.vimPlugins; {
+      packages.myVimPackage = {
         start = [
-          #NeoSolarized
-          #vim-gitgutter
-          #undotree
-          vim-better-whitespace
-          # vim-jsbeautify
-          vim-visual-multi
-          #vim-pasta
-          #vimPlugins.ctrlsf-vim
-          #ctrlp
-          #ctrlp-py-matcher
-          #vim-airline vim-airline-themes
-          #vim-nix
-          nerdcommenter
-          #ale
-          #YouCompleteMe
-          #vimPlugins.omnisharp-vim
-          robotframework-vim
-          sleuth
-          #vimPlugins.vim-hashicorp-tools
-          #Jenkinsfile-vim-syntax
-          vimPlugins.neovim-gui-shim
-          #vim-vinegar
-          #vim-fugitive
-          #vimPlugins.nerdtree
-          #vimPlugins.nerdtree-git-plugin
-          #ansible-vim
-          #vimPlugins.python-mode
-          #vim-polyglot
-          #kotlin-vim
-          vimPlugins.nvim-lspconfig
-          #deoplete-nvim
-          #deoplete-lsp
-          #vimPlugins.neovim-auto-autoread
-          vim-rsi
-          vim-signify
-          #vimPlugins.vim-perforce
-          #vimPlugins.lsp_signature-nvim
-          vimPlugins.git-blame-vim
-          vimPlugins.nvim-web-devicons
-          #nvim-tree-lua
-          # vimPlugins.vim-fakeclip
-          vim-matchup
-          #vimPlugins.nvim-surround
-          #nvim-compe
-          plenary-nvim
-          telescope-nvim
-          vimPlugins.bufferline-nvim
-          vimPlugins.galaxyline-nvim
-          vimPlugins.lush-nvim
-          #vimPlugins.gruvbox-nvim
-          #vim-mundo
-          undotree
-          telescope-fzy-native-nvim
-          vimPlugins.nvim-cmp
-          vimPlugins.cmp-buffer
-          vimPlugins.cmp-nvim-lsp
-          #vimPlugins.cmp-vsnip
-          vimPlugins.cmp_luasnip
-          vimPlugins.cmp-path
-          vimPlugins.cmp-cmdline
-          vimPlugins.cmp-spell
-          vimPlugins.cmp-nvim-lsp-signature-help
-          vimPlugins.cmp-rg
-          vimPlugins.cmp-treesitter
-          vimPlugins.nvim-hlslens
-          vimPlugins.nvim-scrollbar
-          vimPlugins.themer-lua
-          #vimPlugins.vim-vsnip
-          vimPlugins.friendly-snippets
-          nui-nvim
-          #vimPlugins.nvim-regexplainer
-          vimPlugins.smart-splits-nvim
-          vimPlugins.neo-tree-nvim
-          nvim-treesitter.withAllGrammars
-          vimPlugins.nvim-treesitter-textobjects
-          vimPlugins.neovim-session-manager
-          vimPlugins.telescope-frecency-nvim
-          #vimPlugins.nvim-treesitter-context
-          vimPlugins.novim-mode
-          vimPlugins.lspsaga-nvim
-          #vimPlugins.previm
-          plantuml-syntax
-          vimPlugins.plantuml-previewer-vim
-          open-browser-vim
-          #vimPlugins.nvim-colorizer-lua
-          #vimPlugins.noice-nvim
-          #vimPlugins.nvim-notify
-          #vimPlugins.null-ls-nvim
-          vimPlugins.LuaSnip
-          vimPlugins.lspkind-nvim
-          telescope-live-grep-args-nvim
-          vimPlugins.vim-jinja2-syntax
-          vimPlugins.ChatGPT-nvim
-          vimPlugins.which-key-nvim
-          markdown-preview-nvim
+          pkgs.vimPlugins.vim-better-whitespace
+          pkgs.vimPlugins.vim-visual-multi
+          pkgs.vimPlugins.nerdcommenter
+          pkgs.vimPlugins.robotframework-vim
+          pkgs.vimPlugins.sleuth
+          myVimPlugins.neovim-gui-shim
+          myVimPlugins.nvim-lspconfig
+          pkgs.vimPlugins.vim-rsi
+          pkgs.vimPlugins.vim-signify
+          myVimPlugins.git-blame-vim
+          myVimPlugins.nvim-web-devicons
+          pkgs.vimPlugins.vim-matchup
+          pkgs.vimPlugins.plenary-nvim
+          pkgs.vimPlugins.telescope-nvim
+          myVimPlugins.bufferline-nvim
+          myVimPlugins.galaxyline-nvim
+          myVimPlugins.lush-nvim
+          pkgs.vimPlugins.undotree
+          pkgs.vimPlugins.telescope-fzy-native-nvim
+          myVimPlugins.nvim-cmp
+          myVimPlugins.cmp-buffer
+          myVimPlugins.cmp-nvim-lsp
+          myVimPlugins.cmp_luasnip
+          myVimPlugins.cmp-path
+          myVimPlugins.cmp-cmdline
+          myVimPlugins.cmp-spell
+          myVimPlugins.cmp-nvim-lsp-signature-help
+          myVimPlugins.cmp-rg
+          myVimPlugins.cmp-treesitter
+          myVimPlugins.nvim-hlslens
+          myVimPlugins.nvim-scrollbar
+          myVimPlugins.themer-lua
+          myVimPlugins.friendly-snippets
+          pkgs.vimPlugins.nui-nvim
+          myVimPlugins.smart-splits-nvim
+          myVimPlugins.neo-tree-nvim
+          pkgs.vimPlugins.nvim-treesitter.withAllGrammars
+          myVimPlugins.nvim-treesitter-textobjects
+          myVimPlugins.neovim-session-manager
+          myVimPlugins.telescope-frecency-nvim
+          myVimPlugins.novim-mode
+          myVimPlugins.lspsaga-nvim
+          pkgs.vimPlugins.plantuml-syntax
+          myVimPlugins.plantuml-previewer-vim
+          pkgs.vimPlugins.open-browser-vim
+          myVimPlugins.LuaSnip
+          myVimPlugins.lspkind-nvim
+          pkgs.vimPlugins.telescope-live-grep-args-nvim
+          myVimPlugins.vim-jinja2-syntax
+          myVimPlugins.ChatGPT-nvim
+          myVimPlugins.which-key-nvim
+          pkgs.vimPlugins.markdown-preview-nvim
         ];
         opt = [
         ];
