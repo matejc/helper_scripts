@@ -1,4 +1,4 @@
-{ variables, pkgs, lib }:
+{ variables, pkgs, lib, ... }:
 
 let
   myVimPlugins = pkgs.recurseIntoAttrs (pkgs.callPackage ./vimPlugins {
