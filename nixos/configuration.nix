@@ -495,15 +495,20 @@ in {
 
         services.kanshi = {
           systemdTarget = context.variables.graphical.target;
-          profiles.firstonly = {
-            outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
-          };
-          profiles.default = {
-            outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
-          };
-          profiles.all = {
-            outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
-          };
+          settings = [
+            {
+              profile.name = "firstonly";
+              profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
+            }
+            {
+              profile.name = "default";
+              profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
+            }
+            {
+              profile.name = "all";
+              profile.outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
+            }
+          ];
         };
 
         services.kdeconnect = {
