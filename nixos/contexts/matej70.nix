@@ -4,6 +4,7 @@ let
 
   looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
   looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
+  swiftpoint = pkgs.callPackage ../../nixes/swiftpoint.nix {};
 
   nixos-artwork-wallpaper = pkgs.fetchurl {
     name = "nix-wallpaper-nineish-dark-gray.png";
@@ -151,6 +152,9 @@ let
       };
       boot.kernelPackages = pkgs.linuxPackages_latest;
       nix.package = pkgs.nixVersions.nix_2_21;
+      nixpkgs.config.permittedInsecurePackages = [
+        "openssl-1.1.1w"
+      ];
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -196,6 +200,7 @@ let
         solvespace keepassxc libreoffice aichat vlc
         discord
         lutris protontricks winetricks
+        swiftpoint
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

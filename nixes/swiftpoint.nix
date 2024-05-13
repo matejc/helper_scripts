@@ -17,10 +17,10 @@ pkgs.stdenv.mkDerivation {
     patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
       $out/share/swiftpoint/'Swiftpoint X1 Control Panel'
     makeWrapper $out/share/swiftpoint/'Swiftpoint X1 Control Panel' $out/bin/swiftpoint \
-      --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath (with pkgs; [
+      --prefix LD_LIBRARY_PATH : "$out/share/swiftpoint/lib:${pkgs.lib.makeLibraryPath (with pkgs; [
         libusb1 xorg.libX11 libgcc.lib libglvnd zlib glib fontconfig freetype xorg.libXext xorg.libXrender
-        xorg.libxcb libxkbcommon dbus libsForQt5.qt5.qtsvg openssl_1_1
-      ])}:$out/share/swiftpoint/lib" \
+        xorg.libxcb libxkbcommon dbus libsForQt5.full openssl_1_1
+      ])}" \
       --set QT_PLUGIN_PATH "$out/share/swiftpoint/plugins" \
       --set QT_QPA_PLATFORM_PLUGIN_PATH "$out/share/swiftpoint/plugins/platforms" \
       --set QT_QPA_PLATFORM xcb
