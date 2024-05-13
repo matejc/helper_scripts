@@ -198,12 +198,11 @@ let
       home.packages = [
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
         swiftpoint
-        (with pkgs;
+      ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat vlc
           discord
           lutris protontricks winetricks
-        )
-      ];
+      ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
