@@ -195,12 +195,14 @@ let
         enable = true;
         plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = with pkgs; [
-        inputs.deploy-rs.packages.${system}.deploy-rs
-        solvespace keepassxc libreoffice aichat vlc
-        discord
-        lutris protontricks winetricks
+      home.packages = [
+        inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
         swiftpoint
+        (with pkgs;
+          solvespace keepassxc libreoffice aichat vlc
+          discord
+          lutris protontricks winetricks
+        )
       ];
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
