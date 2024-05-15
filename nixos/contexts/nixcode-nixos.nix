@@ -17,7 +17,6 @@ let
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
       "${helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${helper_scripts}/dotfiles/comma.nix"
       "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
