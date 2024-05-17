@@ -497,12 +497,12 @@ in {
           systemdTarget = context.variables.graphical.target;
           settings = [
             {
-              profile.name = "firstonly";
-              profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
-            }
-            {
               profile.name = "default";
               profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
+            }
+            {
+              profile.name = "firstonly";
+              profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
             }
             {
               profile.name = "all";
