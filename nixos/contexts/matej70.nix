@@ -202,6 +202,8 @@ let
           solvespace keepassxc libreoffice aichat vlc
           discord
           lutris protontricks winetricks
+          super-slicer-latest
+          uhk-agent
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
