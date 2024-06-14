@@ -75,7 +75,6 @@
   }
 ]
 }:
-with pkgs.lib;
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
 
@@ -109,11 +108,11 @@ let
   '';
 
   preCmdOutside = pkgs.writeShellScript "pre-cmd-outside.sh" ''
-    ${concatMapStringsSep "\n" (c: "${c}") preCmds.outside}
+    ${pkgs.lib.concatMapStringsSep "\n" (c: "${c}") preCmds.outside}
   '';
 
   preCmdInside = pkgs.writeShellScript "pre-cmd-inside.sh" ''
-    ${concatMapStringsSep "\n" (c: "${c}") preCmds.inside}
+    ${pkgs.lib.concatMapStringsSep "\n" (c: "${c}") preCmds.inside}
   '';
 
   mkCmd = name: { start, stop ? "" }: pkgs.writeShellScript "start-${name}.sh" ''
@@ -130,7 +129,7 @@ let
 
   mkUpCmd = pkgs.writeShellScript "start-up.sh" ''
     set -e
-    ${concatImapStringsSep "\n" (i: p: ''
+    ${pkgs.lib.concatImapStringsSep "\n" (i: p: ''
     supervisorctl --serverurl=unix:///tmp/supervisor.sock restart p${toString i}
     '') cmds}
   '';
@@ -161,7 +160,7 @@ let
     WAYLAND_DISPLAY=${wayland.outside} ${compositor.start}
   '';
 
-  hostFwds' = if hostFwds == null then null else (optionals (socksproxy != null) [{ host_port = 9050; guest_port = socksproxy.guestPort; }]) ++ hostFwds;
+  hostFwds' = if hostFwds == null then null else (pkgs.lib.optionals (socksproxy != null) [{ host_port = 9050; guest_port = socksproxy.guestPort; }]) ++ hostFwds;
 
   supervisorConf = pkgs.writeText "supervisord.conf" ''
     [supervisord]
@@ -260,7 +259,7 @@ let
     stdout_logfile_maxbytes = 0
     '' else ""}
 
-    ${concatMapStringsSep "\n" (f: ''
+    ${pkgs.lib.concatMapStringsSep "\n" (f: ''
     [program:socket${toString f.host_port}]
     command = ${mkCmd "socket-${toString f.host_port}" {start = "socat UNIX-LISTEN:${home.inside}/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${if f ? guest_addr then f.guest_addr else "127.0.0.1"}:${toString f.guest_port}";}}
     priority = 0
@@ -280,7 +279,7 @@ let
     stdout_logfile_maxbytes = 0
     '') hostFwds'}
 
-    ${concatImapStringsSep "\n" (i: p: ''
+    ${pkgs.lib.concatImapStringsSep "\n" (i: p: ''
     [program:p${toString i}]
     command = ${mkCmd "p${toString i}" p}
     priority = ${toString i}
@@ -341,7 +340,7 @@ let
     ${if hostFwds' != null && hostFwds' != [] then ''
     inotifywait -r -m ${stateDir}/home/fwd |
       while read a b file; do
-      ${concatMapStringsSep "\n" (f: ''
+      ${pkgs.lib.concatMapStringsSep "\n" (f: ''
         [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/home/fwd/${toString f.host_port}.sock &";
         [[ $b == *DELETE* ]] && [[ $file == *${toString f.host_port}.sock ]] && fuser -k ${toString f.host_port}/TCP;
       '') hostFwds'}
@@ -368,7 +367,7 @@ let
           fi
         done
 
-        ${concatMapStringsSep "\n" (e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock'') slirp4netnsExecute}
+        ${pkgs.lib.concatMapStringsSep "\n" (e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock'') slirp4netnsExecute}
         break
       fi
       sleep 0.1
@@ -429,7 +428,7 @@ let
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
-      ${if x11 != null then "--bindmount_ro /tmp/.X11-unix/${replaceStrings [":"] ["X"] x11}:/tmp/.X11-unix/${replaceStrings [":"] ["X"] x11} --env DISPLAY=${x11}" else "--env DISPLAY=:0"} \
+      ${if x11 != null then "--bindmount_ro /tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11}:/tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11} --env DISPLAY=${x11}" else "--env DISPLAY=:0"} \
       ${if enablePulse then "--bindmount_ro /run/user/${uid}/pulse:/run/user/${uid}/pulse --env PULSE_SERVER=/run/user/${uid}/pulse/native" else ""} \
       --hostname RESTRICTED \
       --cwd / \
@@ -451,12 +450,12 @@ let
       --env PATH=${binPaths} \
       --env LD_LIBRARY_PATH=/lib \
       --env GIO_EXTRA_MODULES=/lib/gio/modules \
-      ${concatMapStringsSep " " (c: "--cap ${c}") caps} \
-      ${concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
-      ${concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
-      ${concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
-      ${concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
-      ${concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
+      ${pkgs.lib.concatMapStringsSep " " (c: "--cap ${c}") caps} \
+      ${pkgs.lib.concatMapStringsSep " " (m: "--tmpfsmount ${m}") tmpfs} \
+      ${pkgs.lib.concatMapStringsSep " " (m: "--bindmount ${m.from}:${m.to}") mounts} \
+      ${pkgs.lib.concatMapStringsSep " " (m: "--bindmount_ro ${m.from}:${m.to}") romounts} \
+      ${pkgs.lib.concatMapStringsSep " " (m: "--symlink ${m.from}:${m.to}") symlinks} \
+      ${pkgs.lib.concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
       --forward_signals \
       ${extraArgs} \
       -- ${insideCmd} & nsjail_pid=$!
@@ -466,7 +465,7 @@ let
   '';
 
   resolvConf = pkgs.writeText "resolv.conf" ''
-    ${concatMapStringsSep "\n" (i: "nameserver ${i}") nameservers}
+    ${pkgs.lib.concatMapStringsSep "\n" (i: "nameserver ${i}") nameservers}
   '';
 
   machineId = pkgs.writeText "machine-id" ''
@@ -508,10 +507,10 @@ let
     openssl dconf netcat vanilla-dmz inetutils gnused openssh socat psmisc inotify-tools
   ]
     ++ packages
-    ++ (optionals (socksproxy != null) [srelay])
-    ++ (optionals (gpconnect != null) [gp-connect]);
+    ++ (pkgs.lib.optionals (socksproxy != null) [srelay])
+    ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect]);
 
-  binPaths = makeBinPath buildInputs;
+  binPaths = pkgs.lib.makeBinPath buildInputs;
 
   paths = pkgs.buildEnv {
     name = "paths";

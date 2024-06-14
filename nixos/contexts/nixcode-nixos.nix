@@ -137,6 +137,10 @@ let
           enable = true;
         };
       };
+      virtualisation.docker.rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
     };
     home-configuration = rec {
       home.stateVersion = "22.05";

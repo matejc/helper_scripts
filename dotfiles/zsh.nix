@@ -278,6 +278,7 @@ in
             # cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t. -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
             cd "$(${fdz-dir})"
             zle reset-prompt
+            precmd
         else
             zle expand-or-complete
         fi
