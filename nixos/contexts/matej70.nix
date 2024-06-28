@@ -93,8 +93,9 @@ let
       sway.enable = false;
       graphical = {
         name = "sway";
-        logout = "${pkgs.sway}/bin/swaymsg exit";
+        logout = "${self.variables.i3-msg} exit";
         target = "sway-session.target";
+        waybar.prefix = "sway";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
@@ -127,9 +128,10 @@ let
       };
     };
     services = [
-      { name = "kanshi"; delay = 2; group = "always"; }
+      { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
@@ -155,6 +157,18 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
       ];
+      programs.gamescope = {
+        enable = true;
+        # capSysNice = true;
+      };
+      services.flatpak.enable = true;
+      services.pipewire.extraConfig.pipewire = {
+        "10-horizon-forbidden-west-fix" = {
+          "context.properties" = {
+            "default.clock.force-quantum" = 50;
+          };
+        };
+      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -166,9 +180,6 @@ let
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.profileDir}/bin/chromium"; }
-        # { command = "${pkgs.caprine-bin}/bin/caprine"; }
-        #{ command = "${self.variables.programs.keepassxc}"; }
-        #{ command = "${pkgs.xiccd}/bin/xiccd"; }
       ];
       wayland.windowManager.sway.config.input = {
         "type:pointer" = { accel_profile = "flat"; };
@@ -201,7 +212,7 @@ let
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat vlc
           discord
-          lutris protontricks winetricks
+          lutris protontricks winetricks steamcmd steamtinkerlaunch protonup-qt minigalaxy wineWowPackages.unstableFull
           super-slicer-latest
           uhk-agent
       ]);

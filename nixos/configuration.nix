@@ -221,6 +221,7 @@ in {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
         nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
       })
+      inputs.niri.overlays.niri
     ];
     xdg.portal = {
       enable = true;
@@ -240,6 +241,9 @@ in {
         "org.freedesktop.impl.portal.FileChooser" = "gtk";
         "org.freedesktop.impl.portal.ScreenCast" = "wlr";
         "org.freedesktop.impl.portal.Screenshot" = "wlr";
+      };
+      config.niri = {
+        default = "gnome;gtk;";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
@@ -267,9 +271,10 @@ in {
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
-      # imports = [
-      #   inputs.hyprland.homeManagerModules.default
-      # ];
+      imports = [
+        # inputs.hyprland.homeManagerModules.default
+        inputs.niri.homeModules.niri
+      ];
       config = lib.mkMerge ([{
         nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
@@ -356,6 +361,7 @@ in {
           pkgs.dconf
           pkgs.rofi
           pkgs.qt6.qtwayland
+          pkgs.file
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
@@ -369,6 +375,7 @@ in {
           #GTK_USE_PORTAL = "1";
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
+          NIXOS_OZONE_WL = "1";
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
@@ -396,7 +403,7 @@ in {
 
         qt = {
           enable = true;
-          platformTheme.name = "gtk";
+          platformTheme.name = "adwaita";
         };
 
         programs.chromium = {
@@ -1046,9 +1053,9 @@ in {
             height = 26;
             output = map (o: o.output) context.variables.outputs;
             modules-left = [
-              "${context.variables.graphical.name}/workspaces"
-              "${context.variables.graphical.name}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
-              "${context.variables.graphical.name}/window"
+              "${context.variables.graphical.waybar.prefix}/workspaces"
+              "${context.variables.graphical.waybar.prefix}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
+              "${context.variables.graphical.waybar.prefix}/window"
             ];
             modules-center = [ ];
             modules-right = lib.flatten [
@@ -1079,12 +1086,12 @@ in {
               interval = "once";
               tooltip = false;
             };
-            "${context.variables.graphical.name}/workspaces" = {
-              all-outputs = context.variables.graphical.name == "sway";
+            "${context.variables.graphical.waybar.prefix}/workspaces" = {
+              all-outputs = true;
               show-special = lib.mkIf (context.variables.graphical.name == "hyprland") false;
               active-only = lib.mkIf (context.variables.graphical.name == "hyprland") true;
             };
-            "${context.variables.graphical.name}/window" = {
+            "${context.variables.graphical.waybar.prefix}/window" = {
               separate-outputs = lib.mkIf (context.variables.graphical.name == "hyprland") true;
             };
             clock = {
@@ -1400,7 +1407,8 @@ in {
           };
         };
 
-      } (pkgs.lib.optionalAttrs (context.variables.graphical.name == "niri") {
+      } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
+        programs.niri.package = inputs.niri.packages."x86_64-linux".niri-unstable;
         programs.niri.config = ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
@@ -1443,6 +1451,7 @@ in {
                   accel-speed 0.2
                   accel-profile "flat"
               }
+              focus-follows-mouse
 
               tablet {
                   // Set the name of the output (see below) which the tablet will map to.
@@ -1528,7 +1537,7 @@ in {
                   // If you enable the border, you probably want to disable the focus ring.
                   // off
 
-                  width 2
+                  width 1
                   active-color 127 200 255 255
                   inactive-color 80 80 80 255
               }
@@ -1547,7 +1556,7 @@ in {
               }
 
               // You can change the default width of the new windows.
-              default-column-width { proportion 0.5; }
+              default-column-width { proportion 1.0; }
               // If you leave the brackets empty, the windows themselves will decide their initial width.
               // default-column-width {}
 
@@ -1581,6 +1590,9 @@ in {
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m stretch -i '${context.variables.wallpaper}'"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY=:0"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
 
           ${lib.concatMapStringsSep "\n" (i: ''
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
@@ -1622,7 +1634,7 @@ in {
 
               // Mod-Shift-/, which is usually the same as Mod-?,
               // shows a list of important hotkeys.
-              Mod+Shift+Slash { show-hotkey-overlay; }
+              Super+Shift+Slash { show-hotkey-overlay; }
 
               // Suggested binds for running programs: terminal, app launcher, screen locker.
               Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
@@ -1642,22 +1654,22 @@ in {
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
               XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
 
-              Mod+K { close-window; }
+              Super+K { close-window; }
 
-              Mod+Left  { focus-column-left; }
-              Mod+Down  { focus-window-down; }
-              Mod+Up    { focus-window-up; }
-              Mod+Right { focus-column-right; }
+              Super+Left  { focus-column-left; }
+              Super+Down  { focus-window-down; }
+              Super+Up    { focus-window-up; }
+              Super+Right { focus-column-right; }
 
               Ctrl+Alt+Left  { focus-column-left; }
               Ctrl+Alt+Right { focus-column-right; }
               Ctrl+Alt+Shift+Left  { move-column-left; }
               Ctrl+Alt+Shift+Right { move-column-right; }
 
-              Mod+Shift+Left  { move-column-left; }
-              Mod+Shift+Down  { move-window-down; }
-              Mod+Shift+Up    { move-window-up; }
-              Mod+Shift+Right { move-column-right; }
+              Super+Shift+Left  { move-column-left; }
+              Super+Shift+Down  { move-window-down; }
+              Super+Shift+Up    { move-window-up; }
+              Super+Shift+Right { move-column-right; }
 
               // Alternative commands that move across workspaces when reaching
               // the first or last window in a column.
@@ -1666,59 +1678,57 @@ in {
               // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
               // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
-              Mod+Home { focus-column-first; }
-              Mod+End  { focus-column-last; }
-              Mod+Shift+Home { move-column-to-first; }
-              Mod+Shift+End  { move-column-to-last; }
+              Super+Home { focus-column-first; }
+              Super+End  { focus-column-last; }
+              Super+Shift+Home { move-column-to-first; }
+              Super+Shift+End  { move-column-to-last; }
 
-              Mod+Ctrl+Left  { focus-monitor-left; }
-              Mod+Ctrl+Down  { focus-monitor-down; }
-              Mod+Ctrl+Up    { focus-monitor-up; }
-              Mod+Ctrl+Right { focus-monitor-right; }
+              Super+Ctrl+Left  { focus-monitor-left; }
+              Super+Ctrl+Down  { focus-monitor-down; }
+              Super+Ctrl+Up    { focus-monitor-up; }
+              Super+Ctrl+Right { focus-monitor-right; }
 
               Ctrl+Alt+Page_Up  { focus-monitor-left; }
               Ctrl+Alt+Page_Down { focus-monitor-right; }
               Ctrl+Shift+Alt+Page_Up  { move-window-to-monitor-left; }
               Ctrl+Shift+Alt+Page_Down { move-window-to-monitor-right; }
 
-              Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
-              Alt+Shift+Ctrl+Left  { move-window-to-monitor-left; }
-              Mod+Shift+Ctrl+Down  { move-window-to-monitor-down; }
-              Mod+Shift+Ctrl+Up    { move-window-to-monitor-up; }
-              Mod+Shift+Ctrl+Right { move-window-to-monitor-right; }
-              Alt+Shift+Ctrl+Right { move-window-to-monitor-right; }
+              Super+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+              Super+Shift+Ctrl+Down  { move-window-to-monitor-down; }
+              Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
+              Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
               Ctrl+Alt+Up        { focus-workspace-up; }
               Ctrl+Alt+Down      { focus-workspace-down; }
               Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
               Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
 
-              Mod+1 { focus-workspace 1; }
-              Mod+2 { focus-workspace 2; }
-              Mod+3 { focus-workspace 3; }
-              Mod+4 { focus-workspace 4; }
-              Mod+5 { focus-workspace 5; }
-              Mod+6 { focus-workspace 6; }
-              Mod+7 { focus-workspace 7; }
-              Mod+8 { focus-workspace 8; }
-              Mod+9 { focus-workspace 9; }
-              Mod+Shift+1 { move-window-to-workspace 1; }
-              Mod+Shift+2 { move-window-to-workspace 2; }
-              Mod+Shift+3 { move-window-to-workspace 3; }
-              Mod+Shift+4 { move-window-to-workspace 4; }
-              Mod+Shift+5 { move-window-to-workspace 5; }
-              Mod+Shift+6 { move-window-to-workspace 6; }
-              Mod+Shift+7 { move-window-to-workspace 7; }
-              Mod+Shift+8 { move-window-to-workspace 8; }
-              Mod+Shift+9 { move-window-to-workspace 9; }
+              Super+1 { focus-workspace 1; }
+              Super+2 { focus-workspace 2; }
+              Super+3 { focus-workspace 3; }
+              Super+4 { focus-workspace 4; }
+              Super+5 { focus-workspace 5; }
+              Super+6 { focus-workspace 6; }
+              Super+7 { focus-workspace 7; }
+              Super+8 { focus-workspace 8; }
+              Super+9 { focus-workspace 9; }
+              Super+Shift+1 { move-window-to-workspace 1; }
+              Super+Shift+2 { move-window-to-workspace 2; }
+              Super+Shift+3 { move-window-to-workspace 3; }
+              Super+Shift+4 { move-window-to-workspace 4; }
+              Super+Shift+5 { move-window-to-workspace 5; }
+              Super+Shift+6 { move-window-to-workspace 6; }
+              Super+Shift+7 { move-window-to-workspace 7; }
+              Super+Shift+8 { move-window-to-workspace 8; }
+              Super+Shift+9 { move-window-to-workspace 9; }
 
-              Mod+Comma  { consume-window-into-column; }
-              Mod+Period { expel-window-from-column; }
+              Super+Comma  { consume-window-into-column; }
+              Super+Period { expel-window-from-column; }
 
-              Mod+R { switch-preset-column-width; }
-              Mod+F { maximize-column; }
-              Mod+Ctrl+F { fullscreen-window; }
-              Mod+C { center-column; }
+              Super+R { switch-preset-column-width; }
+              Super+M { maximize-column; }
+              Super+F { fullscreen-window; }
+              Super+C { center-column; }
 
               // Finer width adjustments.
               // This command can also:
@@ -1728,12 +1738,12 @@ in {
               // * adjust width as a percentage of screen width: "-10%" or "+10%"
               // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
               // set-column-width "100" will make the column occupy 200 physical screen pixels.
-              Mod+Minus { set-column-width "-10%"; }
-              Mod+Equal { set-column-width "+10%"; }
+              Super+Minus { set-column-width "-10%"; }
+              Super+Equal { set-column-width "+10%"; }
 
               // Finer height adjustments when in column with other windows.
-              Mod+Ctrl+Minus { set-window-height "-10%"; }
-              Mod+Ctrl+Equal { set-window-height "+10%"; }
+              Super+Ctrl+Minus { set-window-height "-10%"; }
+              Super+Ctrl+Equal { set-window-height "+10%"; }
 
               // Actions to switch layouts.
               // Note: if you uncomment these, make sure you do NOT have
@@ -1746,7 +1756,7 @@ in {
               Ctrl+Print { screenshot; }
               Alt+Print { screenshot-window; }
 
-              Mod+Shift+E { quit; }
+              Super+Shift+E { quit; }
               // Mod+Shift+P { power-off-monitors; }
 
               // Mod+Shift+Ctrl+T { toggle-debug-tint; }
@@ -1779,7 +1789,7 @@ in {
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
-      }) ] ++ [ context.home-configuration ]);
+      } )] ++ [ context.home-configuration ]);
     };
   }] ++ [ context.nixos-configuration ]);
 }

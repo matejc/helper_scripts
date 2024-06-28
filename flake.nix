@@ -51,10 +51,10 @@
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
     # devenv.url = "github:cachix/devenv";
-    # niri = {
-    #   url = "github:sodiboo/niri-flake";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # jupyenv = {
     #   url = "github:tweag/jupyenv/main";
     #   inputs.nixpkgs.follows = "nixpkgs";

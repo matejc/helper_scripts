@@ -1,7 +1,18 @@
-{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
+{ pkgs, lib, config, helper_scripts, inputs, ... }:
 let
-  homeConfig = config.home-manager.users.matejc;
+  homeConfig = config.home-manager.users.matejc.home;
+
+  looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
+  looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
+  swiftpoint = pkgs.callPackage ../../nixes/swiftpoint.nix {};
+
+  xwayland-satellite = pkgs.callPackage ../../nixes/xwayland-satellite.nix {};
+
+  nixos-artwork-wallpaper = pkgs.fetchurl {
+    name = "nix-wallpaper-nineish-dark-gray.png";
+    url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
+    hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  };
 
   self = {
     dotFilePaths = [
@@ -16,7 +27,6 @@ let
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
       "${helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${helper_scripts}/dotfiles/comma.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
@@ -26,71 +36,88 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
+      "${helper_scripts}/dotfiles/zed.nix"
+      "${helper_scripts}/dotfiles/proton.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
-    variables = rec {
-      homeDir = homeConfig.home.homeDirectory;
-      user = homeConfig.home.username;
-      profileDir = homeConfig.home.profileDirectory;
-      prefix = "${homeDir}/workarea/helper_scripts";
-      nixpkgs = "${homeDir}/workarea/nixpkgs";
-      binDir = "${homeDir}/bin";
-      lockscreen = "${homeDir}/bin/lockscreen";
-      lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
-      wallpaper = "${homeDir}/Pictures/pexels.png";
+    variables = {
+      homeDir = homeConfig.homeDirectory;
+      user = homeConfig.username;
+      profileDir = homeConfig.profileDirectory;
+      prefix = "${self.variables.homeDir}/workarea/helper_scripts";
+      nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
+      binDir = "${self.variables.homeDir}/bin";
+      lockscreen = "${self.variables.binDir}/lockscreen";
+      wallpaper = "${nixos-artwork-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
       locale.all = "en_US.UTF-8";
-      networkInterface = "br0";
+      networkInterface = "eno1";
       wirelessInterfaces = [ "wlp3s0" ];
-      ethernetInterfaces = [ networkInterface ];
+      ethernetInterfaces = [ self.variables.networkInterface ];
       mounts = [ "/" ];
+      # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
         size = 10.0;
       };
-      i3-msg = "${profileDir}/bin/swaymsg";
+      i3-msg = "${self.variables.profileDir}/bin/niri msg";
       term = null;
       programs = {
-        filemanager = "${pcmanfm}/bin/pcmanfm";
+        filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
+        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
-        browser = "${profileDir}/bin/firefox";
-        editor = "${helix}/bin/hx";
+        # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
+        #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
+        #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
+        #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
+        #browser = "${profileDir}/bin/chromium";
+        browser = "${self.variables.profileDir}/bin/firefox";
+        editor = "${pkgs.helix}/bin/hx";
+        #launcher = dotFileAt "bemenu.nix" 0;
+        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        caprine = "${caprine-bin}/bin/caprine --enable-features=UseOzonePlatform --ozone-platform=wayland";
-        freetube = "${freetube}/bin/freetube --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        #window-center = dotFileAt "i3config.nix" 4;
+        #window-size = dotFileAt "i3config.nix" 5;
+        #i3-msg = "${profileDir}/bin/swaymsg";
+        #nextcloud = "${nextcloud-client}/bin/nextcloud";
+        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
+        #tmux = "${pkgs.tmux}/bin/tmux";
       };
-      shell = "${profileDir}/bin/zsh";
-      shellRc = "${homeDir}/.zshrc";
+      shell = "${self.variables.profileDir}/bin/zsh";
+      shellRc = "${self.variables.homeDir}/.zshrc";
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "loginctl terminate-user ${self.variables.user}";
+        logout = "${self.variables.i3-msg} action quit";
         target = "graphical-session.target";
+        waybar.prefix = "wlr";
       };
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
+        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.binDir}/nvim";
+        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
+        # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "HDMI-A-2";
+        criteria = "HDMI-A-1";
         position = "0,0";
-        output = "HDMI-A-2";
+        output = "HDMI-A-1";
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
-        wallpaper = wallpaper;
+        wallpaper = self.variables.wallpaper;
         scale = 1.0;
         status = "enable";
       } {
-        criteria = "HDMI-A-1";
+        criteria = "DP-1";
         position = "1920,0";
-        output = "HDMI-A-1";
+        output = "DP-1";
         mode = "1920x1080";
         workspaces = [ "5" ];
-        wallpaper = wallpaper;
+        wallpaper = self.variables.wallpaper;
         scale = 1.0;
         status = "enable";
       }];
@@ -100,18 +127,20 @@ let
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${self.variables.profileDir}/bin/keepassxc"
-        "${self.variables.binDir}/browser"
-        "${self.variables.profileDir}/bin/service-group-once start"
-        "${self.variables.profileDir}/bin/service-group-always restart"
+        "${xwayland-satellite}/bin/xwayland-satellite"
+        "${self.variables.programs.browser}"
+        "${self.variables.profileDir}/bin/chromium"
+        "${self.variables.programs.terminal}"
+        "${pkgs.keepassxc}/bin/keepassxc"
       ];
     };
     services = [
-      { name = "kanshi"; delay = 1; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
+      # { name = "kanshi"; delay = 2; group = "always"; }
+      #{ name = "syncthingtray"; delay = 3; group = "always"; }
       { name = "network-manager-applet"; delay = 4; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
       { name = "waybar"; delay = 3; group = "always"; }
-      { name = "swayidle"; delay = 1; group = "always"; }
+      { name = "swayidle"; delay = 2; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -125,37 +154,68 @@ let
         };
         vt = 2;
       };
-      users.users.matejc.extraGroups = [ "video" ];
-      programs.niri.enable = true;
       xdg.portal = {
-        config.common.default = "gnome;gtk;";
-        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+        enable = true;
+        wlr = {
+          enable = true;
+        };
       };
+      boot.kernelPackages = pkgs.linuxPackages_latest;
+      nix.package = pkgs.nixVersions.nix_2_21;
+      nixpkgs.config.permittedInsecurePackages = [
+        "openssl-1.1.1w"
+      ];
+      programs.gamescope = {
+        enable = true;
+        # capSysNice = true;
+      };
+      services.flatpak.enable = true;
     };
     home-configuration = {
       home.stateVersion = "20.09";
+      programs.niri.enable = true;
       services.kanshi.enable = true;
-      services.swayidle.enable = true;
+      services.swayidle = {
+        enable = true;
+        timeouts = lib.mkForce [
+          { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
+          {
+            timeout = 300;
+            command = "${self.variables.i3-msg} action power-off-monitors";
+          }
+        ];
+      };
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
+      #services.syncthing.tray.enable = true;
       programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
-        plugins = [ pkgs.obs-studio-plugins.looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
+        plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
       };
-      home.packages = [ cage super-slicer-latest solvespace keepassxc libreoffice shell_gpt ];
+      home.packages = [
+        inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
+        swiftpoint
+      ] ++ (with pkgs; [
+          xwayland
+          solvespace keepassxc libreoffice aichat vlc
+          discord
+          lutris protontricks winetricks steamcmd steamtinkerlaunch protonup-qt minigalaxy wineWowPackages.unstableFull
+          super-slicer-latest
+          uhk-agent
+          jq
+      ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
-      systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
       programs.firefox = {
         enable = true;
         package = pkgs.firefox;
       };
+      home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };
 in
