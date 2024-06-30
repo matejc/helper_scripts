@@ -2,6 +2,12 @@
 let
   homeConfig = config.home-manager.users.matejc;
 
+  nixos-artwork-wallpaper = pkgs.fetchurl {
+    name = "nix-wallpaper-nineish-dark-gray.png";
+    url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
+    hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -36,11 +42,11 @@ let
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
-      wallpaper = "${homeDir}/Pictures/pexels.png";
+      wallpaper = "${nixos-artwork-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       signingkey = "E05DF91D31D5B667B0DDAB4B5F456C729CD54863";
-      locale.all = "en_US.UTF-8";
+      locale.all = "en_GB.UTF-8";
       networkInterface = "br0";
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ networkInterface ];
