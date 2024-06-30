@@ -1,5 +1,4 @@
-{ pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
+{ pkgs, lib, config, helper_scripts }:
 let
   homeConfig = config.home-manager.users.matejc;
 
@@ -55,10 +54,10 @@ let
       i3-msg = "${profileDir}/bin/swaymsg";
       term = null;
       programs = {
-        filemanager = "${pcmanfm}/bin/pcmanfm";
+        filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         terminal = "${pkgs.kitty}/bin/kitty";
         browser = "${profileDir}/bin/firefox";
-        editor = "${helix}/bin/hx";
+        editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
         caprine = "${pkgs.caprine-bin}/bin/caprine --ozone-platform-hint=auto";
       };
@@ -168,14 +167,11 @@ let
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       programs.waybar.enable = true;
-      home.packages = [ networkmanagerapplet ];
+      home.packages = [ pkgs.networkmanagerapplet ];
+      programs.firefox.enable = true;
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      programs.firefox = {
-        enable = true;
-        package = pkgs.firefox;
-      };
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
     };
   };
 in
