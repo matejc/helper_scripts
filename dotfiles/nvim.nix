@@ -113,7 +113,7 @@ let
     jsonls = ''
       nvim_lsp["jsonls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-json-languageserver}/bin/vscode-json-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-json-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
@@ -134,14 +134,14 @@ let
     html = ''
       nvim_lsp["html"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-json-languageserver}/bin/html-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-html-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
     cssls = ''
       nvim_lsp["cssls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-css-languageserver-bin}/bin/css-languageserver", "--stdio"};
+        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';

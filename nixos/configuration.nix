@@ -90,13 +90,13 @@ let
     widgets = [ "title" "dnd" "notifications" "mpris" ];
   };
 
-  dbus-sway-environment = pkgs.writeTextFile {
-    name = "dbus-sway-environment";
-    destination = "/bin/dbus-sway-environment";
+  dbus-environment = pkgs.writeTextFile {
+    name = "dbus-environment";
+    destination = "/bin/dbus-environment";
     executable = true;
     text = ''
-      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway
-      systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway
+      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=${context.variables.graphical.name}
+      systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=${context.variables.graphical.name} XDG_SESSION_DESKTOP=${context.variables.graphical.name} DESKTOP_SESSION=${context.variables.graphical.name} XDG_SESSION_TYPE=wayland
       systemctl --user stop pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
       systemctl --user start pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
     '';
@@ -236,7 +236,7 @@ in {
       config.common.default = pkgs.lib.mkDefault "*";
       config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       config.sway = {
-        default = "gtk";
+        default = "sway";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
         "org.freedesktop.impl.portal.FileChooser" = "gtk";
         "org.freedesktop.impl.portal.ScreenCast" = "wlr";
@@ -638,7 +638,7 @@ in {
               };
             };
             startup = [
-              { command = "${dbus-sway-environment}/bin/dbus-sway-environment"; always = true; }
+              { command = "${dbus-environment}/bin/dbus-environment"; always = true; }
               { command = "${configure-gtk}/bin/configure-gtk"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-once start"; }

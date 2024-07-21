@@ -24,7 +24,7 @@ let
 
   json-languageserver = pkgs.writeScriptBin "vscode-json-language-server" ''
     #!${pkgs.stdenv.shell}
-    exec ${pkgs.nodePackages_latest.vscode-json-languageserver}/bin/vscode-json-languageserver $@
+    exec ${pkgs.nodePackages_latest.vscode-langservers-extracted}/bin/vscode-json-language-server $@
   '';
 
   path = with pkgs; lib.makeBinPath [
