@@ -233,10 +233,9 @@ in {
           chooser_cmd = pkgs.lib.mkDefault "${chooserCmd}";
         };
       };
-      config.common.default = pkgs.lib.mkDefault "*";
-      config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+      # config.common.default = pkgs.lib.mkDefault "*";
       config.sway = {
-        default = "sway";
+        default = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
         "org.freedesktop.impl.portal.FileChooser" = "gtk";
         "org.freedesktop.impl.portal.ScreenCast" = "wlr";
@@ -244,6 +243,7 @@ in {
       };
       config.niri = {
         default = "gnome;gtk;";
+        "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
@@ -362,6 +362,7 @@ in {
           pkgs.rofi
           pkgs.qt6.qtwayland
           pkgs.file
+          pkgs.python3
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
@@ -407,11 +408,15 @@ in {
         };
 
         programs.chromium = {
+          package = pkgs.microsoft-edge-beta;
+          dictionaries = [
+            pkgs.hunspellDictsChromium.en_US
+          ];
           extensions = [
-            "gcbommkclmclpchllfjekcdonpmejbdp"  # https everywhere
-            "cjpalhdlnbpafiamejdnhcphjbkeiagm"  # ublock origin
-            "oboonakemofpalcgghocfoadofidjkkk"  # keepassxc
-            "clpapnmmlmecieknddelobgikompchkk"  # disable automatic gain control
+            { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+            { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
+            { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
+            { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
           ];
         };
 

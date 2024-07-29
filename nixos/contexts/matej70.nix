@@ -169,6 +169,7 @@ let
           };
         };
       };
+      services.ipp-usb.enable = true;
     };
     home-configuration = {
       home.stateVersion = "20.09";
