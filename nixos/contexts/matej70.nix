@@ -157,10 +157,6 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
       ];
-      programs.gamescope = {
-        enable = true;
-        # capSysNice = true;
-      };
       services.flatpak.enable = true;
       services.pipewire.extraConfig.pipewire = {
         "10-horizon-forbidden-west-fix" = {
@@ -216,6 +212,8 @@ let
           lutris protontricks winetricks steamcmd steamtinkerlaunch protonup-qt minigalaxy wineWowPackages.unstableFull
           super-slicer-latest
           uhk-agent
+          scanmem
+          caprine-bin
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

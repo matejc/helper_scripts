@@ -21,13 +21,13 @@ let
   sway-workspace = pkgs.rustPlatform.buildRustPackage {
     name = "sway-workspace";
     src = inputs.sway-workspace;
-    cargoSha256 = "sha256-DRUd2nSdfgiIiCrBUiF6UTPYb6i8POQGo1xU5CdXuUY=";
+    cargoSha256 = "sha256-8gT/2RUDIOnmTznjlzupIapHjz2pNQjj3DZ0dg8f+VM=";
   };
 
   sway-scratchpad = pkgs.rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-7MVAXThypxXF2wp6hFirqQeb8al/NuW2E2xGPK2ewT0=";
+    cargoSha256 = "sha256-iN8o2kZZ6gdeDPrNPNASXYBdyhq3AHuRLDel4b1/pTM=";
   };
 
   swayncConfig = {
@@ -588,8 +588,8 @@ in {
                 "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
                 "Mod1+Control+Shift+Up" = "exec ${sway-workspace}/bin/sway-workspace --move prev-output";
                 "Mod1+Control+Shift+Down" = "exec ${sway-workspace}/bin/sway-workspace --move next-output";
-                "Mod1+Control+Left" = "exec ${sway-workspace}/bin/sway-workspace prev-on-output";
-                "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output";
+                "Mod1+Control+Left" = "exec ${sway-workspace}/bin/sway-workspace prev-on-output --skip-empty";
+                "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output --skip-empty";
                 "Mod1+Control+Shift+Left" = "exec ${sway-workspace}/bin/sway-workspace --move prev-on-output";
                 "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
                 "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
