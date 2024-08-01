@@ -21,13 +21,13 @@ let
   sway-workspace = pkgs.rustPlatform.buildRustPackage {
     name = "sway-workspace";
     src = inputs.sway-workspace;
-    cargoSha256 = "sha256-8gT/2RUDIOnmTznjlzupIapHjz2pNQjj3DZ0dg8f+VM=";
+    cargoHash = "sha256-8gT/2RUDIOnmTznjlzupIapHjz2pNQjj3DZ0dg8f+VM=";
   };
 
   sway-scratchpad = pkgs.rustPlatform.buildRustPackage {
     name = "sway-scratchpad";
     src = inputs.sway-scratchpad;
-    cargoSha256 = "sha256-iN8o2kZZ6gdeDPrNPNASXYBdyhq3AHuRLDel4b1/pTM=";
+    cargoHash = "sha256-iN8o2kZZ6gdeDPrNPNASXYBdyhq3AHuRLDel4b1/pTM=";
   };
 
   swayncConfig = {
