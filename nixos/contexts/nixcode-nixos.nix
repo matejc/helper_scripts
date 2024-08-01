@@ -68,7 +68,7 @@ let
         slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
+        logseq = "${pkgs.logseq}/bin/logseq";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -77,6 +77,7 @@ let
         name = "sway";
         logout = "${pkgs.sway}/bin/swaymsg exit";
         target = "sway-session.target";
+        waybar.prefix = "sway";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
@@ -141,6 +142,9 @@ let
         enable = true;
         setSocketVariable = true;
       };
+      nixpkgs.config.permittedInsecurePackages = [
+        "electron-27.3.11"
+      ];
     };
     home-configuration = rec {
       home.stateVersion = "22.05";
@@ -179,10 +183,11 @@ let
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       home.packages = with pkgs; [
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        proxychains
+        proxychains-ng
         # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
         helix
         aichat
+        deploy-rs
       ];
       programs.direnv = {
         enable = true;

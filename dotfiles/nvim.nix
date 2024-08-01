@@ -2259,10 +2259,10 @@ vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {norem
 
 require("chatgpt").setup({
   openai_params = {
-    model = "gpt-3.5-turbo",
+    model = "gpt-4o",
   },
   openai_edit_params = {
-    model = "gpt-3.5-turbo",
+    model = "gpt-4o",
   },
 })
 

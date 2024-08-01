@@ -254,6 +254,8 @@ in {
         STOP_CHARGE_THRESH_BAT0 = 95;
         CPU_SCALING_GOVERNOR_ON_AC = "performance";
         CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+        PLATFORM_PROFILE_ON_AC = "performance";
+        PLATFORM_PROFILE_ON_BAT = "low-power";
       };
     };
     programs.nix-ld.enable = true;
