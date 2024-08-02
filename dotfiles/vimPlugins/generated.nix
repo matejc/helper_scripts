@@ -581,6 +581,18 @@ final: prev:
     meta.homepage = "https://github.com/OmniSharp/omnisharp-vim/";
   };
 
+  parrot-nvim = buildVimPlugin {
+    pname = "parrot.nvim";
+    version = "2024-07-29";
+    src = fetchFromGitHub {
+      owner = "frankroeder";
+      repo = "parrot.nvim";
+      rev = "92ba2d633d857f1aca1351cef90496f7f5a69358";
+      sha256 = "1nvx30hgp1qkpccb8gi4dxam31x6vz1jgifcjq45zfwqi8dahw52";
+    };
+    meta.homepage = "https://github.com/frankroeder/parrot.nvim/";
+  };
+
   plantuml-previewer-vim = buildVimPlugin {
     pname = "plantuml-previewer.vim";
     version = "2023-03-07";

@@ -561,6 +561,7 @@ EOF
     let g:better_whitespace_enabled=1
     let g:strip_whitespace_on_save=1
     let g:strip_whitespace_confirm=0
+    let g:better_whitespace_operator='_s'
 
     if has("persistent_undo")
       set undodir=~/.undodir/
@@ -2257,31 +2258,121 @@ vim.api.nvim_set_keymap("i", "<C-S-b>", "<cmd>:lua my_git_bcommits()<CR>", {nore
 vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {noremap = true, silent = true})
 
 
-require("chatgpt").setup({
-  openai_params = {
-    model = "gpt-4o",
+-- require("chatgpt").setup({
+--   openai_params = {
+--     model = "gpt-4o",
+--   },
+--   openai_edit_params = {
+--     model = "gpt-4o",
+--   },
+-- })
+
+require("parrot").setup({
+  -- The provider definitions with endpoints, api keys and models used for chat summarization
+  providers = {
+    openai = {
+      api_key = os.getenv "OPENAI_API_KEY",
+    },
+    ollama = {} -- provide an empty list to make provider available
   },
-  openai_edit_params = {
-    model = "gpt-4o",
+
+  -- the prefix used for all commands
+  cmd_prefix = "Prt",
+
+  -- optional parameters for curl
+  curl_params = {},
+
+  -- The directory to store persisted state information like the
+  -- current provider and the selected agents
+  state_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/persisted",
+
+  -- Defintion of the agents (similar to GPTs) for the chats and the inline hooks
+  agents = {
+      chat = ...,
+      command = ...,
   },
+
+  -- The directory to store the chats (searched with PrtChatFinder)
+  chat_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/chats",
+
+  -- Chat user prompt prefix
+  chat_user_prefix = "🗨:",
+
+  -- Explicitly confirm deletion of a chat file
+  chat_confirm_delete = true,
+
+  -- Local chat buffer shortcuts
+  chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g><C-g>" },
+  chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>d" },
+  chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>s" },
+  chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>c" },
+
+  -- Option to move the chat to the end of the file after finished respond
+  chat_free_cursor = false,
+
+   -- use prompt buftype for chats (:h prompt-buffer)
+  chat_prompt_buf_type = false,
+
+  -- Default target for  PrtChatToggle, PrtChatNew, PrtContext and the chats opened from the ChatFinder
+  -- values: popup / split / vsplit / tabnew
+  toggle_target = "vsplit",
+
+  -- The interactive user input appearing when can be "native" for
+  -- vim.ui.input or "buffer" to query the input within a native nvim buffer
+  -- (see video demonstrations below)
+  user_input_ui = "native",
+
+  -- Popup window layout
+  -- border: "single", "double", "rounded", "solid", "shadow", "none"
+  style_popup_border = "single",
+
+  -- margins are number of characters or lines
+  style_popup_margin_bottom = 8,
+  style_popup_margin_left = 1,
+  style_popup_margin_right = 2,
+  style_popup_margin_top = 2,
+  style_popup_max_width = 160,
+
+  -- Prompt used for interactive LLM calls like PrtRewrite where {{agent}} is
+  -- a placeholder for the agent name
+  command_prompt_prefix_template = "🤖 {{agent}} ~ ",
+
+  -- auto select command response (easier chaining of commands)
+  -- if false it also frees up the buffer cursor for further editing elsewhere
+  command_auto_select_response = true,
+
+  -- fzf_lua options for PrtAgent and PrtChatFinder when plugin is installed
+  fzf_lua_opts = {
+      ["--ansi"] = true,
+      ["--sort"] = "",
+      ["--info"] = "inline",
+      ["--layout"] = "reverse",
+      ["--preview-window"] = "nohidden:right:75%",
+  },
+
+  -- Enables the query spinner animation
+  enable_spinner = true,
+  -- Type of spinner animation to display while loading
+  -- Available options: "dots", "line", "star", "bouncing_bar", "bouncing_ball"
+  spinner_type = "star",
 })
 
 local wk = require("which-key")
-wk.add({
-  { "ccc", "<cmd>ChatGPT<CR>", desc = "ChatGPT", mode = { "n", "v" } },
-  { "cce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
-  { "ccg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction", mode = { "n", "v" } },
-  { "cct", "<cmd>ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
-  { "cck", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
-  { "ccd", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
-  { "cca", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add Tests", mode = { "n", "v" } },
-  { "cco", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize Code", mode = { "n", "v" } },
-  { "ccs", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
-  { "ccf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs", mode = { "n", "v" } },
-  { "ccx", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain Code", mode = { "n", "v" } },
-  { "ccr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit", mode = { "n", "v" } },
-  { "ccl", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis", mode = { "n", "v" } },
-})
+-- wk.add({
+--   { "ccc", "<cmd>ChatGPT<CR>", desc = "ChatGPT", mode = { "n", "v" } },
+--   { "cce", "<cmd>ChatGPTEditWithInstruction<CR>", desc = "Edit with instruction", mode = { "n", "v" } },
+--   { "ccg", "<cmd>ChatGPTRun grammar_correction<CR>", desc = "Grammar Correction", mode = { "n", "v" } },
+--   { "cct", "<cmd>ChatGPTRun translate<CR>", desc = "Translate", mode = { "n", "v" } },
+--   { "cck", "<cmd>ChatGPTRun keywords<CR>", desc = "Keywords", mode = { "n", "v" } },
+--   { "ccd", "<cmd>ChatGPTRun docstring<CR>", desc = "Docstring", mode = { "n", "v" } },
+--   { "cca", "<cmd>ChatGPTRun add_tests<CR>", desc = "Add Tests", mode = { "n", "v" } },
+--   { "cco", "<cmd>ChatGPTRun optimize_code<CR>", desc = "Optimize Code", mode = { "n", "v" } },
+--   { "ccs", "<cmd>ChatGPTRun summarize<CR>", desc = "Summarize", mode = { "n", "v" } },
+--   { "ccf", "<cmd>ChatGPTRun fix_bugs<CR>", desc = "Fix Bugs", mode = { "n", "v" } },
+--   { "ccx", "<cmd>ChatGPTRun explain_code<CR>", desc = "Explain Code", mode = { "n", "v" } },
+--   { "ccr", "<cmd>ChatGPTRun roxygen_edit<CR>", desc = "Roxygen Edit", mode = { "n", "v" } },
+--   { "ccl", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis", mode = { "n", "v" } },
+-- })
 
 
 require('render-markdown').setup({})
@@ -2589,9 +2680,6 @@ EOF
     snoremap <silent> <M-Right> <Esc><C-W><Right>
     nnoremap <silent> <M-Right> <C-W><Right>
 
-    inoremap <silent> <C-W> <C-O>:bd<CR>
-    nnoremap <silent> <C-W> :bd<CR>
-
     inoremap <C-Q> <C-O>:qall
     snoremap <C-Q> <C-O>:qall
     nnoremap <C-Q> :qall
@@ -2799,10 +2887,11 @@ EOF
           myVimPlugins.lspkind-nvim
           pkgs.vimPlugins.telescope-live-grep-args-nvim
           myVimPlugins.vim-jinja2-syntax
-          myVimPlugins.ChatGPT-nvim
+          # myVimPlugins.ChatGPT-nvim
           myVimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
           myVimPlugins.markdown-nvim
+          myVimPlugins.parrot-nvim
         ];
         opt = [
         ];
