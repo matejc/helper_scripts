@@ -18,7 +18,7 @@ let
     "yamlls"
     "tsserver"
     "jsonls"
-    "vimls"
+    # "vimls"
     "html"
     "cssls"
     "ccls"
@@ -2283,6 +2283,9 @@ wk.add({
   { "ccl", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis", mode = { "n", "v" } },
 })
 
+
+require('render-markdown').setup({})
+
 EOF
 
     highlight! CmpItemMenu guifg=pink gui=italic
@@ -2799,6 +2802,7 @@ EOF
           myVimPlugins.ChatGPT-nvim
           myVimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
+          myVimPlugins.markdown-nvim
         ];
         opt = [
         ];
