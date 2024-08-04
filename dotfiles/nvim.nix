@@ -2092,11 +2092,14 @@ require("scrollbar").setup({
         "terminal",
     },
     excluded_filetypes = {
+        "",
         "cmp_docs",
         "cmp_menu",
         "noice",
         "prompt",
         "TelescopePrompt",
+        "NvimTree",
+        "neo-tree",
     },
     autocmd = {
         render = {
