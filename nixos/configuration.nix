@@ -598,10 +598,10 @@ in {
                 "Shift+Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
                 "Control+Mod1+m" = "exec ${pkgs.nwg-displays}/bin/nwg-displays";
-                "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle, exec pkill -SIGRTMIN+8 waybar";
-                "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+, exec pkill -SIGRTMIN+8 waybar";
-                "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-, exec pkill -SIGRTMIN+8 waybar";
-                "XF86AudioMicMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle, exec pkill -SIGRTMIN+8 waybar";
+                "XF86AudioMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
+                "XF86AudioRaiseVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
+                "XF86AudioLowerVolume" = "exec ${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
+                "XF86AudioMicMute" = "exec ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
                 "XF86MonBrightnessUp" = "exec ${pkgs.brillo}/bin/brillo -A 10";
                 "XF86MonBrightnessDown" = "exec ${pkgs.brillo}/bin/brillo -U 10";
                 "${modifier}+p" = "output ${(lib.head context.variables.outputs).output} toggle";
@@ -637,9 +637,9 @@ in {
                 "Return" = "mode default";
               };
               "${audioModeName}" = {
-                "s" = "exec ${setDefaultSink}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
-                "m" = "exec ${setDefaultSource}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
-                "r" = "exec ${recordCmd}, exec pkill -SIGRTMIN+8 waybar, mode \"default\"";
+                "s" = "exec ${setDefaultSink}, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar, mode \"default\"";
+                "m" = "exec ${setDefaultSource}, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar, mode \"default\"";
+                "r" = "exec ${recordCmd}, exec ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar, mode \"default\"";
                 "Escape" = "mode default";
                 "Return" = "mode default";
               };
@@ -1148,11 +1148,11 @@ in {
               exec = "${wp_volume}";
               interval = 5;
               tooltip = false;
-              on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; pkill -SIGRTMIN+8 waybar";
+              on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
               on-click-middle = "${pkgs.helvum}/bin/helvum";
               on-click-right = "${pkgs.pavucontrol}/bin/pavucontrol";
-              on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; pkill -SIGRTMIN+8 waybar";
-              on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; pkill -SIGRTMIN+8 waybar";
+              on-scroll-up = "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
+              on-scroll-down = "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar";
               signal = 8;
             };
             keyboard-state = {
