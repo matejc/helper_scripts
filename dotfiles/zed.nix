@@ -1,4 +1,9 @@
 { variables, pkgs, config, lib }:
+let
+  nodeVersion = "node-v18.15.0-linux-x64";
+  nodePackage = pkgs.nodejs_18;
+  binPaths = [ pkgs.nixd ];
+in
 [{
   target = "${variables.homeDir}/.config/zed/settings.json";
   source = pkgs.writeText "settings.json" (builtins.toJSON {
@@ -19,7 +24,7 @@
       file_icons = false;
       folder_icons = false;
     };
-    nix.lsp.local.path = "${pkgs.nixd}/bin/nixd";
+    auto_update = false;
   });
 } {
   target = "${variables.homeDir}/.config/zed/keymap.json";
@@ -40,4 +45,27 @@
       };
     }
   ]);
+} {
+  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/bin";
+  source = "${nodePackage}/bin";
+} {
+  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/include";
+  source = "${nodePackage}/include";
+} {
+  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/lib";
+  source = "${nodePackage}/lib";
+} {
+  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/share";
+  source = "${nodePackage}/share";
+} {
+  target = "${variables.homeDir}/bin/zed";
+  source = pkgs.writeShellScript "zed" ''
+    export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
+    exec ${pkgs.zed-editor}/bin/zed "$@"
+  '';
+} {
+  target = "${variables.homeDir}/bin/z";
+  source = pkgs.writeShellScript "zed" ''
+    exec ${variables.homeDir}/bin/zed . "$@"
+  '';
 }]
