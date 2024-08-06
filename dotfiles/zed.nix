@@ -2,7 +2,7 @@
 let
   nodeVersion = "node-v18.15.0-linux-x64";
   nodePackage = pkgs.nodejs_18;
-  binPaths = [ pkgs.nixd ];
+  binPaths = [ pkgs.nixd pkgs.gopls ];
 in
 [{
   target = "${variables.homeDir}/.config/zed/settings.json";
@@ -32,6 +32,11 @@ in
     {
       bindings = {
         ctrl-o = "project_panel::ToggleFocus";
+      };
+    } {
+      context = "ProjectPanel";
+      bindings = {
+        enter = "project_panel::Open";
       };
     } {
       context = "Editor";
