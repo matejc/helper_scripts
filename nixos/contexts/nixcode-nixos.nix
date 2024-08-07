@@ -69,7 +69,7 @@ let
         slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        logseq = "${pkgs.logseq}/bin/logseq";
+        # logseq = "${pkgs.logseq}/bin/logseq";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
@@ -152,16 +152,17 @@ let
       wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.assigns = {
         #"workspace number 5" = [{ app_id = "^org.keepassxc.KeePassXC$"; }];
-        "workspace number 1" = [{ app_id = "Logseq"; }];
+        # "workspace number 1" = [{ app_id = "Logseq"; }];
         "workspace number 2" = [{ app_id = "Slack"; }];
         "workspace number 3" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }
         { command = "${self.variables.programs.slack}"; }
-        { command = "${self.variables.binDir}/logseq"; }
+        # { command = "${self.variables.binDir}/logseq"; }
         #{ command = "${self.variables.profileDir}/bin/keepassxc"; }
         # { command = "${clearprimary}/bin/clearprimary"; }
+        { command = "${pkgs.wl-clipboard}/bin/wl-paste --primary --watch ${pkgs.wl-clipboard}/bin/wl-copy --primary --clear"; }
       ];
       wayland.windowManager.sway.config.input = {
         "2:10:TPPS/2_Elan_TrackPoint" = { accel_profile = "flat"; };

@@ -538,6 +538,7 @@ in {
           config = let
             dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.binDir}/terminal -m terminal";
             passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 75 --height 70";
+            journal = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.logseq}/bin/logseq -m journal --width 75 --height 70";
             resizeModeName = "Resize: arrow keys";
             mirrorModeName = "Mirror: s - sway-wsshare, c - create, f - toggle freeze";
             signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
@@ -579,6 +580,7 @@ in {
                 "F9" = "exec ${passwords}";
                 "XF86Messenger" = "exec ${passwords}";
                 "Control+Mod1+p" = "exec ${passwords}";
+                "Control+Mod1+j" = "exec ${journal}";
                 "${modifier}+k" = "kill";
                 "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
                 "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
@@ -654,7 +656,6 @@ in {
               { command = "${pkgs.swayest-workstyle}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
-              { command = "${pkgs.wl-clipboard}/bin/wl-paste --primary --watch ${pkgs.wl-clipboard}/bin/wl-copy --primary --clear"; }
             ];
             window = {
               border = 1;
@@ -669,6 +670,7 @@ in {
                 { command = "floating enable, sticky enable, resize set 30 ppt 60 ppt, border pixel 10"; criteria = { app_id = "^launcher$"; }; }
                 { command = "border pixel 1"; criteria = { con_mark = "SCRATCHPAD_terminal"; }; }
                 { command = "kill"; criteria = { app_id = "firefox"; title = "Firefox — Sharing Indicator"; }; }
+                { command = "opacity 0.95"; criteria = { app_id = "Logseq"; }; }
               ];
             };
             #seat = {
