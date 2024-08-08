@@ -156,6 +156,7 @@ let
       nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
+        "electron-27.3.11"
       ];
       services.flatpak.enable = true;
       services.pipewire.extraConfig.pipewire = {
@@ -214,14 +215,12 @@ let
           uhk-agent
           scanmem
           caprine-bin
+          steam-run
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      programs.firefox = {
-        enable = true;
-        package = pkgs.firefox;
-      };
+      programs.firefox.enable = true;
       home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };

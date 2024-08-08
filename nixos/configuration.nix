@@ -410,7 +410,7 @@ in {
         };
 
         programs.chromium = {
-          package = pkgs.microsoft-edge-beta;
+          package = pkgs.ungoogled-chromium;
           dictionaries = [
             pkgs.hunspellDictsChromium.en_US
           ];
@@ -423,6 +423,7 @@ in {
         };
 
         programs.firefox = {
+          package = pkgs.firefox-bin;
           profiles = {
             default = {
               extensions = with nur.repos.rycee.firefox-addons; [
