@@ -1704,10 +1704,10 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              XF86AudioMute { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
               XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+"; }
               XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-"; }
-              XF86AudioMicMute { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
               XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
 
