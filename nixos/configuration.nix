@@ -1173,7 +1173,7 @@ in {
               };
               on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
               on-click-middle = "${pkgs.helvum}/bin/helvum";
-              on-click-right = "${pkgs.easyeffects}/bin/easyeffects";
+              # on-click-right = "${pkgs.easyeffects}/bin/easyeffects";
             };
             "custom/pipewire" = {
               exec = "${wp_volume}";
@@ -1566,6 +1566,10 @@ in {
               match app-id="org.keepassxc.KeePassXC"
               match app-id="Logseq"
               block-out-from "screencast"
+          }
+
+          window-rule {
+              draw-border-with-background false
           }
 
           layout {
