@@ -6,8 +6,6 @@ let
   looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
   swiftpoint = pkgs.callPackage ../../nixes/swiftpoint.nix {};
 
-  xwayland-satellite = pkgs.callPackage ../../nixes/xwayland-satellite.nix {};
-
   nixos-artwork-wallpaper = pkgs.fetchurl {
     name = "nix-wallpaper-nineish-dark-gray.png";
     url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
@@ -127,20 +125,21 @@ let
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${xwayland-satellite}/bin/xwayland-satellite"
+        "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
         "${self.variables.programs.browser}"
         "${self.variables.profileDir}/bin/chromium"
         "${self.variables.programs.terminal}"
         "${pkgs.keepassxc}/bin/keepassxc"
+        "${self.variables.profileDir}/bin/logseq"
       ];
     };
     services = [
-      # { name = "kanshi"; delay = 2; group = "always"; }
+      # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
-      { name = "network-manager-applet"; delay = 4; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 4; group = "always"; }
-      { name = "waybar"; delay = 3; group = "always"; }
-      { name = "swayidle"; delay = 2; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "network-manager-applet"; delay = 3; group = "always"; }
+      { name = "waybar"; delay = 2; group = "always"; }
+      { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -154,22 +153,14 @@ let
         };
         vt = 2;
       };
-      xdg.portal = {
-        enable = true;
-        wlr = {
-          enable = true;
-        };
-      };
       boot.kernelPackages = pkgs.linuxPackages_latest;
       nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
+        "electron-27.3.11"
       ];
-      programs.gamescope = {
-        enable = true;
-        # capSysNice = true;
-      };
       services.flatpak.enable = true;
+      services.ipp-usb.enable = true;
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -199,22 +190,22 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
         swiftpoint
       ] ++ (with pkgs; [
-          xwayland
           solvespace keepassxc libreoffice aichat vlc
           discord
           lutris protontricks winetricks steamcmd steamtinkerlaunch protonup-qt minigalaxy wineWowPackages.unstableFull
           super-slicer-latest
           uhk-agent
           jq
+          scanmem
+          caprine-bin
+          steam-run
+          logseq
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
-      programs.firefox = {
-        enable = true;
-        package = pkgs.firefox;
-      };
+      programs.firefox.enable = true;
       home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };

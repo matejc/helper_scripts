@@ -54,6 +54,7 @@
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.niri-stable.url = "github:YaLTeR/niri/v0.1.8";
     };
     # jupyenv = {
     #   url = "github:tweag/jupyenv/main";
@@ -135,7 +136,7 @@
     };
     nixosConfigurations = {
       matej70 = nixosBuild {
-        context = "matej70";
+        context = "matej70-niri";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
         ];

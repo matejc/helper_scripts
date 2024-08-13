@@ -173,7 +173,8 @@ let
       wayland.windowManager.sway.enable = true;
       wayland.windowManager.sway.config.assigns = {
         "workspace number 1" = [{ class = "^Caprine$"; }];
-        "workspace number 4" = [{ app_id = "firefox"; } { class = "^Chromium-browser$"; } { class = "^Google-chrome$"; }];
+        "workspace number 3" = [{ app_id = "chromium-browser"; }];
+        "workspace number 4" = [{ app_id = "firefox"; }];
       };
       wayland.windowManager.sway.config.startup = [
         { command = "${self.variables.programs.browser}"; }

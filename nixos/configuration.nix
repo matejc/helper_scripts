@@ -213,6 +213,24 @@ let
     fi
   '';
 
+  niriWorkspaces = pkgs.writeShellScript "niri_workspaces.sh" ''
+    export PATH="$PATH:${lib.makeBinPath [ inputs.niri.packages.${pkgs.system}.niri-stable pkgs.jq ]}"
+    case "$1" in
+    action)
+        niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;
+    *)
+        glyphs=""
+        workspace_str=" "
+        for ws in $(niri msg -j workspaces | jq ".[] | select(.output == \"$1\") | .is_active"); do
+            workspace_str="$workspace_str$( if "$ws"; then
+                    echo "<big><span color='#1793d1'>''${glyphs:0:1}</span></big>";
+                else echo "<big>''${glyphs:1:1}</big>"; fi)  "
+        done
+        name=$(niri msg -j workspaces | jq -r ".[] | select(.output == \"$1\" and .is_active == true) | .idx")
+        echo -e "{\"text\":\"$workspace_str\", \"tooltip\":\"Active workspace name: $name\"}"
+    esac
+  '';
+
   sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
 in {
   config = lib.mkMerge ([{
@@ -365,6 +383,7 @@ in {
           pkgs.qt6.qtwayland
           pkgs.file
           pkgs.python3
+          pkgs.jq
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
@@ -1063,7 +1082,7 @@ in {
             height = 26;
             output = map (o: o.output) context.variables.outputs;
             modules-left = [
-              "${context.variables.graphical.waybar.prefix}/workspaces"
+              (if context.variables.graphical.name == "niri" then "custom/niri_workspaces" else "${context.variables.graphical.waybar.prefix}/workspaces")
               "${context.variables.graphical.waybar.prefix}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
               "${context.variables.graphical.waybar.prefix}/window"
             ];
@@ -1095,6 +1114,15 @@ in {
               format = "";
               interval = "once";
               tooltip = false;
+            };
+            "custom/niri_workspaces" = {
+                format = "{}";
+                interval = 2;
+                return-type = "json";
+                exec = "${niriWorkspaces} \"$WAYBAR_OUTPUT_NAME\"";
+                on-scroll-up = "${niriWorkspaces} action focus-workspace-up";
+                on-scroll-down = "${niriWorkspaces} action focus-workspace-down";
+                signal = 9;
             };
             "${context.variables.graphical.waybar.prefix}/workspaces" = {
               all-outputs = true;
@@ -1418,7 +1446,7 @@ in {
         };
 
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
-        programs.niri.package = inputs.niri.packages."x86_64-linux".niri-unstable;
+        programs.niri.package = pkgs.niri-stable;
         programs.niri.config = ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
@@ -1524,6 +1552,21 @@ in {
           }
           ''
           ) context.variables.outputs}
+
+          window-rule {
+            match app-id="chromium-browser"
+            match app-id="firefox"
+            match app-id="org.keepassxc.KeePassXC"
+            match app-id="Logseq"
+            open-on-output "${(builtins.head context.variables.outputs).output}"
+          }
+
+          // Block out password managers from screencasts.
+          window-rule {
+              match app-id="org.keepassxc.KeePassXC"
+              match app-id="Logseq"
+              block-out-from "screencast"
+          }
 
           layout {
               // You can change how the focus ring looks.
@@ -1708,10 +1751,10 @@ in {
               Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
               Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
-              Ctrl+Alt+Up        { focus-workspace-up; }
-              Ctrl+Alt+Down      { focus-workspace-down; }
-              Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
-              Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
+              Ctrl+Alt+Up        { spawn "${niriWorkspaces}" "action" "focus-workspace-up"; }
+              Ctrl+Alt+Down      { spawn "${niriWorkspaces}" "action" "focus-workspace-down"; }
+              Ctrl+Alt+Shift+Up   { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-up"; }
+              Ctrl+Alt+Shift+Down { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-down"; }
 
               Super+1 { focus-workspace 1; }
               Super+2 { focus-workspace 2; }
@@ -1763,8 +1806,7 @@ in {
               // Mod+Space       { switch-layout "next"; }
               // Mod+Shift+Space { switch-layout "prev"; }
 
-              Ctrl+Print { screenshot; }
-              Alt+Print { screenshot-window; }
+              Shift+Print { screenshot; }
 
               Super+Shift+E { quit; }
               // Mod+Shift+P { power-off-monitors; }
