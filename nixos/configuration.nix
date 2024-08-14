@@ -1704,6 +1704,7 @@ in {
               Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
               Ctrl+Alt+Space { spawn "${context.variables.binDir}/launcher"; }
               Ctrl+Alt+L { spawn "${context.variables.binDir}/lockscreen"; }
+              Super+L { spawn "${context.variables.binDir}/lockscreen"; }
               Ctrl+Alt+Delete { spawn "${pkgs.nwg-bar}/bin/nwg-bar"; }
               Ctrl+Alt+M { spawn "${pkgs.nwg-displays}/bin/nwg-displays"; }
               Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"; }
@@ -1792,7 +1793,7 @@ in {
               Super+R { switch-preset-column-width; }
               Super+M { maximize-column; }
               Super+F { fullscreen-window; }
-              Super+C { center-column; }
+              // Super+C { center-column; }
 
               // Finer width adjustments.
               // This command can also:
@@ -1823,6 +1824,11 @@ in {
               // Mod+Shift+P { power-off-monitors; }
 
               // Mod+Shift+Ctrl+T { toggle-debug-tint; }
+
+              Super+P { spawn "${context.variables.profileDir}/bin/niri" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
+              Super+Shift+P { spawn "${context.variables.profileDir}/bin/niri" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
+
+              Super+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
           }
 
           // Settings for debugging. Not meant for normal use.
