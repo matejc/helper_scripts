@@ -238,6 +238,7 @@ in {
       (final: prev: {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
         nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
+        inherit sway-wsshare;
       })
       inputs.niri.overlays.niri
     ];

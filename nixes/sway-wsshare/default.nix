@@ -2,9 +2,9 @@
 let
   wlvncc = import ./wlvncc.nix { inherit pkgs; };
 
-  initializeScreenShare = with pkgs; writeShellScriptBin "sway-wsshare" ''
+  initializeScreenShare = pkgs.writeShellScriptBin "sway-wsshare" ''
     set -e
-    export PATH="${sway}/bin:${jq}/bin:${wofi}/bin:${coreutils}/bin:${wayvnc}/bin:${wlvncc}/bin:$PATH"
+    export PATH="${pkgs.sway}/bin:${pkgs.jq}/bin:${pkgs.wofi}/bin:${pkgs.coreutils}/bin:${pkgs.wayvnc}/bin:${wlvncc}/bin:$PATH"
 
     getPort() {
       read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range

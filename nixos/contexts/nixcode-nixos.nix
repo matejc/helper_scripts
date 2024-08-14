@@ -133,10 +133,12 @@ let
         };
         vt = 2;
       };
-      xdg.portal = {
-        enable = true;
-        wlr = {
-          enable = true;
+      xdg = {
+        portal = {
+            enable = true;
+            wlr = {
+                enable = true;
+            };
         };
       };
       virtualisation.docker.rootless = {
@@ -146,6 +148,10 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "electron-27.3.11"
       ];
+      # hardware.ipu6 = {
+      #   enable = true;
+      #   platform = "ipu6ep";
+      # };
     };
     home-configuration = rec {
       home.stateVersion = "22.05";
@@ -174,6 +180,13 @@ let
           resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
         }
       ];
+      xdg.configFile."wireplumber/wireplumber.conf.d/10-disable-camera.conf".text = ''
+          wireplumber.profiles = {
+              main = {
+                  monitor.libcamera = disabled
+              }
+          }
+      '';
       programs.waybar.enable = true;
       services.kanshi.enable = true;
       services.swayidle.enable = true;
@@ -201,7 +214,6 @@ let
       };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
-      programs.firefox.package = pkgs.firefox;
     };
   };
 in
