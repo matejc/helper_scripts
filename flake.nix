@@ -115,7 +115,7 @@
     # };
     hydraJobs = {
       matej70 = (nixosBuild {
-        context = "matej70";
+        context = "matej70-niri";
         modules = [
           ./nixos/minimal-configuration.nix
         ];
@@ -127,7 +127,7 @@
         ];
       }).config.system.build.toplevel;
       nixcode = (nixosBuild {
-        context = "nixcode-nixos";
+        context = "nixcode-niri";
         modules = [
           ./nixos/minimal-configuration.nix
         ];
@@ -148,7 +148,7 @@
         ];
       };
       nixcode = nixosBuild {
-        context = "nixcode-nixos";
+        context = "nixcode-niri";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
         ];

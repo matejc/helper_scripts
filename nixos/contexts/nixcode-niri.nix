@@ -1,46 +1,52 @@
 { pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
 let
   # clearprimary = import "${inputs.clearprimary}" { inherit pkgs; };
 
   homeConfig = config.home-manager.users.matejc;
 
+  nixos-wallpaper = pkgs.fetchurl {
+    name = "nix-wallpaper.png";
+    url = "https://raw.githubusercontent.com/NixOS/nixos-artwork/master/wallpapers/nix-wallpaper-binary-black.png";
+    hash = "sha256-mhSh0wz2ntH/kri3PF5ZrFykjjdQLhmlIlDDGFQIYWw=";
+  };
+
   self = {
     dotFilePaths = [
-      "${helper_scripts}/dotfiles/programs.nix"
-      "${helper_scripts}/dotfiles/nvim.nix"
-      "${helper_scripts}/dotfiles/gitconfig.nix"
-      "${helper_scripts}/dotfiles/gitignore.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${helper_scripts}/dotfiles/comma.nix"
-      "${helper_scripts}/dotfiles/tmux.nix"
-      "${helper_scripts}/dotfiles/dd.nix"
-      "${helper_scripts}/dotfiles/sync.nix"
-      "${helper_scripts}/dotfiles/mypassgen.nix"
-      "${helper_scripts}/dotfiles/wofi.nix"
-      "${helper_scripts}/dotfiles/nwgbar.nix"
-      "${helper_scripts}/dotfiles/countdown.nix"
-      "${helper_scripts}/dotfiles/helix.nix"
-      "${helper_scripts}/dotfiles/wezterm.nix"
-      "${helper_scripts}/dotfiles/work.nix"
-      "${helper_scripts}/dotfiles/jwt.nix"
-      "${helper_scripts}/dotfiles/helix.nix"
-      "${helper_scripts}/dotfiles/kitty.nix"
+        "${helper_scripts}/dotfiles/programs.nix"
+        "${helper_scripts}/dotfiles/nvim.nix"
+        "${helper_scripts}/dotfiles/gitconfig.nix"
+        "${helper_scripts}/dotfiles/gitignore.nix"
+        "${helper_scripts}/dotfiles/swaylockscreen.nix"
+        "${helper_scripts}/dotfiles/tmux.nix"
+        "${helper_scripts}/dotfiles/dd.nix"
+        "${helper_scripts}/dotfiles/sync.nix"
+        "${helper_scripts}/dotfiles/mypassgen.nix"
+        "${helper_scripts}/dotfiles/wofi.nix"
+        "${helper_scripts}/dotfiles/nwgbar.nix"
+        "${helper_scripts}/dotfiles/countdown.nix"
+        "${helper_scripts}/dotfiles/helix.nix"
+        "${helper_scripts}/dotfiles/wezterm.nix"
+        "${helper_scripts}/dotfiles/work.nix"
+        "${helper_scripts}/dotfiles/jwt.nix"
+        "${helper_scripts}/dotfiles/helix.nix"
+        "${helper_scripts}/dotfiles/kitty.nix"
+        "${helper_scripts}/dotfiles/vlc.nix"
+        "${helper_scripts}/dotfiles/zed.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
     '';
-    variables = rec {
+    variables = {
       homeDir = homeConfig.home.homeDirectory;
       user = homeConfig.home.username;
       profileDir = homeConfig.home.profileDirectory;
-      prefix = "${homeDir}/workarea/helper_scripts";
-      nixpkgs = "${homeDir}/workarea/nixpkgs";
-      binDir = "${homeDir}/bin";
-      temperatureFiles = [ hwmonPath ];
+      prefix = "${self.variables.homeDir}/workarea/helper_scripts";
+      nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
+      binDir = "${self.variables.homeDir}/bin";
+      temperatureFiles = [ self.variables.hwmonPath ];
       hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
-      lockscreen = "${homeDir}/bin/lockscreen";
-      wallpaper = "${homeDir}/Pictures/pexels.png";
+      lockscreen = "${self.variables.homeDir}/bin/lockscreen";
+      wallpaper = "${nixos-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";
       signingkey = "E9DCD6F3A1CF9949995C43E09D45D4C00C8A5A48";
@@ -50,40 +56,38 @@ let
       mounts = [ "/" ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
-        size = 16.0;
+        size = 12.0;
         style = "Bold";
       };
-      i3-msg = "${profileDir}/bin/swaymsg";
+      i3-msg = "${self.variables.profileDir}/bin/niri msg";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         terminal = "${pkgs.kitty}/bin/kitty";
-        browser = "${profileDir}/bin/firefox";
-        slack = "${pkgs.slack}/bin/slack --enable-features=WebRTCPipeWireCapturer --enable-features=UseOzonePlatform --ozone-platform=wayland";
-        editor = "${nano}/bin/nano";
+        browser = "${self.variables.profileDir}/bin/firefox";
+        editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        logseq = "${pkgs.logseq}/bin/logseq --enable-features=UseOzonePlatform --ozone-platform=wayland";
       };
-      shell = "${profileDir}/bin/zsh";
-      shellRc = "${homeDir}/.zshrc";
+      shell = "${self.variables.profileDir}/bin/zsh";
+      shellRc = "${self.variables.homeDir}/.zshrc";
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "loginctl terminate-user ${self.variables.user}";
-        target = "niri.service";
+        logout = "${self.variables.i3-msg} action quit";
+        target = "graphical-session.target";
+        waybar.prefix = "wlr";
       };
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
-        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
+        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.homeDir}/bin/nvim";
       };
       outputs = [{
         criteria = "eDP-1";
         position = "0,0";
         output = "eDP-1";
         mode = "2880x1800";
-        scale = 1.0;
-        workspaces = [ "1" "2" "3" "4" ];
-        wallpaper = wallpaper;
+        scale = 1.5;
+        workspaces = [ ];
+        wallpaper = self.variables.wallpaper;
         status = "disable";
       }{
         criteria = "HDMI-A-1";
@@ -91,8 +95,8 @@ let
         output = "HDMI-A-1";
         mode = null;
         scale = 1.0;
-        workspaces = [ "5" "6" "7" "8" ];
-        wallpaper = wallpaper;
+        workspaces = [ ];
+        wallpaper = self.variables.wallpaper;
         status = "enable";
       }];
       nixmy = {
@@ -101,22 +105,25 @@ let
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${self.variables.binDir}/logseq"
-        "${self.variables.binDir}/slack"
-        "${self.variables.binDir}/browser"
-        "${self.variables.profileDir}/bin/service-group-once start"
-        "${self.variables.profileDir}/bin/service-group-always restart"
+        "${self.variables.profileDir}/bin/logseq"
+        "${self.variables.profileDir}/bin/slack"
+        "${self.variables.programs.browser}"
         "${self.variables.profileDir}/bin/keepassxc"
       ];
     };
     services = [
-      { name = "kanshi"; delay = 2; group = "always"; }
+      # { name = "kanshi"; delay = 2; group = "always"; }
+      # { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      # { name = "network-manager-applet"; delay = 3; group = "always"; }
+      # { name = "waybar"; delay = 2; group = "always"; }
+      # { name = "swayidle"; delay = 1; group = "always"; }
+      # { name = "gnome-keyring"; delay = 1; group = "always"; }
       { name = "nextcloud-client"; delay = 3; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "kdeconnect"; delay = 3; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
-      { name = "gnome-keyring"; delay = 1; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -131,15 +138,12 @@ let
         vt = 2;
       };
       users.users.matejc.extraGroups = [ "video" ];
-      programs.niri.enable = true;
-      xdg.portal = {
-        enable = true;
-        config.common.default = "gnome;gtk;";
-        config.common."org.freedesktop.impl.portal.Secret" = "gnome-keyring";
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-      };
+      nixpkgs.config.permittedInsecurePackages = [
+        "openssl-1.1.1w"
+        "electron-27.3.11"
+      ];
     };
-    home-configuration = rec {
+    home-configuration = {
       home.stateVersion = "22.05";
       services.swayidle.timeouts = [
         {
@@ -148,7 +152,9 @@ let
           resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
         }
       ];
+      programs.niri.enable = true;
       programs.waybar.enable = true;
+      programs.waybar.systemd.target = lib.mkForce "non-existing-target";
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
@@ -156,18 +162,20 @@ let
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-      systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
-      systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt5.qtwayland.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}" ];
-      home.packages = [
+      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      # systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt6.qtwayland.out}/${pkgs.qt6.qtbase.qtPluginPrefix}" ];
+      systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
+      systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
+      systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ ];
+      # systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt6.qtwayland}/${pkgs.qt6.qtbase.qtPluginPrefix}" ];
+      home.packages = with pkgs; [
+        slack
+        logseq
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        proxychains
-        # (import inputs.devenv).packages.${builtins.currentSystem}.devenv
-        shell_gpt
-        #guake gnome.gnome-tweaks gnome-extension-manager gnomeExtensions.gsconnect
-        #google-chrome
-        #slack
-        cage
+        proxychains-ng
+        helix
+        aichat
+        deploy-rs
       ];
       programs.direnv = {
         enable = true;
@@ -179,7 +187,6 @@ let
       };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
-      programs.firefox.package = pkgs.firefox;
     };
   };
 in
