@@ -1563,15 +1563,25 @@ in {
           ''
           ) context.variables.outputs}
 
+          workspace "first" {
+            open-on-output "${(builtins.head context.variables.outputs).output}"
+          }
+          window-rule {
+            match app-id="org.keepassxc.KeePassXC"
+            match app-id="Logseq"
+            open-on-workspace "first"
+          }
+
+          workspace "second" {
+            open-on-output "${(builtins.head context.variables.outputs).output}"
+          }
           window-rule {
             match app-id="chromium-browser"
             match app-id="firefox"
-            match app-id="org.keepassxc.KeePassXC"
-            match app-id="Logseq"
-            open-on-output "${(builtins.head context.variables.outputs).output}"
+            match app-id="Slack"
+            open-on-workspace "second"
           }
 
-          // Block out password managers from screencasts.
           window-rule {
               match app-id="org.keepassxc.KeePassXC"
               match app-id="Logseq"
@@ -1662,6 +1672,7 @@ in {
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY=:0"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${niriWorkspaces} action focus-workspace 2"
 
           ${lib.concatMapStringsSep "\n" (i: ''
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
