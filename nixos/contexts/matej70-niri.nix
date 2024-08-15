@@ -63,7 +63,6 @@ let
         style = "Bold";
         size = 10.0;
       };
-      i3-msg = "${self.variables.profileDir}/bin/niri msg";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
@@ -91,9 +90,10 @@ let
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "${self.variables.i3-msg} action quit";
+        logout = "${self.variables.graphical.exec} msg action quit";
         target = "graphical-session.target";
         waybar.prefix = "wlr";
+        exec = "${self.variables.profileDir}/bin/niri";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.binDir}/nvim";
@@ -136,7 +136,8 @@ let
     services = [
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 3; group = "always"; }
+      { name = "kdeconnect"; delay = 3; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 3; group = "always"; }
       { name = "waybar"; delay = 2; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
@@ -168,12 +169,19 @@ let
       services.kanshi.enable = true;
       services.swayidle = {
         enable = true;
+        events = lib.mkForce [
+          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
+          { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
+        ];
         timeouts = lib.mkForce [
-          { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
-          {
-            timeout = 300;
-            command = "${self.variables.i3-msg} action power-off-monitors";
-          }
+            { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
+            {
+                timeout = 300;
+                command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} off'') self.variables.outputs;
+                resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
+            }
         ];
       };
       services.kdeconnect.enable = true;
@@ -204,6 +212,8 @@ let
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+      systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
+      systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
       systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
       programs.firefox.enable = true;
       home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";

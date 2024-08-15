@@ -73,9 +73,10 @@ let
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "${self.variables.i3-msg} action quit";
+        logout = "${self.variables.graphical.exec} msg action quit";
         target = "graphical-session.target";
         waybar.prefix = "wlr";
+        exec = "${self.variables.profileDir}/bin/niri";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.homeDir}/bin/nvim";
@@ -145,18 +146,32 @@ let
     };
     home-configuration = {
       home.stateVersion = "22.05";
-      services.swayidle.timeouts = [
-        {
-          timeout = 100;
-          command = "${pkgs.brillo}/bin/brillo -U 30";
-          resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
-        }
-      ];
+      services.swayidle = {
+        enable = true;
+        events = lib.mkForce [
+          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
+          { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
+          { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
+        ];
+        timeouts = lib.mkForce [
+            {
+                timeout = 100;
+                command = "${pkgs.brillo}/bin/brillo -U 30";
+                resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
+            }
+            { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
+            {
+                timeout = 300;
+                command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} off'') self.variables.outputs;
+                resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
+            }
+        ];
+      };
       programs.niri.enable = true;
       programs.waybar.enable = true;
       programs.waybar.systemd.target = lib.mkForce "non-existing-target";
       services.kanshi.enable = true;
-      services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.nextcloud-client.enable = true;

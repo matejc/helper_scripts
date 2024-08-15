@@ -214,20 +214,20 @@ let
   '';
 
   niriWorkspaces = pkgs.writeShellScript "niri_workspaces.sh" ''
-    export PATH="$PATH:${lib.makeBinPath [ inputs.niri.packages.${pkgs.system}.niri-stable pkgs.jq ]}"
+    export PATH="$PATH:${context.variables.profileDir}/bin:${lib.makeBinPath [ pkgs.jq ]}"
     case "$1" in
     action)
         niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;
     *)
-        glyphs=""
         workspace_str=" "
-        for ws in $(niri msg -j workspaces | jq ".[] | select(.output == \"$1\") | .is_active"); do
-            workspace_str="$workspace_str$( if "$ws"; then
-                    echo "<big><span color='#1793d1'>''${glyphs:0:1}</span></big>";
-                else echo "<big>''${glyphs:1:1}</big>"; fi)  "
+        for ws in $(niri msg -j workspaces | jq -c ".[] | select(.output == \"$1\")"); do
+            is_active="$(echo "$ws" | jq -r '.is_active')"
+            idx="$(echo "$ws" | jq -r '.idx')"
+            workspace_str="$workspace_str$( if "$is_active"; then
+                    echo "<b><span color='#1793d1'>$idx</span></b>";
+                else echo "<b><span color='#999999'>$idx</span></b>"; fi) "
         done
-        name=$(niri msg -j workspaces | jq -r ".[] | select(.output == \"$1\" and .is_active == true) | .idx")
-        echo -e "{\"text\":\"$workspace_str\", \"tooltip\":\"Active workspace name: $name\"}"
+        echo -e "{\"text\":\"$workspace_str\"}"
     esac
   '';
 
@@ -893,15 +893,15 @@ in {
           events = [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
             { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
-            { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs; }
+            { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
+            { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
           ];
           timeouts = [
             { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
             {
               timeout = 300;
-              command = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms off"'') context.variables.outputs;
-              resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.i3-msg} "output ${o.output} dpms on"'') context.variables.outputs;
+              command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms off"'') context.variables.outputs;
+              resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs;
             }
             { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
@@ -1790,7 +1790,7 @@ in {
               Super+Comma  { consume-window-into-column; }
               Super+Period { expel-window-from-column; }
 
-              Super+R { switch-preset-column-width; }
+              // Super+R { switch-preset-column-width; }
               Super+M { maximize-column; }
               Super+F { fullscreen-window; }
               // Super+C { center-column; }
@@ -1825,10 +1825,13 @@ in {
 
               // Mod+Shift+Ctrl+T { toggle-debug-tint; }
 
-              Super+P { spawn "${context.variables.profileDir}/bin/niri" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
-              Super+Shift+P { spawn "${context.variables.profileDir}/bin/niri" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
+              Super+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
+              Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
               Super+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
+              Super+S { spawn "${setDefaultSink}"; }
+              Super+Shift+S { spawn "${setDefaultSource}"; }
+              Super+R { spawn "${recordCmd}"; }
           }
 
           // Settings for debugging. Not meant for normal use.
