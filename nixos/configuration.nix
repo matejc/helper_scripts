@@ -227,7 +227,12 @@ let
                     echo "<b><span color='#1793d1'>$idx</span></b>";
                 else echo "<b><span color='#999999'>$idx</span></b>"; fi) "
         done
-        echo -e "{\"text\":\"$workspace_str\"}"
+        title=""
+        if [[ "$1" = "$(niri msg -j focused-output | jq -r ".name")" ]]
+        then
+            title="$(niri msg -j focused-window | jq -r ".title | if . == null then \"\" else . end")"
+        fi
+        echo -e "{\"text\":\"$workspace_str\t\t\t$title\"}"
     esac
   '';
 
@@ -1719,15 +1724,15 @@ in {
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
               XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
 
-              Super+K { close-window; }
+              Super+K { spawn "${niriWorkspaces}" "action" "close-window"; }
 
-              Super+Left  { focus-column-left; }
-              Super+Down  { focus-window-down; }
-              Super+Up    { focus-window-up; }
-              Super+Right { focus-column-right; }
+              Super+Left  { spawn "${niriWorkspaces}" "action" "focus-column-left"; }
+              Super+Down  { spawn "${niriWorkspaces}" "action" "focus-window-down"; }
+              Super+Up    { spawn "${niriWorkspaces}" "action" "focus-window-up"; }
+              Super+Right { spawn "${niriWorkspaces}" "action" "focus-column-right"; }
 
-              Ctrl+Alt+Left  { focus-column-left; }
-              Ctrl+Alt+Right { focus-column-right; }
+              Ctrl+Alt+Left  {  spawn "${niriWorkspaces}" "action" "focus-column-left"; }
+              Ctrl+Alt+Right {  spawn "${niriWorkspaces}" "action" "focus-column-right"; }
               Ctrl+Alt+Shift+Left  { move-column-left; }
               Ctrl+Alt+Shift+Right { move-column-right; }
 
@@ -1743,18 +1748,18 @@ in {
               // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
               // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
-              Super+Home { focus-column-first; }
-              Super+End  { focus-column-last; }
+              Super+Home { spawn "${niriWorkspaces}" "action" "focus-column-first"; }
+              Super+End  { spawn "${niriWorkspaces}" "action" "focus-column-last"; }
               Super+Shift+Home { move-column-to-first; }
               Super+Shift+End  { move-column-to-last; }
 
-              Super+Ctrl+Left  { focus-monitor-left; }
-              Super+Ctrl+Down  { focus-monitor-down; }
-              Super+Ctrl+Up    { focus-monitor-up; }
-              Super+Ctrl+Right { focus-monitor-right; }
+              Super+Ctrl+Left  { spawn "${niriWorkspaces}" "action" "focus-monitor-left"; }
+              Super+Ctrl+Down  { spawn "${niriWorkspaces}" "action" "focus-monitor-down"; }
+              Super+Ctrl+Up    { spawn "${niriWorkspaces}" "action" "focus-monitor-up"; }
+              Super+Ctrl+Right { spawn "${niriWorkspaces}" "action" "focus-monitor-right"; }
 
-              Ctrl+Alt+Page_Up  { focus-monitor-left; }
-              Ctrl+Alt+Page_Down { focus-monitor-right; }
+              Ctrl+Alt+Page_Up  { spawn "${niriWorkspaces}" "action" "focus-monitor-left"; }
+              Ctrl+Alt+Page_Down { spawn "${niriWorkspaces}" "action" "focus-monitor-right"; }
               Ctrl+Shift+Alt+Page_Up  { move-window-to-monitor-left; }
               Ctrl+Shift+Alt+Page_Down { move-window-to-monitor-right; }
 
