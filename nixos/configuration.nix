@@ -227,12 +227,12 @@ let
                     echo "<b><span color='#1793d1'>$idx</span></b>";
                 else echo "<b><span color='#999999'>$idx</span></b>"; fi) "
         done
-        title=""
         if [[ "$1" = "$(niri msg -j focused-output | jq -r ".name")" ]]
         then
-            title="$(niri msg -j focused-window | jq -r ".title | if . == null then \"\" else . end")"
+            jq --argjson win "$(niri msg -j focused-window)" --arg ws "$workspace_str" -cn '{ text: "\($ws)\t\t\t\(if $win.title == null then "" else $win.title end)" }'
+        else
+            jq --arg ws "$workspace_str" -cn '{ text: "\($ws)" }'
         fi
-        echo -e "{\"text\":\"$workspace_str\t\t\t$title\"}"
     esac
   '';
 
