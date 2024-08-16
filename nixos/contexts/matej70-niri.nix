@@ -5,6 +5,7 @@ let
   looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
   looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
   swiftpoint = pkgs.callPackage ../../nixes/swiftpoint.nix {};
+  thorium = pkgs.callPackage ../../nixes/thorium.nix {};
 
   nixos-artwork-wallpaper = pkgs.fetchurl {
     name = "nix-wallpaper-nineish-dark-gray.png";
@@ -210,6 +211,7 @@ let
           logseq
       ]);
       programs.chromium.enable = true;
+      programs.chromium.package = lib.mkForce thorium;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
