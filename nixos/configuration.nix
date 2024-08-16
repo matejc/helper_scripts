@@ -214,7 +214,7 @@ let
   '';
 
   niriWorkspaces = pkgs.writeShellScript "niri_workspaces.sh" ''
-    export PATH="$PATH:${context.variables.profileDir}/bin:${lib.makeBinPath [ pkgs.jq ]}"
+    export PATH="$PATH:${context.variables.profileDir}/bin:${lib.makeBinPath [ pkgs.jq pkgs.procps ]}"
     case "$1" in
     action)
         niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;

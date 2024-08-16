@@ -19,6 +19,8 @@ let
     extraInstallCommands = ''
       install -Dm444 ${appimageContents}/thorium-browser.desktop $out/share/applications/thorium-browser.desktop
       install -Dm444 ${appimageContents}/thorium.png $out/share/icons/hicolor/512x512/apps/thorium.png
+      source "${pkgs.makeWrapper}/nix-support/setup-hook"
+      wrapProgram $out/bin/thorium --add-flags '--enable-features=UseOzonePlatform --ozone-platform=wayland'
       ln -s $out/bin/thorium $out/bin/chromium
     '';
   };
