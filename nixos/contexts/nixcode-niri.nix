@@ -163,7 +163,7 @@ let
             { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
             {
                 timeout = 300;
-                command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} off'') self.variables.outputs;
+                command = ''${self.variables.graphical.exec} msg action power-off-monitors'';
                 resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
             }
         ];

@@ -1728,10 +1728,10 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+"; }
-              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-"; }
-              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
               XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
 
@@ -1845,9 +1845,9 @@ in {
               Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
               Super+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
-              Super+S { spawn "${setDefaultSink}"; }
-              Super+Shift+S { spawn "${setDefaultSource}"; }
-              Super+R { spawn "${recordCmd}"; }
+              Super+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Super+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Super+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
           }
 
           // Settings for debugging. Not meant for normal use.
