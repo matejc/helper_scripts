@@ -580,9 +580,12 @@ EOF
 
     set encoding=utf-8
 
-    nnoremap <silent> <C-S-W> :bd!<cr>
-    tnoremap <silent> <C-S-W> <C-\><C-N>:bd!<cr>
-    inoremap <silent> <C-S-W> <C-o>:bd!<cr>
+    nnoremap <silent> <C-S-W> :bd<cr>
+    tnoremap <silent> <C-S-W> <C-\><C-N>:bd<cr>
+    inoremap <silent> <C-S-W> <C-o>:bd<cr>
+    nnoremap <silent> <C-W> :bd<cr>
+    tnoremap <silent> <C-W> <C-\><C-N>:bd<cr>
+    inoremap <silent> <C-W> <C-o>:bd<cr>
     " nnoremap <silent> <C-w> :bd<cr>
     " inoremap <silent> <C-w> <C-o>:bd<cr>
     " map <C-q> <esc>:qall
@@ -688,6 +691,10 @@ EOF
     nnoremap <C-k> "_dd
     inoremap <C-k> <C-o>"_dd
     vnoremap <C-k> "_d
+
+    nnoremap <C-S-k> "_dd
+    inoremap <C-S-k> <C-o>"_dd
+    vnoremap <C-S-k> "_d
 
     augroup MyCTRLX
       autocmd!
@@ -842,7 +849,7 @@ EOF
     " vnoremap <silent> <C-f> :call CtrlSFIfOpen(<SID>get_visual_selection())<cr>
     " nnoremap <silent> <C-f> :call CtrlSFIfOpen(expand("<cword>"))<cr>
 
-    inoremap <C-/> <C-o>/
+    inoremap <C-\> <C-o>/
     inoremap <C-n> <C-o>n
     inoremap <C-S-n> <C-o>N
 
@@ -969,8 +976,8 @@ EOF
     "nnoremap <c-_> <leader>c<space>
     "inoremap <c-_> <C-o><plug>NERDCommenterToggle
     "vnoremap <c-_> <plug>NERDCommenterToggle
-    inoremap <c-\> <C-o><plug>NERDCommenterToggle
-    vnoremap <c-\> <plug>NERDCommenterToggle
+    inoremap <c-/> <C-o><plug>NERDCommenterToggle
+    vnoremap <c-/> <plug>NERDCommenterToggle
 
     "nnoremap <c-/> <leader>c<space>
     "inoremap <c-/> <C-o><leader>c<space>
