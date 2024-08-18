@@ -219,14 +219,7 @@ let
     action)
         niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;
     *)
-        workspace_str=" "
-        for ws in $(niri msg -j workspaces | jq -c ".[] | select(.output == \"$1\")"); do
-            is_active="$(echo "$ws" | jq -r '.is_active')"
-            idx="$(echo "$ws" | jq -r '.idx')"
-            workspace_str="$workspace_str$( if "$is_active"; then
-                    echo "<b><span color='#1793d1'>$idx</span></b>";
-                else echo "<b><span color='#999999'>$idx</span></b>"; fi) "
-        done
+        workspace_str="$(niri msg -j workspaces | jq -j ".[] | select(.output == \"$1\") | if .is_active then \"<b><span color='#1793d1'> \(.idx)</span></b>\" else \"<b><span color='#cccccc'> \(.idx)</span></b>\" end")"
         if [[ "$1" = "$(niri msg -j focused-output | jq -r ".name")" ]]
         then
             jq --argjson win "$(niri msg -j focused-window)" --arg ws "$workspace_str" -cn '{ text: "\($ws)\t\t\t\(if $win.title == null then "" else $win.title end)" }'
@@ -539,14 +532,17 @@ in {
             {
               profile.name = "default";
               profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
+              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "firstonly";
               profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
+              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "all";
               profile.outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
+              profile.exec = "systemctl --user restart waybar";
             }
           ];
         };
@@ -895,13 +891,13 @@ in {
         services.swayidle = {
           systemdTarget = context.variables.graphical.target;
           #enable = true;
-          events = [
+          events = lib.mkDefault [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
             { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
             { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
             { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
           ];
-          timeouts = [
+          timeouts = lib.mkDefault [
             { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
             {
               timeout = 300;
@@ -1577,6 +1573,7 @@ in {
           }
           window-rule {
             match app-id="chromium-browser"
+            match app-id="thorium-browser"
             match app-id="firefox"
             match app-id="Slack"
             open-on-workspace "second"
@@ -1877,6 +1874,23 @@ in {
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
+        services.swayidle = {
+          events = lib.mkOverride 900 [
+            { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
+            { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
+          ];
+          timeouts = lib.mkOverride 900 [
+              { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
+              {
+                  timeout = 300;
+                  command = ''${context.variables.graphical.exec} msg action power-off-monitors'';
+                  resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs;
+              }
+          ];
+        };
+
       } )] ++ [ context.home-configuration ]);
     };
   }] ++ [ context.nixos-configuration ]);

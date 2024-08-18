@@ -168,23 +168,7 @@ let
       home.stateVersion = "20.09";
       programs.niri.enable = true;
       services.kanshi.enable = true;
-      services.swayidle = {
-        enable = true;
-        events = lib.mkForce [
-          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
-          { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
-        ];
-        timeouts = lib.mkForce [
-            { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
-            {
-                timeout = 300;
-                command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} off'') self.variables.outputs;
-                resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
-            }
-        ];
-      };
+      services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;

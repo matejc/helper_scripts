@@ -148,12 +148,6 @@ let
       home.stateVersion = "22.05";
       services.swayidle = {
         enable = true;
-        events = lib.mkForce [
-          { event = "before-sleep"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "lock"; command = "${self.variables.binDir}/lockscreen"; }
-          { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
-          { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs; }
-        ];
         timeouts = lib.mkForce [
             {
                 timeout = 100;
