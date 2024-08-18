@@ -171,7 +171,6 @@ let
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       # systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt6.qtwayland.out}/${pkgs.qt6.qtbase.qtPluginPrefix}" ];
       systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
       systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];

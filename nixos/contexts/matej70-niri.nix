@@ -172,7 +172,7 @@ let
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
-      services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
+      # services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       #services.syncthing.tray.enable = true;
       programs.waybar.enable = true;
       programs.obs-studio = {
@@ -197,7 +197,6 @@ let
       programs.chromium.enable = true;
       programs.chromium.package = lib.mkForce thorium;
       services.network-manager-applet.enable = true;
-      systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
       systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
       systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];

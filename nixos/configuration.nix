@@ -1293,7 +1293,7 @@ in {
         systemd.user.services.network-manager-applet.Unit.Requires = lib.mkForce [ "graphical-session-pre.target" ];
 
 
-        services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" ];
+        services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" "-home=${context.variables.homeDir}/Syncthing/.config/syncthing" ];
 
         home.activation.dotfiles = ''
           $DRY_RUN_CMD ${dotfiles}/bin/dot-files-apply-homemanager
