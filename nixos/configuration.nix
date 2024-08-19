@@ -235,7 +235,6 @@ in {
     nixpkgs.overlays = [
       (final: prev: {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
-        nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
         inherit sway-wsshare;
       })
       inputs.niri.overlays.niri
@@ -282,10 +281,13 @@ in {
     programs.command-not-found.enable = false;
     programs.nix-index = {
       enable = true;
+      package = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
       enableZshIntegration = true;
       enableBashIntegration = true;
     };
-    programs.nix-index-database.comma.enable = true;
+    environment.systemPackages = [
+      inputs.nix-index-database.packages.${pkgs.system}.comma-with-db
+    ];
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
