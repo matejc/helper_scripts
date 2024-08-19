@@ -10,14 +10,13 @@ let
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
       "${helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${helper_scripts}/dotfiles/comma.nix"
       "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
       "${helper_scripts}/dotfiles/wofi.nix"
       "${helper_scripts}/dotfiles/nwgbar.nix"
-      "${helper_scripts}/dotfiles/wezterm.nix"
+      "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/countdown.nix"
     ];
     activationScript = ''
@@ -49,32 +48,19 @@ let
         style = "Bold";
         size = 10.0;
       };
-      i3-msg = "${programs.i3-msg}";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        #terminal = "${pkgs.kitty}/bin/kitty";
-        terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
-        dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
-        browser = "${profileDir}/bin/google-chrome-stable --enable-features=WebRTCPipeWireCapturer";
-        editor = "${nano}/bin/nano";
-        #launcher = dotFileAt "bemenu.nix" 0;
-        #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
+        terminal = "${pkgs.kitty}/bin/kitty";
+        browser = "${profileDir}/bin/firefox";
+        editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
-        window-center = dotFileAt "i3config.nix" 4;
-        window-size = dotFileAt "i3config.nix" 5;
-        i3-msg = "${profileDir}/bin/swaymsg";
-        #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${profileDir}/bin/zsh";
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
-        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame None --multigrid'';
-        g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
         output = "HEADLESS-1";
