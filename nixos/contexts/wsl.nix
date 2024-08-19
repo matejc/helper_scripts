@@ -92,8 +92,10 @@ let
       };
       graphical = {
         name = "sway";
-        logout = "${pkgs.sway}/bin/swaymsg exit";
+        logout = "${self.variables.graphical.exec} exit";
         target = "sway-session.target";
+        waybar.prefix = "sway";
+        exec = "${self.variables.profileDir}/bin/swaymsg";
       };
     };
     services = [

@@ -93,7 +93,6 @@
         specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts + "/${context}.nix"; };
         modules = [
           inputs.home-manager.nixosModules.home-manager
-          # inputs.nix-index-database.nixosModules.nix-index
           ./nixos/configuration.nix
         ] ++ modules;
       });
