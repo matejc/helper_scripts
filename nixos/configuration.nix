@@ -1804,7 +1804,7 @@ in {
               Super+Period { expel-window-from-column; }
 
               // Super+R { switch-preset-column-width; }
-              Super+M { maximize-column; }
+              // Super+M { maximize-column; }
               Super+F { fullscreen-window; }
               // Super+C { center-column; }
 
@@ -1845,6 +1845,8 @@ in {
               Super+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Super+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Super+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Super+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen HDMI-A-1"; }
+              Super+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
           }
 
           // Settings for debugging. Not meant for normal use.
