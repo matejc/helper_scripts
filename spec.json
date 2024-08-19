@@ -90,5 +90,25 @@
       },
       "name": { "type": "string", "value": "wsl", "emailresponsible": false }
     }
+  },
+  "packages": {
+    "enabled": 1,
+    "hidden": true,
+    "description": "Extra Nix packages",
+    "nixexprinput": "src",
+    "nixexprpath": "build.nix",
+    "checkinterval": 600,
+    "schedulingshares": 100,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 3,
+    "inputs": {
+      "src": {
+        "type": "git",
+        "value": "https://github.com/matejc/helper_scripts.git",
+        "emailresponsible": false
+      },
+      "name": { "type": "string", "value": "packages", "emailresponsible": false }
+    }
   }
 }

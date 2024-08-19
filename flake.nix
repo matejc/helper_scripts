@@ -96,6 +96,7 @@
           ./nixos/configuration.nix
         ] ++ modules;
       });
+    pkgs = inputs.nixpkgs.legacyPackages.${system};
   in {
     # homeConfigurations = {
     #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
@@ -131,6 +132,7 @@
         ];
       }).config.system.build.toplevel;
       wsl = self.images.wsl.tarball;
+      packages = pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.name p) [ pkgs.clamav ]);
     };
     nixosConfigurations = {
       matej70 = nixosBuild {
