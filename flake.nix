@@ -132,7 +132,16 @@
         ];
       }).config.system.build.toplevel;
       wsl = self.images.wsl.tarball;
-      packages = pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.name p) [ pkgs.clamav ]);
+      packages = let
+        aider = pkgs.callPackage ./nixes/aider { };
+        sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
+        sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
+      in pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.pname p) [
+        pkgs.clamav
+        aider
+        sway-workspace
+        sway-scratchpad
+      ]);
     };
     nixosConfigurations = {
       matej70 = nixosBuild {

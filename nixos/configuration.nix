@@ -18,18 +18,6 @@ let
     wait
   '') (map (s: s.group) context.services);
 
-  sway-workspace = pkgs.rustPlatform.buildRustPackage {
-    name = "sway-workspace";
-    src = inputs.sway-workspace;
-    cargoHash = "sha256-8gT/2RUDIOnmTznjlzupIapHjz2pNQjj3DZ0dg8f+VM=";
-  };
-
-  sway-scratchpad = pkgs.rustPlatform.buildRustPackage {
-    name = "sway-scratchpad";
-    src = inputs.sway-scratchpad;
-    cargoHash = "sha256-iN8o2kZZ6gdeDPrNPNASXYBdyhq3AHuRLDel4b1/pTM=";
-  };
-
   swayncConfig = {
     "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
     control-center-height = 600;
@@ -236,6 +224,8 @@ in {
       (final: prev: {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
         nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
+        sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
+        sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         inherit sway-wsshare;
       })
       inputs.niri.overlays.niri
@@ -561,9 +551,9 @@ in {
           systemd.enable = true;
           wrapperFeatures.gtk = true;
           config = let
-            dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.binDir}/terminal -m terminal";
-            passwords = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 75 --height 70";
-            journal = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.logseq}/bin/logseq -m journal --width 75 --height 70";
+            dropdown = "${pkgs.sway-scratchpad}/bin/sway-scratchpad -c ${context.variables.binDir}/terminal -m terminal";
+            passwords = "${pkgs.sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.keepassxc}/bin/keepassxc -m keepassxc --width 75 --height 70";
+            journal = "${pkgs.sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.logseq}/bin/logseq -m journal --width 75 --height 70";
             resizeModeName = "Resize: arrow keys";
             mirrorModeName = "Mirror: s - sway-wsshare, c - create, f - toggle freeze";
             signalModeName = "Signal: s - stop, q - continue, k - terminate, 9 - kill";
@@ -613,14 +603,14 @@ in {
                 "Mod1+Control+l" = "exec ${context.variables.binDir}/lockscreen";
                 "Control+Tab" = "workspace back_and_forth";
                 "Mod1+Control+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
-                "Mod1+Control+Up" = "exec ${sway-workspace}/bin/sway-workspace prev-output";
-                "Mod1+Control+Down" = "exec ${sway-workspace}/bin/sway-workspace next-output";
-                "Mod1+Control+Shift+Up" = "exec ${sway-workspace}/bin/sway-workspace --move prev-output";
-                "Mod1+Control+Shift+Down" = "exec ${sway-workspace}/bin/sway-workspace --move next-output";
-                "Mod1+Control+Left" = "exec ${sway-workspace}/bin/sway-workspace prev-on-output --skip-empty";
-                "Mod1+Control+Right" = "exec ${sway-workspace}/bin/sway-workspace next-on-output --skip-empty";
-                "Mod1+Control+Shift+Left" = "exec ${sway-workspace}/bin/sway-workspace --move prev-on-output";
-                "Mod1+Control+Shift+Right" = "exec ${sway-workspace}/bin/sway-workspace --move next-on-output";
+                "Mod1+Control+Up" = "exec ${pkgs.sway-workspace}/bin/sway-workspace prev-output";
+                "Mod1+Control+Down" = "exec ${pkgs.sway-workspace}/bin/sway-workspace next-output";
+                "Mod1+Control+Shift+Up" = "exec ${pkgs.sway-workspace}/bin/sway-workspace --move prev-output";
+                "Mod1+Control+Shift+Down" = "exec ${pkgs.sway-workspace}/bin/sway-workspace --move next-output";
+                "Mod1+Control+Left" = "exec ${pkgs.sway-workspace}/bin/sway-workspace prev-on-output --skip-empty";
+                "Mod1+Control+Right" = "exec ${pkgs.sway-workspace}/bin/sway-workspace next-on-output --skip-empty";
+                "Mod1+Control+Shift+Left" = "exec ${pkgs.sway-workspace}/bin/sway-workspace --move prev-on-output";
+                "Mod1+Control+Shift+Right" = "exec ${pkgs.sway-workspace}/bin/sway-workspace --move next-on-output";
                 "Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" ${context.variables.homeDir}/Pictures/Screenshot-$(date +%Y-%m-%d_%H-%M-%S).png";
                 "Shift+Print" = "exec ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.wl-clipboard}/bin/wl-copy --type image/png";
                 "Control+Mod1+Delete" = "exec ${pkgs.nwg-bar}/bin/nwg-bar";
