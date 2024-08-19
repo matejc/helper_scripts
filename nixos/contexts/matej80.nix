@@ -1,4 +1,4 @@
-{ pkgs, lib, config, helper_scripts }:
+{ pkgs, lib, config, helper_scripts, inputs, ... }:
 let
   homeConfig = config.home-manager.users.matejc;
 
