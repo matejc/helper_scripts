@@ -10,6 +10,8 @@ let
     hash = "sha256-mhSh0wz2ntH/kri3PF5ZrFykjjdQLhmlIlDDGFQIYWw=";
   };
 
+  aider = pkgs.callPackage ../../nixes/aider { inherit pkgs; };
+
   self = {
     dotFilePaths = [
         "${helper_scripts}/dotfiles/programs.nix"
@@ -184,6 +186,7 @@ let
         helix
         aichat
         deploy-rs
+        aider
       ];
       programs.direnv = {
         enable = true;

@@ -5,7 +5,7 @@ let
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-hRUxzljtgLGEDwHf6UtQzGQM8CgiRtgNLlVoKa2jU3o=";
+    hash = "sha256-R6eduLpIK5geWMulFGvOXlEC4MfOXnvuOWua4Qpwfd0=";
   };
 
   dependencies = builtins.filter (v: v != null) (map (v: builtins.match "([[:alnum:]_-]+)==([[:alnum:]\._-]+)" v) (pkgs.lib.splitString "\n" (builtins.readFile (src + "/requirements.txt"))));
