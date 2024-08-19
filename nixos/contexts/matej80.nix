@@ -158,6 +158,9 @@ let
         ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
       '';
       hardware.bluetooth.enable = true;
+      nixpkgs.config.permittedInsecurePackages = [
+        "electron-27.3.11"
+      ];
     };
     home-configuration = {
       home.stateVersion = "23.05";
