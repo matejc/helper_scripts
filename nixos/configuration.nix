@@ -1717,7 +1717,8 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
