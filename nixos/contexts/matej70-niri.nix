@@ -36,7 +36,7 @@ let
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
       "${helper_scripts}/dotfiles/zed.nix"
-      "${helper_scripts}/dotfiles/proton.nix"
+      "${helper_scripts}/dotfiles/steam.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -128,19 +128,27 @@ let
       startup = [
         "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
         "${self.variables.programs.browser}"
-        "${self.variables.profileDir}/bin/chromium"
+        "${self.variables.profileDir}/bin/thorium"
         "${self.variables.programs.terminal}"
         "${pkgs.keepassxc}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
+      steam = {
+        library = "/mnt/games/SteamLibrary";
+        run = {
+          "2420110".compatibilityTool = "SteamTinkerLaunch";
+          "1898300".compatibilityTool = "GE-Proton9-11";
+          "2074920".compatibilityTool = "GE-Proton9-11";
+        };
+      };
     };
     services = [
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
-      { name = "kdeconnect"; delay = 3; group = "always"; }
+      { name = "kdeconnect"; delay = 4; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
-      { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 2; group = "always"; }
+      { name = "network-manager-applet"; delay = 4; group = "always"; }
+      { name = "waybar"; delay = 3; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
@@ -163,6 +171,16 @@ let
       ];
       services.flatpak.enable = true;
       services.ipp-usb.enable = true;
+      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+        "steam"
+        "steam-original"
+        "steam-run"
+      ];
+      hardware.openrazer = {
+        enable = true;
+        users = [ "matejc" ];
+      };
+      users.users.matejc.extraGroups = [ "openrazer" ];
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -185,7 +203,7 @@ let
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat vlc
           discord
-          lutris protontricks winetricks steamcmd steamtinkerlaunch protonup-qt minigalaxy wineWowPackages.unstableFull
+          protontricks winetricks steamcmd wineWowPackages.unstableFull
           super-slicer-latest
           uhk-agent
           jq

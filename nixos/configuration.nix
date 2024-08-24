@@ -525,17 +525,15 @@ in {
             {
               profile.name = "default";
               profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
+              # profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "firstonly";
               profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "all";
               profile.outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
             }
           ];
         };
@@ -1708,6 +1706,7 @@ in {
 
               // Suggested binds for running programs: terminal, app launcher, screen locker.
               Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
+              Ctrl+Alt+H { spawn "${context.variables.programs.filemanager}"; }
               Ctrl+Alt+Space { spawn "${context.variables.binDir}/launcher"; }
               Ctrl+Alt+L { spawn "${context.variables.binDir}/lockscreen"; }
               Super+L { spawn "${context.variables.binDir}/lockscreen"; }
@@ -1718,12 +1717,15 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
               XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
+              XF86AudioPlay { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl play-pause"; }
+              XF86AudioNext { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl next"; }
+              XF86AudioPrev { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl previous"; }
 
               Super+K { spawn "${niriWorkspaces}" "action" "close-window"; }
 
@@ -1873,15 +1875,15 @@ in {
           events = lib.mkOverride 900 [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
             { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
-            { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
+            # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
+            # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
           ];
           timeouts = lib.mkOverride 900 [
               { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
               {
                   timeout = 300;
                   command = ''${context.variables.graphical.exec} msg action power-off-monitors'';
-                  resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs;
+                  # resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs;
               }
           ];
         };
