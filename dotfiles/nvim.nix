@@ -957,12 +957,10 @@ EOF
     inoremap <silent> <C-S-Down> <esc>:call vm#commands#add_cursor_down(0, 1)<cr>
     inoremap <silent> <C-S-Up> <esc>:call vm#commands#add_cursor_up(0, 1)<cr>
     inoremap <silent> <C-S-a> <esc>:call vm#commands#add_cursor_at_pos(0)<cr>
-
     let g:VM_maps = {}
     let g:VM_maps["Select Cursor Down"] = '<C-S-Down>'      " start selecting down
     let g:VM_maps["Select Cursor Up"]   = '<C-S-Up>'        " start selecting up
     let g:VM_maps["Add Cursor At Pos"]   = '<C-S-a>'
-
     function! VM_Start()
       inoremap <buffer> <Esc> <Esc>
     endfunction
@@ -2393,7 +2391,6 @@ require("parrot").setup({
     openai = {
       api_key = os.getenv "OPENAI_API_KEY",
     },
-    ollama = {} -- provide an empty list to make provider available
   },
 
   -- the prefix used for all commands
@@ -3012,6 +3009,7 @@ EOF
           pkgs.vimPlugins.markdown-preview-nvim
           myVimPlugins.markdown-nvim
           myVimPlugins.parrot-nvim
+          # myVimPlugins.multicursor-nvim
         ];
         opt = [
         ];
