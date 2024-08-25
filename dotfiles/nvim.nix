@@ -3007,7 +3007,7 @@ EOF
           # myVimPlugins.ChatGPT-nvim
           myVimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
-          myVimPlugins.markdown-nvim
+          myVimPlugins.render-markdown-nvim
           myVimPlugins.parrot-nvim
           # myVimPlugins.multicursor-nvim
         ];

@@ -304,18 +304,6 @@ final: prev:
     meta.homepage = "https://github.com/rktjmp/lush.nvim/";
   };
 
-  markdown-nvim = buildVimPlugin {
-    pname = "markdown.nvim";
-    version = "2024-08-25";
-    src = fetchFromGitHub {
-      owner = "MeanderingProgrammer";
-      repo = "render-markdown.nvim";
-      rev = "92e1963d1ff789bfd4e62867fbcb06fe3c67124e";
-      sha256 = "1r9q4fph37kmbr8jmjg1c6790b19i1cmkh7042wjnsfjmn01scyw";
-    };
-    meta.homepage = "https://github.com/MeanderingProgrammer/render-markdown.nvim/";
-  };
-
   motpat-vim = buildVimPlugin {
     pname = "motpat-vim";
     version = "2017-11-10";
@@ -639,6 +627,18 @@ final: prev:
       sha256 = "186ikc2i7lvaw0ssp7qyfl2p26wjgqb8v247nr52kaw26mq01r05";
     };
     meta.homepage = "https://github.com/previm/previm/";
+  };
+
+  render-markdown-nvim = buildVimPlugin {
+    pname = "render-markdown.nvim";
+    version = "2024-08-25";
+    src = fetchFromGitHub {
+      owner = "MeanderingProgrammer";
+      repo = "render-markdown.nvim";
+      rev = "92e1963d1ff789bfd4e62867fbcb06fe3c67124e";
+      sha256 = "1r9q4fph37kmbr8jmjg1c6790b19i1cmkh7042wjnsfjmn01scyw";
+    };
+    meta.homepage = "https://github.com/MeanderingProgrammer/render-markdown.nvim/";
   };
 
   searchbox-nvim = buildVimPlugin {
