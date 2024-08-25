@@ -21,11 +21,11 @@ let
   swayncConfig = {
     "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
     control-center-height = 600;
-    control-center-margin-bottom = 0;
-    control-center-margin-left = 0;
-    control-center-margin-right = 0;
-    control-center-margin-top = 0;
-    control-center-width = 500;
+    control-center-margin-bottom = 20;
+    control-center-margin-left = 20;
+    control-center-margin-right = 20;
+    control-center-margin-top = 20;
+    control-center-width = 600;
     cssPriority = "application";
     fit-to-screen = true;
     hide-on-action = true;
