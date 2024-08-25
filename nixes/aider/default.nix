@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.50.1";
+  version = "0.52.0";
   src = pkgs.fetchFromGitHub {
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-R6eduLpIK5geWMulFGvOXlEC4MfOXnvuOWua4Qpwfd0=";
+    hash = "sha256-xfg7iPkbiHoffZDEYUSVAhlPQsOHSrK5NHhYVbo3JIo=";
   };
 
   dependencies = builtins.filter (v: v != null) (map (v: builtins.match "([[:alnum:]_-]+)==([[:alnum:]\._-]+)" v) (pkgs.lib.splitString "\n" (builtins.readFile (src + "/requirements.txt"))));
