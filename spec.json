@@ -9,7 +9,7 @@
     "schedulingshares": 100,
     "enableemail": false,
     "emailoverride": "",
-    "keepnr": 3,
+    "keepnr": 10,
     "inputs": {
       "src": {
         "type": "git",
@@ -33,7 +33,7 @@
     "schedulingshares": 100,
     "enableemail": false,
     "emailoverride": "",
-    "keepnr": 3,
+    "keepnr": 10,
     "inputs": {
       "src": {
         "type": "git",
@@ -57,7 +57,7 @@
     "schedulingshares": 100,
     "enableemail": false,
     "emailoverride": "",
-    "keepnr": 3,
+    "keepnr": 10,
     "inputs": {
       "src": {
         "type": "git",
@@ -81,7 +81,7 @@
     "schedulingshares": 100,
     "enableemail": false,
     "emailoverride": "",
-    "keepnr": 3,
+    "keepnr": 10,
     "inputs": {
       "src": {
         "type": "git",
@@ -101,7 +101,7 @@
     "schedulingshares": 100,
     "enableemail": false,
     "emailoverride": "",
-    "keepnr": 3,
+    "keepnr": 10,
     "inputs": {
       "src": {
         "type": "git",

@@ -280,6 +280,9 @@ in {
       inputs.nix-index-database.packages.${pkgs.system}.comma-with-db
     ];
 
+    nix.channel.enable = false;
+    nix.settings.nix-path = "nixpkgs=${inputs.nixpkgs}";
+
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
     home-manager.users.matejc = { config, ... }: {
