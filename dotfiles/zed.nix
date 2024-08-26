@@ -32,6 +32,8 @@ in
     {
       bindings = {
         ctrl-o = "project_panel::ToggleFocus";
+        ctrl-p = "file_finder::Toggle";
+        ctrl-shift-p = "command_palette::Toggle";
       };
     } {
       context = "ProjectPanel";
@@ -47,6 +49,7 @@ in
         ctrl-up = "editor::MoveLineUp";
         ctrl-down = "editor::MoveLineDown";
         ctrl-o = "project_panel::ToggleFocus";
+        "ctrl-\\" = "buffer_search::Deploy";
       };
     }
   ]);

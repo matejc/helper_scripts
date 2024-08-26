@@ -139,6 +139,7 @@ let
           "2420110".compatibilityTool = "SteamTinkerLaunch";
           "1898300".compatibilityTool = "GE-Proton9-11";
           "2074920".compatibilityTool = "GE-Proton9-11";
+          "1716740".compatibilityTool = "SteamTinkerLaunch";
         };
       };
     };
@@ -168,6 +169,7 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
+        "olm-3.2.16"
       ];
       services.flatpak.enable = true;
       services.ipp-usb.enable = true;
@@ -176,6 +178,7 @@ let
         "steam-original"
         "steam-run"
       ];
+      programs.steam.enable = true;
       hardware.openrazer = {
         enable = true;
         users = [ "matejc" ];
