@@ -907,8 +907,8 @@
     "nixos-configuration": {
       "flake": false,
       "locked": {
-        "lastModified": 1724514407,
-        "narHash": "sha256-XBPgFgYdBuRWf3+B0W0kebzcYXKQFa/p6JGhivgmfKI=",
+        "lastModified": 1724691065,
+        "narHash": "sha256-+lP5yIyjmlVmIddI1pWIEPT1TeUEmVex8UBJ+9xtqi4=",
         "path": "/etc/nixos",
         "type": "path"
       },

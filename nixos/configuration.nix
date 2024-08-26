@@ -280,8 +280,17 @@ in {
       inputs.nix-index-database.packages.${pkgs.system}.comma-with-db
     ];
 
-    nix.channel.enable = false;
-    nix.settings.nix-path = "nixpkgs=${inputs.nixpkgs}";
+    nix = {
+      channel.enable = false;
+      settings = {
+        nix-path = "nixpkgs=${inputs.nixpkgs}";
+        experimental-features = [ "nix-command" "flakes" ];
+      };
+      gc = {
+        automatic = true;
+        dates = "weekly";
+      };
+    };
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
