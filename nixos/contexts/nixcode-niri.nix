@@ -142,6 +142,7 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
+        "olm-3.2.16"
       ];
     };
     home-configuration = {
