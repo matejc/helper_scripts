@@ -36,5 +36,10 @@ in {
     disko_luks
   ];
 
+  nix = {
+    channel.enable = false;
+    settings.nix-path = "nixpkgs=${pkgs.path}";
+  };
+
   system.stateVersion = config.system.nixos.release;
 }

@@ -10,8 +10,6 @@ let
     hash = "sha256-mhSh0wz2ntH/kri3PF5ZrFykjjdQLhmlIlDDGFQIYWw=";
   };
 
-  aider = pkgs.callPackage ../../nixes/aider { inherit pkgs; };
-
   self = {
     dotFilePaths = [
         "${helper_scripts}/dotfiles/programs.nix"
@@ -187,6 +185,7 @@ let
         aichat
         deploy-rs
         aider
+        freerdp3
       ];
       programs.direnv = {
         enable = true;
@@ -197,6 +196,7 @@ let
         LIBVA_DRIVER_NAME = "iHD";
       };
       programs.chromium.enable = true;
+      programs.chromium.package = pkgs.lib.mkForce pkgs.thorium;
       programs.firefox.enable = true;
     };
   };

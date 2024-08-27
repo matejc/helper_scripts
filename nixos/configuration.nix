@@ -218,6 +218,8 @@ let
   '';
 
   sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
+  aider = pkgs.callPackage ../nixes/aider { };
+  thorium = pkgs.callPackage ../nixes/thorium.nix { };
 in {
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
@@ -226,7 +228,7 @@ in {
         nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
-        inherit sway-wsshare;
+        inherit sway-wsshare aider thorium;
       })
       inputs.niri.overlays.niri
     ];

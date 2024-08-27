@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -61,7 +61,7 @@
 
         # optional arguments:
         # explicit nixpkgs and lib:
-        # pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        inherit pkgs;
         # lib = nixpkgs.legacyPackages.x86_64-linux.lib;
         # additional arguments to pass to modules:
         specialArgs = { inherit disko; };

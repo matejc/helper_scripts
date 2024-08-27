@@ -55,7 +55,6 @@ $ nano -wc /mnt/etc/nixos/configuration.nix
 ## Install
 
 ```shell
-$ nix-channel --update
 $ nixos-install
 ```
 
@@ -64,4 +63,13 @@ $ nixos-install
 
 ```shell
 $ reboot
+```
+
+
+## Test out the installer image
+
+```
+$ nix build './installer#packages.x86_64-linux.test'
+$ qemu-img create -f qcow2 disk.qcow2 10000M
+$ ./result/bin/run-nixos-vm -m 4G -hda $(pwd)/disk.qcow2
 ```
