@@ -210,7 +210,7 @@ let
         workspace_str="$(niri msg -j workspaces | jq -j ".[] | select(.output == \"$1\") | if .is_active then \"<b><span color='#1793d1'> \(.idx)</span></b>\" else \"<b><span color='#cccccc'> \(.idx)</span></b>\" end")"
         if [[ "$1" = "$(niri msg -j focused-output | jq -r ".name")" ]]
         then
-            jq --argjson win "$(niri msg -j focused-window)" --arg ws "$workspace_str" -cn '{ text: "\($ws)\t\t\t\(if $win.title == null then "" else $win.title end)" }'
+            jq --argjson win "$(niri msg -j focused-window)" --arg ws "$workspace_str" -cn '{ text: "\($ws)\t\(if $win.title == null then "" elif $win.title|length > 110 then $win.title[0:110]+"..." else $win.title end)" }'
         else
             jq --arg ws "$workspace_str" -cn '{ text: "\($ws)" }'
         fi
@@ -1451,6 +1451,10 @@ in {
             };
           };
         };
+        services.swayosd = {
+          enable = true;
+          display = (builtins.head context.variables.outputs).output;
+        };
 
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
         programs.niri.package = pkgs.niri-stable;
@@ -1731,13 +1735,15 @@ in {
               // You can also use a shell:
               // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
 
-              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 3%+; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -A 10"; }
-              XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.brillo}/bin/brillo -U 10"; }
+              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume 3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Shift+XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume 3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume -3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Shift+XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume -3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --brightness +10"; }
+              XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --brightness -10"; }
               XF86AudioPlay { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl play-pause"; }
               XF86AudioNext { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl next"; }
               XF86AudioPrev { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl previous"; }
