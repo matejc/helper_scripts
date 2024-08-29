@@ -140,7 +140,7 @@ let
 
     if [ -f $HOME/.rec.pid ]
     then
-        printf "%s" " "
+        printf "<span color='#ff0000'>%s</span>" " "
     fi
 
     WP_OUTPUT_SOURCE=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
