@@ -81,6 +81,15 @@ let
   labwcConfig = pkgs.writeText "config.xml" ''
     <?xml version="1.0"?>
     <labwc_config>
+      <keyboard>
+        <default />
+        <keybind key="C-A-v">
+          <action name="clipboard-pull" command="/usr/bin/clipboard-pull >/dev/null 2>/dev/null </dev/null" />
+        </keybind>
+        <keybind key="C-A-c">
+          <action name="clipboard-push" command="/usr/bin/clipboard-push >/dev/null 2>/dev/null </dev/null" />
+        </keybind>
+      </keyboard>
     </labwc_config>
   '';
 
