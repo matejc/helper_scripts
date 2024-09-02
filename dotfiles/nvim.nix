@@ -1091,7 +1091,17 @@ EOF
 
 lua <<EOF
 
-function wordMove(forward)
+function delete_chars_in_range(row, begin_col, end_col)
+  local line = vim.api.nvim_buf_get_lines(0, row-1, row, false)[1]
+
+  if begin_col ~= end_col then
+    local new_line = line:sub(1, begin_col) .. line:sub(end_col + 1)
+    vim.api.nvim_buf_set_lines(0, row-1, row, false, {new_line})
+  end
+end
+
+function wordMove(forward, delete)
+  delete = delete or false
   local pattern='\\v\\C([A-Z][a-z]+|[A-Z]+|[a-z]+|[0-9]+|^|$)'
   flags = 'W'
   if forward == 0 then
@@ -1099,31 +1109,40 @@ function wordMove(forward)
   end
   local initialrow, initialcol = unpack(vim.api.nvim_win_get_cursor(0))
   local row, col
+  local dcol
   if forward == 1 then
+    row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
+    dcol = col-1
     if initialcol+1 == vim.fn.col('$') then
       row = initialrow+1
       col = 1
-    else
-      row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
-      if col == 0 then
-        row = initialrow
-        col = vim.fn.col('$')
-      end
+      dcol = initialcol
+    elseif col == 0 then
+      row = initialrow
+      col = vim.fn.col('$')
+      dcol = col
     end
   else
+    row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
+    dcol = col-1
     if initialcol == 0 then
       row = initialrow-1
       col = vim.fn.strlen(vim.fn.getline(row))+1
-    else
-      row, col = unpack(vim.fn.searchpos(pattern, flags, initialrow))
-      if col == 0 then
-        row = initialrow
-        col = 1
-      end
+      dcol = initialcol
+    elseif col == 0 then
+      row = initialrow
+      col = 1
     end
   end
   if row > 0 and row <= vim.fn.line('$') then
-    vim.api.nvim_win_set_cursor(0, { row, col-1 })
+    if delete == true and forward == 1 then
+      delete_chars_in_range(initialrow, initialcol, dcol)
+      vim.api.nvim_win_set_cursor(0, { initialrow, initialcol })
+    elseif delete == true and forward == 0 then
+      delete_chars_in_range(initialrow, dcol, initialcol)
+    else
+      vim.api.nvim_win_set_cursor(0, { row, col-1 })
+    end
   end
 end
 
@@ -1137,15 +1156,17 @@ vim.keymap.set("v", '<c-s-left>', function() wordMove(0) end, { noremap = true, 
 
 vim.keymap.set("i", '<c-right>', function() wordMove(1) end, { noremap = true, silent = true })
 vim.keymap.set("i", '<c-left>', function() wordMove(0) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-del>', function() wordMove(1, true) end, { noremap = true, silent = true })
+vim.keymap.set("i", '<c-bs>', function() wordMove(0, true) end, { noremap = true, silent = true })
 vim.keymap.set("i", '<c-s-right>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>v',true,false,true),'n',false); vim.fn.timer_start(10, function() wordMove(1) end) end, { noremap = true, silent = true })
 vim.keymap.set("i", '<c-s-left>', function() vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<esc>v',true,false,true),'n',false); vim.fn.timer_start(10, function() wordMove(0) end) end, { noremap = true, silent = true })
 
 EOF
     vnoremap <esc> <esc><esc>i
 
-    inoremap <silent> <A-del> <C-o>"_dw
-    inoremap <silent> <C-del> <C-o>"_dw
-    inoremap <silent> <C-BS> <C-W>
+    " inoremap <silent> <A-del> <C-o>"_dw
+    " inoremap <silent> <C-del> <C-o>"_dw
+    " inoremap <silent> <C-BS> <C-W>
 
     nnoremap <silent> <C-del> "_dw
 
