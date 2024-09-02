@@ -22,7 +22,7 @@ let
     "html"
     "cssls"
     "ccls"
-    # "omnisharp"
+    "omnisharp"
     "gopls"
     #"hls"
     #"sumneko_lua"
@@ -155,7 +155,7 @@ let
     omnisharp = ''
       setup_lsp("omnisharp", {
         on_attach = on_attach;
-        cmd = { "${pkgs.omnisharp-roslyn}/bin/OmniSharp" };
+        cmd = { "dotnet", "${pkgs.omnisharp-roslyn}/lib/omnisharp-roslyn/OmniSharp.dll" };
         capabilities = capabilities;
         settings = {
           FormattingOptions = {
@@ -173,11 +173,11 @@ let
             -- for projects that are relevant to code that is being edited. With this
             -- setting enabled OmniSharp may load fewer projects and may thus display
             -- incomplete reference lists for symbols.
-            LoadProjectsOnDemand = nil,
+            LoadProjectsOnDemand = true,
           },
           RoslynExtensionsOptions = {
             -- Enables support for roslyn analyzers, code fixes and rulesets.
-            EnableAnalyzersSupport = false,
+            EnableAnalyzersSupport = true,
             -- Enables support for showing unimported types and unimported extension
             -- methods in completion lists. When committed, the appropriate using
             -- directive will be added at the top of the current file. This option can
@@ -697,8 +697,8 @@ EOF
     nnoremap <silent> <PageUp> 10<up>
     nnoremap <silent> <PageDown> 10<down>
 
-    inoremap <expr> <silent> <PageUp> line('.')==1?'<C-o>:call NoOP()<CR>':'<C-o>10k'
-    inoremap <expr> <silent> <PageDown> line('.')==line('$')?'<C-o>:call NoOP()<CR>':'<C-o>10j'
+    inoremap <silent> <PageUp> <C-O>10k
+    inoremap <silent> <PageDown> <C-O>10j
 
     vnoremap <silent> <PageUp> 10<up>
     vnoremap <silent> <PageDown> 10<down>
