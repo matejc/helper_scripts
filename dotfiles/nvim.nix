@@ -1092,7 +1092,7 @@ EOF
 lua <<EOF
 
 function wordMove(forward)
-  local pattern='[a-zA-Z0-9]\\+\\|^\\|$'
+  local pattern='\\v\\C([A-Z][a-z]+|[A-Z]+|[a-z]+|[0-9]+|^|$)'
   flags = 'W'
   if forward == 0 then
     flags = flags .. 'b'
