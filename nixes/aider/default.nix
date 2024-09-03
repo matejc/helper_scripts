@@ -90,7 +90,9 @@ let
     buildInputs = [ pkgs.python312Packages.setuptools ];
     propagatedBuildInputs = builtins.attrValues aider_deps;
     postInstall = ''
-      wrapProgram $out/bin/aider --set PLAYWRIGHT_BROWSERS_PATH "${pkgs.playwright-driver.browsers}"
+      wrapProgram $out/bin/aider \
+        --set PLAYWRIGHT_BROWSERS_PATH "${pkgs.playwright-driver.browsers}" \
+        --set PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS true
     '';
   };
 in
