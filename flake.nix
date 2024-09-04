@@ -3,7 +3,6 @@
   inputs = {
     nixpkgs.url = "github:matejc/nixpkgs/latest";
     # nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
-    nixexprs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;

@@ -126,7 +126,6 @@ let
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
         "${self.variables.programs.browser}"
         "${self.variables.profileDir}/bin/thorium"
         "${self.variables.programs.terminal}"

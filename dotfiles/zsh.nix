@@ -87,9 +87,16 @@ let
       fd -t d --min-depth 1 --max-depth 3 "" "." --exec echo {} | awk -F/ '{print NF,$0}' | sort -n | cut -d' ' -f 2-
     } | awk '!x[$0]++' | fzf +m --reverse --height 15 --tiebreak=index --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
 
-    if [ -n "$fzf_result" ]
+    entry="$(realpath -s $fzf_result)"
+
+    if [ -d "$entry" ]
     then
-      fre --store_name dir_history --add "$(realpath -s $fzf_result)" && echo -n "$fzf_result"
+      fre --store_name dir_history --add "$entry" && echo -n "$entry"
+    elif [ -n "$fzf_result" ]
+    then
+      fre --store_name dir_history --delete "$fzf_result" && echo -n "."
+    else
+      echo -n "."
     fi
   '';
 in
@@ -275,7 +282,6 @@ in
     first-tab() {
         if [[ $#BUFFER == 0 ]]
         then
-            # cd "./$(${pkgs.findutils}/bin/find . -mindepth 1 -maxdepth 3 -type d -print | sort -t. -k2,1r -k3 | ${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
             cd "$(${fdz-dir})"
             zle reset-prompt
             precmd
