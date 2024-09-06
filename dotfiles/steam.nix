@@ -12,9 +12,9 @@
       exit 1
     fi
 
-    if [ -d "$HOME/.steam/root/compatibilitytools.d/$release" ]
+    if [ -d "$HOME/.steam/steam/compatibilitytools.d/$release" ]
     then
-      echo "Release already exist: '$HOME/.steam/root/compatibilitytools.d/$release'" >&2
+      echo "Release already exist: '$HOME/.steam/steam/compatibilitytools.d/$release'" >&2
       exit 0
     fi
 
@@ -45,27 +45,27 @@
 
     # make steam directory if it does not exist
     echo "Creating Steam directory if it does not exist..."
-    mkdir -p ~/.steam/root/compatibilitytools.d
+    mkdir -p ~/.steam/steam/compatibilitytools.d
     mkdir -p ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d
 
     # extract proton tarball to steam directory
     echo "Extracting $tarball_name to Steam directory..."
-    tar -xf $tarball_name -C ~/.steam/root/compatibilitytools.d/
+    tar -xf $tarball_name -C ~/.steam/steam/compatibilitytools.d/
     tar -xf $tarball_name -C ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
 
     echo "All done :)"
   '';
 } {
-  target = "${variables.homeDir}/.steam/root/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
+  target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
   source = "${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch";
 } {
-  target = "${variables.homeDir}/.steam/root/compatibilitytools.d/SteamTinkerLaunch/compatibilitytool.vdf";
+  target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/compatibilitytool.vdf";
   source = pkgs.writeText "compatibilitytool.vdf" ''
   "compatibilitytools"
   {
     "compat_tools"
     {
-      "SteamTinkerLaunch" // Internal name of this tool
+      "Proton-stl" // Internal name of this tool
       {
         // Can register this tool with Steam in two ways:
         //
@@ -83,6 +83,15 @@
         "to_oslist"    "linux"
       }
     }
+  }
+  '';
+} {
+  target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/toolmanifest.vdf";
+  source = pkgs.writeText "toolmanifest.vdf" ''
+  "manifest"
+  {
+    "commandline" "/steamtinkerlaunch run"
+    "commandline_waitforexitandrun" "/steamtinkerlaunch waitforexitandrun"
   }
   '';
 } {
@@ -114,8 +123,6 @@
 
     check_args 2
     action="$1"
-
-    export SDL_VIDEODRIVER=x11
 
     export WINE="${pkgs.wineWowPackages.stableFull}/bin/wine"
     export WINEPREFIX="$2"
@@ -166,8 +173,6 @@
     check_args 3
     app_id="$1"
     action="$2"
-
-    export SDL_VIDEODRIVER=x11
 
     if [[ "$action" = "launch" ]]
     then

@@ -178,11 +178,16 @@ let
         "steam-run"
       ];
       programs.steam.enable = true;
+      programs.gamemode.enable = true;
       hardware.openrazer = {
         enable = true;
         users = [ "matejc" ];
       };
-      users.users.matejc.extraGroups = [ "openrazer" ];
+      users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
+      programs.gamescope = {
+        enable = true;
+        capSysNice = true;
+      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -211,7 +216,7 @@ let
           jq
           scanmem
           caprine-bin
-          steam-run
+          steam-run steamtinkerlaunch yad
           logseq
       ]);
       programs.chromium.enable = true;
@@ -221,7 +226,6 @@ let
       systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
       systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
       programs.firefox.enable = true;
-      home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };
 in

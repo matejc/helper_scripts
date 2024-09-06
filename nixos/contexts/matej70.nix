@@ -222,7 +222,6 @@ let
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
       programs.firefox.enable = true;
-      home.sessionVariables.SDL_VIDEODRIVER = pkgs.lib.mkForce "x11";
     };
   };
 in
