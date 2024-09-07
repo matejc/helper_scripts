@@ -207,13 +207,10 @@ let
     action)
         niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;
     *)
-        workspace_str="$(niri msg -j workspaces | jq -j ".[] | select(.output == \"$1\") | if .is_active then \"<b><span color='#1793d1'> \(.idx)</span></b>\" else \"<b><span color='#cccccc'> \(.idx)</span></b>\" end")"
-        if [[ "$1" = "$(niri msg -j focused-output | jq -r ".name")" ]]
-        then
-            jq --argjson win "$(niri msg -j focused-window)" --arg ws "$workspace_str" -cn '{ text: "\($ws)\t\(if $win.title == null then "" elif $win.title|length > 110 then $win.title[0:110]+"..." else $win.title end)" }'
-        else
-            jq --arg ws "$workspace_str" -cn '{ text: "\($ws)" }'
-        fi
+        tree="$(niri msg -j workspaces | jq -jc --argjson wins "$(niri msg -j windows)" --arg output "$1" '[.[] | select(.output == $output) | . += {"windows": [. as $ws | $wins[] | select(.workspace_id == $ws.id)]} | .] | sort_by(.idx)')"
+        workspace_str="$(jq -jnr --argjson tree "$tree" '"\($tree[] | "<b><span color=\"\(if .is_active then "#1793d1" else "#cccccc" end)\"> \(.idx)<sub>\(.windows|length)</sub></span></b>")"')"
+        title="$(jq -jnr --argjson tree "$tree" '$tree[] | select(.is_active) as $ws | $ws.windows[] | select(.id == $ws.active_window_id) as $win | if $win.title == null then "" elif $win.title|length > 110 then $win.title[0:110]+"..." else $win.title end')"
+        jq -jcn --arg title "$title" --arg ws_str "$workspace_str" '{text: "\($ws_str)\t\($title)"}'
     esac
   '';
 

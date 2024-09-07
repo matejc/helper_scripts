@@ -87,7 +87,7 @@ let
       fd -t d --min-depth 1 --max-depth 3 "" "." --exec echo {} | awk -F/ '{print NF,$0}' | sort -n | cut -d' ' -f 2-
     } | awk '!x[$0]++' | fzf +m --reverse --height 15 --tiebreak=index --bind 'tab:down' --bind 'shift-tab:up' -1 -0)"
 
-    entry="$(realpath -s $fzf_result)"
+    entry="$(realpath -s "$fzf_result")"
 
     if [ -d "$entry" ]
     then

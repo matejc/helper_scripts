@@ -186,12 +186,12 @@ let
       users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
       programs.gamescope = {
         enable = true;
-        capSysNice = true;
       };
     };
     home-configuration = {
       home.stateVersion = "20.09";
       programs.niri.enable = true;
+      programs.niri.package = lib.mkForce pkgs.niri-unstable;
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
@@ -216,7 +216,7 @@ let
           jq
           scanmem
           caprine-bin
-          steam-run steamtinkerlaunch yad
+          steam-run steamtinkerlaunch yad xwayland-run cage
           logseq
       ]);
       programs.chromium.enable = true;
