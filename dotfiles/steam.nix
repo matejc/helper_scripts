@@ -1,4 +1,10 @@
 { variables, config, pkgs, lib }:
+let
+  steam-xrun = pkgs.writeShellScriptBin "steam-xrun" ''
+    export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xwayland-run ]}"
+    exec xwayland-run -ac -- openbox --startup 'bash -c "swiftpoint & ${config.programs.steam.package}/bin/steam; openbox --exit"'
+  '';
+in
 [{
   target = "${variables.homeDir}/bin/protonge-update";
   source = pkgs.writeShellScript "protonge-update.sh" ''
@@ -55,6 +61,9 @@
 
     echo "All done :)"
   '';
+} {
+  target = "${variables.homeDir}/bin/steam-xrun";
+  source = "${steam-xrun}/bin/steam-xrun";
 } {
   target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
   source = "${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch";

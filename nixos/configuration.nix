@@ -208,7 +208,7 @@ let
         niri msg action "''${@:2}" && pkill -SIGRTMIN+9 waybar;;
     *)
         tree="$(niri msg -j workspaces | jq -jc --argjson wins "$(niri msg -j windows)" --arg output "$1" '[.[] | select(.output == $output) | . += {"windows": [. as $ws | $wins[] | select(.workspace_id == $ws.id)]} | .] | sort_by(.idx)')"
-        workspace_str="$(jq -jnr --argjson tree "$tree" '"\($tree[] | "<b><span color=\"\(if .is_active then "#1793d1" else "#cccccc" end)\"> \(.idx)<sub>\(.windows|length)</sub></span></b>")"')"
+        workspace_str="$(jq -jnr --argjson tree "$tree" '"\($tree[] | "<b><span color=\"\(if .is_active then "#1793d1" else "#cccccc" end)\"> \(.idx)<sup>\(.windows|length)</sup></span></b>")"')"
         title="$(jq -jnr --argjson tree "$tree" '$tree[] | select(.is_active) as $ws | $ws.windows[] | select(.id == $ws.active_window_id) as $win | if $win.title == null then "" elif $win.title|length > 110 then $win.title[0:110]+"..." else $win.title end')"
         jq -jcn --arg title "$title" --arg ws_str "$workspace_str" '{text: "\($ws_str)\t\($title)"}'
     esac
