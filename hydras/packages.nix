@@ -16,5 +16,5 @@ let
   #     {name = p.pname; value = builtins.listToAttrs (map (o: { name = o; value = p.${o}; }) p.outputs);}
   # ) attrs)));
 
-  jobs = rellib.mapTestOn (builtins.listToAttrs (map (a: { name = a; value = rellib.linux; }) attrs));
+  jobs = rellib.mapTestOn (builtins.listToAttrs (map (a: { name = a; value = supportedSystems; }) attrs));
 in jobs
