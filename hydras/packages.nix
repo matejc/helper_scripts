@@ -1,5 +1,5 @@
 { nixpkgs ? <nixpkgs>
-, supportedSystems ? [ "x86_64-linux" "i686-linux" ]
+, supportedSystems ? [ "x86_64-linux" ]
 , system ? builtins.currentSystem
 , attrs ? [ ]
 }:
