@@ -388,6 +388,7 @@ in {
           pkgs.python3
           pkgs.jq
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
+          pkgs.devenv
         ] ++ services-cmds ++ (lib.optionals (context.variables.graphical.name == "sway") [sway-wsshare]);
         home.sessionVariables = {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
@@ -1392,6 +1393,10 @@ in {
           };
         };
         programs.gitui.enable = true;
+        programs.direnv = {
+          enable = true;
+          enableZshIntegration = true;
+        };
         home.shellAliases = {
           ".." = "cd ..";
           "l" = "${pkgs.eza}/bin/eza -gal --git";
