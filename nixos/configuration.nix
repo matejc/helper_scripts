@@ -1672,7 +1672,7 @@ in {
           // Add lines like this to spawn processes at startup.
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
-          spawn-at-startup "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
+          spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync"
