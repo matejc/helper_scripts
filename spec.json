@@ -110,5 +110,30 @@
       },
       "name": { "type": "string", "value": "packages", "emailresponsible": false }
     }
+  },
+  "nixpkgs": {
+    "enabled": 1,
+    "hidden": true,
+    "description": "Nix packages (master)",
+    "nixexprinput": "helper_scripts",
+    "nixexprpath": "nixes/packages.nix",
+    "checkinterval": 600,
+    "schedulingshares": 100,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 10,
+    "inputs": {
+      "helper_scripts": {
+        "type": "git",
+        "value": "https://github.com/matejc/helper_scripts.git",
+        "emailresponsible": false
+      },
+      "nixpkgs": {
+        "type": "git",
+        "value": "https://github.com/matejc/nixpkgs.git master",
+        "emailresponsible": false
+      },
+      "name": { "type": "nix", "value": "attrs", "emailresponsible": false }
+    }
   }
 }
