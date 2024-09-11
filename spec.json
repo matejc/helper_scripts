@@ -130,7 +130,7 @@
       },
       "nixpkgs": {
         "type": "git",
-        "value": "https://github.com/matejc/nixpkgs.git master",
+        "value": "github:matejc/nixpkgs/master",
         "emailresponsible": false
       },
       "attrs": { "type": "nix", "value": "[\"curl\"]", "emailresponsible": false }
