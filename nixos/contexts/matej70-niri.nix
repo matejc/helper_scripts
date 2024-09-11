@@ -133,6 +133,9 @@ let
         "${self.variables.profileDir}/bin/logseq"
       ];
       steam = {
+        xrun = [
+          "swiftpoint"
+        ];
         library = "/mnt/games/SteamLibrary";
         run = {
           "2420110".compatibilityTool = "SteamTinkerLaunch";

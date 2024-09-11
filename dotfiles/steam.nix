@@ -1,8 +1,9 @@
 { variables, config, pkgs, lib }:
 let
   steam-xrun = pkgs.writeShellScriptBin "steam-xrun" ''
-    export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xwayland-run ]}"
-    exec xwayland-run -ac -- openbox --startup 'bash -c "swiftpoint & ${config.programs.steam.package}/bin/steam; openbox --exit"'
+    export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xwayland-run config.programs.steam.package ]}"
+    export RADV_PERFTEST=gpl
+    exec xwayland-run -ac -- openbox --startup 'bash -c "${lib.concatStringsSep " & " variables.steam.xrun} & steam; openbox --exit"'
   '';
 in
 [{
