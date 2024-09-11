@@ -1,35 +1,19 @@
-{ nixpkgs
+{ nixpkgs ? <nixpkgs>
 , supportedSystems ? [ "x86_64-linux" "i686-linux" ]
 , system ? builtins.currentSystem
 , attrs ? [ ]
 }:
-
-with import <nixpkgs/pkgs/top-level/release-lib.nix> { inherit supportedSystems; };
-
 let
   pkgs = import nixpkgs { inherit system; };
+  rellib = import "${nixpkgs}/pkgs/top-level/release-lib.nix" { inherit supportedSystems; };
+  nixpkgsFor = rellib.forAllSystems (system: import nixpkgs { inherit system; });
 
-  removeFirst = (str:
-    pkgs.lib.drop 1 (pkgs.lib.splitString "." str)
-  );
-  zipModules = (list:
-    pkgs.lib.zipAttrsWith (n: v:
-      if builtins.tail v != [] then zipModules v else builtins.head v
-    ) list
-  );
 
-  jobs =
-    (mapTestOn (
-
-      zipModules (
-        map (n:
-          pkgs.lib.listToAttrs [(
-            pkgs.lib.nameValuePair
-            (builtins.head (pkgs.lib.splitString "." n))
-            (pkgs.lib.setAttrByPath (removeFirst n) supportedSystems)
-          )]
-        ) attrs
-      )
-
-    ));
+  jobs = rellib.forAllSystems (system: (builtins.listToAttrs (map (attr:
+    let
+      path = pkgs.lib.splitString "." attr;
+      p = pkgs.lib.getAttrFromPath path nixpkgsFor.${system};
+    in
+      {name = p.pname; value = builtins.listToAttrs (map (o: { name = o; value = p.${o}; }) p.outputs);}
+  ) attrs)));
 in jobs
