@@ -129,7 +129,7 @@
         "emailresponsible": false
       },
       "nixpkgs": {
-        "type": "git",
+        "type": "git+https",
         "value": "github:matejc/nixpkgs/master",
         "emailresponsible": false
       },
