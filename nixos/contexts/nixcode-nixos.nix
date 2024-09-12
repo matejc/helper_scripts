@@ -148,10 +148,10 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "electron-27.3.11"
       ];
-      # hardware.ipu6 = {
-      #   enable = true;
-      #   platform = "ipu6ep";
-      # };
+      hardware.ipu6 = {
+        enable = true;
+        platform = "ipu6ep";
+      };
     };
     home-configuration = rec {
       home.stateVersion = "22.05";
@@ -180,13 +180,13 @@ let
           resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
         }
       ];
-      xdg.configFile."wireplumber/wireplumber.conf.d/10-disable-camera.conf".text = ''
-          wireplumber.profiles = {
-              main = {
-                  monitor.libcamera = disabled
-              }
-          }
-      '';
+      # xdg.configFile."wireplumber/wireplumber.conf.d/10-disable-camera.conf".text = ''
+      #     wireplumber.profiles = {
+      #         main = {
+      #             monitor.libcamera = disabled
+      #         }
+      #     }
+      # '';
       programs.waybar.enable = true;
       services.kanshi.enable = true;
       services.swayidle.enable = true;

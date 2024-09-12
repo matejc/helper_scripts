@@ -458,6 +458,7 @@ in {
                 "ui.textScaleFactor" = 90;
                 "browser.tabs.drawInTitlebar" = false;
                 "browser.toolbars.bookmarks.visibility" = "never";
+                "browser.startup.page" = 3;
               };
               userChrome = ''
                 * {
@@ -1517,7 +1518,8 @@ in {
               // disable-power-key-handling
 
               trackpoint {
-                accel-profile "flat"
+                  accel-speed -0.2
+                  accel-profile "adaptive"
               }
           }
 
