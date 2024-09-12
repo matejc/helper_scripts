@@ -180,16 +180,19 @@ let
         "steam-original"
         "steam-run"
       ];
-      programs.steam.enable = true;
+      programs.steam = {
+        enable = true;
+        gamescopeSession.enable = true;
+        gamescopeSession.env = {
+          RADV_PERFTEST = "gpl";
+        };
+      };
       programs.gamemode.enable = true;
       hardware.openrazer = {
         enable = true;
         users = [ "matejc" ];
       };
       users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
-      programs.gamescope = {
-        enable = true;
-      };
     };
     home-configuration = {
       home.stateVersion = "20.09";

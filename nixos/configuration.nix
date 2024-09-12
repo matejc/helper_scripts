@@ -1800,25 +1800,6 @@ in {
               Ctrl+Alt+Shift+Up   { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-up"; }
               Ctrl+Alt+Shift+Down { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-down"; }
 
-              Super+1 { focus-workspace 1; }
-              Super+2 { focus-workspace 2; }
-              Super+3 { focus-workspace 3; }
-              Super+4 { focus-workspace 4; }
-              Super+5 { focus-workspace 5; }
-              Super+6 { focus-workspace 6; }
-              Super+7 { focus-workspace 7; }
-              Super+8 { focus-workspace 8; }
-              Super+9 { focus-workspace 9; }
-              Super+Shift+1 { move-window-to-workspace 1; }
-              Super+Shift+2 { move-window-to-workspace 2; }
-              Super+Shift+3 { move-window-to-workspace 3; }
-              Super+Shift+4 { move-window-to-workspace 4; }
-              Super+Shift+5 { move-window-to-workspace 5; }
-              Super+Shift+6 { move-window-to-workspace 6; }
-              Super+Shift+7 { move-window-to-workspace 7; }
-              Super+Shift+8 { move-window-to-workspace 8; }
-              Super+Shift+9 { move-window-to-workspace 9; }
-
               Super+Comma  { consume-window-into-column; }
               Super+Period { expel-window-from-column; }
 
