@@ -1518,7 +1518,7 @@ in {
               // disable-power-key-handling
 
               trackpoint {
-                  accel-speed -0.2
+                  accel-speed -0.35
                   accel-profile "adaptive"
               }
           }
