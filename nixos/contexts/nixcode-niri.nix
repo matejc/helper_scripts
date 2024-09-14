@@ -164,7 +164,6 @@ let
         ];
       };
       programs.niri.enable = true;
-      programs.niri.package = lib.mkForce pkgs.niri-unstable;
       programs.waybar.enable = true;
       programs.waybar.systemd.target = lib.mkForce "non-existing-target";
       services.kanshi.enable = true;

@@ -197,7 +197,6 @@ let
     home-configuration = {
       home.stateVersion = "20.09";
       programs.niri.enable = true;
-      programs.niri.package = lib.mkForce pkgs.niri-unstable;
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;
