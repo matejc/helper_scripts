@@ -197,7 +197,6 @@ let
         LIBVA_DRIVER_NAME = "iHD";
       };
       programs.chromium.enable = true;
-      programs.chromium.package = pkgs.lib.mkForce pkgs.thorium;
       programs.firefox.enable = true;
     };
   };

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+parse_env() {
+    awk 'match($0, /^Environment\s*=\s*(.+)$/, m) {print "export "m[1]}' "$1"
+}
+
+run_for() {
+    service_file="$1"
+    option="$2"
+    value="$(awk "match(\$0, /^${option}\s*=\s*(.+)$/, m) {print m[1]}" "$service_file")"
+    if [ -n "$value" ]
+    then
+        environment="$(parse_env "$service_file")"
+        echo -e "\n[$option] $value"
+        read -r -p "Run [y]es/[s]hell/[N]o: " answer_
+        answer="${answer_,,}"
+
+        executable=""
+
+        if [[ "$answer" == "y" ]]
+        then
+            executable="$value"
+        elif [[ "$answer" == "s" ]]
+        then
+            executable="bash"
+        fi
+
+        if [ -n "$executable" ]
+        then
+            bash <<EOF
+trap 'pkill -P $$' EXIT
+eval "$environment"
+exec $executable
+EOF
+        fi
+    fi
+}
+
+service_run() {
+    trap 'pkill -P $$' EXIT
+
+    service_file="$1"
+
+    run_for "$service_file" ExecStartPre
+    run_for "$service_file" ExecStart
+    run_for "$service_file" ExecStartPost
+}
+
+service_run "$1"
