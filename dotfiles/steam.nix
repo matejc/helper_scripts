@@ -7,6 +7,10 @@ let
     trap 'kill $(jobs -p)' EXIT
     xwayland-run $DISPLAY -ac -- openbox --startup "bash -c '${lib.concatStringsSep " & " (["wl-paste -n --watch xsel -bi"] ++ variables.steam.xrun)} & steam; openbox --exit'"
   '';
+  steamtinkerlaunch = pkgs.writeShellScriptBin "steamtinkerlaunch" ''
+    unset WAYLAND_DISPLAY
+    exec ${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch "$@"
+  '';
 in
 [{
   target = "${variables.homeDir}/bin/protonge-update";
@@ -69,7 +73,7 @@ in
   source = "${steam-xrun}/bin/steam-xrun";
 } {
   target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
-  source = "${pkgs.steamtinkerlaunch}/bin/steamtinkerlaunch";
+  source = "${steamtinkerlaunch}/bin/steamtinkerlaunch";
 } {
   target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/compatibilitytool.vdf";
   source = pkgs.writeText "compatibilitytool.vdf" ''
@@ -102,6 +106,7 @@ in
   source = pkgs.writeText "toolmanifest.vdf" ''
   "manifest"
   {
+    "version" "2"
     "commandline" "/steamtinkerlaunch run"
     "commandline_waitforexitandrun" "/steamtinkerlaunch waitforexitandrun"
   }
