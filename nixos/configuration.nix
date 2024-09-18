@@ -1130,6 +1130,7 @@ in {
                 signal = 9;
             };
             "${context.variables.graphical.waybar.prefix}/workspaces" = {
+              format = "{index}";
               all-outputs = false;
               show-special = lib.mkIf (context.variables.graphical.name == "hyprland") false;
               active-only = lib.mkIf (context.variables.graphical.name == "hyprland") true;

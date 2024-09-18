@@ -565,10 +565,9 @@ EOF
     function! SetTitleString()
       set titlestring=%{ProjectName()}\:\ %t%(\ %M%)%(\ (%{expand(\"%:~:.:h\")})%)%(\ %a%)
     endfunction
-
     augroup bufchange
       autocmd!
-      autocmd BufRead,BufReadPost,BufAdd,BufNew,BufEnter * call SetTitleString()
+      autocmd BufEnter * call SetTitleString()
     augroup END
 
     filetype plugin on
