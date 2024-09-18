@@ -1130,12 +1130,12 @@ in {
                 signal = 9;
             };
             "${context.variables.graphical.waybar.prefix}/workspaces" = {
-              all-outputs = true;
+              all-outputs = false;
               show-special = lib.mkIf (context.variables.graphical.name == "hyprland") false;
               active-only = lib.mkIf (context.variables.graphical.name == "hyprland") true;
             };
             "${context.variables.graphical.waybar.prefix}/window" = {
-              separate-outputs = lib.mkIf (context.variables.graphical.name == "hyprland") true;
+              separate-outputs = true;
             };
             clock = {
               format = "{:%a %d.%m.%Y, %H:%M}";
