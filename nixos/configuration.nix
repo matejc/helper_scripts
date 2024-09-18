@@ -1087,7 +1087,7 @@ in {
             height = 26;
             output = map (o: o.output) context.variables.outputs;
             modules-left = [
-              (if context.variables.graphical.name == "niri" then "custom/niri_workspaces" else "${context.variables.graphical.waybar.prefix}/workspaces")
+              "${context.variables.graphical.waybar.prefix}/workspaces"
               "${context.variables.graphical.waybar.prefix}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
               "${context.variables.graphical.waybar.prefix}/window"
             ];

@@ -568,7 +568,7 @@ EOF
 
     augroup bufchange
       autocmd!
-      autocmd BufRead,BufAdd,BufNew,BufEnter * call SetTitleString()
+      autocmd BufRead,BufReadPost,BufAdd,BufNew,BufEnter * call SetTitleString()
     augroup END
 
     filetype plugin on
@@ -631,10 +631,10 @@ EOF
     "nnoremap <silent> <c-s> :w<CR>
     "inoremap <silent> <c-s> <C-o>:w<CR>
 
-    nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>:call SetTitleString()<cr>
-    nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>:call SetTitleString()<cr>
-    inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR><C-o>:call SetTitleString()<cr>
-    inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR><C-o>:call SetTitleString()<cr>
+    nnoremap <silent> <c-PageUp> :BufferLineCyclePrev<CR>
+    nnoremap <silent> <c-PageDown> :BufferLineCycleNext<CR>
+    inoremap <silent> <c-PageUp> <C-o>:BufferLineCyclePrev<CR>
+    inoremap <silent> <c-PageDown> <C-o>:BufferLineCycleNext<CR>
     tnoremap <silent> <c-PageUp> <C-\><C-N>:BufferLineCyclePrev<CR>
     tnoremap <silent> <c-PageDown> <C-\><C-N>:BufferLineCycleNext<CR>
 

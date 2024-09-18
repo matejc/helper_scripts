@@ -75,7 +75,7 @@ let
         name = "niri";
         logout = "${self.variables.graphical.exec} msg action quit";
         target = "graphical-session.target";
-        waybar.prefix = "wlr";
+        waybar.prefix = "niri";
         exec = "${self.variables.profileDir}/bin/niri";
       };
       vims = {
