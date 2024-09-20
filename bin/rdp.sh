@@ -23,7 +23,7 @@ set -e
 # Run:
 # $BROWSER --user-data-dir="$USER_DATA_DIR" --remote-debugging-port=$DEBUGGER_PORT --enable-features=UseOzonePlatform --ozone-platform=wayland
 # DISPLAY=:0 ./bin/rdp.sh
-source "$(dirname "$0")/secrets.sh"
+source "$PWD/secrets.sh"
 
 debuggerPort=${DEBUGGER_PORT:-9222}
 driverPort=${DRIVER_PORT:-9223}
