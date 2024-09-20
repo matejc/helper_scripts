@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -i bash -p bashInteractive procps
 
 parse_env() {
     awk 'match($0, /^Environment\s*=\s*(.+)$/, m) {print "export "m[1]}' "$1"
@@ -22,16 +23,18 @@ run_for() {
             executable="$value"
         elif [[ "$answer" == "s" ]]
         then
-            executable="bash"
+            executable="bash -i"
         fi
 
         if [ -n "$executable" ]
         then
-            bash <<EOF
-trap 'pkill -P $$' EXIT
+            echo "Running '$executable' ..."
+            bash <<SCRIPT
 eval "$environment"
+export PATH="\$PATH:$PATH"
+set -x
 exec $executable
-EOF
+SCRIPT
         fi
     fi
 }

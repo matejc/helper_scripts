@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.54.12";
+  version = "0.56.0";
   src = pkgs.fetchFromGitHub {
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-zlwZD7Q8z9lYhX3vzIw23j1AipjIyIjl3cbWl0kebNU=";
+    hash = "sha256-e0Fqj67vYt41Zbr1FN2fuLp6cHRius8RtacBHLgB9dM=";
   };
 
   dependencies = builtins.filter (v: v != null) (map (v: builtins.match "([[:alnum:]_-]+)==([[:alnum:]\._-]+)" v) (pkgs.lib.splitString "\n" ((builtins.readFile (src + "/requirements.txt")) + "\n" + (builtins.readFile (src + "/requirements/requirements-playwright.txt")))));
