@@ -214,6 +214,30 @@ let
     esac
   '';
 
+  getCPUTemp = pkgs.writeShellScript "temperature.sh" ''
+    export PATH="$PATH:${lib.makeBinPath [ pkgs.jq pkgs.lm_sensors pkgs.coreutils ]}"
+    prev_temp="0"
+    while true
+    do
+      tempdata="$(sensors -j coretemp-isa-0000 | jq --unbuffered -c '."coretemp-isa-0000"."Package id 0"')"
+      temp="$(jq --unbuffered -n --argjson data "$tempdata" -r '$data."temp1_input"' | cut -d "." -f 1)"
+      if (( prev_temp != temp ))
+      then
+        cssclass="normal"
+        if (( temp > 90 ))
+        then
+          cssclass="critical"
+        elif (( temp > 75 ))
+        then
+          cssclass="high"
+        fi
+        jq --unbuffered -nc --argjson data "$tempdata" --arg cssclass "$cssclass" '{text: $data."temp1_input"|tonumber|floor|tostring, percentage: ($data.temp1_input / $data.temp1_max * 100)|tonumber|floor, alt: "", tooltip: "", class: $cssclass}'
+      fi
+      prev_temp="$temp"
+      sleep 5
+    done
+  '';
+
   sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
   aider = pkgs.callPackage ../nixes/aider { };
   thorium = pkgs.callPackage ../nixes/thorium.nix { };
@@ -1030,7 +1054,7 @@ in {
               background: #F92672;
           }
 
-          #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather,#custom-pipewire {
+          #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather,#custom-pipewire,#custom-temperature {
               padding: 0 5px;
           }
 
@@ -1079,6 +1103,13 @@ in {
           #temperature.critical {
                color: #e06c75;
           }
+
+          #custom-temperature.high {
+               color: #ffa500;
+          }
+          #custom-temperature.critical {
+               color: #ff0000;
+          }
         '';
         programs.waybar.settings = {
           mainBar = {
@@ -1107,7 +1138,7 @@ in {
               (lib.imap0 (i: _: [ "disk#${toString i}" "custom/sep" ]) context.variables.mounts)
               "cpu"
               "custom/sep"
-              "temperature"
+              "custom/temperature"
               "custom/sep"
               "custom/weather"
               "custom/sep"
@@ -1259,6 +1290,13 @@ in {
               tooltip = true;
               interval = 3600;
               exec = "${pkgs.wttrbar}/bin/wttrbar --date-format '%d.%m.%Y' --hide-conditions";
+              return-type = "json";
+            };
+            "custom/temperature" = {
+              format = "{icon} {}°C";
+              tooltip = false;
+              exec = "${getCPUTemp}";
+              format-icons = [ "" "" "" "" "" ];
               return-type = "json";
             };
             battery = {
