@@ -1165,6 +1165,8 @@ in {
               all-outputs = false;
               show-special = lib.mkIf (context.variables.graphical.name == "hyprland") false;
               active-only = lib.mkIf (context.variables.graphical.name == "hyprland") true;
+              on-scroll-up = "${niriWorkspaces} action focus-workspace-up";
+              on-scroll-down = "${niriWorkspaces} action focus-workspace-down";
             };
             "${context.variables.graphical.waybar.prefix}/window" = {
               separate-outputs = true;
@@ -1918,9 +1920,10 @@ in {
         services.swayidle = {
           events = lib.mkOverride 900 [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
+            # { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
             # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
+            { event = "unlock"; command = "${pkgs.systemd}/bin/systemctl --user restart waybar"; }
           ];
           timeouts = lib.mkOverride 900 [
               { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
@@ -1929,6 +1932,7 @@ in {
                   command = ''${context.variables.graphical.exec} msg action power-off-monitors'';
                   # resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs;
               }
+              { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
 

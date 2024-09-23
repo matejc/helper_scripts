@@ -93,7 +93,7 @@ let
         name = "niri";
         logout = "${self.variables.graphical.exec} msg action quit";
         target = "graphical-session.target";
-        waybar.prefix = "wlr";
+        waybar.prefix = "niri";
         exec = "${self.variables.profileDir}/bin/niri";
       };
       vims = {
@@ -193,6 +193,23 @@ let
         users = [ "matejc" ];
       };
       users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
+      systemd.services.after-sleep = let
+        script = pkgs.writeShellScript "after-sleep.sh" ''
+          ${pkgs.kmod}/bin/modprobe -r igc
+          ${pkgs.kmod}/bin/modprobe igc
+        '';
+      in {
+        enable = true;
+        description = "Run after sleep";
+        after = [ "suspend.target" ];
+        wantedBy = [ "suspend.target" ];
+        unitConfig = {
+          Type = "oneshot";
+        };
+        serviceConfig = {
+          ExecStart = "${script}";
+        };
+      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
