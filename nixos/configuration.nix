@@ -18,66 +18,6 @@ let
     wait
   '') (map (s: s.group) context.services);
 
-  swayncConfig = {
-    "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
-    control-center-height = 600;
-    control-center-margin-bottom = 20;
-    control-center-margin-left = 20;
-    control-center-margin-right = 20;
-    control-center-margin-top = 20;
-    control-center-width = 600;
-    cssPriority = "application";
-    fit-to-screen = true;
-    hide-on-action = true;
-    hide-on-clear = false;
-    image-visibility = "when-available";
-    keyboard-shortcuts = true;
-    layer = "top";
-    notification-body-image-height = 100;
-    notification-body-image-width = 200;
-    notification-icon-size = 64;
-    notification-visibility = {
-      #example-name = {
-      #  app-name = "Spotify";
-      #  state = "muted";
-      #  urgency = "Low";
-      #};
-    };
-    notification-window-width = 500;
-    positionX = "right";
-    positionY = "top";
-    script-fail-notify = true;
-    scripts = {
-      #example-script = {
-      #  exec = "echo 'Do something...'";
-      #  urgency = "Normal";
-      #};
-    };
-    timeout = 10;
-    timeout-critical = 0;
-    timeout-low = 5;
-    transition-time = 200;
-    widget-config = {
-      dnd = {
-        text = "Do Not Disturb";
-      };
-      label = {
-        max-lines = 5;
-        text = "Label Text";
-      };
-      mpris = {
-        image-radius = 12;
-        image-size = 96;
-      };
-      title = {
-        button-text = "Clear All";
-        clear-all-button = true;
-        text = "Notifications";
-      };
-    };
-    widgets = [ "title" "dnd" "notifications" "mpris" ];
-  };
-
   dbus-environment = pkgs.writeTextFile {
     name = "dbus-environment";
     destination = "/bin/dbus-environment";
@@ -338,8 +278,6 @@ in {
         xdg = {
           enable = true;
           #configFile."nixpkgs/config.nix".source = "nixpkgs-config.nix";
-          configFile."swaync/config.json".text = builtins.toJSON swayncConfig;
-          configFile."swaync/style.css".text = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${pkgs.swaynotificationcenter}/etc/xdg/swaync/style.css");
           configFile."sworkstyle/config.toml".text = ''
             fallback = ''
 
@@ -701,7 +639,6 @@ in {
               { command = "${context.variables.profileDir}/bin/service-group-always restart"; always = true; }
               { command = "${context.variables.profileDir}/bin/service-group-once start"; }
               #{ command = "${mako}/bin/mako"; always = true; }
-              { command = "${pkgs.swaynotificationcenter}/bin/swaync"; always = true; }
               { command = "${pkgs.swayest-workstyle}/bin/sworkstyle"; always = true; }
               # { command = "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
               # { command = "${pkgs.dbus}/bin/dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK SSH_AUTH_SOCK XDG_CURRENT_DESKTOP=sway"; }
@@ -863,7 +800,6 @@ in {
           10)}
 
           exec-once = ${pkgs.swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'
-          exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
           exec-once = ${context.variables.profileDir}/bin/service-group-once start
           exec = ${context.variables.profileDir}/bin/service-group-always restart
           ${lib.concatMapStringsSep "\n" (e:
@@ -1498,6 +1434,69 @@ in {
           enable = true;
           display = (builtins.head context.variables.outputs).output;
         };
+        services.swaync = {
+          enable = true;
+          settings = {
+            "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
+            control-center-height = 600;
+            control-center-margin-bottom = 20;
+            control-center-margin-left = 20;
+            control-center-margin-right = 20;
+            control-center-margin-top = 20;
+            control-center-width = 600;
+            cssPriority = "application";
+            fit-to-screen = true;
+            hide-on-action = true;
+            hide-on-clear = false;
+            image-visibility = "when-available";
+            keyboard-shortcuts = true;
+            layer = "top";
+            notification-body-image-height = 100;
+            notification-body-image-width = 200;
+            notification-icon-size = 64;
+            notification-visibility = {
+              #example-name = {
+              #  app-name = "Spotify";
+              #  state = "muted";
+              #  urgency = "Low";
+              #};
+            };
+            notification-window-width = 500;
+            positionX = "right";
+            positionY = "top";
+            script-fail-notify = true;
+            scripts = {
+              #example-script = {
+              #  exec = "echo 'Do something...'";
+              #  urgency = "Normal";
+              #};
+            };
+            timeout = 10;
+            timeout-critical = 0;
+            timeout-low = 5;
+            transition-time = 200;
+            widget-config = {
+              dnd = {
+                text = "Do Not Disturb";
+              };
+              label = {
+                max-lines = 5;
+                text = "Label Text";
+              };
+              mpris = {
+                image-radius = 12;
+                image-size = 96;
+              };
+              title = {
+                button-text = "Clear All";
+                clear-all-button = true;
+                text = "Notifications";
+              };
+            };
+            widgets = [ "title" "dnd" "notifications" "mpris" ];
+          };
+          style = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${pkgs.swaynotificationcenter}/etc/xdg/swaync/style.css");
+        };
 
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
         programs.niri.package = pkgs.niri-stable;
@@ -1718,7 +1717,6 @@ in {
           spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY=:0"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
