@@ -183,9 +183,6 @@ let
       programs.steam = {
         enable = true;
         gamescopeSession.enable = true;
-        gamescopeSession.env = {
-          RADV_PERFTEST = "gpl";
-        };
       };
       programs.gamemode.enable = true;
       hardware.openrazer = {
