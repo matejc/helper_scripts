@@ -56,6 +56,7 @@
 , hostFwds ? []
 , slirp4netnsHostFwds ? []
 , interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
+, defaultBrowser ? "firefox --no-remote"
 , launchers ? [
   {
     name = "Clipboard Pull";
@@ -67,13 +68,14 @@
   }
   {
     name = "Browser";
-    exec = "firefox --no-remote";
+    exec = defaultBrowser;
   }
   {
     name = "Terminal";
     exec = "foot";
   }
-]
+] ++ extraLaunchers
+, extraLaunchers ? []
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -403,7 +405,7 @@ let
       --bindmount /dev/null:/dev/null \
       --bindmount /dev/net/tun:/dev/net/tun \
       --bindmount /dev/dri:/dev/dri \
-      --mount none:/dev/shm:tmpfs:rw,mode=1777,size=65536k \
+      --mount none:/dev/shm:tmpfs:rw,mode=1777,size=1048576k \
       --mount none:/dev/pts:devpts:ptmxmode=0666 \
       --symlink /dev/pts/ptmx:/dev/ptmx \
       --mount none:/dev/mqueue:mqueue:rw \
