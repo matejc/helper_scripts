@@ -54,14 +54,24 @@ in [{
 } {
   target = "${variables.homeDir}/bin/work-range";
   source = pkgs.writeShellScript "work-range.sh" ''
-    startSeconds="$(${startSeconds} "$1" "$2")"
-    endSeconds="$(${endSeconds} "$1" "$2")"
-    diff=$(( $endSeconds - $startSeconds ))
-    if [ -z "$diff" ]
-    then
-      exit 1
-    else
-      echo "$(($diff / 3600))h $((($diff / 60) % 60))m $(($diff % 60))s"
-    fi
+    start_epoch="$(date -d "$1" +%s)"
+    days="''${2:-"1"}"
+    seconds=0
+
+    for day in $(seq 0 $((days-1)))
+    do
+      since_date="$(date -d "@$((start_epoch + (day * 86400)))" +"%Y-%m-%d")"
+      until_date="$(date -d "@$((start_epoch + ((day+1) * 86400) ))" +"%Y-%m-%d")"
+      start_seconds="$(${startSeconds} "$since_date" "$until_date")"
+      end_seconds="$(${endSeconds} "$since_date" "$until_date")"
+      diff=$(( $end_seconds - $start_seconds ))
+      if (( diff >= 0 ))
+      then
+        seconds="$(( seconds + diff ))"
+        echo "On $since_date: $(($diff / 3600))h $((($diff / 60) % 60))m $(($diff % 60))s"
+      fi
+    done
+
+    echo "Total: $(($seconds / 3600))h $((($seconds / 60) % 60))m $(($seconds % 60))s"
   '';
 }]
