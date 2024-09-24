@@ -1542,7 +1542,7 @@ in {
                   accel-speed 0.2
                   accel-profile "flat"
               }
-              focus-follows-mouse
+              // focus-follows-mouse
 
               tablet {
                   // Set the name of the output (see below) which the tablet will map to.
@@ -1640,29 +1640,33 @@ in {
 
           window-rule {
               draw-border-with-background false
+              geometry-corner-radius 8
           }
 
           layout {
               // You can change how the focus ring looks.
               focus-ring {
                   // Uncomment this line to disable the focus ring.
-                  off
+                  // off
 
                   // How many logical pixels the ring extends out from the windows.
-                  width 1
+                  width 4
 
                   // Color of the ring on the active monitor: red, green, blue, alpha.
-                  active-color 127 200 255 255
+                  // active-color 127 200 255 255
 
                   // Color of the ring on inactive monitors: red, green, blue, alpha.
-                  inactive-color 80 80 80 255
+                  // inactive-color 80 80 80 255
+
+                  active-color 255 255 255 100
+                  inactive-color 80 80 80 100
               }
 
               // You can also add a border. It's similar to the focus ring, but always visible.
               border {
                   // The settings are the same as for the focus ring.
                   // If you enable the border, you probably want to disable the focus ring.
-                  // off
+                  off
 
                   width 1
                   active-color 127 200 255 255
@@ -1688,7 +1692,7 @@ in {
               // default-column-width {}
 
               // Set gaps around windows in logical pixels.
-              gaps 0
+              gaps 10
 
               // Struts shrink the area occupied by windows, similarly to layer-shell panels.
               // You can think of them as a kind of outer gaps. They are set in logical pixels.
@@ -1696,10 +1700,10 @@ in {
               // Top and bottom struts will simply add outer gaps in addition to the area occupied by
               // layer-shell panels and regular gaps.
               struts {
-                  // left 64
-                  // right 64
-                  // top 64
-                  // bottom 64
+                  left 48
+                  right 48
+                  top 0
+                  bottom 0
               }
 
               // When to center a column when changing focus, options are:
@@ -1708,7 +1712,7 @@ in {
               // - "on-overflow", focusing a column will center it if it doesn't fit
               //   together with the previously focused column.
               // - "always", the focused column will always be centered.
-              center-focused-column "never"
+              center-focused-column "on-overflow"
           }
 
           // Add lines like this to spawn processes at startup.
@@ -1877,7 +1881,7 @@ in {
 
               // Mod+Shift+Ctrl+T { toggle-debug-tint; }
 
-              Super+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
+              Super+P allow-when-locked=true { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
               Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
               Super+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
