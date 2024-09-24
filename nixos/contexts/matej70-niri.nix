@@ -151,7 +151,7 @@ let
       { name = "kdeconnect"; delay = 4; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 4; group = "always"; }
-      { name = "waybar"; delay = 3; group = "always"; }
+      # { name = "waybar"; delay = 3; group = "always"; }
       { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};

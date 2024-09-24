@@ -499,15 +499,17 @@ in {
             {
               profile.name = "default";
               profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
-              # profile.exec = "systemctl --user restart waybar";
+              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "firstonly";
               profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
+              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "all";
               profile.outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
+              profile.exec = "systemctl --user restart waybar";
             }
           ];
         };
@@ -1542,7 +1544,7 @@ in {
                   accel-speed 0.2
                   accel-profile "flat"
               }
-              // focus-follows-mouse
+              focus-follows-mouse max-scroll-amount="0%"
 
               tablet {
                   // Set the name of the output (see below) which the tablet will map to.
@@ -1700,8 +1702,8 @@ in {
               // Top and bottom struts will simply add outer gaps in addition to the area occupied by
               // layer-shell panels and regular gaps.
               struts {
-                  left 48
-                  right 48
+                  left 32
+                  right 32
                   top 0
                   bottom 0
               }
