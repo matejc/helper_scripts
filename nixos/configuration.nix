@@ -1929,7 +1929,7 @@ in {
           Install.WantedBy = [ "${context.variables.graphical.target}" ];
           Service = {
               Type = "simple";
-              ExecStart = "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'";
+              ExecStart = "${pkgs.swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'";
           };
         };
         services.swayidle = {
