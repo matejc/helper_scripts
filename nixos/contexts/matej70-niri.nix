@@ -13,6 +13,12 @@ let
     hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
   };
 
+  wallpaper = pkgs.fetchurl {
+    name = "wallpaper.jpg";
+    url = "https://images.pexels.com/photos/2680270/pexels-photo-2680270.jpeg?cs=srgb&dl=pexels-pixelcop-2680270.jpg&fm=jpg&w=1920&h=2562";
+    hash = "sha256-DEkplqXqS9hpwHRSg7BucEmSdzu1Un7UhWSgG9Hpc94=";
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -49,7 +55,7 @@ let
       nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
       binDir = "${self.variables.homeDir}/bin";
       lockscreen = "${self.variables.binDir}/lockscreen";
-      wallpaper = "${nixos-artwork-wallpaper}";
+      wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";

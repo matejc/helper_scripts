@@ -1722,7 +1722,7 @@ in {
           // which may be more convenient to use.
           spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
+          // spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY=:0"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
@@ -1921,6 +1921,17 @@ in {
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
+        systemd.user.services.wallpaper = {
+          Unit = {
+            Description = "Wallpaper User Service";
+            After = [ "${context.variables.graphical.target}" ];
+          };
+          Install.WantedBy = [ "${context.variables.graphical.target}" ];
+          Service = {
+              Type = "simple";
+              ExecStart = "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'";
+          };
+        };
         services.swayidle = {
           events = lib.mkOverride 900 [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
