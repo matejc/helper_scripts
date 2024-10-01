@@ -90,10 +90,19 @@ let
         workspaces = [ ];
         wallpaper = self.variables.wallpaper;
         status = "disable";
-      }{
+      } {
         criteria = "HDMI-A-1";
         position = "2880,0";
         output = "HDMI-A-1";
+        mode = null;
+        scale = 1.0;
+        workspaces = [ ];
+        wallpaper = self.variables.wallpaper;
+        status = "enable";
+      } {
+        criteria = "DP-3";
+        position = "2880,0";
+        output = "DP-3";
         mode = null;
         scale = 1.0;
         workspaces = [ ];

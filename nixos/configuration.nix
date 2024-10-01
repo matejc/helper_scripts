@@ -190,6 +190,7 @@ in {
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         inherit sway-wsshare aider thorium;
+        logseq = prev.logseq.override { electron = pkgs.electron_27; };
       })
       inputs.niri.overlays.niri
     ];
@@ -940,8 +941,8 @@ in {
           }
 
           window#waybar {
-              background: rgba(50, 48, 47, 0.9);
-              border-bottom: 3px solid rgba(100, 90, 86, 0.9);
+              background: rgba(50, 48, 47, 0.8);
+              border-bottom: 3px solid rgba(100, 90, 86, 0.8);
               color: white;
           }
 

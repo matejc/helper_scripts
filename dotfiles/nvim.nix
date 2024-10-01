@@ -1101,7 +1101,7 @@ end
 
 function wordMove(forward, delete)
   delete = delete or false
-  local pattern='\\v\\C([A-Z][a-z]+|[A-Z]+|[a-z]+|[0-9]+|\\s+|^|$)'
+  local pattern='\\v\\C([A-Z][a-z]+|[A-Z]+|[a-z]+|[0-9]+|[^a-zA-Z0-9]+|\\s+|^|$)'
   flags = 'W'
   if forward == 0 then
     flags = flags .. 'b'
