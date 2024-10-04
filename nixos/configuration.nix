@@ -519,8 +519,8 @@ in {
           #enable = true;
           #indicator = true;
         };
-        #systemd.user.services.kdeconnect.Install.WantedBy = mkForce [ "sway-session.target" ];
-        #systemd.user.services.kdeconnect-indicator.Install.WantedBy = mkForce [ "sway-session.target" ];
+        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkOverride 900 [ "sway-session.target" ];
+        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkOverride 900 [ "sway-session.target" ];
 
         wayland.windowManager.sway = {
           systemd.enable = true;
@@ -1267,6 +1267,7 @@ in {
         };
         programs.waybar.systemd.enable = true;
         programs.waybar.systemd.target = context.variables.graphical.target;
+        systemd.user.services.waybar.Service.RestartSec = 1;
         systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
 
         #services.nextcloud-client.enable = true;

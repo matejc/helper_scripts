@@ -154,11 +154,11 @@ let
     services = [
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
-      { name = "kdeconnect"; delay = 4; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
-      { name = "network-manager-applet"; delay = 4; group = "always"; }
+      # { name = "kdeconnect"; delay = 4; group = "always"; }
+      # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
+      # { name = "network-manager-applet"; delay = 4; group = "always"; }
       # { name = "waybar"; delay = 3; group = "always"; }
-      { name = "swayidle"; delay = 1; group = "always"; }
+      # { name = "swayidle"; delay = 1; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -247,9 +247,9 @@ let
       programs.chromium.enable = true;
       programs.chromium.package = lib.mkForce thorium;
       services.network-manager-applet.enable = true;
-      systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
+      # systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
+      # systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
+      # systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
       programs.firefox.enable = true;
     };
   };

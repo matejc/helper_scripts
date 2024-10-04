@@ -8,7 +8,7 @@ let
   sha1Cmd = pkgs.writeScript "sha1.sh" ''
     #!${pkgs.stdenv.shell}
     echo -n "$@" | ${pkgs.coreutils}/bin/sha1sum | ${pkgs.gawk}/bin/awk '{printf $1}'
-   '';
+  '';
 
   enabledNvimLsp = mkNvimLsp [
     "kotlin_language_server"
@@ -2034,7 +2034,9 @@ require("telescope").setup {
       show_unindexed = true,
       ignore_patterns = {"*.git/*", "*/tmp/*"},
       disable_devicons = true,
-      workspaces = {}
+      workspaces = {},
+      db_safe_mode = false,
+      auto_validate = true
     }
   }
 }
@@ -2552,6 +2554,49 @@ local wk = require("which-key")
 
 require('render-markdown').setup({})
 
+require('hlchunk').setup({
+  chunk = {
+    enable = true,
+    textobject = "ic",
+    style = {
+      "#806d9c", -- Violet
+      "#c21f30", -- maple red
+    },
+  },
+  blank = {
+    enable = false,
+    chars = {
+      " ",
+    },
+    style = {
+      { bg = "#434437" },
+      { bg = "#2f4440" },
+      { bg = "#433054" },
+      { bg = "#284251" },
+    },
+  },
+  indent = {
+    enable = false,
+    chars = {
+      "│",
+    },
+    style = {
+      "#FF0000",
+      "#FF7F00",
+      "#FFFF00",
+      "#00FF00",
+      "#00FFFF",
+      "#0000FF",
+      "#8B00FF",
+    },
+    filter_list = {
+      function(v)
+        return v.level ~= 1
+      end,
+    },
+  }
+})
+
 EOF
 
     highlight! CmpItemMenu guifg=pink gui=italic
@@ -3068,6 +3113,7 @@ EOF
           myVimPlugins.render-markdown-nvim
           myVimPlugins.parrot-nvim
           # myVimPlugins.multicursor-nvim
+          myVimPlugins.hlchunk-nvim
         ];
         opt = [
         ];
