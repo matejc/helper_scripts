@@ -16,7 +16,7 @@ let
     "bashls"
     "dockerls"
     "yamlls"
-    "tsserver"
+    "ts_ls"
     "jsonls"
     # "vimls"
     "html"
@@ -103,12 +103,12 @@ let
         };
       }
     '';
-    tsserver = ''
-      nvim_lsp["tsserver"].setup {
+    ts_ls = ''
+      setup_lsp("ts_ls", {
         on_attach = on_attach;
         cmd = {"${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server", "--stdio"};
         capabilities = capabilities;
-      }
+      })
     '';
     jsonls = ''
       nvim_lsp["jsonls"].setup {
@@ -2554,48 +2554,47 @@ local wk = require("which-key")
 
 require('render-markdown').setup({})
 
-require('hlchunk').setup({
-  chunk = {
-    enable = true,
-    textobject = "ic",
-    style = {
-      "#806d9c", -- Violet
-      "#c21f30", -- maple red
-    },
-  },
-  blank = {
-    enable = false,
-    chars = {
-      " ",
-    },
-    style = {
-      { bg = "#434437" },
-      { bg = "#2f4440" },
-      { bg = "#433054" },
-      { bg = "#284251" },
-    },
-  },
-  indent = {
-    enable = false,
-    chars = {
-      "│",
-    },
-    style = {
-      "#FF0000",
-      "#FF7F00",
-      "#FFFF00",
-      "#00FF00",
-      "#00FFFF",
-      "#0000FF",
-      "#8B00FF",
-    },
-    filter_list = {
-      function(v)
-        return v.level ~= 1
-      end,
-    },
-  }
-})
+-- require('hlchunk').setup({
+--   chunk = {
+--     enable = false,
+--     style = {
+--       "#806d9c", -- Violet
+--       "#c21f30", -- maple red
+--     },
+--   },
+--   blank = {
+--     enable = true,
+--     chars = {
+--       " ",
+--     },
+--     style = {
+--       { vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui"), "#434437" },
+--       { vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui"), "#2f4440" },
+--       { vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui"), "#433054" },
+--       { vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID("Whitespace")), "fg", "gui"), "#284251" },
+--     },
+--   },
+--   indent = {
+--     enable = false,
+--     chars = {
+--       "│",
+--     },
+--     style = {
+--       "#FF0000",
+--       "#FF7F00",
+--       "#FFFF00",
+--       "#00FF00",
+--       "#00FFFF",
+--       "#0000FF",
+--       "#8B00FF",
+--     },
+--     filter_list = {
+--       function(v)
+--         return v.level ~= 1
+--       end,
+--     },
+--   }
+-- })
 
 EOF
 
@@ -3113,7 +3112,7 @@ EOF
           myVimPlugins.render-markdown-nvim
           myVimPlugins.parrot-nvim
           # myVimPlugins.multicursor-nvim
-          myVimPlugins.hlchunk-nvim
+          # myVimPlugins.hlchunk-nvim
         ];
         opt = [
         ];
