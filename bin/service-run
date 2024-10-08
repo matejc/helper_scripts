@@ -23,18 +23,18 @@ run_for() {
             executable="$value"
         elif [[ "$answer" == "s" ]]
         then
-            executable="bash -i"
+            executable="bash"
         fi
 
         if [ -n "$executable" ]
         then
             echo "Running '$executable' ..."
-            bash <<SCRIPT
+            bash <(cat <<SCRIPT
 eval "$environment"
 export PATH="\$PATH:$PATH"
-set -x
-exec $executable
+"$executable"
 SCRIPT
+)
         fi
     fi
 }
@@ -46,7 +46,7 @@ service_run() {
 
     run_for "$service_file" ExecStartPre
     run_for "$service_file" ExecStart
-    run_for "$service_file" ExecStartPost
+    run_for "$service_file" ExecStopPost
 }
 
 service_run "$1"

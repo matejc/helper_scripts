@@ -1,30 +1,32 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.56.0";
+  version = "0.59.0";
   src = pkgs.fetchFromGitHub {
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-e0Fqj67vYt41Zbr1FN2fuLp6cHRius8RtacBHLgB9dM=";
+    hash = "sha256-20LicYj1j5gGzhF+SxPUKu858nHZgwDF1JxXeHRtYe0=";
   };
+
+  python3Pkgs = pkgs.python312Packages;
 
   dependencies = builtins.filter (v: v != null) (map (v: builtins.match "([[:alnum:]_-]+)==([[:alnum:]\._-]+)" v) (pkgs.lib.splitString "\n" ((builtins.readFile (src + "/requirements.txt")) + "\n" + (builtins.readFile (src + "/requirements/requirements-playwright.txt")))));
   aider_deps = builtins.listToAttrs ([
     { name = "pypager"; value = pypager; }
     { name = "grep-ast"; value = grep-ast; }
     { name = "tree-sitter-languages"; value = tree-sitter-languages; }
-    { name = "tree-sitter"; value = pkgs.python312Packages.tree-sitter_0_21; }
+    { name = "tree-sitter"; value = python3Pkgs.tree-sitter_0_21; }
     { name = "playwright"; value = pkgs.playwright; }
-  ] ++ (map (d: { name = builtins.elemAt d 0; value = pkgs.python312Packages.${builtins.elemAt d 0}; }) (builtins.filter (d: (builtins.any (e: (builtins.elemAt d 0 != e)) ["pypager" "grep-ast" "tree-sitter-languages"])) dependencies)));
+  ] ++ (map (d: { name = builtins.elemAt d 0; value = python3Pkgs.${builtins.elemAt d 0}; }) (builtins.filter (d: (builtins.any (e: (builtins.elemAt d 0 != e)) ["pypager" "grep-ast" "tree-sitter-languages"])) dependencies)));
 
   requirements = pkgs.writeText "requirements.txt" ''
     ${pkgs.lib.concatMapStringsSep "\n" (d: d) (builtins.attrNames aider_deps)}
   '';
 
-  pypager = pkgs.python312Packages.buildPythonPackage {
+  pypager = python3Pkgs.buildPythonPackage {
     pname = "pypager";
     version = "3.0.1";
-    propagatedBuildInputs = [ pkgs.python312Packages.prompt_toolkit pkgs.python312Packages.pygments ];
+    propagatedBuildInputs = [ python3Pkgs.prompt_toolkit python3Pkgs.pygments ];
     src = pkgs.fetchFromGitHub {
       owner = "prompt-toolkit";
       repo = "pypager";
@@ -33,9 +35,9 @@ let
     };
   };
 
-  grep-ast = pkgs.python312Packages.grep-ast.override { inherit tree-sitter-languages; };
+  grep-ast = python3Pkgs.grep-ast.override { inherit tree-sitter-languages; };
 
-  tree-sitter-languages = pkgs.python312Packages.buildPythonPackage {
+  tree-sitter-languages = python3Pkgs.buildPythonPackage {
     pname = "tree-sitter-languages";
     version = "1.10.2";
     pyproject = true;
@@ -53,41 +55,41 @@ let
         substitute build.py get-repos.py \
           --replace-fail "from tree_sitter import Language" "" \
           --replace-fail 'print(f"{sys.argv[0]}: Building", languages_filename)' "exit(0)"
-        ${pkgs.python312Packages.python.pythonOnBuildForHost.interpreter} get-repos.py
+        ${python3Pkgs.python.pythonOnBuildForHost.interpreter} get-repos.py
         rm -rf vendor/*/.git
       '';
     };
 
-    build-system = with pkgs.python312Packages; [
+    build-system = with python3Pkgs; [
       setuptools
       cython
     ];
-    dependencies =  with pkgs.python312Packages; [ tree-sitter_0_21 ];
+    dependencies =  with python3Pkgs; [ tree-sitter_0_21 ];
     # Generate languages.so file (build won't fail without this, but tests will).
     preBuild = ''
-      ${pkgs.python312Packages.python.pythonOnBuildForHost.interpreter} build.py
+      ${python3Pkgs.python.pythonOnBuildForHost.interpreter} build.py
     '';
-    nativeCheckInputs = with pkgs.python312Packages; [ pytestCheckHook ];
+    nativeCheckInputs = with python3Pkgs; [ pytestCheckHook ];
     # Without cd $out, tests fail to import the compiled cython extensions.
     # Without copying the ./tests/ directory to $out, pytest won't detect the
     # tests and run them. See also:
     # https://github.com/NixOS/nixpkgs/issues/255262
     preCheck = ''
-      cp -r tests $out/${pkgs.python312Packages.python.sitePackages}/tree_sitter_languages
+      cp -r tests $out/${python3Pkgs.python.sitePackages}/tree_sitter_languages
       cd $out
     '';
 
     pythonImportsCheck = [ "tree_sitter_languages" ];
   };
 
-  package = pkgs.python312Packages.buildPythonApplication {
+  package = python3Pkgs.buildPythonApplication {
     pname = "aider-chat";
     inherit version src;
     pyproject = true;
     postUnpack = ''
       ln -svf ${requirements} $sourceRoot/requirements.txt
     '';
-    buildInputs = [ pkgs.python312Packages.setuptools ];
+    buildInputs = [ python3Pkgs.setuptools python3Pkgs.setuptools-scm ];
     propagatedBuildInputs = builtins.attrValues aider_deps;
     postInstall = ''
       wrapProgram $out/bin/aider \
