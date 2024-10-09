@@ -164,13 +164,21 @@ let
         # https://discourse.nixos.org/t/v4l2loopback-cannot-find-module/26301/5
         v4l-utils
       ];
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       boot.kernelPatches = [ {
         name = "ipu6-config";
         patch = null;
         extraConfig = ''
           VIDEO_OV2740 m
+          VIDEO_INTEL_IPU6 m
           IPU_BRIDGE m
           VIDEO_OV01A10 m
+          I2C_LJCA m
+          SPI_LJCA m
+          GPIO_LJCA m
+          USB_LJCA m
+          INTEL_MEI_VSC m
+          INTEL_MEI_VSC_HW m
           INTEL_VSC m
         '';
       } ];
