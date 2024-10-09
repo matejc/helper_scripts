@@ -132,6 +132,7 @@
       nixcode = (nixosBuild {
         context = "nixcode-niri";
         modules = [
+          inputs.lanzaboote.nixosModules.lanzaboote
           ./nixos/minimal-configuration.nix
         ];
       }).config.system.build.toplevel;
