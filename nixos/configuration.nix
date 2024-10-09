@@ -1644,7 +1644,7 @@ in {
 
           window-rule {
               draw-border-with-background false
-              geometry-corner-radius 8
+              geometry-corner-radius 3
           }
 
           layout {
@@ -1898,7 +1898,7 @@ in {
 
           // Settings for debugging. Not meant for normal use.
           // These can change or stop working at any point with little notice.
-          debug {
+          /-debug {
               // Make niri take over its DBus services even if it's not running as a session.
               // Useful for testing screen recording changes without having to relogin.
               // The main niri instance will *not* currently take back the services; so you will
