@@ -72,6 +72,10 @@
       url = "github:serokell/deploy-rs";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
@@ -159,6 +163,7 @@
       nixcode = nixosBuild {
         context = "nixcode-niri";
         modules = [
+          inputs.lanzaboote.nixosModules.lanzaboote
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
         ];
       };

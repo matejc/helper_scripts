@@ -133,6 +133,21 @@ let
     ];
     config = {};
     nixos-configuration = {
+      environment.systemPackages = with pkgs; [
+        sbctl
+        v4l-utils
+      ];
+
+      # Lanzaboote currently replaces the systemd-boot module.
+      # This setting is usually set to true in configuration.nix
+      # generated at installation time. So we force it to false
+      # for now.
+      boot.loader.systemd-boot.enable = lib.mkForce false;
+      boot.lanzaboote = {
+        enable = true;
+        pkiBundle = "/etc/secureboot";
+      };
+
       services.greetd = {
         enable = true;
         settings = {
@@ -160,10 +175,6 @@ let
         enable = true;
         platform = "ipu6ep";
       };
-      environment.systemPackages = with pkgs; [
-        # https://discourse.nixos.org/t/v4l2loopback-cannot-find-module/26301/5
-        v4l-utils
-      ];
       boot.kernelPackages = pkgs.linuxPackages_latest;
       boot.kernelPatches = [ {
         name = "ipu6-config";
