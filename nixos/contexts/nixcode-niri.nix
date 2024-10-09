@@ -149,6 +149,41 @@ let
         "electron-27.3.11"
         "olm-3.2.16"
       ];
+
+
+      hardware.enableRedistributableFirmware = true;
+      hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+      boot.extraModprobeConfig = ''
+        options v4l2loopback nr_devices=0
+      '';
+      hardware.ipu6 = {
+        enable = true;
+        platform = "ipu6ep";
+      };
+      environment.systemPackages = with pkgs; [
+        # https://discourse.nixos.org/t/v4l2loopback-cannot-find-module/26301/5
+        v4l-utils
+      ];
+      boot.kernelPatches = [ {
+        name = "ipu6-config";
+        patch = null;
+        extraConfig = ''
+          USB_LJCA m
+          INTEL_MEI_VSC_HW m
+          INTEL_MEI_VSC m
+          VIDEO_OV2740 m
+          VIDEO_INTEL_IPU6 m
+          IPU_BRIDGE m
+          VIDEO_OV01A10 m
+          I2C_LJCA m
+          SPI_LJCA m
+          GPIO_LJCA m
+          USB_LJCA m
+          INTEL_MEI_VSC m
+          INTEL_MEI_VSC_HW m
+          INTEL_VSC m
+        '';
+      } ];
     };
     home-configuration = {
       home.stateVersion = "22.05";
