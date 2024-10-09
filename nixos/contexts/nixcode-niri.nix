@@ -168,12 +168,9 @@ let
         name = "ipu6-config";
         patch = null;
         extraConfig = ''
-          USB_LJCA m
           VIDEO_OV2740 m
           IPU_BRIDGE m
           VIDEO_OV01A10 m
-          INTEL_MEI_VSC m
-          INTEL_MEI_VSC_HW m
           INTEL_VSC m
         '';
       } ];
