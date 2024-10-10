@@ -175,8 +175,23 @@ let
         enable = true;
         platform = "ipu6ep";
       };
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages_6_11;
       boot.kernelPatches = [ {
+        name = "0001";
+        patch = (pkgs.fetchurl { url = "https://raw.githubusercontent.com/intel/ipu6-drivers/refs/heads/master/patch/v6.11/in-tree-build/0001-media-ipu6-Workaround-to-build-PSYS.patch"; hash = "sha256-C64madWtm6GgKNGyWijZt8oLm2g08NmlIdCxbgVFi6c="; });
+      } {
+        name = "0002";
+        patch = (pkgs.fetchurl { url = "https://raw.githubusercontent.com/intel/ipu6-drivers/refs/heads/master/patch/v6.11/in-tree-build/0002-media-i2c-Add-sensors-config.patch"; hash = "sha256-zNsuIVyzhasCzNBuUsHTR3Wx10qUJkUz+DViSN68/1Y="; });
+      } {
+        name = "0003";
+        patch = (pkgs.fetchurl { url = "https://raw.githubusercontent.com/intel/ipu6-drivers/refs/heads/master/patch/v6.11/0003-media-ipu6-Use-module-parameter-to-set-isys-psys-fre.patch"; hash = "sha256-e+hRwXvJmUiMhQfwLYfDGst7oGRgjef3HkNGVkCP4xU="; });
+      } {
+        name = "0004";
+        patch = (pkgs.fetchurl { url = "https://raw.githubusercontent.com/intel/ipu6-drivers/refs/heads/master/patch/v6.11/0004-media-ipu6-Don-t-disable-ATS-when-CPU-is-not-Meteor-.patch"; hash = "sha256-BhsxiKOrvQEwBHWMT00FlUK7c8GlaP0VJFGeAMHORUI="; });
+      } {
+        name = "0005";
+        patch = (pkgs.fetchurl { url = "https://raw.githubusercontent.com/intel/ipu6-drivers/refs/heads/master/patch/v6.11/0005-media-ipu-bridge-Support-ov05c10-sensor.patch"; hash = "sha256-uU9cMbS1JHhJF+jx1+JXzzlYOIYW7Z+n2M3+ZJ+l2oE="; });
+      } {
         name = "ipu6-config";
         patch = null;
         extraConfig = ''
