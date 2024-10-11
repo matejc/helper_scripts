@@ -197,8 +197,6 @@ let
         extraConfig = ''
           VIDEO_OV2740 m
           VIDEO_INTEL_IPU6 m
-          IPU_BRIDGE m
-          VIDEO_OV01A10 m
           I2C_LJCA m
           SPI_LJCA m
           GPIO_LJCA m
@@ -206,6 +204,13 @@ let
           INTEL_MEI_VSC m
           INTEL_MEI_VSC_HW m
           INTEL_VSC m
+          IPU_BRIDGE m
+          VIDEO_OV01A1S m
+          VIDEO_OV01A10 m
+          VIDEO_HM11B1 m
+          VIDEO_OV02C10 m
+          VIDEO_OV02E10 m
+          VIDEO_HM2170 m
         '';
       } ];
     };
