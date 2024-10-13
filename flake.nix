@@ -53,7 +53,6 @@
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.niri-stable.url = "github:YaLTeR/niri/v0.1.9";
     };
     # jupyenv = {
     #   url = "github:tweag/jupyenv/main";

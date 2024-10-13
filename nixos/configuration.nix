@@ -1386,6 +1386,7 @@ in {
           "c" = "${pkgs.bat}/bin/bat";
           "d" = "${pkgs.delta}/bin/delta";
           "e" = "${pkgs.xplr}/bin/xplr";
+          "b" = "${pkgs.broot}/bin/broot";
         };
         programs.zellij = {
           enable = true;
@@ -1399,6 +1400,16 @@ in {
             #   unbind = [ "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b" ];
             # };
           };
+        };
+        programs.broot = {
+          enable = true;
+          enableZshIntegration = true;
+          settings.verbs = [
+            { invocation = "p"; execution = ":parent"; }
+            { invocation = "edit"; shortcut = "e"; execution = "$EDITOR {file}" ; }
+            { invocation = "create {subpath}"; execution = "$EDITOR {directory}/{subpath}"; }
+            { invocation = "view"; execution = "less {file}"; }
+          ];
         };
         programs.foot = {
           settings = {
@@ -1682,9 +1693,8 @@ in {
                   // Proportion sets the width as a fraction of the output width, taking gaps into account.
                   // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
                   // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-                  proportion 0.33333
                   proportion 0.5
-                  proportion 0.66667
+                  proportion 1.0
 
                   // Fixed sets the width in logical pixels exactly.
                   // fixed 1920
@@ -1779,7 +1789,6 @@ in {
               Ctrl+Alt+L { spawn "${context.variables.binDir}/lockscreen"; }
               Super+L { spawn "${context.variables.binDir}/lockscreen"; }
               Ctrl+Alt+Delete { spawn "${pkgs.nwg-bar}/bin/nwg-bar"; }
-              Ctrl+Alt+M { spawn "${pkgs.nwg-displays}/bin/nwg-displays"; }
               Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"; }
 
               // You can also use a shell:
@@ -1850,10 +1859,10 @@ in {
               Super+Comma  { consume-window-into-column; }
               Super+Period { expel-window-from-column; }
 
-              // Super+R { switch-preset-column-width; }
-              // Super+M { maximize-column; }
+              Super+R { switch-preset-column-width; }
+              Super+M { maximize-column; }
               Super+F { fullscreen-window; }
-              // Super+C { center-column; }
+              Super+C { center-column; }
 
               // Finer width adjustments.
               // This command can also:
@@ -1888,12 +1897,12 @@ in {
               Super+P allow-when-locked=true { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "on"; }
               Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
-              Super+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
-              Super+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              Super+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              Super+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              Super+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen HDMI-A-1"; }
-              Super+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
+              Ctrl+Alt+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
+              Ctrl+Alt+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Ctrl+Alt+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head context.variables.outputs).output}"; }
+              Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
           }
 
           // Settings for debugging. Not meant for normal use.
