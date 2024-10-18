@@ -191,6 +191,16 @@ in {
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         inherit sway-wsshare aider thorium;
         logseq = prev.logseq.override { electron = pkgs.electron_27; };
+        neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (old: {
+          patches = old.patches ++ [(pkgs.fetchpatch {
+            name = "fix-lsp-str_byteindex_enc-bounds-checking-30747.patch";
+            url = "https://patch-diff.githubusercontent.com/raw/neovim/neovim/pull/30747.patch";
+            hash = "sha256-2oNHUQozXKrHvKxt7R07T9YRIIx8W3gt8cVHLm2gYhg=";
+          })];
+        });
+        openvpn3 = prev.openvpn3.overrideAttrs {
+          doCheck = false;
+        };
       })
       inputs.niri.overlays.niri
     ];
@@ -1404,12 +1414,15 @@ in {
         programs.broot = {
           enable = true;
           enableZshIntegration = true;
-          settings.verbs = [
-            { invocation = "p"; execution = ":parent"; }
-            { invocation = "edit"; shortcut = "e"; execution = "$EDITOR {file}" ; }
-            { invocation = "create {subpath}"; execution = "$EDITOR {directory}/{subpath}"; }
-            { invocation = "view"; execution = "less {file}"; }
-          ];
+          settings = {
+            default_flags = "--sort-by-date --show-git-info --sizes";
+            verbs = [
+              { invocation = "p"; execution = ":parent"; }
+              { invocation = "edit"; shortcut = "e"; execution = "$EDITOR {file}" ; }
+              { invocation = "create {subpath}"; execution = "$EDITOR {directory}/{subpath}"; }
+              { invocation = "view"; execution = "less {file}"; }
+            ];
+          };
         };
         programs.foot = {
           settings = {
@@ -1726,7 +1739,7 @@ in {
               // - "on-overflow", focusing a column will center it if it doesn't fit
               //   together with the previously focused column.
               // - "always", the focused column will always be centered.
-              center-focused-column "on-overflow"
+              // center-focused-column "on-overflow"
           }
 
           // Add lines like this to spawn processes at startup.

@@ -63,4 +63,4 @@ do
     echo "$rdpUrl" >> "$rdpInStream"
     curl -XDELETE "http://localhost:$driverPort/session/$sessionId"
   fi
-done < <(tail -f "$rdpInStream" | stdbuf -o0 -i0 "${1:-xfreerdp}" "$RDPW_FILE" /u:"$RDP_USERNAME" /p:"$RDP_PASSWORD" /cert:ignore +clipboard /gateway:type:arm /network:auto /gfx:AVC444 /rfx /size:2880x1800 /scale:100 /f "${@:2}" 2>&1 & rdpPid=$!; echo -n $rdpPid > "$rdpPidFile"; wait $rdpPid)
+done < <(tail -f "$rdpInStream" | stdbuf -o0 -i0 "${1:-xfreerdp}" "$RDPW_FILE" /u:"$RDP_USERNAME" /p:"$RDP_PASSWORD" /cert:ignore +clipboard /gateway:type:arm /network:auto /gfx:AVC444 /rfx /f "${@:2}" 2>&1 & rdpPid=$!; echo -n $rdpPid > "$rdpPidFile"; wait $rdpPid)
