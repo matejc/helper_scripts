@@ -1,4 +1,4 @@
-{ pkgs, lib, config, inputs, contextFile, helper_scripts, ... }:
+{ pkgs, lib, config, inputs, contextFile, helper_scripts, defaultUser, ... }:
 let
   context = import contextFile { inherit pkgs lib config inputs dotFileAt helper_scripts; };
 
@@ -198,9 +198,6 @@ in {
             hash = "sha256-2oNHUQozXKrHvKxt7R07T9YRIIx8W3gt8cVHLm2gYhg=";
           })];
         });
-        openvpn3 = prev.openvpn3.overrideAttrs {
-          doCheck = false;
-        };
       })
       inputs.niri.overlays.niri
     ];
@@ -265,6 +262,11 @@ in {
         dates = "weekly";
       };
     };
+
+    # powerManagement.resumeCommands = ''
+    #   export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.getent}/bin/getent passwd "${defaultUser}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
+    #   ${pkgs.sudo}/bin/sudo -iu "${defaultUser}" env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR WAYLAND_DISPLAY=wayland-1 ${context.variables.homeDir}/bin/lockscreen
+    # '';
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
@@ -1286,7 +1288,6 @@ in {
         systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
         systemd.user.services.network-manager-applet.Unit.Requires = lib.mkForce [ "graphical-session-pre.target" ];
 
-
         services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" "-home=${context.variables.homeDir}/Syncthing/.config/syncthing" ];
 
         home.activation.dotfiles = ''
@@ -1959,7 +1960,8 @@ in {
         services.swayidle = {
           events = lib.mkOverride 900 [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
-            # { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "after-resume"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
             # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             { event = "unlock"; command = "${pkgs.systemd}/bin/systemctl --user restart waybar"; }
@@ -1974,6 +1976,7 @@ in {
               { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
+        systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
 
       } )] ++ [ context.home-configuration ]);
     };
