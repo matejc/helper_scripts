@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.59.0";
+  version = "0.59.1";
   src = pkgs.fetchFromGitHub {
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-20LicYj1j5gGzhF+SxPUKu858nHZgwDF1JxXeHRtYe0=";
+    hash = "sha256-3rDkor+UM58ivhiTDPwTgzJn7Ha3DzrZDOKwwN637ro=";
   };
 
   python3Pkgs = pkgs.python312Packages;
@@ -16,7 +16,7 @@ let
     { name = "grep-ast"; value = grep-ast; }
     { name = "tree-sitter-languages"; value = tree-sitter-languages; }
     { name = "tree-sitter"; value = python3Pkgs.tree-sitter_0_21; }
-    { name = "playwright"; value = pkgs.playwright; }
+    { name = "playwright"; value = python3Pkgs.playwright; }
   ] ++ (map (d: { name = builtins.elemAt d 0; value = python3Pkgs.${builtins.elemAt d 0}; }) (builtins.filter (d: (builtins.any (e: (builtins.elemAt d 0 != e)) ["pypager" "grep-ast" "tree-sitter-languages"])) dependencies)));
 
   requirements = pkgs.writeText "requirements.txt" ''

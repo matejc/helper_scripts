@@ -41,6 +41,7 @@ let
     "ltex"
     "terraformls"
     "tflint"
+    "helm_ls"
   ];
 
   mkNvimLsp = enabled:
@@ -98,6 +99,7 @@ let
             schemas = {
               ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*";
               ["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/master-standalone-strict/all.json"] = "/*k8s*";
+              ["https://raw.githubusercontent.com/compose-spec/compose-spec/refs/heads/main/schema/compose-spec.json"] = "/*-compose.*";
             };
           };
         };
@@ -417,6 +419,14 @@ let
       setup_lsp("tflint", {
         on_attach = on_attach;
         cmd = {"${pkgs.tflint}/bin/tflint", "--langserver"};
+        capabilities = capabilities;
+      })
+    '';
+    helm_ls = ''
+      setup_lsp("helm_ls", {
+        on_attach = on_attach;
+        filetypes = { 'helm' },
+        cmd = {"${pkgs.helm-ls}/bin/helm_ls", "serve"};
         capabilities = capabilities;
       })
     '';

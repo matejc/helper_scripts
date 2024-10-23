@@ -376,6 +376,7 @@ in {
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
           NIXOS_OZONE_WL = "1";
+          NIX_PATH = "nixpkgs=${inputs.nixpkgs}:nixos=${inputs.nixpkgs}/nixos:nixos-config=${inputs.nixos-configuration}/configuration.nix";
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
@@ -1749,7 +1750,7 @@ in {
           spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
           // spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY=:0"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation WAYLAND_DISPLAY=wayland-1 DISPLAY=:0"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${niriWorkspaces} action focus-workspace 2"
