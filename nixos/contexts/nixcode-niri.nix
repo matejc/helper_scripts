@@ -49,7 +49,7 @@ let
       wallpaper = "${nixos-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";
-      signingkey = "E9DCD6F3A1CF9949995C43E09D45D4C00C8A5A48";
+      signingkey = "E830DAC63C372EA6E7F0D6D90124F60926CFF815";
       locale.all = "en_GB.UTF-8";
       wirelessInterfaces = [ "wlp0s20f3" ];
       ethernetInterfaces = [ ];
@@ -212,6 +212,8 @@ let
         deploy-rs
         aider
         freerdp3
+
+        minikube kubectl docker-machine-kvm2 k9s ttyd
       ];
       programs.direnv = {
         enable = true;

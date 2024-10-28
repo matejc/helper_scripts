@@ -1397,8 +1397,6 @@ in {
           "t" = "${pkgs.eza}/bin/eza -T --ignore-glob='.git' -L3";
           "c" = "${pkgs.bat}/bin/bat";
           "d" = "${pkgs.delta}/bin/delta";
-          "e" = "${pkgs.xplr}/bin/xplr";
-          "b" = "${pkgs.broot}/bin/broot";
         };
         programs.zellij = {
           enable = true;
@@ -1417,12 +1415,13 @@ in {
           enable = true;
           enableZshIntegration = true;
           settings = {
-            default_flags = "--sort-by-date --show-git-info --sizes";
+            default_flags = "--sort-by-date --show-git-info --git-ignored --sizes --hidden";
             verbs = [
-              { invocation = "p"; execution = ":parent"; }
-              { invocation = "edit"; shortcut = "e"; execution = "$EDITOR {file}" ; }
-              { invocation = "create {subpath}"; execution = "$EDITOR {directory}/{subpath}"; }
-              { invocation = "view"; execution = "less {file}"; }
+              { key = "enter"; execution = ":panel_right"; }
+              { key = "alt-enter"; execution = ":panel_right"; }
+              { key = "right"; execution = ":panel_right"; apply_to = "file"; }
+              { key = "left"; execution = ":panel_left_no_open"; apply_to = "file"; }
+              { invocation = "edit"; key = "ctrl-enter"; execution = "$EDITOR {file}"; from_shell = true; }
             ];
           };
         };

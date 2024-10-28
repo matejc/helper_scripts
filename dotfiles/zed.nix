@@ -69,7 +69,7 @@ in
   target = "${variables.homeDir}/bin/zed";
   source = pkgs.writeShellScript "zed" ''
     export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
-    exec ${pkgs.zed-editor}/bin/zed "$@"
+    exec ${pkgs.zed-editor}/bin/zeditor "$@"
   '';
 } {
   target = "${variables.homeDir}/bin/z";
