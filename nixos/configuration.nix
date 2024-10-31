@@ -376,7 +376,7 @@ in {
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
           NIXOS_OZONE_WL = "1";
-          NIX_PATH = "nixpkgs=${inputs.nixpkgs}:nixos=${inputs.nixpkgs}/nixos:nixos-config=${inputs.nixos-configuration}/configuration.nix";
+          NIX_PATH = "nixpkgs=${inputs.nixpkgs}";
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
