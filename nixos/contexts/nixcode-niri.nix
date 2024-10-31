@@ -168,7 +168,16 @@ let
         enable = true;
         platform = "ipu6ep";
       };
-      boot.kernelPackages = pkgs.linuxPackages_6_11;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
+      # systemd.services.v4l2-relayd-ipu6.environment.logSink = "SYSLOG";
+      # systemd.services.v4l2-relayd-ipu6.environment.cameraDebug = "1";
+      boot.kernelPatches = [{
+        name = "ipu6";
+        patch = null;
+        extraConfig = ''
+          VIDEO_INTEL_IPU6 y
+        '';
+      }];
     };
     home-configuration = {
       home.stateVersion = "22.05";
