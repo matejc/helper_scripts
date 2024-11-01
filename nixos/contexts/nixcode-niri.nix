@@ -175,7 +175,7 @@ let
         name = "ipu6";
         patch = null;
         extraConfig = ''
-          VIDEO_INTEL_IPU6 y
+          VIDEO_INTEL_IPU6 m
         '';
       }];
     };
