@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  thoriumVersion = "126.0.6478.231";
+  thoriumVersion = "128.0.6613.189";
   thoriumSrc = {
     x86_64-linux = "https://github.com/Alex313031/thorium/releases/download/M${thoriumVersion}/Thorium_Browser_${thoriumVersion}_AVX2.AppImage";
     aarch64-linux = "https://github.com/Alex313031/Thorium-Raspi/releases/download/M${thoriumVersion}/Thorium_Browser_${thoriumVersion}_arm64.AppImage";
@@ -11,7 +11,7 @@ let
     version = thoriumVersion;
     src = pkgs.fetchurl {
       url = thoriumSrc.${system};
-      sha256 = "sha256-9JoPftspzmkIi+UO2PuoltN2Op7d1hiRaskr1gklJSw=";
+      sha256 = "sha256-RBPSGgwF6A4KXgLdn/YIrdFpZG2+KwMJ8MkTjSPpkhU=";
     };
     appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
   in pkgs.appimageTools.wrapType2 {

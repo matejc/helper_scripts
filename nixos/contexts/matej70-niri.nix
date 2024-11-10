@@ -233,16 +233,17 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
         swiftpoint
       ] ++ (with pkgs; [
-          solvespace keepassxc libreoffice aichat vlc
+          solvespace keepassxc libreoffice aichat mpv
           discord
           protontricks winetricks steamcmd wineWowPackages.unstableFull
-          super-slicer-latest
+          #super-slicer-latest
           uhk-agent
           jq
           scanmem
           caprine-bin
           steam-run steamtinkerlaunch yad xwayland-run cage
           logseq
+          eog
       ]);
       programs.chromium.enable = true;
       programs.chromium.package = lib.mkForce thorium;
