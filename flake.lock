@@ -300,11 +300,11 @@
         "xwayland-satellite-unstable": "xwayland-satellite-unstable"
       },
       "locked": {
-        "lastModified": 1731250464,
-        "narHash": "sha256-2jTIiU70IsY+NaJo0hCgsfQJy0ye06MxOu4alNN6IuA=",
+        "lastModified": 1731307989,
+        "narHash": "sha256-XXz+YCC0YoGoc4YQUhN8f/jiwYSEztrxZKJKgg0IDDo=",
         "owner": "sodiboo",
         "repo": "niri-flake",
-        "rev": "e67458880147b96e5365b9b61b2549176bdf7214",
+        "rev": "828c0a5f6ab8baaea219a5b46e07c4455e0d38fe",
         "type": "github"
       },
       "original": {
@@ -316,16 +316,16 @@
     "niri-stable": {
       "flake": false,
       "locked": {
-        "lastModified": 1726304152,
-        "narHash": "sha256-4YDrKMwXGVOBkeaISbxqf24rLuHvO98TnqxWYfgiSeg=",
+        "lastModified": 1731164272,
+        "narHash": "sha256-ea15x8+AAm90aeU1zNWXzX7ZfenzQRUgORyjOdn4Uoc=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "6a48728ffb1e638839b07f9ab2f06b2adb41dc61",
+        "rev": "9d8f640503819ff1905c9040d3c7910a50400bbd",
         "type": "github"
       },
       "original": {
         "owner": "YaLTeR",
-        "ref": "v0.1.9",
+        "ref": "v0.1.10",
         "repo": "niri",
         "type": "github"
       }
@@ -333,11 +333,11 @@
     "niri-unstable": {
       "flake": false,
       "locked": {
-        "lastModified": 1731221223,
-        "narHash": "sha256-E9lhNv83Z4R+c2H+ymLgybHZ+KylU0QHzO7sh5IHD/E=",
+        "lastModified": 1731305309,
+        "narHash": "sha256-3RTq6bdEzsPKx21tRqROHmYBX9aNj07UeNYIPfz3Cks=",
         "owner": "YaLTeR",
         "repo": "niri",
-        "rev": "010a2368823bc3959c1468609cd05367e5b6d0b6",
+        "rev": "494b438151c6ae94821ebfc612f12a0e1d49229e",
         "type": "github"
       },
       "original": {
@@ -410,8 +410,8 @@
     "nixos-configuration": {
       "flake": false,
       "locked": {
-        "lastModified": 1729344479,
-        "narHash": "sha256-73nMEfi39QrJHWfGDN2e0coDSmHBQH41P00GWsl2B5c=",
+        "lastModified": 1728479546,
+        "narHash": "sha256-6t91gcEnSc4+1wzeia+gkDuPhL0xupbFW7RHIHXa+aM=",
         "path": "/etc/nixos",
         "type": "path"
       },
@@ -520,11 +520,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1731253523,
-        "narHash": "sha256-b1/4ZL34f8SQPEEeewXFBxl4fGGEoLqdgxUF+OqI6AU=",
+        "lastModified": 1731297840,
+        "narHash": "sha256-eWA297on+n2DXa5HFOjO3yLabjTJcfCOJ2yzTnZLQFY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "5103d0ba9b445d72f0298f1d8c6eabb0cde1d69c",
+        "rev": "9251bb3e482b0726081d5a03702341cb3d8180ef",
         "type": "github"
       },
       "original": {

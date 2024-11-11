@@ -190,7 +190,6 @@ in {
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         inherit sway-wsshare aider thorium;
-        logseq = prev.logseq.override { electron = pkgs.electron_27; };
         neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (old: {
           patches = old.patches ++ [(pkgs.fetchpatch {
             name = "fix-lsp-str_byteindex_enc-bounds-checking-30747.patch";
