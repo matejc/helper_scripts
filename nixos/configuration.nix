@@ -220,6 +220,7 @@ in {
       };
       config.niri = {
         default = "gnome;gtk;";
+        "org.freedesktop.impl.portal.Access" = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
