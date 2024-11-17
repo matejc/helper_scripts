@@ -1263,7 +1263,7 @@ in {
               format-icons = ["" "" "" "" ""];
               max-length = 25;
             };
-          } // lib.listToAttrs (lib.imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v}{percentage_used}%"; path = v; }; }) context.variables.mounts)
+          } // lib.listToAttrs (lib.imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v}:{percentage_used}%"; path = v; }; }) context.variables.mounts)
           // lib.listToAttrs (lib.imap0 (i: v: { name = "network#${toString i}"; value = {
               interface = v;
               format = "{ifname}";
@@ -1957,6 +1957,17 @@ in {
               ExecStart = "${pkgs.swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'";
           };
         };
+        systemd.user.services.pre-sleep = {
+          Unit = {
+            Description = "Pre-sleep User Service";
+            Before = [ "sleep.target" ];
+          };
+          Install.WantedBy = [ "sleep.target" ];
+          Service = {
+            Type = "simple";
+            ExecStart = "${context.variables.binDir}/lockscreen";
+          };
+        };
         services.swayidle = {
           events = lib.mkOverride 900 [
             { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
@@ -1964,7 +1975,7 @@ in {
             { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
             # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
-            { event = "unlock"; command = "${pkgs.systemd}/bin/systemctl --user restart waybar"; }
+            # { event = "unlock"; command = "${pkgs.systemd}/bin/systemctl --user restart waybar"; }
           ];
           timeouts = lib.mkOverride 900 [
               { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
@@ -1976,7 +1987,8 @@ in {
               { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
-        systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+        # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
+        systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
 
       } )] ++ [ context.home-configuration ]);
     };

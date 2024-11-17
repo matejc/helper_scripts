@@ -63,7 +63,7 @@ let
       networkInterface = "eno1";
       wirelessInterfaces = [ "wlp3s0" ];
       ethernetInterfaces = [ self.variables.networkInterface ];
-      mounts = [ "/" ];
+      mounts = [ "/" "/mnt/games" ];
       # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       font = {
         family = "SauceCodePro Nerd Font Mono";
