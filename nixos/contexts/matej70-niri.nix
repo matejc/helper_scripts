@@ -41,7 +41,6 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/zed.nix"
       "${helper_scripts}/dotfiles/steam.nix"
     ];
     activationScript = ''
@@ -173,13 +172,12 @@ let
         vt = 2;
       };
       boot.kernelPackages = pkgs.linuxPackages_latest;
-      nix.package = pkgs.nixVersions.nix_2_21;
+      # nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
       ];
-      services.flatpak.enable = true;
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
         "steam"
@@ -235,7 +233,7 @@ let
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
           discord
-          protontricks winetricks steamcmd wineWowPackages.unstableFull
+          steamcmd
           #super-slicer-latest
           uhk-agent
           jq

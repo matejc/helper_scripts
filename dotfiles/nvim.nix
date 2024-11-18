@@ -11,7 +11,7 @@ let
   '';
 
   enabledNvimLsp = mkNvimLsp [
-    "kotlin_language_server"
+    # "kotlin_language_server"
     "nixd"
     "bashls"
     "dockerls"
@@ -20,9 +20,9 @@ let
     "jsonls"
     # "vimls"
     "html"
-    "cssls"
-    "ccls"
-    "omnisharp"
+    # "cssls"
+    # "ccls"
+    # "omnisharp"
     "gopls"
     #"hls"
     #"sumneko_lua"

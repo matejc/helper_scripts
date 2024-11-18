@@ -197,6 +197,13 @@ in {
             hash = "sha256-2oNHUQozXKrHvKxt7R07T9YRIIx8W3gt8cVHLm2gYhg=";
           })];
         });
+        discord = prev.discord.overrideAttrs (old: rec {
+          version = "0.0.75";
+          src = pkgs.fetchurl {
+            url = "https://stable.dl2.discordapp.net/apps/linux/${version}/discord-${version}.tar.gz";
+            hash = "sha256-mkqyc9Co8ineL6dcJKaRJD4TVG1RYij//OgzMh/tLDA=";
+          };
+        });
       })
       inputs.niri.overlays.niri
     ];
@@ -383,7 +390,7 @@ in {
         gtk = {
           enable = true;
           font = {
-            package = pkgs.nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; };
+            package = pkgs.nerdfonts.override { fonts = [ "SourceCodePro" ]; };
             name = context.variables.font.family;
             size = builtins.floor context.variables.font.size;
           };
