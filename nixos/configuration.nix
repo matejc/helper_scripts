@@ -204,6 +204,19 @@ in {
             hash = "sha256-mkqyc9Co8ineL6dcJKaRJD4TVG1RYij//OgzMh/tLDA=";
           };
         });
+        freerdp3 = (prev.freerdp3.override {
+          SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
+          SDL2_ttf = pkgs.callPackage ../nixes/SDL3/SDL_ttf.nix { };
+          SDL2_image = pkgs.callPackage ../nixes/SDL3/SDL_image.nix { };
+        }).overrideAttrs (old: {
+          version = "unstable-2024-11-20";
+          src = pkgs.fetchFromGitHub {
+            owner = "akallabeth";
+            repo = "FreeRDP";
+            rev = "d0eb28ed5ef5a3cc2eb70c8fe5c5743d5a0f4906";
+            hash = "sha256-d2IdL5uFPeEDV0NALO8OdxblY2VDWpOD1pfw4mLYdp8=";
+          };
+        });
       })
       inputs.niri.overlays.niri
     ];
