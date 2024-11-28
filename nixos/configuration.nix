@@ -204,19 +204,28 @@ in {
             hash = "sha256-mkqyc9Co8ineL6dcJKaRJD4TVG1RYij//OgzMh/tLDA=";
           };
         });
+        /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
           SDL2_ttf = pkgs.callPackage ../nixes/SDL3/SDL_ttf.nix { };
           SDL2_image = pkgs.callPackage ../nixes/SDL3/SDL_image.nix { };
+          openssl = pkgs.openssl_1_1;
         }).overrideAttrs (old: {
-          version = "unstable-2024-11-20";
+          version = "unstable-2024-11-21";
           src = pkgs.fetchFromGitHub {
             owner = "akallabeth";
             repo = "FreeRDP";
-            rev = "d0eb28ed5ef5a3cc2eb70c8fe5c5743d5a0f4906";
-            hash = "sha256-d2IdL5uFPeEDV0NALO8OdxblY2VDWpOD1pfw4mLYdp8=";
+            rev = "4cbdd2c1761571d2d5bb30012f977ce329f7745f";
+            hash = "sha256-y5cyi/qeroXkwzuXPqWuADObfPRlxoSUF0lQymV1vNU=";
           };
+          # src = pkgs.fetchFromGitHub {
+          #   owner = "FreeRDP";
+          #   repo = "FreeRDP";
+          #   rev = "c4559c39c3e044e69b022e4759f2a670a0cb0f51";
+          #   hash = "sha256-cLXgyh4khjycxvhCedhQus8BPIrQuO0+srjsL3z8Lqw=";
+          # };
         });
+        */
       })
       inputs.niri.overlays.niri
     ];

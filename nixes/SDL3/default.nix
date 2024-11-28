@@ -105,17 +105,17 @@ stdenv.mkDerivation (finalAttrs: {
   #
   # You can grep SDL sources with `grep -rE 'SDL_(NAME|.*_SYM)'` to
   # list the symbols used in this way.
-  postFixup =
-    let
-      rpath = lib.makeLibraryPath (
-        finalAttrs.dlopenPropagatedBuildInputs ++ finalAttrs.dlopenBuildInputs
-      );
-    in
-    lib.optionalString (stdenv.hostPlatform.extensions.sharedLibrary == ".so") ''
-      for lib in $out/lib/*.so* ; do
-        if ! [[ -L "$lib" ]]; then
-          patchelf --set-rpath "$(patchelf --print-rpath $lib):${rpath}" "$lib"
-        fi
-      done
-    '';
+  # postFixup =
+  #   let
+  #     rpath = lib.makeLibraryPath (
+  #       finalAttrs.dlopenPropagatedBuildInputs ++ finalAttrs.dlopenBuildInputs
+  #     );
+  #   in
+  #   lib.optionalString (stdenv.hostPlatform.extensions.sharedLibrary == ".so") ''
+  #     for lib in $out/lib/*.so* ; do
+  #       if ! [[ -L "$lib" ]]; then
+  #         patchelf --set-rpath "$(patchelf --print-rpath $lib):${rpath}" "$lib"
+  #       fi
+  #     done
+  #   '';
 })
