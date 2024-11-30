@@ -96,7 +96,7 @@ let
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "${self.variables.graphical.exec} msg action quit";
+        logout = "${self.variables.graphical.exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
         exec = "${self.variables.profileDir}/bin/niri";
@@ -119,7 +119,7 @@ let
         criteria = "DP-1";
         position = "1920,0";
         output = "DP-1";
-        mode = "1920x1080";
+        mode = "1920x1080@119.982";
         workspaces = [ "5" ];
         wallpaper = self.variables.wallpaper;
         scale = 1.0;
@@ -154,10 +154,14 @@ let
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       # { name = "kdeconnect"; delay = 4; group = "always"; }
-      # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
-      # { name = "network-manager-applet"; delay = 4; group = "always"; }
-      # { name = "waybar"; delay = 3; group = "always"; }
-      # { name = "swayidle"; delay = 1; group = "always"; }
+      { name = "pipewire"; delay = 1; group = "always"; }
+      { name = "wireplumber"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal-gtk"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal-gnome"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal"; delay = 1; group = "always"; }
+      { name = "swayidle"; delay = 2; group = "always"; }
+      { name = "network-manager-applet"; delay = 2; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -222,7 +226,6 @@ let
       services.syncthing.enable = true;
       # services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       #services.syncthing.tray.enable = true;
-      programs.waybar.enable = true;
       programs.obs-studio = {
         enable = true;
         plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];

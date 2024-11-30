@@ -542,17 +542,14 @@ in {
             {
               profile.name = "default";
               profile.outputs = map (o: { inherit (o) criteria position mode scale status; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "firstonly";
               profile.outputs = lib.imap0 (i: o: { inherit (o) criteria position mode scale; status = if i == 0 then "enable" else "disable"; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
             }
             {
               profile.name = "all";
               profile.outputs = map (o: { inherit (o) criteria position mode scale; status = "enable"; }) context.variables.outputs;
-              profile.exec = "systemctl --user restart waybar";
             }
           ];
         };
@@ -968,7 +965,7 @@ in {
           };
         };
 
-        #programs.waybar.enable = true;
+        programs.waybar.enable = true;
         programs.waybar.style = ''
           * {
               border: none;
@@ -1307,7 +1304,6 @@ in {
               #on-click-right = "${connman-gtk}/bin/connman-gtk";
           }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
         };
-        programs.waybar.systemd.enable = true;
         programs.waybar.systemd.target = context.variables.graphical.target;
         systemd.user.services.waybar.Service.RestartSec = 1;
         systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
@@ -1776,12 +1772,11 @@ in {
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
           spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
-          // spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '*' -m center -i '${context.variables.wallpaper}'"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "dbus-update-activation WAYLAND_DISPLAY=wayland-1 DISPLAY=:0"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-once start"
+          spawn-at-startup "${config.programs.waybar.package}/bin/waybar"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${niriWorkspaces} action focus-workspace 2"
 
           ${lib.concatMapStringsSep "\n" (i: ''
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
@@ -1841,7 +1836,7 @@ in {
               Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume 3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Shift+XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume 3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume -3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+              XF86AudioLowerVolume allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume -3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Shift+XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume -3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --brightness +10"; }
@@ -2016,6 +2011,10 @@ in {
               { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
+        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ context.variables.graphical.target ];
+
         # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
         systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
 
