@@ -17,7 +17,8 @@
   start = "labwc --startup /bin/compositor-cmds -C /etc/xdg/labwc";
   stop = "pkill labwc";
 }
-, socksproxy ? { guestPort = 9050; }
+, socksproxy ? { guestPort = 9050; hostPort = 9050; }
+, shadowsocks ? { guestPort = 1080; hostPort = 1080; }
 , cmds ? [
 ]
 , preCmds ? {
@@ -111,6 +112,11 @@ let
     </openbox_menu>
   '';
 
+  shadowsocksFile = pkgs.writeText "shadowsocks.json" (builtins.toJSON {
+    local_address = "0.0.0.0";
+    local_port = shadowsocks.guestPort;
+  });
+
   gp-connect = pkgs.writeShellScriptBin "gp-connect" ''
     { sleep 2; chown -R ${uid}:${gid} "/run/user/${uid}"; } &
     eval $(${pkgs.gp-saml-gui}/bin/gp-saml-gui --$1 --clientos=Linux $2)
@@ -171,7 +177,13 @@ let
     WAYLAND_DISPLAY=${wayland.outside} ${compositor.start}
   '';
 
-  hostFwds' = if hostFwds == null then null else (pkgs.lib.optionals (socksproxy != null) [{ host_port = 9050; guest_port = socksproxy.guestPort; }]) ++ hostFwds;
+  hostFwds' = if hostFwds == null then null else [
+    { host_port = shadowsocks.hostPort; guest_port = shadowsocks.guestPort; }
+    { host_port = socksproxy.hostPort; guest_port = socksproxy.guestPort; }
+  ] ++ hostFwds;
+
+  slirp4netnsHostFwds' = [
+  ] ++ slirp4netnsHostFwds;
 
   supervisorConf = pkgs.writeText "supervisord.conf" ''
     [supervisord]
@@ -227,6 +239,26 @@ let
     killasgroup = true
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/gp-connect.log
+    stdout_logfile_maxbytes = 0
+    '' else ""}
+
+    ${if shadowsocks != null then ''
+    [program:shadowsocks]
+    command = ${mkCmd "shadowsocks" { start = "sslocal -c ${shadowsocksFile}"; stop = "pkill sslocal";}}
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = unexpected
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/shadowsocks.log
     stdout_logfile_maxbytes = 0
     '' else ""}
 
@@ -336,7 +368,7 @@ let
   '';
 
   slirp4netnsExecute =
-    map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) slirp4netnsHostFwds;
+    map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) slirp4netnsHostFwds';
 
   script = pkgs.writeShellScript "script.sh" ''
     set -e
@@ -519,6 +551,7 @@ let
   ]
     ++ packages
     ++ (pkgs.lib.optionals (socksproxy != null) [srelay])
+    ++ (pkgs.lib.optionals (shadowsocks != null) [shadowsocks-rust])
     ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect]);
 
   binPaths = pkgs.lib.makeBinPath buildInputs;

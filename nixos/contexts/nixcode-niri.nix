@@ -127,8 +127,8 @@ let
       # { name = "kdeconnect"; delay = 3; group = "always"; }
       # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       # { name = "network-manager-applet"; delay = 3; group = "always"; }
-      # { name = "waybar"; delay = 2; group = "always"; }
-      # { name = "swayidle"; delay = 1; group = "always"; }
+      { name = "waybar"; delay = 4; group = "always"; }
+      { name = "swayidle"; delay = 3; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -214,7 +214,7 @@ let
         slack
         logseq
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        proxychains-ng
+        proxychains-ng cproxy
         helix
         aichat
         deploy-rs
