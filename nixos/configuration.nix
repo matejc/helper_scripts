@@ -190,6 +190,7 @@ in {
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };
+        graftcp = pkgs.callPackage ../nixes/graftcp.nix { };
         inherit sway-wsshare aider thorium;
         neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (old: {
           patches = old.patches ++ [(pkgs.fetchpatch {
