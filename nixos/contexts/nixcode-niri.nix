@@ -214,7 +214,7 @@ let
         slack
         logseq
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
-        proxychains-ng cproxy
+        proxychains-ng cproxy graftcp
         helix
         aichat
         deploy-rs

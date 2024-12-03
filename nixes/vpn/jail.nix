@@ -17,8 +17,12 @@
   start = "labwc --startup /bin/compositor-cmds -C /etc/xdg/labwc";
   stop = "pkill labwc";
 }
-, socksproxy ? { guestPort = 9050; hostPort = 9050; }
-, shadowsocks ? { guestPort = 1080; hostPort = 1080; }
+, socksproxy ? {
+  guestPort = 1080; hostPort = 1080;
+}
+, httpproxy ? {
+  guestPort = 3128; hostPort = 3128;
+}
 , cmds ? [
 ]
 , preCmds ? {
@@ -113,8 +117,20 @@ let
   '';
 
   shadowsocksFile = pkgs.writeText "shadowsocks.json" (builtins.toJSON {
-    local_address = "0.0.0.0";
-    local_port = shadowsocks.guestPort;
+    # local_address = "0.0.0.0";
+    # local_port = shadowsocks.guestPort;
+    locals = [
+      {
+        protocol = "http";
+        local_address = "0.0.0.0";
+        local_port = httpproxy.guestPort;
+      }
+      {
+        protocol = "socks";
+        local_address = "0.0.0.0";
+        local_port = socksproxy.guestPort;
+      }
+    ];
   });
 
   gp-connect = pkgs.writeShellScriptBin "gp-connect" ''
@@ -178,7 +194,7 @@ let
   '';
 
   hostFwds' = if hostFwds == null then null else [
-    { host_port = shadowsocks.hostPort; guest_port = shadowsocks.guestPort; }
+    { host_port = httpproxy.hostPort; guest_port = httpproxy.guestPort; }
     { host_port = socksproxy.hostPort; guest_port = socksproxy.guestPort; }
   ] ++ hostFwds;
 
@@ -242,7 +258,6 @@ let
     stdout_logfile_maxbytes = 0
     '' else ""}
 
-    ${if shadowsocks != null then ''
     [program:shadowsocks]
     command = ${mkCmd "shadowsocks" { start = "sslocal -c ${shadowsocksFile}"; stop = "pkill sslocal";}}
     priority = 0
@@ -260,7 +275,6 @@ let
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/shadowsocks.log
     stdout_logfile_maxbytes = 0
-    '' else ""}
 
     ${if compositor != null then ''
     [program:compositor]
@@ -279,26 +293,6 @@ let
     killasgroup = true
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/compositor.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
-
-    ${if socksproxy != null then ''
-    [program:socksproxy]
-    command = ${mkCmd "socksproxy" {start = "srelay -fvi 0.0.0.0:${toString socksproxy.guestPort}"; stop = "pkill srelay";}}
-    priority = 0
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = true
-    autorestart = true
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/socksproxy.log
     stdout_logfile_maxbytes = 0
     '' else ""}
 
@@ -548,10 +542,9 @@ let
     util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
     gnugrep shadow labwc foot xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
     openssl dconf netcat vanilla-dmz inetutils gnused openssh socat psmisc inotify-tools
+    shadowsocks-rust
   ]
     ++ packages
-    ++ (pkgs.lib.optionals (socksproxy != null) [srelay])
-    ++ (pkgs.lib.optionals (shadowsocks != null) [shadowsocks-rust])
     ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect]);
 
   binPaths = pkgs.lib.makeBinPath buildInputs;
