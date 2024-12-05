@@ -37,6 +37,7 @@
   { from = "${home.outside}/.vpn/${name}/openvpn"; to = "/etc/openvpn"; }
   { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
 ]
+, mountHome ? false
 , symlinks ? [ ]
 , variables ? [
   { name = "HISTFILE"; value = "${home.inside}/.zsh_history"; }
@@ -298,7 +299,7 @@ let
 
     ${pkgs.lib.concatMapStringsSep "\n" (f: ''
     [program:socket${toString f.host_port}]
-    command = ${mkCmd "socket-${toString f.host_port}" {start = "socat UNIX-LISTEN:${home.inside}/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${if f ? guest_addr then f.guest_addr else "127.0.0.1"}:${toString f.guest_port}";}}
+    command = ${mkCmd "socket-${toString f.host_port}" {start = "socat UNIX-LISTEN:/tmp/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${if f ? guest_addr then f.guest_addr else "127.0.0.1"}:${toString f.guest_port}";}}
     priority = 0
     directory = ${home.inside}
     user = ${user.inside}
@@ -367,7 +368,7 @@ let
   script = pkgs.writeShellScript "script.sh" ''
     set -e
 
-    mkdir -p ${stateDir}/home/fwd
+    mkdir -p ${stateDir}/.fwd
 
     cat ${resolvConf} >${stateDir}/.resolv.conf
     echo -n "" > ${stateDir}/.ns.pid
@@ -375,10 +376,10 @@ let
     ${preCmdOutside}
 
     ${if hostFwds' != null && hostFwds' != [] then ''
-    inotifywait -r -m ${stateDir}/home/fwd |
+    inotifywait -r -m ${stateDir}/.fwd |
       while read a b file; do
       ${pkgs.lib.concatMapStringsSep "\n" (f: ''
-        [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/home/fwd/${toString f.host_port}.sock &";
+        [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/.fwd/${toString f.host_port}.sock &";
         [[ $b == *DELETE* ]] && [[ $file == *${toString f.host_port}.sock ]] && fuser -k ${toString f.host_port}/TCP;
       '') hostFwds'}
       done &
@@ -423,7 +424,7 @@ let
     ${nsjail}/bin/nsjail \
       -Mo \
       --tmpfsmount / \
-      --bindmount ${stateDir}/home:${home.inside} \
+      ${if mountHome then "--bindmount ${home.outside}:${home.inside}" else "--bindmount ${stateDir}/home:${home.inside}"} \
       --tmpfsmount /root \
       --disable_proc \
       --mount none:/proc:proc \
@@ -438,8 +439,10 @@ let
       --mount none:/sys:sysfs \
       --mount none:/tmp:tmpfs:rw \
       --mount none:/tmp/.X11-unix:tmpfs:rw \
+      --bindmount ${stateDir}/.fwd:/tmp/fwd \
       --tmpfsmount /nix \
       --bindmount_ro /nix/store:/nix/store \
+      --bindmount_ro /nix/var/nix:/nix/var/nix \
       --tmpfsmount /etc \
       --symlink ${hostsFile}:/etc/hosts \
       --symlink ${passwdFile}:/etc/passwd \
@@ -484,7 +487,7 @@ let
       --env XDG_DATA_DIRS=/usr/share \
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
-      --env PATH=${binPaths} \
+      --env PATH="${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin" \
       --env LD_LIBRARY_PATH=/lib \
       --env GIO_EXTRA_MODULES=/lib/gio/modules \
       ${pkgs.lib.concatMapStringsSep " " (c: "--cap ${c}") caps} \
