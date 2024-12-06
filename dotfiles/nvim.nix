@@ -1003,11 +1003,14 @@ EOF
     let g:VM_quit_after_leaving_insert_mode = 1
     inoremap <silent> <C-S-Down> <esc>:call vm#commands#add_cursor_down(0, 1)<cr>
     inoremap <silent> <C-S-Up> <esc>:call vm#commands#add_cursor_up(0, 1)<cr>
-    inoremap <silent> <C-S-a> <esc>:call vm#commands#add_cursor_at_pos(0)<cr>
+    inoremap <silent> <C-S-p> <esc>:call vm#commands#add_cursor_at_pos(0)<cr>
+    inoremap <silent> <C-S-a> <esc>:call vm#commands#ctrln(1)<cr>
     let g:VM_maps = {}
     let g:VM_maps["Select Cursor Down"] = '<C-S-Down>'      " start selecting down
     let g:VM_maps["Select Cursor Up"]   = '<C-S-Up>'        " start selecting up
-    let g:VM_maps["Add Cursor At Pos"]   = '<C-S-a>'
+    let g:VM_maps["Add Cursor At Pos"]   = '<C-S-p>'
+    let g:VM_maps['Find Under']         = '<C-S-a>'           " replace C-n
+    let g:VM_maps['Find Subword Under'] = '<C-S-a>'           " replace visual C-n
     function! VM_Start()
       inoremap <buffer> <Esc> <Esc>
     endfunction
@@ -2690,7 +2693,7 @@ highlight! CmpItemMenu guifg=pink gui=italic
     "nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
     "vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
 
-    inoremap <C-S-p> <Cmd>lua require'telescope.builtin'.keymaps{}<cr>
+    nnoremap <C-S-p> :lua require'telescope.builtin'.keymaps{}<cr>
 
     nnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
     inoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
