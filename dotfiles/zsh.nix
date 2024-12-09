@@ -292,6 +292,7 @@ in
     zle -N first-tab
     bindkey '^I' first-tab
     .{1..9} (){ local d=.; repeat ''${0:1} d+=/..; cd $d;}
+    - (){cd -;}
 
     fpath=(${pkgs.zsh-completions}/share/zsh/site-functions $fpath)
     source ${pkgs.nix-zsh-completions}/share/zsh/plugins/nix/nix-zsh-completions.plugin.zsh
