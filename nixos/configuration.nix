@@ -256,6 +256,8 @@ in {
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     };
+    fonts.packages = [ pkgs.font-awesome pkgs.corefonts pkgs.nerd-fonts.sauce-code-pro pkgs.nerd-fonts.fira-code pkgs.nerd-fonts.fira-mono ];
+
     services.tlp = {
       enable = true;
       settings = {
@@ -301,7 +303,7 @@ in {
 
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = false;
-    home-manager.users.matejc = { config, ... }: {
+    home-manager.users.${defaultUser} = { config, ... }: {
       imports = [
         # inputs.hyprland.homeManagerModules.default
         inputs.niri.homeModules.niri
@@ -414,7 +416,7 @@ in {
         gtk = {
           enable = true;
           font = {
-            package = pkgs.nerdfonts.override { fonts = [ "SourceCodePro" ]; };
+            package = pkgs.nerd-fonts.sauce-code-pro;
             name = context.variables.font.family;
             size = builtins.floor context.variables.font.size;
           };
@@ -456,7 +458,7 @@ in {
           profiles = {
             default = {
               extensions = with nur.repos.rycee.firefox-addons; [
-                keepassxc-browser translate-web-pages multi-account-containers
+                keepassxc-browser multi-account-containers
                 tree-style-tab adnauseam
               ];
               settings = {
@@ -516,6 +518,7 @@ in {
                     transition: all 200ms !important;
                     min-width: var(--thin-tab-width) !important;
                     max-width: var(--thin-tab-width) !important;
+                    z-index: calc(var(--browser-area-z-index-tabbox, 10000) + 1) !important;
                 }
 
                 #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]:hover {
@@ -523,9 +526,8 @@ in {
                     min-width: var(--wide-tab-width) !important;
                     max-width: var(--wide-tab-width) !important;
                     margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1) !important;
-                    z-index: 1;
                 }
-                '';
+              '';
             };
           };
         };
@@ -535,8 +537,8 @@ in {
         programs.home-manager = {
           enable = true;
         };
-        home.username = "matejc";
-        home.homeDirectory = "/home/matejc";
+        home.username = defaultUser;
+        home.homeDirectory = "/home/${defaultUser}";
 
         services.kanshi = {
           systemdTarget = context.variables.graphical.target;
@@ -560,8 +562,9 @@ in {
           #enable = true;
           #indicator = true;
         };
-        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkOverride 900 [ "sway-session.target" ];
-        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkOverride 900 [ "sway-session.target" ];
+        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkDefault [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkDefault [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkDefault [ context.variables.graphical.target ];
 
         wayland.windowManager.sway = {
           systemd.enable = true;
@@ -1306,9 +1309,9 @@ in {
               #on-click-right = "${connman-gtk}/bin/connman-gtk";
           }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
         };
-        programs.waybar.systemd.target = context.variables.graphical.target;
-        systemd.user.services.waybar.Service.RestartSec = 1;
-        systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
+        #programs.waybar.systemd.target = context.variables.graphical.target;
+        #systemd.user.services.waybar.Service.RestartSec = 1;
+        #systemd.user.services.waybar.Service.Environment = "PATH=${pkgs.jq}/bin:${pkgs.systemd}/bin";
 
         #services.nextcloud-client.enable = true;
         #services.nextcloud-client.startInBackground = true;
@@ -2013,9 +2016,6 @@ in {
               { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
-        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
-        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
-        systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ context.variables.graphical.target ];
 
         # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
         systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
