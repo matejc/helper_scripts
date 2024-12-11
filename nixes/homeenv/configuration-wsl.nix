@@ -169,7 +169,7 @@ in
     fonts.fontconfig.enable = true;
     home.packages = with pkgs; [
       font-awesome
-      (nerdfonts.override { fonts = [ "FiraMono" ]; })
+      nerd-fonts.fira-mono
       corefonts
       xorg.xauth
       xfce.terminal

@@ -2016,6 +2016,7 @@ in {
               { timeout = 3600; command = "${pkgs.systemd}/bin/systemctl suspend"; }
           ];
         };
+        programs.waybar.systemd.enable = false;
 
         # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
         systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];

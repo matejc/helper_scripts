@@ -122,7 +122,7 @@ let
       services.gnome.at-spi2-core.enable = true;
       services.gnome.gnome-keyring.enable = true;
       services.accounts-daemon.enable = true;
-      fonts.packages = [ pkgs.corefonts pkgs.font-awesome (pkgs.nerdfonts.override { fonts = [ "SourceCodePro" "FiraCode" "FiraMono" ]; }) ];
+      fonts.packages = [ pkgs.corefonts pkgs.font-awesome pkgs.nerd-fonts.sauce-code-pro pkgs.nerd-fonts.fira-code pkgs.nerd-fonts.fira-mono ];
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [
         vulkan-tools

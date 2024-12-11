@@ -123,12 +123,18 @@ let
     services = [
       # { name = "kanshi"; delay = 2; group = "always"; }
       # { name = "gnome-keyring"; delay = 1; group = "always"; }
-      { name = "nextcloud-client"; delay = 3; group = "always"; }
       # { name = "kdeconnect"; delay = 3; group = "always"; }
       # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       # { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "waybar"; delay = 4; group = "always"; }
-      { name = "swayidle"; delay = 3; group = "always"; }
+      { name = "pipewire"; delay = 1; group = "always"; }
+      { name = "wireplumber"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal-gtk"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal-gnome"; delay = 1; group = "always"; }
+      { name = "xdg-desktop-portal"; delay = 1; group = "always"; }
+      { name = "swayidle"; delay = 2; group = "always"; }
+      { name = "network-manager-applet"; delay = 2; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
+      { name = "nextcloud-client"; delay = 2; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -163,10 +169,10 @@ let
         "electron-27.3.11"
         "olm-3.2.16"
       ];
-      hardware.ipu6 = {
-        enable = true;
-        platform = "ipu6ep";
-      };
+      # hardware.ipu6 = {
+      #   enable = true;
+      #   platform = "ipu6ep";
+      # };
       boot.kernelPackages = pkgs.linuxPackages_latest;
       # systemd.services.v4l2-relayd-ipu6.environment.logSink = "SYSLOG";
       # systemd.services.v4l2-relayd-ipu6.environment.cameraDebug = "1";
@@ -177,6 +183,7 @@ let
       #     VIDEO_INTEL_IPU6 m
       #   '';
       # }];
+      boot.blacklistedKernelModules = [ "intel_ipu6" "intel_ipu6_isys" "intel_ipu6_isys.isys" ];
     };
     home-configuration = {
       home.stateVersion = "22.05";
