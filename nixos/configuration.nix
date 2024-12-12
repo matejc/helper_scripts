@@ -14,6 +14,10 @@ let
   services-cmds = map (group: pkgs.writeScriptBin "service-group-${group}" ''
     #!${context.variables.shell}
     source "${context.variables.shellRc}"
+    export WAYLAND_DISPLAY=wayland-1
+    export DISPLAY=:0
+    ${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY
+    ${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY
     ${lib.concatMapStringsSep "\n" (s: ''{ sleep ${toString s.delay} && systemctl --user "$1" "${s.name}"; } &'') context.services}
     wait
   '') (map (s: s.group) context.services);
@@ -252,6 +256,7 @@ in {
       config.niri = {
         default = "gnome;gtk;";
         "org.freedesktop.impl.portal.Access" = "gtk";
+        "org.freedesktop.impl.portal.Notification" = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -562,9 +567,9 @@ in {
           #enable = true;
           #indicator = true;
         };
-        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkDefault [ context.variables.graphical.target ];
-        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkDefault [ context.variables.graphical.target ];
-        systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkDefault [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ context.variables.graphical.target ];
+        systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ ];
 
         wayland.windowManager.sway = {
           systemd.enable = true;

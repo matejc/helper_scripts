@@ -72,7 +72,7 @@ let
       sway.enable = false;
       graphical = {
         name = "niri";
-        logout = "${self.variables.graphical.exec} msg action quit";
+        logout = "${self.variables.graphical.exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
         exec = "${self.variables.profileDir}/bin/niri";
@@ -126,15 +126,11 @@ let
       # { name = "kdeconnect"; delay = 3; group = "always"; }
       # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       # { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "pipewire"; delay = 1; group = "always"; }
-      { name = "wireplumber"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal-gtk"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal-gnome"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal"; delay = 1; group = "always"; }
-      { name = "swayidle"; delay = 2; group = "always"; }
-      { name = "network-manager-applet"; delay = 2; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
-      { name = "nextcloud-client"; delay = 2; group = "always"; }
+      { name = "wireplumber"; delay = 4; group = "always"; }
+      { name = "swayidle"; delay = 5; group = "always"; }
+      { name = "network-manager-applet"; delay = 5; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
+      { name = "nextcloud-client"; delay = 5; group = "always"; }
     ];
     config = {};
     nixos-configuration = {
@@ -205,18 +201,12 @@ let
       };
       programs.niri.enable = true;
       programs.waybar.enable = true;
-      # programs.waybar.systemd.target = lib.mkForce "non-existing-target";
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.nextcloud-client.enable = true;
       services.nextcloud-client.startInBackground = true;
       services.network-manager-applet.enable = true;
-      # systemd.user.services.kdeconnect.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt6.qtwayland.out}/${pkgs.qt6.qtbase.qtPluginPrefix}" ];
-      # systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      # systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      # systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ ];
-      # systemd.user.services.kdeconnect-indicator.Service.Environment = lib.mkForce [ "PATH=${self.variables.profileDir}/bin" "QT_QPA_PLATFORM=wayland" "QT_QPA_PLATFORM_PLUGIN_PATH=${pkgs.qt6.qtwayland}/${pkgs.qt6.qtbase.qtPluginPrefix}" ];
       home.packages = with pkgs; [
         slack
         logseq

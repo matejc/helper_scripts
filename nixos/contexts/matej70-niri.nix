@@ -154,11 +154,7 @@ let
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       # { name = "kdeconnect"; delay = 4; group = "always"; }
-      { name = "pipewire"; delay = 1; group = "always"; }
       { name = "wireplumber"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal-gtk"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal-gnome"; delay = 1; group = "always"; }
-      { name = "xdg-desktop-portal"; delay = 1; group = "always"; }
       { name = "swayidle"; delay = 2; group = "always"; }
       { name = "network-manager-applet"; delay = 2; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
@@ -249,9 +245,6 @@ let
       programs.chromium.enable = true;
       programs.chromium.package = lib.mkForce thorium;
       services.network-manager-applet.enable = true;
-      # systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      # systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [ "non-existing-target" ];
-      # systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [];
       programs.firefox.enable = true;
     };
   };
