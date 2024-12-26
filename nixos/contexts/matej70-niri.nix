@@ -119,7 +119,7 @@ let
         criteria = "DP-1";
         position = "1920,0";
         output = "DP-1";
-        mode = "1920x1080@119.982";
+        mode = "1920x1080";
         workspaces = [ "5" ];
         wallpaper = self.variables.wallpaper;
         scale = 1.0;
@@ -231,7 +231,7 @@ let
         swiftpoint
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          discord
+          legcord
           steamcmd
           #super-slicer-latest
           uhk-agent
