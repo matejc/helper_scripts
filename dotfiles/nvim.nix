@@ -3122,34 +3122,35 @@ EOF
           pkgs.vimPlugins.vim-matchup
           pkgs.vimPlugins.plenary-nvim
           pkgs.vimPlugins.telescope-nvim
-          myVimPlugins.bufferline-nvim
+          pkgs.vimPlugins.bufferline-nvim
           myVimPlugins.galaxyline-nvim
           # myVimPlugins.lush-nvim
           pkgs.vimPlugins.undotree
           pkgs.vimPlugins.telescope-fzy-native-nvim
-          myVimPlugins.nvim-cmp
-          myVimPlugins.cmp-buffer
-          myVimPlugins.cmp-nvim-lsp
-          myVimPlugins.cmp_luasnip
-          myVimPlugins.cmp-path
-          myVimPlugins.cmp-cmdline
-          myVimPlugins.cmp-spell
-          myVimPlugins.cmp-nvim-lsp-signature-help
-          myVimPlugins.cmp-rg
-          myVimPlugins.cmp-treesitter
+          pkgs.vimPlugins.nvim-cmp
+          pkgs.vimPlugins.cmp-buffer
+          pkgs.vimPlugins.cmp-nvim-lsp
+          pkgs.vimPlugins.cmp_luasnip
+          pkgs.vimPlugins.cmp-path
+          pkgs.vimPlugins.cmp-cmdline
+          pkgs.vimPlugins.cmp-spell
+          pkgs.vimPlugins.cmp-nvim-lsp-signature-help
+          pkgs.vimPlugins.cmp-nvim-lsp-document-symbol
+          pkgs.vimPlugins.cmp-rg
+          pkgs.vimPlugins.cmp-treesitter
           myVimPlugins.nvim-hlslens
           myVimPlugins.nvim-scrollbar
           myVimPlugins.themer-lua
           myVimPlugins.friendly-snippets
           pkgs.vimPlugins.nui-nvim
-          myVimPlugins.smart-splits-nvim
-          myVimPlugins.neo-tree-nvim
+          pkgs.vimPlugins.smart-splits-nvim
+          pkgs.vimPlugins.neo-tree-nvim
           pkgs.vimPlugins.nvim-treesitter.withAllGrammars
-          myVimPlugins.nvim-treesitter-textobjects
+          pkgs.vimPlugins.nvim-treesitter-textobjects
           myVimPlugins.neovim-session-manager
-          myVimPlugins.telescope-frecency-nvim
+          pkgs.vimPlugins.telescope-frecency-nvim
           myVimPlugins.novim-mode
-          myVimPlugins.lspsaga-nvim
+          pkgs.vimPlugins.lspsaga-nvim
           pkgs.vimPlugins.plantuml-syntax
           myVimPlugins.plantuml-previewer-vim
           pkgs.vimPlugins.open-browser-vim
@@ -3158,10 +3159,9 @@ EOF
           pkgs.vimPlugins.telescope-live-grep-args-nvim
           myVimPlugins.vim-jinja2-syntax
           # myVimPlugins.ChatGPT-nvim
-          myVimPlugins.which-key-nvim
+          pkgs.vimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
           myVimPlugins.render-markdown-nvim
-          myVimPlugins.parrot-nvim
           # myVimPlugins.multicursor-nvim
           # myVimPlugins.hlchunk-nvim
           pkgs.vimPlugins.indent-blankline-nvim

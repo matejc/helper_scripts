@@ -119,7 +119,7 @@ let
         criteria = "DP-1";
         position = "1920,0";
         output = "DP-1";
-        mode = "1920x1080";
+        mode = "1920x1080@165.003";
         workspaces = [ "5" ];
         wallpaper = self.variables.wallpaper;
         scale = 1.0;
@@ -154,10 +154,10 @@ let
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       # { name = "kdeconnect"; delay = 4; group = "always"; }
-      { name = "wireplumber"; delay = 1; group = "always"; }
-      { name = "swayidle"; delay = 2; group = "always"; }
-      { name = "network-manager-applet"; delay = 2; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 2; group = "always"; }
+      { name = "wireplumber"; delay = 4; group = "always"; }
+      { name = "swayidle"; delay = 5; group = "always"; }
+      { name = "network-manager-applet"; delay = 5; group = "always"; }
+      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
     ];
     config = {};
     nixos-configuration = {

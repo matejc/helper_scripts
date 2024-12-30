@@ -196,13 +196,6 @@ in {
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };
         graftcp = pkgs.callPackage ../nixes/graftcp.nix { };
         inherit sway-wsshare aider thorium;
-        neovim-unwrapped = prev.neovim-unwrapped.overrideAttrs (old: {
-          patches = old.patches ++ [(pkgs.fetchpatch {
-            name = "fix-lsp-str_byteindex_enc-bounds-checking-30747.patch";
-            url = "https://patch-diff.githubusercontent.com/raw/neovim/neovim/pull/30747.patch";
-            hash = "sha256-2oNHUQozXKrHvKxt7R07T9YRIIx8W3gt8cVHLm2gYhg=";
-          })];
-        });
         discord = prev.discord.overrideAttrs (old: rec {
           version = "0.0.75";
           src = pkgs.fetchurl {

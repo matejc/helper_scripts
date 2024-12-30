@@ -53,7 +53,11 @@ self: super: {
     #'';
   });
 
-  telescope-frecency-nvim = super.telescope-frecency-nvim.overrideAttrs (old: {
-    dependencies = [ vimPlugins.sqlite-lua self.telescope-nvim ];
+  neovim-session-manager = super.neovim-session-manager.overrideAttrs (old: {
+    dependencies = [ vimPlugins.plenary-nvim ];
+  });
+
+  themer-lua = super.themer-lua.overrideAttrs (old: {
+    dependencies = [ vimPlugins.telescope-nvim vimPlugins.plenary-nvim ];
   });
 }
