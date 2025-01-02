@@ -2458,94 +2458,94 @@ vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {norem
 --   },
 -- })
 
-require("parrot").setup({
-  -- The provider definitions with endpoints, api keys and models used for chat summarization
-  providers = {
-    openai = {
-      api_key = os.getenv "OPENAI_API_KEY",
-    },
-  },
-
-  -- the prefix used for all commands
-  cmd_prefix = "Prt",
-
-  -- optional parameters for curl
-  curl_params = {},
-
-  -- The directory to store persisted state information like the
-  -- current provider and the selected agents
-  state_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/persisted",
-
-  -- Defintion of the agents (similar to GPTs) for the chats and the inline hooks
-  agents = {
-      chat = ...,
-      command = ...,
-  },
-
-  -- The directory to store the chats (searched with PrtChatFinder)
-  chat_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/chats",
-
-  -- Chat user prompt prefix
-  chat_user_prefix = "🗨:",
-
-  -- Explicitly confirm deletion of a chat file
-  chat_confirm_delete = true,
-
-  -- Local chat buffer shortcuts
-  chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g><C-g>" },
-  chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>d" },
-  chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>s" },
-  chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>c" },
-
-  -- Option to move the chat to the end of the file after finished respond
-  chat_free_cursor = false,
-
-   -- use prompt buftype for chats (:h prompt-buffer)
-  chat_prompt_buf_type = false,
-
-  -- Default target for  PrtChatToggle, PrtChatNew, PrtContext and the chats opened from the ChatFinder
-  -- values: popup / split / vsplit / tabnew
-  toggle_target = "vsplit",
-
-  -- The interactive user input appearing when can be "native" for
-  -- vim.ui.input or "buffer" to query the input within a native nvim buffer
-  -- (see video demonstrations below)
-  user_input_ui = "native",
-
-  -- Popup window layout
-  -- border: "single", "double", "rounded", "solid", "shadow", "none"
-  style_popup_border = "single",
-
-  -- margins are number of characters or lines
-  style_popup_margin_bottom = 8,
-  style_popup_margin_left = 1,
-  style_popup_margin_right = 2,
-  style_popup_margin_top = 2,
-  style_popup_max_width = 160,
-
-  -- Prompt used for interactive LLM calls like PrtRewrite where {{agent}} is
-  -- a placeholder for the agent name
-  command_prompt_prefix_template = "🤖 {{agent}} ~ ",
-
-  -- auto select command response (easier chaining of commands)
-  -- if false it also frees up the buffer cursor for further editing elsewhere
-  command_auto_select_response = true,
-
-  -- fzf_lua options for PrtAgent and PrtChatFinder when plugin is installed
-  fzf_lua_opts = {
-      ["--ansi"] = true,
-      ["--sort"] = "",
-      ["--info"] = "inline",
-      ["--layout"] = "reverse",
-      ["--preview-window"] = "nohidden:right:75%",
-  },
-
-  -- Enables the query spinner animation
-  enable_spinner = true,
-  -- Type of spinner animation to display while loading
-  -- Available options: "dots", "line", "star", "bouncing_bar", "bouncing_ball"
-  spinner_type = "star",
-})
+-- require("parrot").setup({
+--   -- The provider definitions with endpoints, api keys and models used for chat summarization
+--   providers = {
+--     openai = {
+--       api_key = os.getenv "OPENAI_API_KEY",
+--     },
+--   },
+--
+--   -- the prefix used for all commands
+--   cmd_prefix = "Prt",
+--
+--   -- optional parameters for curl
+--   curl_params = {},
+--
+--   -- The directory to store persisted state information like the
+--   -- current provider and the selected agents
+--   state_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/persisted",
+--
+--   -- Defintion of the agents (similar to GPTs) for the chats and the inline hooks
+--   agents = {
+--       chat = ...,
+--       command = ...,
+--   },
+--
+--   -- The directory to store the chats (searched with PrtChatFinder)
+--   chat_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/chats",
+--
+--   -- Chat user prompt prefix
+--   chat_user_prefix = "🗨:",
+--
+--   -- Explicitly confirm deletion of a chat file
+--   chat_confirm_delete = true,
+--
+--   -- Local chat buffer shortcuts
+--   chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g><C-g>" },
+--   chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>d" },
+--   chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>s" },
+--   chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>c" },
+--
+--   -- Option to move the chat to the end of the file after finished respond
+--   chat_free_cursor = false,
+--
+--    -- use prompt buftype for chats (:h prompt-buffer)
+--   chat_prompt_buf_type = false,
+--
+--   -- Default target for  PrtChatToggle, PrtChatNew, PrtContext and the chats opened from the ChatFinder
+--   -- values: popup / split / vsplit / tabnew
+--   toggle_target = "vsplit",
+--
+--   -- The interactive user input appearing when can be "native" for
+--   -- vim.ui.input or "buffer" to query the input within a native nvim buffer
+--   -- (see video demonstrations below)
+--   user_input_ui = "native",
+--
+--   -- Popup window layout
+--   -- border: "single", "double", "rounded", "solid", "shadow", "none"
+--   style_popup_border = "single",
+--
+--   -- margins are number of characters or lines
+--   style_popup_margin_bottom = 8,
+--   style_popup_margin_left = 1,
+--   style_popup_margin_right = 2,
+--   style_popup_margin_top = 2,
+--   style_popup_max_width = 160,
+--
+--   -- Prompt used for interactive LLM calls like PrtRewrite where {{agent}} is
+--   -- a placeholder for the agent name
+--   command_prompt_prefix_template = "🤖 {{agent}} ~ ",
+--
+--   -- auto select command response (easier chaining of commands)
+--   -- if false it also frees up the buffer cursor for further editing elsewhere
+--   command_auto_select_response = true,
+--
+--   -- fzf_lua options for PrtAgent and PrtChatFinder when plugin is installed
+--   fzf_lua_opts = {
+--       ["--ansi"] = true,
+--       ["--sort"] = "",
+--       ["--info"] = "inline",
+--       ["--layout"] = "reverse",
+--       ["--preview-window"] = "nohidden:right:75%",
+--   },
+--
+--   -- Enables the query spinner animation
+--   enable_spinner = true,
+--   -- Type of spinner animation to display while loading
+--   -- Available options: "dots", "line", "star", "bouncing_bar", "bouncing_ball"
+--   spinner_type = "star",
+-- })
 
 local wk = require("which-key")
 -- wk.add({
