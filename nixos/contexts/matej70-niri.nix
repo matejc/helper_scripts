@@ -154,8 +154,8 @@ let
       # { name = "kanshi"; delay = 1; group = "always"; }
       #{ name = "syncthingtray"; delay = 3; group = "always"; }
       # { name = "kdeconnect"; delay = 4; group = "always"; }
-      { name = "wireplumber"; delay = 4; group = "always"; }
-      { name = "swayidle"; delay = 5; group = "always"; }
+      # { name = "wireplumber"; delay = 4; group = "always"; }
+      # { name = "swayidle"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 5; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
     ];

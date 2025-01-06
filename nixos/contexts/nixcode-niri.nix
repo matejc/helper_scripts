@@ -126,8 +126,8 @@ let
       # { name = "kdeconnect"; delay = 3; group = "always"; }
       # { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       # { name = "network-manager-applet"; delay = 3; group = "always"; }
-      { name = "wireplumber"; delay = 4; group = "always"; }
-      { name = "swayidle"; delay = 5; group = "always"; }
+      # { name = "wireplumber"; delay = 4; group = "always"; }
+      # { name = "swayidle"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 5; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
       { name = "nextcloud-client"; delay = 5; group = "always"; }
