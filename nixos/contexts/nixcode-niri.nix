@@ -31,6 +31,7 @@ let
         "${helper_scripts}/dotfiles/helix.nix"
         "${helper_scripts}/dotfiles/kitty.nix"
         "${helper_scripts}/dotfiles/vlc.nix"
+        "${helper_scripts}/dotfiles/ghostty.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -62,7 +63,7 @@ let
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.ghostty}/bin/ghostty";
         browser = "${self.variables.profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
@@ -219,6 +220,8 @@ let
         freerdp3
 
         minikube kubectl docker-machine-kvm2 k9s ttyd
+
+        ghostty
       ];
       programs.direnv = {
         enable = true;
