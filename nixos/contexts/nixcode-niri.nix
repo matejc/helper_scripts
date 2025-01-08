@@ -30,7 +30,8 @@ let
         "${helper_scripts}/dotfiles/jwt.nix"
         "${helper_scripts}/dotfiles/helix.nix"
         "${helper_scripts}/dotfiles/kitty.nix"
-        "${helper_scripts}/dotfiles/vlc.nix"
+        "${helper_scripts}/dotfiles/alacritty.nix"
+        "${helper_scripts}/dotfiles/zellij.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc

@@ -1428,16 +1428,21 @@ in {
         };
         programs.zellij = {
           enable = true;
-          settings = {
-            simplified_ui = true;
-            default_layout = "compact";
-            copy_command = "${pkgs.wl-clipboard}/bin/wl-copy";
-            default_shell = "${context.variables.shell}";
-            pane_frames = false;
-            # keybinds = {
-            #   unbind = [ "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b" ];
-            # };
-          };
+          # settings = {
+          #   simplified_ui = true;
+          #   default_layout = "compact";
+          #   copy_command = "${pkgs.wl-clipboard}/bin/wl-copy";
+          #   default_shell = "${context.variables.shell}";
+          #   pane_frames = false;
+          #   copy_on_select = false;
+          #   keybinds = {
+          #     # unbind = [ "Ctrl t" "Ctrl s" "Ctrl g" "Ctrl n" "Ctrl q" "Ctrl o" "Ctrl p" "Ctrl h" "Ctrl b" ];
+          #     unbind = true;
+          #     normal = {
+          #       "bind \"Ctrl C\"" = "Copy;";
+          #     };
+          #   };
+          # };
         };
         programs.broot = {
           enable = true;
