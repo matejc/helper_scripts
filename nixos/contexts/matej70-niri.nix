@@ -143,10 +143,10 @@ let
         ];
         library = "/mnt/games/SteamLibrary";
         run = {
-          "2420110".compatibilityTool = "SteamTinkerLaunch";
-          "1898300".compatibilityTool = "GE-Proton9-11";
-          "2074920".compatibilityTool = "GE-Proton9-11";
-          "1716740".compatibilityTool = "SteamTinkerLaunch";
+          # "2420110".compatibilityTool = "SteamTinkerLaunch";
+          # "1898300".compatibilityTool = "GE-Proton9-11";
+          # "2074920".compatibilityTool = "GE-Proton9-11";
+          # "1716740".compatibilityTool = "SteamTinkerLaunch";
         };
       };
     };
