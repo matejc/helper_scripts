@@ -80,6 +80,7 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.homeDir}/bin/nvim";
+        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${self.variables.homeDir}/bin/nvim" --frame none'';
       };
       outputs = [{
         criteria = "eDP-1";
