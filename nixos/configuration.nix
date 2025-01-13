@@ -439,7 +439,6 @@ in {
         };
 
         programs.chromium = {
-          package = pkgs.ungoogled-chromium;
           dictionaries = [
             pkgs.hunspellDictsChromium.en_US
           ];

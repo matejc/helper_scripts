@@ -4,8 +4,8 @@ pkgs.stdenv.mkDerivation {
   version = "dev";
 
   src = pkgs.fetchurl {
-    url = "https://swiftpointdrivers.blob.core.windows.net/pro/alpha/linux/Swiftpoint%20X1%20Control%20Panel%203.0.7.4-b91b5b0b.tar.xz";
-    sha256 = "sha256-Gd9cJve5qwOUZ8aTi7GmpvvcJxRLr7YcQFEEF3rS4Fo=";
+    url = "https://swiftpointdrivers.blob.core.windows.net/pro/beta/linux/Swiftpoint%20X1%20Control%20Panel%203.0.7.20-a1956a80.tar.xz";
+    sha256 = "sha256-l+S03mautR552BPAMlhsYh/OofO4R83JPWQ7fMzdsl0=";
   };
 
   nativeBuildInputs = [ pkgs.makeWrapper ];

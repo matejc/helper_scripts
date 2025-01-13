@@ -103,13 +103,13 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.binDir}/nvim";
-        # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${homeDir}/bin/nvim" --frame none'';
+        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${self.variables.homeDir}/bin/nvim" --frame none'';
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
       outputs = [{
-        criteria = "HDMI-A-1";
+        criteria = "DP-2";
         position = "0,0";
-        output = "HDMI-A-1";
+        output = "DP-2";
         mode = "1920x1080";
         workspaces = [ "1" "2" "3" "4" ];
         wallpaper = self.variables.wallpaper;
@@ -119,7 +119,7 @@ let
         criteria = "DP-1";
         position = "1920,0";
         output = "DP-1";
-        mode = "1920x1080@165.003";
+        mode = "2560x1440";
         workspaces = [ "5" ];
         wallpaper = self.variables.wallpaper;
         scale = 1.0;
@@ -211,6 +211,7 @@ let
           ExecStart = "${script}";
         };
       };
+      security.pam.services.login.fprintAuth = false;
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -224,7 +225,7 @@ let
       #services.syncthing.tray.enable = true;
       programs.obs-studio = {
         enable = true;
-        plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs ];
+        plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs pkgs.obs-studio-plugins.obs-vkcapture ];
       };
       home.packages = [
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
@@ -238,12 +239,12 @@ let
           jq
           scanmem
           caprine-bin
-          steam-run steamtinkerlaunch yad xwayland-run cage
+          steam-run steamtinkerlaunch yad xwayland-run cage winetricks
           logseq
           eog
+          file-roller
       ]);
       programs.chromium.enable = true;
-      programs.chromium.package = lib.mkForce thorium;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
     };
