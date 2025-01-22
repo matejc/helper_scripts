@@ -116,7 +116,7 @@
     "hidden": true,
     "description": "Nix packages (master)",
     "nixexprinput": "helper_scripts",
-    "nixexprpath": "nixes/packages.nix",
+    "nixexprpath": "hydras/packages.nix",
     "checkinterval": 600,
     "schedulingshares": 100,
     "enableemail": false,

@@ -20,7 +20,7 @@ let
     "jsonls"
     # "vimls"
     "html"
-    # "cssls"
+    "cssls"
     # "ccls"
     # "omnisharp"
     "gopls"

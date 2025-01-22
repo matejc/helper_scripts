@@ -19,6 +19,12 @@ let
     hash = "sha256-DEkplqXqS9hpwHRSg7BucEmSdzu1Un7UhWSgG9Hpc94=";
   };
 
+  witcher4-wallpaper = pkgs.fetchurl {
+    name = "wallpaper.jpg";
+    url = "https://cdn-l-thewitcher.cdprojektred.com/media/wallpaper/1399/2560x1600/Witcher_IV_Wallpaper_01_12560x1600_EN.jpeg";
+    hash = "sha256-45NayKMOauWh/tKRJ7wPju0SSz/eYiBZAe6OADMcE6Q=";
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/programs.nix"
@@ -117,11 +123,11 @@ let
         status = "enable";
       } {
         criteria = "DP-1";
-        position = "1920,0";
+        position = "2000,0";
         output = "DP-1";
         mode = "2560x1440";
         workspaces = [ "5" ];
-        wallpaper = self.variables.wallpaper;
+        wallpaper = "${witcher4-wallpaper}";
         scale = 1.0;
         status = "enable";
       }];
@@ -171,7 +177,49 @@ let
         };
         vt = 2;
       };
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
+      # boot.kernelPatches = [
+      #   {
+      #     name = "issue-3693_1";
+      #     patch = pkgs.fetchurl {
+      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/1c86c81a86c60f9b15d3e3f43af0363cf56063e7.patch";
+      #       hash = "sha256-pv2IABCcBbWhPGLXW8C6bIvZdIl5nabNrM0vdkSIvCc=";
+      #     };
+      #   }
+      #   {
+      #     name = "issue-3693_2";
+      #     patch = pkgs.fetchurl {
+      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/b8d6daffc871a42026c3c20bff7b8fa0302298c1.patch";
+      #       hash = "sha256-GCoR9q0PuD/TuR6w9B2fC0U5QdA/8PCcLTUxi1kJLig=";
+      #     };
+      #   }
+      #   {
+      #     name = "issue-3693_3";
+      #     patch = pkgs.fetchurl {
+      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/ab75a0d2e07942ae15d32c0a5092fd336451378c.patch";
+      #       hash = "sha256-lSjY8J2655yKPJZoieEnVaorCFzV/+rYyH9vaLN8Wcg=";
+      #     };
+      #   }
+      # ];
+      # hardware.firmware = let
+      #   vcn = pkgs.stdenv.mkDerivation {
+      #     name = "vcn";
+      #     src = pkgs.fetchurl {
+      #       url = "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/amdgpu/navy_flounder_vcn.bin?id=3e78bb66e604d2140ea3628d27024266a181ca14";
+      #       hash = "sha256-OheYiOhZyCsUPyTCPGRIqAiJrePdKk+2RIzKYmPd5es=";
+      #       name = "navy_flounder_vcn.bin";
+      #     };
+      #     unpackPhase = "true";
+      #     installPhase = ''
+      #       mkdir -p $out/lib/firmware/amdgpu
+      #       cp $src $out/lib/firmware/amdgpu/navy_flounder_vcn.bin
+      #     '';
+      #   };
+      # in [
+      #   pkgs.linux-firmware
+      # ];
+
       # nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
@@ -243,6 +291,7 @@ let
           logseq
           eog
           file-roller
+          wf-recorder
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

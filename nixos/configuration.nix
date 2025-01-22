@@ -1669,6 +1669,7 @@ in {
             ''
             }
           }
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '${o.output}' -m fill -i '${o.wallpaper}'"
           ''
           ) context.variables.outputs}
 
@@ -1977,17 +1978,6 @@ in {
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
-        systemd.user.services.wallpaper = {
-          Unit = {
-            Description = "Wallpaper User Service";
-            After = [ "${context.variables.graphical.target}" ];
-          };
-          Install.WantedBy = [ "${context.variables.graphical.target}" ];
-          Service = {
-              Type = "simple";
-              ExecStart = "${pkgs.swaybg}/bin/swaybg -o '*' -m fill -i '${context.variables.wallpaper}'";
-          };
-        };
         systemd.user.services.pre-sleep = {
           Unit = {
             Description = "Pre-sleep User Service";
