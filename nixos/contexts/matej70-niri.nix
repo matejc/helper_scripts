@@ -60,6 +60,7 @@ let
       nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
       binDir = "${self.variables.homeDir}/bin";
       lockscreen = "${self.variables.binDir}/lockscreen";
+      lockImage = "";
       wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";

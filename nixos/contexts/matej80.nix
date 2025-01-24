@@ -42,6 +42,7 @@ let
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       binDir = "${homeDir}/bin";
       lockscreen = "${homeDir}/bin/lockscreen";
+      lockImage = "";
       wallpaper = "${nixos-artwork-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
