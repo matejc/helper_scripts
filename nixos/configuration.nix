@@ -1934,6 +1934,7 @@ in {
               // Mod+Shift+Space { switch-layout "prev"; }
 
               Shift+Print { screenshot; }
+              Alt+Print { screenshot-window; }
 
               Super+Shift+E { quit; }
               // Mod+Shift+P { power-off-monitors; }

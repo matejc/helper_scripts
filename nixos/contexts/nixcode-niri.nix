@@ -46,6 +46,7 @@ let
       temperatureFiles = [ self.variables.hwmonPath ];
       hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       lockscreen = "${self.variables.homeDir}/bin/lockscreen";
+      lockImage = ./../../assets/update.png;
       wallpaper = "${nixos-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";

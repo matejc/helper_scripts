@@ -6,7 +6,12 @@
     ${pkgs.procps}/bin/pgrep swaylock
     if [ $? -ne 0 ]
     then
-      ${pkgs.swaylock}/bin/swaylock -f -c 000000 $@
+      if [ -f "${variables.lockImage}" ]
+      then
+        ${pkgs.swaylock}/bin/swaylock -f -i "${variables.lockImage}" $@
+      else
+        ${pkgs.swaylock}/bin/swaylock -f -c 000000 $@
+      fi
     fi
   '';
 } {
