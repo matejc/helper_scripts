@@ -1413,7 +1413,6 @@ in {
             "hl+" = "#FC9867";
           };
         };
-        programs.gitui.enable = true;
         programs.direnv = {
           enable = true;
           enableZshIntegration = true;
@@ -1424,6 +1423,7 @@ in {
           "t" = "${pkgs.eza}/bin/eza -T --ignore-glob='.git' -L3";
           "c" = "${pkgs.bat}/bin/bat";
           "d" = "${pkgs.delta}/bin/delta";
+          "g" = "${pkgs.git-igitt}/bin/git-igitt";
         };
         programs.zellij = {
           enable = true;
