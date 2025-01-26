@@ -178,7 +178,7 @@ let
         };
         vt = 2;
       };
-      boot.kernelPackages = pkgs.linuxPackages_xanmod_stable;
+      boot.kernelPackages = pkgs.linuxPackages_lqx;
       # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
       # boot.kernelPatches = [
       #   {
@@ -225,7 +225,7 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
-        "olm-3.2.16"
+        "cinny-4.2.3" "cinny-unwrapped-4.2.3"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -281,7 +281,7 @@ let
         swiftpoint
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord
+          legcord cinny-desktop
           steamcmd
           #super-slicer-latest
           uhk-agent
