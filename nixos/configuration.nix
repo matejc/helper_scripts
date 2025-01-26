@@ -182,9 +182,6 @@ let
     done
   '';
 
-  sway-wsshare = import ../nixes/sway-wsshare/default.nix { inherit pkgs; };
-  aider = pkgs.callPackage ../nixes/aider { };
-  thorium = pkgs.callPackage ../nixes/thorium.nix { };
 in {
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
@@ -195,14 +192,10 @@ in {
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };
         graftcp = pkgs.callPackage ../nixes/graftcp.nix { };
-        inherit sway-wsshare aider thorium;
-        discord = prev.discord.overrideAttrs (old: rec {
-          version = "0.0.75";
-          src = pkgs.fetchurl {
-            url = "https://stable.dl2.discordapp.net/apps/linux/${version}/discord-${version}.tar.gz";
-            hash = "sha256-mkqyc9Co8ineL6dcJKaRJD4TVG1RYij//OgzMh/tLDA=";
-          };
-        });
+        sway-wsshare = pkgs.callPackage ../nixes/sway-wsshare/default.nix { };
+        aider = pkgs.callPackage ../nixes/aider { };
+        thorium = pkgs.callPackage ../nixes/thorium.nix { };
+        swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
         /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };

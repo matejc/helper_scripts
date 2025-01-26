@@ -2,10 +2,8 @@
 let
   homeConfig = config.home-manager.users.matejc.home;
 
-  looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
-  looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
-  swiftpoint = pkgs.callPackage ../../nixes/swiftpoint.nix {};
-  thorium = pkgs.callPackage ../../nixes/thorium.nix {};
+  # looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
+  # looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
 
   nixos-artwork-wallpaper = pkgs.fetchurl {
     name = "nix-wallpaper-nineish-dark-gray.png";
@@ -274,11 +272,10 @@ let
       #services.syncthing.tray.enable = true;
       programs.obs-studio = {
         enable = true;
-        plugins = [ looking-glass-obs pkgs.obs-studio-plugins.wlrobs pkgs.obs-studio-plugins.obs-vkcapture ];
+        plugins = [ pkgs.obs-studio-plugins.wlrobs pkgs.obs-studio-plugins.obs-vkcapture ];
       };
       home.packages = [
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
-        swiftpoint
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
           legcord cinny-desktop
@@ -289,6 +286,7 @@ let
           scanmem
           caprine-bin
           steam-run steamtinkerlaunch yad xwayland-run cage winetricks
+          swiftpoint
           logseq
           eog
           file-roller
