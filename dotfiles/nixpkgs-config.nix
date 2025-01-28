@@ -583,6 +583,7 @@ rec {
   };
 
   allowUnfree = true;
+  nvidia.acceptLicense = true;
   mpv.vaapiSupport = true;
   nixui.dataDir = "/home/matejc/.nixui";
   nixui.NIX_PATH = "nixpkgs=/home/matejc/workarea/nixpkgs:nixos=/home/matejc/workarea/nixpkgs/nixos:nixos-config=/etc/nixos/configuration.nix:services=/etc/nixos/services";

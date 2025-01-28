@@ -302,6 +302,11 @@ in
 
     #autoload -U compinit
     #compinit -i
+
+    # include .extra if it exists
+    if [ -f "$HOME/.extra" ]; then
+        . "$HOME/.extra"
+    fi
   '';
 } {
   target = "${variables.homeDir}/.zlogin";

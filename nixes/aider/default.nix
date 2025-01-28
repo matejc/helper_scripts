@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.69.0";
+  version = "0.72.3";
   src = pkgs.fetchFromGitHub {
     owner = "paul-gauthier";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-fJLLWL31BLEpgBrYDq0E8t7GN9TyOA5pwt42H/Hqh58=";
+    hash = "sha256-aOdLaH/95i2/h86rH578Z9iAtQSf7rI0PvnZQEx4Yjs=";
   };
 
   python3Pkgs = pkgs.python312Packages;
@@ -89,7 +89,7 @@ let
     postUnpack = ''
       ln -svf ${requirements} $sourceRoot/requirements.txt
     '';
-    buildInputs = [ python3Pkgs.setuptools python3Pkgs.setuptools-scm ];
+    buildInputs = [ python3Pkgs.setuptools python3Pkgs.setuptools-scm pkgs.playwright-driver.browsers ];
     propagatedBuildInputs = builtins.attrValues aider_deps;
     postInstall = ''
       wrapProgram $out/bin/aider \

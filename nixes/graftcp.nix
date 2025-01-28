@@ -8,10 +8,11 @@ let
     hash = "sha256-hpiPpZpD5hNdR6UsZI67fyw1u2YyLSp6chpLxDYs21c=";
   };
 
+  version = "unstable-2024-10-27";
+
   graftcp_go = buildGoModule {
     pname = "graftcp";
-    version = "unstable-2024-10-27";
-    inherit src;
+    inherit version src;
     sourceRoot = "${src.name}/local";
     vendorHash = "sha256-jXX5YPl9ubqvL4edSIWkcVQqtDVoi88ZhoLaG/Gykm8=";
     buildInputs = [ graftcp_gcc ];
@@ -20,8 +21,7 @@ let
 
   graftcp_gcc = stdenv.mkDerivation {
     pname = "graftcp";
-    version = "unstable-2024-10-27";
-    inherit src;
+    inherit version src;
     buildInputs = [ go ];
     makeFlags = [ "graftcp" "libgraftcp.a" ];
     installPhase = ''
