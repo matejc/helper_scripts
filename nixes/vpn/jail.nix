@@ -446,10 +446,11 @@ let
       --tmpfsmount /etc \
       --symlink ${hostsFile}:/etc/hosts \
       --symlink ${passwdFile}:/etc/passwd \
-      --symlink ${groupFile}/etc/group:/etc/group \
+      --symlink ${groupFile}:/etc/group \
       --symlink ${hostnameFile}:/etc/hostname \
       --symlink ${machineId}:/etc/machine-id \
       --symlink ${pkgs.tzdata}/share/zoneinfo/${timeZone}:/etc/localtime \
+      --symlink ${nixConfFile}:/etc/nix/nix.conf \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
       --tmpfsmount /etc/xdg/labwc \
@@ -520,7 +521,7 @@ let
 
   groupFile = pkgs.writeText "group" ''
     root:x:0:
-    users:x:${gid}:${user.inside}
+    ${user.inside}:x:${gid}
     nogroup:x:65534:nobody
   '';
 
@@ -529,6 +530,10 @@ let
   '';
 
   hostnameFile = pkgs.writeText "hostname" ''RESTRICTED'';
+
+  nixConfFile = pkgs.writeText "nix.conf" ''
+    experimental-features = nix-command flakes
+  '';
 
   pullClipboard = pkgs.writeShellScriptBin "clipboard-pull" ''
     export XDG_RUNTIME_DIR=/run/user/${uid}
