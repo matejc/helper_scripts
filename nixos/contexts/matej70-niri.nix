@@ -224,6 +224,7 @@ let
         "openssl-1.1.1w"
         "electron-27.3.11"
         "cinny-4.2.3" "cinny-unwrapped-4.2.3"
+        "olm-3.2.16"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -259,6 +260,10 @@ let
         };
       };
       security.pam.services.login.fprintAuth = false;
+      fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
+        device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
+        options = [ "bind" ];
+      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -278,7 +283,7 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord cinny-desktop
+          legcord cinny-desktop nheko
           steamcmd
           #super-slicer-latest
           uhk-agent
@@ -291,6 +296,7 @@ let
           eog
           file-roller
           wf-recorder
+          aider
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

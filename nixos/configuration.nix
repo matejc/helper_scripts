@@ -246,6 +246,7 @@ in {
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+      xdgOpenUsePortal = true;
     };
     fonts.packages = [ pkgs.font-awesome pkgs.corefonts pkgs.nerd-fonts.sauce-code-pro pkgs.nerd-fonts.fira-code pkgs.nerd-fonts.fira-mono ];
 

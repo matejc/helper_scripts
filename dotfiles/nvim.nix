@@ -1003,6 +1003,7 @@ EOF
     let g:VM_mouse_mappings = 0
     let g:VM_default_mappings = 0
     let g:VM_quit_after_leaving_insert_mode = 1
+    let g:VM_theme = 'neon'
     inoremap <silent> <C-S-Down> <esc>:call vm#commands#add_cursor_down(0, 1)<cr>
     inoremap <silent> <C-S-Up> <esc>:call vm#commands#add_cursor_up(0, 1)<cr>
     inoremap <silent> <C-S-p> <esc>:call vm#commands#add_cursor_at_pos(0)<cr>
@@ -1690,6 +1691,89 @@ require("neo-tree").setup({
 --     update_in_insert = true
 --   }
 -- )
+EOF
+
+lua <<EOF
+-- multicursor = function()
+--   local mc = require("multicursor-nvim")
+--
+--   mc.setup()
+--
+--   local set = vim.keymap.set
+--
+--   -- Add or skip cursor above/below the main cursor.
+--   set({"n", "v", "i"}, "<c-s-up>",
+--       function() mc.lineAddCursor(-1) end)
+--   set({"n", "v", "i"}, "<c-s-down>",
+--       function() mc.lineAddCursor(1) end)
+--
+--   -- Add all matches in the document
+--   set({"n", "v", "i"}, "<c-s-a>", function() mc.matchAddCursor(1) end)
+--
+--   -- Add and remove cursors with control + left click.
+--   set({"n", "v", "i"}, "<c-leftmouse>", mc.handleMouse)
+--
+--   -- Easy way to add and remove cursors using the main cursor.
+--   set({"n", "v", "i"}, "<c-s-p>", mc.toggleCursor)
+--
+--   set("n", "<esc>", function()
+--       if mc.hasCursors() then
+--           mc.clearCursors()
+--       end
+--   end)
+--
+--   -- Customize how cursors look.
+--   local hl = vim.api.nvim_set_hl
+--   hl(0, "MultiCursorCursor", { link = "Cursor" })
+--   hl(0, "MultiCursorVisual", { link = "Visual" })
+--   hl(0, "MultiCursorSign", { link = "SignColumn"})
+--   hl(0, "MultiCursorDisabledCursor", { link = "Visual" })
+--   hl(0, "MultiCursorDisabledVisual", { link = "Visual" })
+--   hl(0, "MultiCursorDisabledSign", { link = "SignColumn"})
+-- end
+--
+-- multicursor()
+
+-- require('multicursors').setup {
+--     DEBUG_MODE = false,
+--     create_commands = true, -- create Multicursor user commands
+--     updatetime = 50, -- selections get updated if this many milliseconds nothing is typed in the insert mode see :help updatetime
+--     nowait = true, -- see :help :map-nowait
+--     mode_keys = {
+--         append = 'a',
+--         change = 'c',
+--         extend = 'e',
+--         insert = 'i',
+--     },
+--     normal_keys = {},
+--     insert_keys = {},
+--     extend_keys = {},
+--     -- see :help hydra-config.hint
+--     hint_config = {
+--         float_opts = {
+--             border = 'none',
+--         },
+--         position = 'bottom',
+--     },
+--     -- accepted values:
+--     -- -1 true: generate hints
+--     -- -2 false: don't generate hints
+--     -- -3 [[multi line string]] provide your own hints
+--     -- -4 fun(heads: Head[]): string - provide your own hints
+--     generate_hints = {
+--         normal = true,
+--         insert = true,
+--         extend = true,
+--         config = {
+--              -- determines how many columns are used to display the hints. If you leave this option nil, the number of columns will depend on the size of your window.
+--             column_count = nil,
+--             -- maximum width of a column.
+--             max_hint_length = 25,
+--         }
+--     },
+-- }
+-- vim.keymap.set({"n", "v"}, "<c-s-m>", "<Cmd>MCstart<CR>")
+-- vim.keymap.set("i", "<c-s-m>", "<Esc><Cmd>MCstar<CR>")
 EOF
 
 lua <<EOF
@@ -3286,7 +3370,8 @@ EOF
           pkgs.vimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
           myVimPlugins.render-markdown-nvim
-          # myVimPlugins.multicursor-nvim
+          #pkgs.vimPlugins.multicursors-nvim
+          #pkgs.vimPlugins.hydra-nvim
           # myVimPlugins.hlchunk-nvim
           pkgs.vimPlugins.indent-blankline-nvim
           # myVimPlugins.indent-rainbowline-nvim
