@@ -176,7 +176,7 @@ let
         };
         vt = 2;
       };
-      boot.kernelPackages = pkgs.linuxPackages_lqx;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
       # boot.kernelPatches = [
       #   {
