@@ -1421,6 +1421,8 @@ in {
         };
         programs.zellij = {
           enable = true;
+          enableZshIntegration = false;
+          enableBashIntegration = false;
           # settings = {
           #   simplified_ui = true;
           #   default_layout = "compact";

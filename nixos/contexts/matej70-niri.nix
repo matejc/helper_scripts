@@ -137,7 +137,7 @@ let
       };
       startup = [
         "${self.variables.programs.browser}"
-        "${self.variables.profileDir}/bin/thorium"
+        "${self.variables.profileDir}/bin/chromium"
         "${self.variables.programs.terminal}"
         "${pkgs.keepassxc}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
@@ -223,7 +223,6 @@ let
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
-        "cinny-4.2.3" "cinny-unwrapped-4.2.3"
         "olm-3.2.16"
       ];
       services.ipp-usb.enable = true;
@@ -283,7 +282,7 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord cinny-desktop nheko
+          legcord nheko
           steamcmd
           #super-slicer-latest
           uhk-agent

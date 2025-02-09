@@ -13,6 +13,7 @@ pkgs.stdenv.mkDerivation {
   installPhase = ''
     mkdir -p $out/bin
     mkdir -p $out/share/swiftpoint
+    find ./lib -xtype l -delete
     cp -r ./* $out/share/swiftpoint/
     patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
       $out/share/swiftpoint/'Swiftpoint X1 Control Panel'
