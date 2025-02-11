@@ -1,11 +1,11 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  version = "0.73.0";
+  version = "0.74.0";
   src = pkgs.fetchFromGitHub {
     owner = "Aider-AI";
     repo = "aider";
     rev = "refs/tags/v${version}";
-    hash = "sha256-wcrwm4mn4D6pYgoCa5iKcKmt4QmhOXOfObUl7Gevukg=";
+    hash = "sha256-4KNAgNAmFxCnrgm2tnor+Hy6f9RAnoRinezg2rkSuOk=";
   };
 
   python3Pkgs = pkgs.python312Packages;
