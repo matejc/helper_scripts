@@ -1776,8 +1776,8 @@ in {
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
           spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY"
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
+          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${config.programs.waybar.package}/bin/waybar"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
