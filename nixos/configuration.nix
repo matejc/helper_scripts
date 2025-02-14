@@ -182,6 +182,11 @@ let
     done
   '';
 
+  programs = lib.mapAttrsToList (name: exec:
+    pkgs.writeShellScriptBin name ''
+      exec ${exec} "$@"
+    ''
+  ) context.variables.programs;
 in {
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
@@ -389,7 +394,7 @@ in {
           pkgs.jq
           (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
           pkgs.devenv
-        ] ++ services-cmds;
+        ] ++ services-cmds ++ programs;
         home.sessionVariables = {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
           # QT_PLUGIN_PATH = "${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}";

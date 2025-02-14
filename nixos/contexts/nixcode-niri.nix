@@ -12,7 +12,6 @@ let
 
   self = {
     dotFilePaths = [
-        "${helper_scripts}/dotfiles/programs.nix"
         "${helper_scripts}/dotfiles/nvim.nix"
         "${helper_scripts}/dotfiles/gitconfig.nix"
         "${helper_scripts}/dotfiles/gitignore.nix"
