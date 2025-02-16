@@ -3,6 +3,24 @@ with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
+  neovim-qt-win = pkgs.stdenv.mkDerivation {
+    name = "neovim-qt-win";
+    src = fetchurl {
+      url = "https://github.com/equalsraf/neovim-qt/releases/download/v0.2.19/neovim-qt.zip";
+      hash = "sha256-1zxfaz001O9ime2mIG++j/QCt4QPaa8RgtpalKIuDAA=";
+    };
+    nativeBuildInputs = with pkgs; [ unzip makeWrapper ];
+    sourceRoot = ".";
+    installPhase = ''
+      mkdir -p $out/share/neovim-qt
+      cp -r ./bin $out/share/neovim-qt/
+      cp -r ./share $out/share/neovim-qt/
+      mkdir -p $out/bin
+      chmod +x $out/share/neovim-qt/bin/nvim-qt.exe
+      makeWrapper $out/share/neovim-qt/bin/nvim-qt.exe $out/bin/nvim-qt
+    '';
+  };
+
   self = {
     dotFilePaths = [
       "${helper_scripts}/dotfiles/nvim.nix"
@@ -43,7 +61,7 @@ let
       ethernetInterfaces = [ networkInterface ];
       mounts = [ "/" ];
       font = {
-        family = "SauceCodePro Nerd Font Mono";
+        family = "SauceCodePro NFM";
         style = "Bold";
         size = 10.0;
       };
@@ -60,20 +78,7 @@ let
       sway.enable = false;
       vims = {
         # q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
-        q = let
-          pkg = pkgs.stdenv.mkDerivation {
-            src = fetchurl {
-              url = "https://github.com/equalsraf/neovim-qt/releases/download/v0.2.19/neovim-qt.zip";
-              hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-            };
-            installPhase = ''
-              mkdir -p $out/
-              cp -r ./bin $out/
-              cp -r ./share $out/
-            '';
-          };
-        in
-          "env NVIM_FRONTEND_PATH=${pkg}/bin/nvim-qt.exe ${homeDir}/bin/guinvim";
+        q = "env NVIM_FRONTEND_PATH=${neovim-qt-win}/bin/nvim-qt ${homeDir}/bin/guinvim";
       };
       outputs = [{
         output = "HEADLESS-1";

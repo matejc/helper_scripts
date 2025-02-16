@@ -286,7 +286,7 @@ in {
     nix = {
       channel.enable = false;
       settings = {
-        nix-path = "nixpkgs=${inputs.nixpkgs}";
+        nix-path = "nixpkgs=${context.variables.nixmy.nixpkgs}";
         experimental-features = [ "nix-command" "flakes" ];
       };
       gc = {
@@ -417,7 +417,7 @@ in {
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
           NIXOS_OZONE_WL = "1";
-          NIX_PATH = "nixpkgs=${inputs.nixpkgs}";
+          NIX_PATH = "nixpkgs=${context.variables.nixmy.nixpkgs}";
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 
