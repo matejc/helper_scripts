@@ -4,9 +4,14 @@ let
 
   nur = import inputs.nur { nurpkgs = pkgs; inherit pkgs; };
 
-  dotfiles = import "${helper_scripts}/dotfiles/default.nix"
-    { name = "homemanager"; exposeScript = true; inherit context; }
-    { inherit pkgs lib config; };
+  dotFileFun = nixFilePath:
+    let
+      nixes = lib.toList (import nixFilePath { inherit config pkgs lib; inherit (context) variables; });
+    in map (nix: {
+      source = nix.source;
+      target = lib.replaceStrings ["${context.variables.homeDir}/"] [""] nix.target;
+    }) nixes;
+  dotFiles = builtins.listToAttrs (map (n: { name = n.target; value.source = n.source; }) (lib.flatten (map dotFileFun context.dotFilePaths)));
 
   dotFileAt = file: at:
     (lib.elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
@@ -308,15 +313,16 @@ in {
       config = lib.mkMerge ([{
         nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
-        home.file.default-cursor = {
-          source = "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
-          target = ".icons/default";
-        };
-
-        home.file.nixpkgs-config = {
-          source = "${helper_scripts}/dotfiles/nixpkgs-config.nix";
-          target = ".config/nixpkgs/config.nix";
-        };
+        home.file = {
+          default-cursor = {
+            source = "${config.gtk.cursorTheme.package}/share/icons/${config.gtk.cursorTheme.name}";
+            target = ".icons/default";
+          };
+          nixpkgs-config = {
+            source = "${helper_scripts}/dotfiles/nixpkgs-config.nix";
+            target = ".config/nixpkgs/config.nix";
+          };
+        } // dotFiles;
 
         xdg = {
           enable = true;
@@ -1316,12 +1322,6 @@ in {
         systemd.user.services.network-manager-applet.Unit.Requires = lib.mkForce [ "graphical-session-pre.target" ];
 
         services.syncthing.extraOptions = [ "-gui-address=127.0.0.1:8384" "-home=${context.variables.homeDir}/Syncthing/.config/syncthing" ];
-
-        home.activation.dotfiles = ''
-          $DRY_RUN_CMD ${dotfiles}/bin/dot-files-apply-homemanager
-        '';
-
-        home.activation.checkLinkTargets = lib.mkForce "true";
 
         programs.gpg = {
           enable = true;
