@@ -59,7 +59,21 @@ let
       shellRc = "${homeDir}/.zshrc";
       sway.enable = false;
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
+        # q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
+        q = let
+          pkg = pkgs.stdenv.mkDerivation {
+            src = fetchurl {
+              url = "https://github.com/equalsraf/neovim-qt/releases/download/v0.2.19/neovim-qt.zip";
+              hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+            };
+            installPhase = ''
+              mkdir -p $out/
+              cp -r ./bin $out/
+              cp -r ./share $out/
+            '';
+          };
+        in
+          "env NVIM_FRONTEND_PATH=${pkg}/bin/nvim-qt.exe ${homeDir}/bin/guinvim";
       };
       outputs = [{
         output = "HEADLESS-1";
