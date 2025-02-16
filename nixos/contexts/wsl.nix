@@ -5,7 +5,6 @@ let
 
   self = {
     dotFilePaths = [
-      "${helper_scripts}/dotfiles/programs.nix"
       "${helper_scripts}/dotfiles/nvim.nix"
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
@@ -90,12 +89,13 @@ let
     config = {};
     nixos-configuration = { };
     home-configuration = {
-      home.stateVersion = "23.11";
-      home.sessionVariables.WSL_INTEROP = "$(realpath /run/WSL/*_interop | head -n 1)";
-      home.sessionVariables.QT_QPA_PLATFORM = pkgs.lib.mkForce "xcb";
-      wayland.windowManager.sway.config.startup = [
-        { command = "${self.variables.programs.browser}"; }
-      ];
+      home.stateVersion = "25.05";
+      home.packages = [ firefox ];
+      #home.sessionVariables.WSL_INTEROP = "$(realpath /run/WSL/*_interop | head -n 1)";
+      #home.sessionVariables.QT_QPA_PLATFORM = pkgs.lib.mkForce "xcb";
+      #wayland.windowManager.sway.config.startup = [
+      #  { command = "${self.variables.programs.browser}"; }
+      #];
     };
   };
 in

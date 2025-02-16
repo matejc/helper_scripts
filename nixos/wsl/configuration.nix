@@ -3,12 +3,15 @@
 with lib;
 
 {
+/*
   imports = [
     ./../modules/wayvnc.nix
   ];
 
   services.wayvnc.enable = true;
   services.wayvnc.user = defaultUser;
+*/
+  documentation.enable = false;
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
@@ -19,7 +22,7 @@ with lib;
 
   programs.nix-ld.enable = true;
 
-  # virtualisation.docker.enable = true;
+  virtualisation.docker.enable = true;
   # virtualisation.docker.package = pkgs.docker.override { iptables = pkgs.iptables-legacy; };
 
   services.dbus.enable = true;
