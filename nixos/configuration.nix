@@ -307,6 +307,7 @@ in {
     # '';
 
     home-manager.useGlobalPkgs = true;
+    nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
     home-manager.useUserPackages = false;
     home-manager.users.${defaultUser} = { config, ... }: {
       imports = [
@@ -314,7 +315,6 @@ in {
         inputs.niri.homeModules.niri
       ];
       config = lib.mkMerge ([{
-        nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
 
         home.file = {
           default-cursor = {

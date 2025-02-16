@@ -58,7 +58,10 @@
     #   url = "github:tweag/jupyenv/main";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
-    NixOS-WSL.url = "github:nix-community/NixOS-WSL/main";
+    NixOS-WSL = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixd = {
       url = "github:nix-community/nixd/main";
       inputs.nixpkgs.follows = "nixpkgs";
