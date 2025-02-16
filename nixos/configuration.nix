@@ -11,7 +11,7 @@ let
       source = nix.source;
       target = lib.replaceStrings ["${context.variables.homeDir}/"] [""] nix.target;
     }) nixes;
-  dotFiles = builtins.listToAttrs (map (n: { name = n.target; value.source = n.source; }) (lib.flatten (map dotFileFun context.dotFilePaths)));
+  dotFiles = builtins.listToAttrs (map (n: { name = n.target; value.name = n.target; value.target = n.target; value.source = n.source; }) (lib.flatten (map dotFileFun context.dotFilePaths)));
 
   dotFileAt = file: at:
     (lib.elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
