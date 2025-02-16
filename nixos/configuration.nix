@@ -58,15 +58,6 @@ let
     '';
   };
 
-  nixmyConfig = {
-    nixpkgs = context.variables.nixmy.nixpkgs;
-    remote = context.variables.nixmy.remote;
-    backup = context.variables.nixmy.backup;
-    nixosConfig = "/etc/nixos/configuration.nix";
-    extraPaths = [ pkgs.gnumake ];
-    nix = config.nix.package;
-  };
-
   setDefaultSink = pkgs.writeShellScript "set-default-sink" ''
     pajson="$(${pkgs.pulseaudio}/bin/pactl -f json list sinks | ${pkgs.jq}/bin/jq '.|[.[]|select(.properties."media.class"=="Audio/Sink")]')"
     paindex="$(echo -n "$pajson" | ${pkgs.jq}/bin/jq --arg def "$(${pkgs.pulseaudio}/bin/pactl get-default-sink)" -r '.|sort_by(.index)[]|"\(.index)\(if ($def == .name) then " [DEFAULT]" else "" end) \(.description)"' | ${pkgs.wofi}/bin/wofi -W 70% -p Speaker -i --dmenu | ${pkgs.gawk}/bin/awk '{printf $1}')"
@@ -196,6 +187,9 @@ let
     ''
   ) context.variables.programs;
 in {
+  imports = [
+    "${inputs.nixmy}/default.nix"
+  ];
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
       (final: prev: {
@@ -301,6 +295,15 @@ in {
       };
     };
 
+    programs.nixmy = {
+      nixpkgs = context.variables.nixmy.nixpkgs;
+      remote = context.variables.nixmy.remote;
+      backup = context.variables.nixmy.backup;
+      nixosConfig = "/etc/nixos/configuration.nix";
+      extraPaths = [ pkgs.gnumake ];
+      nix = config.nix.package;
+    };
+
     # powerManagement.resumeCommands = ''
     #   export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.getent}/bin/getent passwd "${defaultUser}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
     #   ${pkgs.sudo}/bin/sudo -iu "${defaultUser}" env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR WAYLAND_DISPLAY=wayland-1 ${context.variables.homeDir}/bin/lockscreen
@@ -401,7 +404,6 @@ in {
           pkgs.file
           pkgs.python3
           pkgs.jq
-          (import "${inputs.nixmy}/nixmy.nix" { inherit pkgs nixmyConfig; })
           pkgs.devenv
         ] ++ services-cmds ++ programs;
         home.sessionVariables = {
