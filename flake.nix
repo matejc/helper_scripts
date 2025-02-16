@@ -135,7 +135,13 @@
           ./nixos/minimal-configuration.nix
         ];
       }).config.system.build.toplevel;
-      wsl = self.images.wsl.tarball;
+      wsl = (nixosBuild {
+        context = "wsl";
+        modules = [
+          inputs.NixOS-WSL.nixosModules.wsl
+          ./nixos/wsl/configuration.nix
+        ];
+      }).config.system.build.tarballBuilder;
       packages = let
         aider = pkgs.callPackage ./nixes/aider { };
         sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
@@ -167,6 +173,13 @@
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
         ];
       };
+      wsl = nixosBuild {
+        context = "wsl";
+        modules = [
+          inputs.NixOS-WSL.nixosModules.wsl
+          ./nixos/wsl/configuration.nix
+        ];
+      };
       # matej70 = inputs.nixpkgs.lib.nixosSystem {
       #   inherit system;
       #   specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
@@ -193,22 +206,10 @@
       # };
     };
     images = {
-      wsl =
-        let
-          build = inputs.nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/wsl.nix; };
-            modules = [
-              inputs.NixOS-WSL.nixosModules.wsl
-              inputs.home-manager.nixosModules.home-manager
-              ./nixos/wsl/configuration.nix
-              ./nixos/configuration.nix
-            ];
-          };
-        in {
-          system = build.config.system.build.toplevel;
-          tarball = (import ./nixos/wsl/build-tarball.nix { inherit (build) config pkgs; }).system.build.tarball;
-        };
+      wsl = {
+        system = self.nixosConfigurations.wsl.config.system.build.toplevel;
+        builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
+      };
     };
   };
 }
