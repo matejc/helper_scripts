@@ -68,7 +68,7 @@ let
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.kitty}/bin/kitty -o=hide_window_decorations=no";
         browser = "${profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
