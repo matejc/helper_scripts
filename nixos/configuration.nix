@@ -13,7 +13,7 @@ let
     }) nixes;
   dotFiles = builtins.listToAttrs (map (n: {
     name = n.target; value.target = n.target; value.source = n.source;
-    force = true;
+    value.force = true;
   }) (lib.flatten (map dotFileFun context.dotFilePaths)));
 
   dotFileAt = file: at:
@@ -312,6 +312,7 @@ in {
     home-manager.useGlobalPkgs = true;
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
     home-manager.useUserPackages = false;
+    home-manager.backupFileExtension = "backup";
     home-manager.users.${defaultUser} = { config, ... }: {
       imports = [
         # inputs.hyprland.homeManagerModules.default
