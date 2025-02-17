@@ -3416,8 +3416,9 @@ in [{
     export NVIM_LISTEN="127.0.0.1:$(${pkgs.python3Packages.python}/bin/python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')"
     ${neovim}/bin/nvim --listen "$NVIM_LISTEN" --headless "$@" & NVIM_PID=$!
     ${pkgs.python3Packages.python}/bin/python3 -c 'import time; time.sleep(0.5);'
-    ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN" &
+    ''${NVIM_FRONTEND_PATH} ''${NVIM_FRONTEND_ARGS:-"--server"} "$NVIM_LISTEN" & NVIM_FRONTEND_PID=$!
     wait $NVIM_PID
+    kill $NVIM_FRONTEND_PID
   '';
 }] ++ (lib.mapAttrsToList (name: value: {
   target = "${variables.homeDir}/bin/${name}";
