@@ -32,7 +32,6 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/steam.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
