@@ -1,11 +1,10 @@
 { pkgs, lib, config, inputs, dotFileAt, helper_scripts }:
-with pkgs;
 let
   homeConfig = config.home-manager.users.matejc;
 
   neovim-qt-win = pkgs.stdenv.mkDerivation {
     name = "neovim-qt-win";
-    src = fetchurl {
+    src = pkgs.fetchurl {
       url = "https://github.com/equalsraf/neovim-qt/releases/download/v0.2.19/neovim-qt.zip";
       hash = "sha256-1zxfaz001O9ime2mIG++j/QCt4QPaa8RgtpalKIuDAA=";
     };
@@ -18,6 +17,22 @@ let
       mkdir -p $out/bin
       chmod +x $out/share/neovim-qt/bin/nvim-qt.exe
       makeWrapper $out/share/neovim-qt/bin/nvim-qt.exe $out/bin/nvim-qt
+    '';
+  };
+  neovide-win = pkgs.stdenv.mkDerivation {
+    name = "neovide-win";
+    src = pkgs.fetchurl {
+      url = "https://github.com/neovide/neovide/releases/download/0.14.0/neovide.exe.zip";
+      hash = "sha256-md2eVTt0TZfkKlzzFpWUXMVLOSI4maiHlkvKVAdj0d8=";
+    };
+    nativeBuildInputs = with pkgs; [ unzip makeWrapper ];
+    sourceRoot = ".";
+    installPhase = ''
+      mkdir -p $out/share/neovide
+      cp -r . $out/share/neovide/
+      mkdir -p $out/bin
+      chmod +x $out/share/neovide/neovide.exe
+      makeWrapper $out/share/neovide/neovide.exe $out/bin/neovide
     '';
   };
 
@@ -79,6 +94,7 @@ let
       vims = {
         # q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
         q = "env NVIM_FRONTEND_PATH=${neovim-qt-win}/bin/nvim-qt ${homeDir}/bin/guinvim";
+        n = "env NVIM_FRONTEND_PATH=${neovide-win}/bin/neovide NVIM_FRONTEND_ARGS='--remote-tcp' ${homeDir}/bin/guinvim";
       };
       outputs = [{
         output = "HEADLESS-1";
@@ -109,7 +125,7 @@ let
     nixos-configuration = { };
     home-configuration = {
       home.stateVersion = "25.05";
-      home.packages = [ firefox ];
+      # home.packages = with pkgs; [ firefox ];
       #home.sessionVariables.WSL_INTEROP = "$(realpath /run/WSL/*_interop | head -n 1)";
       #home.sessionVariables.QT_QPA_PLATFORM = pkgs.lib.mkForce "xcb";
       #wayland.windowManager.sway.config.startup = [

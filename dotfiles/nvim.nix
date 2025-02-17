@@ -497,8 +497,8 @@ let
       set guifont=${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
 
       " Set transparency and background color (title bar color)
-      let g:neovide_transparency=0.975
-      let g:neovide_transparency_point=0.975
+      let g:neovide_transparency=1
+      let g:neovide_transparency_point=1
       let g:neovide_background_color = '#0f1117'.printf('%x', float2nr(255 * g:neovide_transparency_point))
     endif
 
