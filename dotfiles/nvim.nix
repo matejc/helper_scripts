@@ -488,11 +488,6 @@ let
       GuiFont! ${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
       "call GuiClipboard()
       call rpcnotify(0, 'Gui', 'Clipboard', 1)
-
-      augroup nvim_gui_shim
-        autocmd!
-        autocmd VimLeave * call GuiClose()
-      augroup END
     endif
 
     if exists("g:neovide")
