@@ -126,7 +126,7 @@
         ];
       }).config.system.build.toplevel;
       matej80 = (nixosBuild {
-        context = "matej80";
+        context = "matej80-niri";
         modules = [
           ./nixos/minimal-configuration.nix
         ];
@@ -144,7 +144,7 @@
           inputs.NixOS-WSL.nixosModules.wsl
           ./nixos/wsl/configuration.nix
         ];
-      }).config.system.build.tarballBuilder;
+      }).config.system.build.toplevel;
       packages = let
         aider = pkgs.callPackage ./nixes/aider { };
         sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
@@ -164,7 +164,7 @@
         ];
       };
       matej80 = nixosBuild {
-        context = "matej80";
+        context = "matej80-niri";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
         ];
