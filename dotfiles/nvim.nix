@@ -3337,7 +3337,6 @@ EOF
           pkgs.vimPlugins.telescope-nvim
           pkgs.vimPlugins.bufferline-nvim
           myVimPlugins.galaxyline-nvim
-          # myVimPlugins.lush-nvim
           pkgs.vimPlugins.undotree
           pkgs.vimPlugins.telescope-fzy-native-nvim
           pkgs.vimPlugins.nvim-cmp
