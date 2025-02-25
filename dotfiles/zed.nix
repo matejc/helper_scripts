@@ -53,27 +53,22 @@ in
       };
     }
   ]);
-} {
-  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/bin";
-  source = "${nodePackage}/bin";
-} {
-  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/include";
-  source = "${nodePackage}/include";
-} {
-  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/lib";
-  source = "${nodePackage}/lib";
-} {
-  target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/share";
-  source = "${nodePackage}/share";
+# } {
+#   target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/bin";
+#   source = "${nodePackage}/bin";
+# } {
+#   target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/include";
+#   source = "${nodePackage}/include";
+# } {
+#   target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/lib";
+#   source = "${nodePackage}/lib";
+# } {
+#   target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/share";
+#   source = "${nodePackage}/share";
 } {
   target = "${variables.homeDir}/bin/zed";
   source = pkgs.writeShellScript "zed" ''
     export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
     exec ${pkgs.zed-editor}/bin/zeditor "$@"
-  '';
-} {
-  target = "${variables.homeDir}/bin/z";
-  source = pkgs.writeShellScript "zed" ''
-    exec ${variables.homeDir}/bin/zed . "$@"
   '';
 }]

@@ -24,7 +24,7 @@ let
         "${helper_scripts}/dotfiles/nwgbar.nix"
         "${helper_scripts}/dotfiles/countdown.nix"
         "${helper_scripts}/dotfiles/helix.nix"
-        "${helper_scripts}/dotfiles/wezterm.nix"
+        "${helper_scripts}/dotfiles/zed.nix"
         "${helper_scripts}/dotfiles/work.nix"
         "${helper_scripts}/dotfiles/jwt.nix"
         "${helper_scripts}/dotfiles/helix.nix"

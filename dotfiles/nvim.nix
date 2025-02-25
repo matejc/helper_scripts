@@ -1568,7 +1568,7 @@ require("neo-tree").setup({
     },
     follow_current_file = { enabled = true, }, -- This will find and focus the file in the active buffer every
                                  -- time the current file is changed while the tree is open.
-    hijack_netrw_behavior = "open_default",
+    hijack_netrw_behavior = "open_current",
                           -- "open_default", -- netrw disabled, opening a directory opens neo-tree
                                             -- in whatever position is specified in window.position
                           -- "open_current",  -- netrw disabled, opening a directory opens within the
@@ -3218,40 +3218,40 @@ highlight! CmpItemMenu guifg=pink gui=italic
     inoremap <C-S-o> <Cmd>:Lexplore<cr>
     nnoremap <C-S-o> <Cmd>:Lexplore<cr>
 
-    function! NetrwMapping()
-        " noremap <buffer> <C-l> <C-W>l
-        " noremap <buffer> <C-h> <C-W>h
+    " function! NetrwMapping()
+    "     " noremap <buffer> <C-l> <C-W>l
+    "     " noremap <buffer> <C-h> <C-W>h
 
-        " let g:netrw_banner = 0 " remove the banner at the top
-        let g:netrw_liststyle = 3  " default directory view. Cycle with i
-        let g:netrw_browse_split = 4
-        let g:netrw_altv = 1
-        let g:netrw_sort_sequence = '[\/]$,*'
+    "     " let g:netrw_banner = 0 " remove the banner at the top
+    "     let g:netrw_liststyle = 3  " default directory view. Cycle with i
+    "     let g:netrw_browse_split = 4
+    "     let g:netrw_altv = 1
+    "     let g:netrw_sort_sequence = '[\/]$,*'
 
-        let g:netrw_list_hide= '.*.swp$,
-                \ *.pyc$,
-                \ *.log$,
-                \ *.o$,
-                \ *.xmi$,
-                \ *.swp$,
-                \ *.bak$,
-                \ *.pyc$,
-                \ *.class$,
-                \ *.jar$,
-                \ *.war$,
-                \ *__pycache__*'
+    "     let g:netrw_list_hide= '.*.swp$,
+    "             \ *.pyc$,
+    "             \ *.log$,
+    "             \ *.o$,
+    "             \ *.xmi$,
+    "             \ *.swp$,
+    "             \ *.bak$,
+    "             \ *.pyc$,
+    "             \ *.class$,
+    "             \ *.jar$,
+    "             \ *.war$,
+    "             \ *__pycache__*'
 
-    endfunction
+    " endfunction
 
-    augroup netrw_mapping
-        autocmd!
-        autocmd filetype netrw call NetrwMapping()
-    augroup END
+    " augroup netrw_mapping
+    "     autocmd!
+    "     autocmd filetype netrw call NetrwMapping()
+    " augroup END
 
-    augroup AutoDeleteNetrwHiddenBuffers
-      au!
-      au FileType netrw setlocal bufhidden=wipe
-    augroup end
+    " augroup AutoDeleteNetrwHiddenBuffers
+    "   au!
+    "   au FileType netrw setlocal bufhidden=wipe
+    " augroup end
 
     " let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
     au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = "${pkgs.plantuml}/lib/plantuml.jar"
@@ -3441,29 +3441,34 @@ in [{
     args="''${@:$OPTIND}"
 
     first="''${@:$OPTIND:1}"
-    if [ -d "$first" ]
+    if [[ "$first" =~ ^scp: ]]
     then
-        filedir="$first"
-    elif [ -z "$first" ]
-    then
-        filedir="$PWD"
+        ${value} $args
     else
-        filedir="$(dirname "$first")"
+      if [ -d "$first" ]
+      then
+          filedir="$first"
+      elif [ -z "$first" ]
+      then
+          filedir="$PWD"
+      else
+          filedir="$(dirname "$first")"
+      fi
+
+      gitdir="$(git -C "$filedir" rev-parse --show-toplevel || echo "$filedir")"
+      cd "$gitdir"
+
+      if [ ! -z "$gitfiles" ]
+      then
+          args="$args $(${pkgs.git}/bin/git diff --name-only HEAD)"
+      fi
+
+      if [ ! -z "$pickfiles" ]
+      then
+          args="$args $(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
+      fi
+
+      ${value} $args
     fi
-
-    gitdir="$(git -C "$filedir" rev-parse --show-toplevel || echo "$filedir")"
-    cd "$gitdir"
-
-    if [ ! -z "$gitfiles" ]
-    then
-        args="$args $(${pkgs.git}/bin/git diff --name-only HEAD)"
-    fi
-
-    if [ ! -z "$pickfiles" ]
-    then
-        args="$args $(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
-    fi
-
-    ${value} $args
   '';
 }) (variables.vims or {}))
