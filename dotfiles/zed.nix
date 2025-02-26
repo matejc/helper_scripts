@@ -1,8 +1,6 @@
-{ variables, pkgs, config, lib }:
+{ variables, pkgs, ... }:
 let
-  nodeVersion = "node-v18.15.0-linux-x64";
-  nodePackage = pkgs.nodejs_18;
-  binPaths = [ pkgs.nixd pkgs.gopls ];
+  binPaths = [ pkgs.nixd ];
 in
 [{
   target = "${variables.homeDir}/.config/zed/settings.json";
@@ -38,18 +36,21 @@ in
     } {
       context = "ProjectPanel";
       bindings = {
-        enter = "project_panel::Open";
+        enter = "project_panel::OpenPermanent";
       };
     } {
       context = "Editor";
       bindings = {
-        pageup = "editor::MovePageUp";
-        pagedown = "editor::MovePageDown";
+        pageup = ["editor::MoveUpByLines" { "lines" = 20; }];
+        pagedown = ["editor::MoveDownByLines" { "lines" = 20; }];
         ctrl-enter = "editor::NewlineBelow";
         ctrl-up = "editor::MoveLineUp";
         ctrl-down = "editor::MoveLineDown";
         ctrl-o = "project_panel::ToggleFocus";
         "ctrl-\\" = "buffer_search::Deploy";
+        "ctrl-k" = "editor::DeleteLine";
+        "ctrl-shift-up" = "editor::AddSelectionAbove";
+        "ctrl-shift-down" = "editor::AddSelectionBelow";
       };
     }
   ]);

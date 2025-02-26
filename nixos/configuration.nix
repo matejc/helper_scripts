@@ -465,7 +465,7 @@ in {
           package = pkgs.firefox-bin;
           profiles = {
             default = {
-              extensions = with nur.repos.rycee.firefox-addons; [
+              extensions.packages = with nur.repos.rycee.firefox-addons; [
                 keepassxc-browser multi-account-containers
                 tree-style-tab adnauseam
               ];
