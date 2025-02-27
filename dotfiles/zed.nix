@@ -37,6 +37,8 @@ in
       context = "ProjectPanel";
       bindings = {
         enter = "project_panel::OpenPermanent";
+        pageup = ["workspace::SendKeystrokes" "up up up up up"];
+        pagedown = ["workspace::SendKeystrokes" "down down down down down"];
       };
     } {
       context = "Editor";
