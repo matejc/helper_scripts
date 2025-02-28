@@ -250,6 +250,7 @@ in {
         default = "gnome;gtk;";
         "org.freedesktop.impl.portal.Access" = "gtk";
         "org.freedesktop.impl.portal.Notification" = "gtk";
+        "org.freedesktop.impl.portal.OpenURI" = "gtk";
         "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
       };
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
@@ -377,7 +378,7 @@ in {
             browser = {
               name = "Web Browser";
               genericName = "Web Browser";
-              exec = "${context.variables.binDir}/browser %U";
+              exec = "${context.variables.profileDir}/bin/browser %U";
               terminal = false;
               categories = [ "Application" "Network" "WebBrowser" ];
               mimeType = [ "x-scheme-handler/https" "x-scheme-handler/http" ];
