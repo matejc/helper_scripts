@@ -203,6 +203,7 @@ in {
         aider = pkgs.callPackage ../nixes/aider { };
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
+        zen-browser = inputs.zen-browser.packages.${pkgs.system}.default;
         /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
@@ -432,11 +433,11 @@ in {
           };
           iconTheme = {
             name = "breeze-dark";
-            package = pkgs.breeze-icons;
+            package = pkgs.kdePackages.breeze-icons;
           };
           theme = {
             name = "Breeze-Dark";
-            package = pkgs.breeze-gtk;
+            package = pkgs.kdePackages.breeze-gtk;
           };
           cursorTheme = {
             name = "Vanilla-DMZ";

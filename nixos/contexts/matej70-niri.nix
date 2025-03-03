@@ -263,6 +263,16 @@ let
         device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
         options = [ "bind" ];
       };
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+        extraPackages = with pkgs; [
+          amdvlk
+        ];
+        extraPackages32 = with pkgs; [
+          driversi686Linux.amdvlk
+        ];
+      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -284,18 +294,15 @@ let
           solvespace keepassxc libreoffice aichat mpv
           legcord nheko
           steamcmd
-          #super-slicer-latest
-          uhk-agent
           jq
           scanmem
-          caprine-bin
           steam-run steamtinkerlaunch yad xwayland-run cage winetricks
           swiftpoint
           logseq
           eog
           file-roller
           wf-recorder
-          aider
+          zen-browser
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

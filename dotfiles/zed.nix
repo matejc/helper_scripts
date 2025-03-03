@@ -1,6 +1,6 @@
 { variables, pkgs, ... }:
 let
-  binPaths = [ pkgs.nixd ];
+  binPaths = with pkgs; [ nixd nil ];
 in
 [{
   target = "${variables.homeDir}/.config/zed/settings.json";
