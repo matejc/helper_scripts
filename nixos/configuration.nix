@@ -1699,6 +1699,7 @@ in {
             match app-id="thorium-browser"
             match app-id="firefox"
             match app-id="Slack"
+            match app-id="zen"
             open-on-workspace "second"
           }
 
@@ -1959,6 +1960,10 @@ in {
               Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head context.variables.outputs).output}"; }
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
+          }
+
+          environment {
+              DISPLAY ":0"
           }
 
           // Settings for debugging. Not meant for normal use.

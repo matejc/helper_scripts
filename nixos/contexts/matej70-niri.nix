@@ -84,7 +84,7 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${self.variables.profileDir}/bin/firefox";
+        browser = "${self.variables.profileDir}/bin/zen";
         editor = "${pkgs.helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -266,12 +266,10 @@ let
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
-        extraPackages = with pkgs; [
-          amdvlk
-        ];
-        extraPackages32 = with pkgs; [
-          driversi686Linux.amdvlk
-        ];
+      };
+      hardware.amdgpu.amdvlk = {
+        enable = true;
+        support32Bit.enable = true;
       };
     };
     home-configuration = {
@@ -307,6 +305,7 @@ let
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
+      home.sessionVariables.VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
     };
   };
 in
