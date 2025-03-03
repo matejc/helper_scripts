@@ -70,7 +70,7 @@ in
 #   source = "${nodePackage}/share";
 } {
   target = "${variables.homeDir}/bin/zed";
-  source = pkgs.writeShellScript "zed" ''
+  source = pkgs.writeShellScript "z" ''
     export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
     exec ${pkgs.zed-editor}/bin/zeditor "$@"
   '';
