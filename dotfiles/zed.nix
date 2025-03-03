@@ -69,8 +69,8 @@ in
 #   target = "${variables.homeDir}/.local/share/zed/node/${nodeVersion}/share";
 #   source = "${nodePackage}/share";
 } {
-  target = "${variables.homeDir}/bin/zed";
-  source = pkgs.writeShellScript "z" ''
+  target = "${variables.homeDir}/bin/z";
+  source = pkgs.writeShellScript "zeditor.sh" ''
     export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
     exec ${pkgs.zed-editor}/bin/zeditor "$@"
   '';
