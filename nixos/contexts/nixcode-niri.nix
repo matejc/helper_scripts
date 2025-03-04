@@ -64,7 +64,7 @@ let
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         terminal = "${pkgs.kitty}/bin/kitty";
-        browser = "${self.variables.profileDir}/bin/firefox";
+        browser = "${self.variables.profileDir}/bin/zen";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
       };
@@ -219,6 +219,7 @@ let
         deploy-rs
         aider
         freerdp3
+        zen-browser
 
         minikube kubectl docker-machine-kvm2 k9s ttyd
       ];
