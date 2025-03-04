@@ -30,9 +30,12 @@ in
         side-by-side = false
         line-numbers = true
     [merge]
-        conflictstyle = diff3
+        conflictstyle = zdiff3
     [diff]
-        colorMoved = default
+        algorithm = histogram
+        colorMoved = plain
+        mnemonicPrefix = true
+        renames = true
     [color]
         branch = auto
         diff = auto
@@ -49,11 +52,37 @@ in
         rebase = true
     [commit]
         gpgsign = true
+        verbose = true
     [gpg]
         program = ${pkgs.gnupg}/bin/gpg
     [credential]
         helper = store
     [include]
         path = ~/workarea/.gitconfig_include
+    [column]
+        ui = auto
+    [branch]
+        sort = -committerdate
+    [tag]
+        sort = version:refname
+    [init]
+        defaultBranch = main
+    [push]
+        default = simple
+        autoSetupRemote = true
+        followTags = true
+    [fetch]
+        prune = true
+        pruneTags = true
+        all = true
+    [help]
+        autocorrect = prompt
+    [rerere]
+        enabled = true
+        autoupdate = true
+    [rebase]
+        autoSquash = true
+        autoStash = true
+        updateRefs = true
   '';
 }
