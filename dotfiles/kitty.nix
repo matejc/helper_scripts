@@ -232,7 +232,7 @@
 #: The color and style for highlighting URLs on mouse-over. url_style
 #: can be one of: none, single, double, curly
 
-#  open_url_modifiers kitty_mod
+  open_url_modifiers ctrl
 
 #: The modifier keys to press when clicking with the mouse on URLs to
 #: open the URL

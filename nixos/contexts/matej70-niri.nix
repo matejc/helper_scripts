@@ -46,6 +46,7 @@ let
       "${helper_scripts}/dotfiles/mac.nix"
       "${helper_scripts}/dotfiles/steam.nix"
       "${helper_scripts}/dotfiles/zed.nix"
+      "${helper_scripts}/dotfiles/zen.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -138,7 +139,6 @@ let
       startup = [
         "${self.variables.programs.browser}"
         "${self.variables.profileDir}/bin/chromium"
-        "${self.variables.programs.terminal}"
         "${pkgs.keepassxc}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
@@ -161,6 +161,7 @@ let
       # { name = "kdeconnect"; delay = 4; group = "always"; }
       # { name = "wireplumber"; delay = 4; group = "always"; }
       # { name = "swayidle"; delay = 5; group = "always"; }
+      { name = "xdg-desktop-portal"; delay = 5; group = "always"; }
       { name = "network-manager-applet"; delay = 5; group = "always"; }
       { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
     ];
