@@ -274,16 +274,7 @@ in {
     programs.dconf.enable = true;
     services.dbus.packages = [ pkgs.gcr ];  # gpg-entry.pinentryFlavor = "gnome3"
 
-    programs.command-not-found.enable = false;
-    programs.nix-index = {
-      enable = true;
-      package = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
-      enableZshIntegration = true;
-      enableBashIntegration = true;
-    };
-    environment.systemPackages = [
-      inputs.nix-index-database.packages.${pkgs.system}.comma-with-db
-    ];
+    programs.nix-index-database.comma.enable = true;
 
     nix = {
       channel.enable = false;
@@ -421,6 +412,7 @@ in {
           MOZ_ENABLE_WAYLAND = "1";
           NIXOS_OZONE_WL = "1";
           NIX_PATH = "nixpkgs=${context.variables.nixmy.nixpkgs}";
+          XDG_CURRENT_DESKTOP = context.variables.graphical.name;
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
 

@@ -1,4 +1,4 @@
-{ pkgs, lib, config, helper_scripts, inputs, ... }:
+{ pkgs, lib, config, helper_scripts, ... }:
 let
   homeConfig = config.home-manager.users.matejc;
 
@@ -116,8 +116,8 @@ let
     ];
     config = {};
     nixos-configuration = {
-      hardware.opengl.enable = true;
-      hardware.opengl.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+      hardware.graphics.enable = true;
+      hardware.graphics.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
       networking.networkmanager.enable = true;
       services.dbus.packages = [ pkgs.dconf ];
       services.gnome.at-spi2-core.enable = true;

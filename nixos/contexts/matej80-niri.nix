@@ -1,4 +1,4 @@
-{ pkgs, lib, config, helper_scripts, inputs, ... }:
+{ pkgs, lib, config, helper_scripts, ... }:
 let
   homeConfig = config.home-manager.users.matejc.home;
 
@@ -32,6 +32,8 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
+      "${helper_scripts}/dotfiles/zed.nix"
+      "${helper_scripts}/dotfiles/zen.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -48,7 +50,7 @@ let
       wallpaper = "${nixos-artwork-wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
-      signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
+      signingkey = "E05DF91D31D5B667B0DDAB4B5F456C729CD54863";
       locale.all = "en_US.UTF-8";
       networkInterface = "eno1";
       wirelessInterfaces = [ "wlp3s0" ];
@@ -70,7 +72,7 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${self.variables.profileDir}/bin/firefox";
+        browser = "${self.variables.profileDir}/bin/zen";
         editor = "${pkgs.helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -102,7 +104,7 @@ let
         position = "0,0";
         output = "eDP-1";
         mode = "1920x1080";
-        workspaces = [ "1" "2" "3" "4" ];
+        workspaces = [ ];
         wallpaper = nixos-artwork-wallpaper;
         scale = 1.0;
         status = "enable";
@@ -111,7 +113,7 @@ let
         position = "1920,0";
         output = "HDMI-A-1";
         mode = "1920x1080";
-        workspaces = [ "5" ];
+        workspaces = [ ];
         wallpaper = nixos-artwork-wallpaper;
         scale = 1.0;
         status = "enable";
@@ -123,23 +125,9 @@ let
       };
       startup = [
         "${self.variables.programs.browser}"
-        "${self.variables.profileDir}/bin/chromium"
-        "${self.variables.programs.terminal}"
         "${pkgs.keepassxc}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
-      steam = {
-        xrun = [
-          "swiftpoint"
-        ];
-        library = "/mnt/games/SteamLibrary";
-        run = {
-          # "2420110".compatibilityTool = "SteamTinkerLaunch";
-          # "1898300".compatibilityTool = "GE-Proton9-11";
-          # "2074920".compatibilityTool = "GE-Proton9-11";
-          # "1716740".compatibilityTool = "SteamTinkerLaunch";
-        };
-      };
     };
     services = [
       # { name = "kanshi"; delay = 1; group = "always"; }
@@ -159,7 +147,6 @@ let
       services.gnome.at-spi2-core.enable = true;
       services.gnome.gnome-keyring.enable = true;
       services.accounts-daemon.enable = true;
-      fonts.packages = [ pkgs.corefonts pkgs.font-awesome pkgs.nerd-fonts.sauce-code-pro pkgs.nerd-fonts.fira-code pkgs.nerd-fonts.fira-mono ];
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [
         vulkan-tools
@@ -169,7 +156,7 @@ let
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
+            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
           };
         };
         vt = 2;
@@ -201,20 +188,34 @@ let
     };
     home-configuration = {
       home.stateVersion = "23.05";
+      services.swayidle = {
+        enable = true;
+        timeouts = lib.mkForce [
+            {
+                timeout = 100;
+                command = "${pkgs.brillo}/bin/brillo -U 30";
+                resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
+            }
+            { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
+            {
+                timeout = 300;
+                command = ''${self.variables.graphical.exec} msg action power-off-monitors'';
+                resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
+            }
+        ];
+      };
       programs.niri.enable = true;
       services.kanshi.enable = true;
-      services.swayidle.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       programs.waybar.enable = true;
-      home.packages = [ pkgs.networkmanagerapplet ];
+      home.packages = with pkgs; [ networkmanagerapplet aichat zen-browser deploy-rs logseq ];
       programs.firefox.enable = true;
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-
     };
   };
 in
