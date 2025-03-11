@@ -194,7 +194,6 @@ in {
     nixpkgs.overlays = [
       (final: prev: {
         nixd = inputs.nixd.packages.${pkgs.system}.nixd;
-        nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };
@@ -204,6 +203,7 @@ in {
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
         zen-browser = inputs.zen-browser.packages.${pkgs.system}.default;
+        logseq = pkgs.callPackage ../nixes/logseq.nix { };
         /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
