@@ -279,7 +279,7 @@ in {
     nix = {
       channel.enable = false;
       settings = {
-        nix-path = "nixpkgs=${context.variables.nixmy.nixpkgs}";
+        nix-path = "nixpkgs=${inputs.nixpkgs}";
         experimental-features = [ "nix-command" "flakes" ];
       };
       gc = {
@@ -411,7 +411,7 @@ in {
           #NIXOS_XDG_OPEN_USE_PORTAL = "1";
           MOZ_ENABLE_WAYLAND = "1";
           NIXOS_OZONE_WL = "1";
-          NIX_PATH = "nixpkgs=${context.variables.nixmy.nixpkgs}";
+          NIX_PATH = "nixpkgs=${inputs.nixpkgs}";
           XDG_CURRENT_DESKTOP = context.variables.graphical.name;
         };
         home.sessionPath = [ "${config.home.homeDirectory}/bin" ];
