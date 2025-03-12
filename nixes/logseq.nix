@@ -13,7 +13,7 @@ in
     extraInstallCommands = ''
       install -Dm444 ${appimageContents}/Logseq.desktop $out/share/applications/Logseq.desktop
       install -Dm444 ${appimageContents}/usr/share/icons/hicolor/256x256/apps/Logseq.png $out/share/icons/hicolor/256x256/apps/Logseq.png
-      source "${pkgs.makeWrapper}/nix-support/setup-hook"
-      wrapProgram $out/bin/logseq --add-flags '--enable-features=UseOzonePlatform --ozone-platform=wayland'
+      substituteInPlace $out/share/applications/Logseq.desktop \
+        --replace-fail 'Exec=Logseq %u' "Exec=$out/bin/logseq %u"
     '';
   }
