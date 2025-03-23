@@ -65,11 +65,14 @@ let
       email = "matej@matejc.com";
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
       locale.all = "en_US.UTF-8";
-      networkInterface = "eno1";
-      wirelessInterfaces = [ "wlp3s0" ];
-      ethernetInterfaces = [ self.variables.networkInterface ];
+      wirelessInterfaces = [ "wlp0s20f3" ];
+      ethernetInterfaces = [ "eno1" ];
       mounts = [ "/" "/mnt/games" ];
       # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
+      temperatures = [
+          { device = "coretemp-isa-0000"; group = "Package id 0"; field_prefix = "temp1"; }
+          { device = "amdgpu-pci-0300"; group = "junction"; field_prefix = "temp2"; }
+      ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -85,7 +88,7 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${self.variables.profileDir}/bin/zen";
+        browser = "${self.variables.profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -291,7 +294,7 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord nheko
+          legcord nheko cinny-desktop
           steamcmd
           jq
           scanmem
@@ -301,7 +304,6 @@ let
           eog
           file-roller
           wf-recorder
-          zen-browser
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

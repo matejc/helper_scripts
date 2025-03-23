@@ -89,17 +89,17 @@ let
     WP_OUTPUT_SOURCE=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@)
     if [[ $WP_OUTPUT_SOURCE =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
         if [[ -n ''${BASH_REMATCH[3]} ]]; then
-            printf " "
+            printf "<span color='#ff6666'></span> "
         else
             VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
 
-            printf " $VOLUME%% "
+            printf "<span color='#ff6666'> $VOLUME%%</span> "
         fi
     fi
     WP_OUTPUT_SINK=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SINK@)
     if [[ $WP_OUTPUT_SINK =~ ^Volume:[[:blank:]]([0-9]+)\.([0-9]{2})([[:blank:]].MUTED.)?$ ]]; then
         if [[ -n ''${BASH_REMATCH[3]} ]]; then
-            printf " "
+            printf "<span color='#abffff'></span> "
         else
             VOLUME=$((10#''${BASH_REMATCH[1]}''${BASH_REMATCH[2]}))
             ICON=(
@@ -109,11 +109,11 @@ let
             )
 
             if [[ $VOLUME -gt 50 ]]; then
-                printf "%s $VOLUME%%" "''${ICON[0]}"
+                printf "<span color='#abffff'>%s $VOLUME%%</span>" "''${ICON[0]}"
             elif [[ $VOLUME -gt 25 ]]; then
-                printf "%s $VOLUME%%" "''${ICON[1]}"
+                printf "<span color='#abffff'>%s $VOLUME%%</span>" "''${ICON[1]}"
             elif [[ $VOLUME -ge 0 ]]; then
-                printf "%s $VOLUME%%" "''${ICON[2]}"
+                printf "<span color='#abffff'>%s $VOLUME%%</span>" "''${ICON[2]}"
             fi
         fi
     fi
@@ -157,26 +157,26 @@ let
     esac
   '';
 
-  getCPUTemp = pkgs.writeShellScript "temperature.sh" ''
+  getTemperature = device: group: field_prefix: pkgs.writeShellScript "temperature.sh" ''
     export PATH="$PATH:${lib.makeBinPath [ pkgs.jq pkgs.lm_sensors pkgs.coreutils ]}"
     prev_temp="0"
     while true
     do
-      tempdata="$(sensors -j coretemp-isa-0000 | jq --unbuffered -c '."coretemp-isa-0000"."Package id 0"')"
-      temp="$(jq --unbuffered -n --argjson data "$tempdata" -r '$data."temp1_input"' | cut -d "." -f 1)"
-      if (( prev_temp != temp ))
+      tempdata="$(sensors -j "${device}" | jq --unbuffered -c '."${device}"."${group}"')"
+      tempp="$(jq --unbuffered -n --argjson data "$tempdata" -r '($data."${field_prefix}_input" / $data."${field_prefix}_crit" * 100)|tonumber|floor' | cut -d "." -f 1)"
+      if (( prev_tempp != tempp ))
       then
         cssclass="normal"
-        if (( temp > 90 ))
+        if (( tempp > 90 ))
         then
           cssclass="critical"
-        elif (( temp > 75 ))
+        elif (( tempp > 75 ))
         then
           cssclass="high"
         fi
-        jq --unbuffered -nc --argjson data "$tempdata" --arg cssclass "$cssclass" '{text: $data."temp1_input"|tonumber|floor|tostring, percentage: ($data.temp1_input / $data.temp1_max * 100)|tonumber|floor, alt: "", tooltip: "", class: $cssclass}'
+        jq --unbuffered -nc --argjson data "$tempdata" --arg cssclass "$cssclass" '{text: $data."${field_prefix}_input"|tonumber|floor|tostring, percentage: ($data."${field_prefix}_input" / $data."${field_prefix}_crit" * 100)|tonumber|floor, alt: "", tooltip: "${device}", class: $cssclass}'
       fi
-      prev_temp="$temp"
+      prev_tempp="$tempp"
       sleep 5
     done
   '';
@@ -456,7 +456,6 @@ in {
         };
 
         programs.firefox = {
-          package = pkgs.firefox-bin;
           profiles = {
             default = {
               extensions.packages = with nur.repos.rycee.firefox-addons; [
@@ -1040,15 +1039,15 @@ in {
           }
 
           #mode,#submap,#clock,#battery,#taskbar,#pulseaudio,#idle_inhibitor,#keyboard-state,#bluetooth,#battery,#cpu,#temperature,#tray,#network,#custom-dnd,#custom-notification,#disk,#custom-weather,#custom-pipewire,#custom-temperature {
-              padding: 0 5px;
+              padding: 0 3px;
           }
 
           #custom-sep {
-              color: rgba(100, 90, 86, 0.9);
+              color: rgba(100, 90, 86, 0.6);
           }
 
           #window {
-              padding: 0 30px;
+              padding: 0 20px;
           }
 
           #battery {
@@ -1095,6 +1094,28 @@ in {
           #custom-temperature.critical {
                color: #ff0000;
           }
+
+          #network.disconnected {
+            color: rgba(100, 90, 86, 1.0)
+          }
+          #bluetooth.on {
+            color: #008AD9
+          }
+          #bluetooth.connected {
+            color: #008AD9
+          }
+          #bluetooth.off {
+            color: rgba(100, 90, 86, 1.0)
+          }
+          #bluetooth.disabled {
+            color: rgba(100, 90, 86, 1.0)
+          }
+          #idle_inhibitor.activated {
+            color: #FEDD00
+          }
+          #idle_inhibitor.deactivated {
+            color: rgba(100, 90, 86, 1.0)
+          }
         '';
         programs.waybar.settings = {
           mainBar = {
@@ -1107,7 +1128,8 @@ in {
               "${context.variables.graphical.waybar.prefix}/${if context.variables.graphical.name == "sway" then "mode" else "submap"}"
               "${context.variables.graphical.waybar.prefix}/window"
             ];
-            modules-center = [ ];
+            modules-center = [
+            ];
             modules-right = lib.flatten [
               "custom/notification"
               "custom/sep"
@@ -1123,8 +1145,7 @@ in {
               (lib.imap0 (i: _: [ "disk#${toString i}" "custom/sep" ]) context.variables.mounts)
               "cpu"
               "custom/sep"
-              "custom/temperature"
-              "custom/sep"
+              (lib.imap0 (i: _: [ "custom/temperature#${toString i}" "custom/sep" ]) context.variables.temperatures)
               "custom/weather"
               "custom/sep"
               "clock"
@@ -1225,12 +1246,22 @@ in {
               tooltip-format = "{controller_alias}\t{controller_address}";
               tooltip-format-connected = "{controller_alias}\t{controller_address}\n\n{device_enumerate}";
               tooltip-format-enumerate-connected = "{device_alias}\t{device_address}";
+              tooltip-format-enumerate-connected-battery = "{device_alias}\t{device_address}\t{device_battery_percentage}%";
               #on-click-right = "${blueman}/bin/blueman-manager";
               on-click-right = "${pkgs.blueberry}/bin/blueberry";
             };
             cpu = {
               format = "{icon}";
-              format-icons = ["▁" "▂" "▃" "▄" "▅" "▆" "▇" "█"];
+              format-icons = [
+                "<span color='#f8f8f2'>▁</span>"
+                "<span color='#f8f8f2'>▂</span>"
+                "<span color='#f8f8f2'>▃</span>"
+                "<span color='#f8f8f2'>▄</span>" # white
+                "<span color='#ffffa5'>▅</span>" # yellow
+                "<span color='#ffffa5'>▆</span>" # yellow
+                "<span color='#ff9977'>▇</span>" # orange
+                "<span color='#dd532e'>█</span>" # red
+              ];
             };
             temperature = {
               format = "{temperatureC}°C {icon}";
@@ -1282,7 +1313,7 @@ in {
             "custom/temperature" = {
               format = "{icon} {}°C";
               tooltip = false;
-              exec = "${getCPUTemp}";
+              exec = "${getTemperature "coretemp-isa-0000" "Package id 0" "temp1"}";
               format-icons = [ "" "" "" "" "" ];
               return-type = "json";
             };
@@ -1297,18 +1328,24 @@ in {
               max-length = 25;
             };
           } // lib.listToAttrs (lib.imap0 (i: v: { name = "disk#${toString i}"; value = { format = "${v}:{percentage_used}%"; path = v; }; }) context.variables.mounts)
+          // lib.listToAttrs (lib.imap0 (i: v: { name = "custom/temperature#${toString i}"; value = {
+            format = "{icon} {}°C";
+            exec = "${getTemperature v.device v.group v.field_prefix}";
+            format-icons = [ "" "" "" "" "" ];
+            return-type = "json";
+          }; }) context.variables.temperatures)
           // lib.listToAttrs (lib.imap0 (i: v: { name = "network#${toString i}"; value = {
-              interface = v;
-              format = "{ifname}";
-              format-wifi = "{essid} ({signalStrength}%) ";
-              format-ethernet = "{ipaddr}/{cidr} ";
-              format-disconnected = "";
-              tooltip-format = "{ifname} via {gwaddr} ";
-              tooltip-format-wifi = "{essid} ({signalStrength}%) ";
-              tooltip-format-ethernet = "{ifname} ";
-              tooltip-format-disconnected = "Disconnected";
-              max-length = 50;
-              #on-click-right = "${connman-gtk}/bin/connman-gtk";
+            interface = v;
+            format = "{ifname}";
+            format-wifi = "{essid} ({signalStrength}%) ";
+            format-ethernet = "{ifname} ";
+            format-disconnected = "{ifname}";
+            tooltip-format = "{ifname} via {gwaddr} ";
+            tooltip-format-wifi = "{essid} ({signalStrength}%) ";
+            tooltip-format-ethernet = "{ipaddr}/{cidr} ";
+            tooltip-format-disconnected = "Disconnected";
+            max-length = 50;
+            #on-click-right = "${connman-gtk}/bin/connman-gtk";
           }; }) (context.variables.ethernetInterfaces ++ context.variables.wirelessInterfaces));
         };
         #programs.waybar.systemd.target = context.variables.graphical.target;
