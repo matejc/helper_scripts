@@ -1,14 +1,20 @@
-{ pkgs, lib, config, helper_scripts, ... }:
+{ pkgs, lib, config, helper_scripts, inputs, ... }:
 let
   homeConfig = config.home-manager.users.matejc.home;
 
   # looking-glass-client = pkgs.callPackage ../../nixes/looking-glass-client.nix {};
   # looking-glass-obs = pkgs.obs-studio-plugins.looking-glass-obs.override { inherit looking-glass-client; };
 
-  nixos-artwork-wallpaper = pkgs.fetchurl {
-    name = "nix-wallpaper-nineish-dark-gray.png";
-    url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
-    hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  # nixos-artwork-wallpaper = pkgs.fetchurl {
+  #   name = "nix-wallpaper-nineish-dark-gray.png";
+  #   url = "https://github.com/NixOS/nixos-artwork/blob/master/wallpapers/nix-wallpaper-nineish-dark-gray.png?raw=true";
+  #   hash = "sha256-nhIUtCy/Hb8UbuxXeL3l3FMausjQrnjTVi1B3GkL9B8=";
+  # };
+
+  wallpaper = pkgs.fetchurl {
+    name = "pexels.jpg";
+    url = "https://images.pexels.com/photos/4245826/pexels-photo-4245826.jpeg?cs=srgb&dl=pexels-riccardo-bertolo-2587816-4245826.jpg&fm=jpg&h=1080&w=1920&fit=crop";
+    hash = "sha256-SI4ul1AqRaPDEjKMKUlDTk6fvq1VTCXhQLrnSVIy8Dc=";
   };
 
   self = {
@@ -47,16 +53,18 @@ let
       binDir = "${self.variables.homeDir}/bin";
       lockscreen = "${self.variables.binDir}/lockscreen";
       lockImage = "";
-      wallpaper = "${nixos-artwork-wallpaper}";
+      wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
       signingkey = "E05DF91D31D5B667B0DDAB4B5F456C729CD54863";
       locale.all = "en_US.UTF-8";
-      networkInterface = "eno1";
-      wirelessInterfaces = [ "wlp3s0" ];
-      ethernetInterfaces = [ self.variables.networkInterface ];
-      mounts = [ "/" "/mnt/games" ];
+      wirelessInterfaces = [ "wlp0s20f3" ];
+      ethernetInterfaces = [ ];
+      mounts = [ "/" ];
       # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
+      temperatures = [
+        { device = "coretemp-isa-0000"; group = "Package id 0"; field_prefix = "temp1"; }
+      ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -72,7 +80,7 @@ let
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
         #dropdown = "${sway-scratchpad}/bin/sway-scratchpad -c ${pkgs.wezterm}/bin/wezterm -a 'start --always-new-process' -m terminal";
         #browser = "${profileDir}/bin/chromium";
-        browser = "${self.variables.profileDir}/bin/zen";
+        browser = "${self.variables.profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         #launcher = dotFileAt "bemenu.nix" 0;
         #launcher = "${pkgs.kitty}/bin/kitty --class=launcher -e env TERMINAL_COMMAND='${pkgs.kitty}/bin/kitty -e' ${pkgs.sway-launcher-desktop}/bin/sway-launcher-desktop";
@@ -105,23 +113,14 @@ let
         output = "eDP-1";
         mode = "1920x1080";
         workspaces = [ ];
-        wallpaper = nixos-artwork-wallpaper;
-        scale = 1.0;
-        status = "enable";
-      } {
-        criteria = "HDMI-A-1";
-        position = "1920,0";
-        output = "HDMI-A-1";
-        mode = "1920x1080";
-        workspaces = [ ];
-        wallpaper = nixos-artwork-wallpaper;
+        wallpaper = self.variables.wallpaper;
         scale = 1.0;
         status = "enable";
       }];
       nixmy = {
         backup = "git@github.com:matejc/configurations.git";
         remote = "https://github.com/matejc/nixpkgs";
-        nixpkgs = "/home/matejc/workarea/nixpkgs";
+        nixpkgs = "${inputs.nixpkgs}";
       };
       startup = [
         "${self.variables.programs.browser}"
@@ -140,8 +139,10 @@ let
     ];
     config = {};
     nixos-configuration = {
-      hardware.opengl.enable = true;
-      hardware.opengl.extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+      hardware.graphics = {
+        enable = true;
+        extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+      };
       networking.networkmanager.enable = true;
       services.dbus.packages = [ pkgs.dconf ];
       services.gnome.at-spi2-core.enable = true;
@@ -161,6 +162,7 @@ let
         };
         vt = 2;
       };
+      programs.niri.enable = true;
       security.rtkit.enable = true;
       services.pipewire = {
         enable = true;
@@ -173,8 +175,8 @@ let
         allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
       };
       services.fprintd.enable = true;
-      services.fprintd.tod.enable = true;
-      services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
+      # services.fprintd.tod.enable = true;
+      # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
       security.pam.services.swaylock.fprintAuth = true;
       services.tailscale.enable = true;
       services.udev.extraRules = ''
@@ -204,14 +206,16 @@ let
             }
         ];
       };
-      programs.niri.enable = true;
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
       services.syncthing.enable = true;
       services.syncthing.extraOptions = [ "-home=${self.variables.homeDir}/Syncthing/.config/syncthing" ];
       programs.waybar.enable = true;
-      home.packages = with pkgs; [ networkmanagerapplet aichat zen-browser deploy-rs logseq ];
+      home.packages = with pkgs; [
+        networkmanagerapplet aichat deploy-rs logseq
+        cinny-desktop
+      ];
       programs.firefox.enable = true;
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

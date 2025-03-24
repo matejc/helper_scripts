@@ -189,6 +189,7 @@ let
 in {
   imports = [
     "${inputs.nixmy}/default.nix"
+    inputs.niri.nixosModules.niri
   ];
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
@@ -302,6 +303,8 @@ in {
     #   ${pkgs.sudo}/bin/sudo -iu "${defaultUser}" env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR WAYLAND_DISPLAY=wayland-1 ${context.variables.homeDir}/bin/lockscreen
     # '';
 
+    niri-flake.cache.enable = true;
+
     home-manager.useGlobalPkgs = true;
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
     home-manager.useUserPackages = false;
@@ -309,7 +312,7 @@ in {
     home-manager.users.${defaultUser} = { config, ... }: {
       imports = [
         # inputs.hyprland.homeManagerModules.default
-        inputs.niri.homeModules.niri
+        # inputs.niri.homeModules.niri
       ];
       config = lib.mkMerge ([{
 
@@ -1751,7 +1754,7 @@ in {
                   // off
 
                   // How many logical pixels the ring extends out from the windows.
-                  width 4
+                  width 3
 
                   // Color of the ring on the active monitor: red, green, blue, alpha.
                   // active-color 127 200 255 255
@@ -1792,7 +1795,7 @@ in {
               // default-column-width {}
 
               // Set gaps around windows in logical pixels.
-              gaps 10
+              gaps 7
 
               // Struts shrink the area occupied by windows, similarly to layer-shell panels.
               // You can think of them as a kind of outer gaps. They are set in logical pixels.
@@ -1800,8 +1803,8 @@ in {
               // Top and bottom struts will simply add outer gaps in addition to the area occupied by
               // layer-shell panels and regular gaps.
               struts {
-                  left 32
-                  right 32
+                  left 18
+                  right 18
                   top 0
                   bottom 0
               }
@@ -1813,6 +1816,10 @@ in {
               //   together with the previously focused column.
               // - "always", the focused column will always be centered.
               // center-focused-column "on-overflow"
+          }
+
+          animations {
+            slowdown 0.75
           }
 
           // Add lines like this to spawn processes at startup.
