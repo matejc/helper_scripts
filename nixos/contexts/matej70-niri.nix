@@ -180,6 +180,7 @@ let
         };
         vt = 2;
       };
+      programs.niri.enable = true;
       boot.kernelPackages = pkgs.linuxPackages_latest;
       # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
       # boot.kernelPatches = [
@@ -278,7 +279,6 @@ let
     };
     home-configuration = {
       home.stateVersion = "20.09";
-      programs.niri.enable = true;
       services.kanshi.enable = true;
       services.swayidle.enable = true;
       services.kdeconnect.enable = true;

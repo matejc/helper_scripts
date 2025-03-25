@@ -203,7 +203,6 @@ in {
         aider = pkgs.callPackage ../nixes/aider { };
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
-        zen-browser = inputs.zen-browser.packages.${pkgs.system}.default;
         logseq = pkgs.callPackage ../nixes/logseq.nix { };
         /*
         freerdp3 = (prev.freerdp3.override {
