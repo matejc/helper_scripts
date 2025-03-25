@@ -43,8 +43,8 @@ in
     } {
       context = "Editor";
       bindings = {
-        pageup = ["editor::MoveUpByLines" { "lines" = 15; }];
-        pagedown = ["editor::MoveDownByLines" { "lines" = 15; }];
+        pageup = ["editor::MoveUpByLines" { "lines" = 10; }];
+        pagedown = ["editor::MoveDownByLines" { "lines" = 10; }];
         ctrl-enter = "editor::NewlineBelow";
         ctrl-up = "editor::MoveLineUp";
         ctrl-down = "editor::MoveLineDown";
