@@ -6,11 +6,14 @@ let
 
   dotFileFun = nixFilePath:
     let
-      nixes = lib.toList (import nixFilePath { inherit config pkgs lib; inherit (context) variables; });
-    in map (nix: {
-      source = nix.source;
-      target = lib.replaceStrings ["${context.variables.homeDir}/"] [""] nix.target;
-    }) nixes;
+      dotNixFiles = lib.toList (import nixFilePath { inherit config pkgs lib; inherit (context) variables; });
+      dotFiles = map (nix: {
+        source = nix.source;
+        target = lib.replaceStrings ["${context.variables.homeDir}/"] [""] nix.target;
+      }) dotNixFiles;
+    in
+      dotFiles;
+
   dotFiles = builtins.listToAttrs (map (n: {
     name = n.target; value.target = n.target; value.source = n.source;
     value.force = true;

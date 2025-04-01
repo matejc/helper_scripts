@@ -242,7 +242,7 @@ let
       };
       programs.gamemode.enable = true;
       hardware.openrazer = {
-        enable = true;
+        # enable = true;
         users = [ "matejc" ];
       };
       users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
