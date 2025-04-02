@@ -264,10 +264,10 @@ let
         };
       };
       security.pam.services.login.fprintAuth = false;
-      fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
-        device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
-        options = [ "bind" ];
-      };
+      # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
+      #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
+      #   options = [ "bind" ];
+      # };
       hardware.graphics = {
         enable = true;
         enable32Bit = true;

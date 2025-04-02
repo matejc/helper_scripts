@@ -207,6 +207,7 @@ in {
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
         logseq = pkgs.callPackage ../nixes/logseq.nix { };
+        nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;  # for nixmy
         /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
@@ -293,10 +294,9 @@ in {
     };
 
     programs.nixmy = {
-      nixpkgs = context.variables.nixmy.nixpkgs;
-      remote = context.variables.nixmy.remote;
-      backup = context.variables.nixmy.backup;
-      nixosConfig = "/etc/nixos/configuration.nix";
+      nixpkgsLocalPath = context.variables.nixmy.nixpkgs;
+      nixpkgsRemote = context.variables.nixmy.remote;
+      backupRemote = context.variables.nixmy.backup;
       extraPaths = [ pkgs.gnumake ];
       nix = config.nix.package;
     };
