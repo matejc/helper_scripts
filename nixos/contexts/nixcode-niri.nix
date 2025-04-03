@@ -16,14 +16,12 @@ let
         "${helper_scripts}/dotfiles/gitconfig.nix"
         "${helper_scripts}/dotfiles/gitignore.nix"
         "${helper_scripts}/dotfiles/swaylockscreen.nix"
-        "${helper_scripts}/dotfiles/tmux.nix"
         "${helper_scripts}/dotfiles/dd.nix"
         "${helper_scripts}/dotfiles/sync.nix"
         "${helper_scripts}/dotfiles/mypassgen.nix"
         "${helper_scripts}/dotfiles/wofi.nix"
         "${helper_scripts}/dotfiles/nwgbar.nix"
         "${helper_scripts}/dotfiles/countdown.nix"
-        "${helper_scripts}/dotfiles/helix.nix"
         "${helper_scripts}/dotfiles/zed.nix"
         "${helper_scripts}/dotfiles/work.nix"
         "${helper_scripts}/dotfiles/jwt.nix"
@@ -215,7 +213,6 @@ let
         logseq
         keepassxc zoom-us pulseaudio networkmanagerapplet git-crypt jq yq-go
         proxychains-ng cproxy graftcp
-        helix
         aichat
         deploy-rs
         aider
