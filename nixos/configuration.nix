@@ -2081,6 +2081,11 @@ in {
         # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
         systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
 
+        nix = {
+          settings = {
+            experimental-features = [ "nix-command" "flakes" ];
+          };
+        };
       } )] ++ [ context.home-configuration ]);
     };
   }] ++ [ context.nixos-configuration ]);

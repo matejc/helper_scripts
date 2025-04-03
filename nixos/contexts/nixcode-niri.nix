@@ -219,6 +219,7 @@ let
         deploy-rs
         aider
         freerdp3
+        file-roller
 
         minikube kubectl docker-machine-kvm2 k9s ttyd
       ];
