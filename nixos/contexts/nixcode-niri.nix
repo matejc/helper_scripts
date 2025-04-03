@@ -42,11 +42,12 @@ let
       prefix = "${self.variables.homeDir}/workarea/helper_scripts";
       nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
       binDir = "${self.variables.homeDir}/bin";
-      temperatureFiles = [ self.variables.hwmonPath ];
-      hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       lockscreen = "${self.variables.homeDir}/bin/lockscreen";
       lockImage = ./../../assets/update.png;
       wallpaper = "${nixos-wallpaper}";
+      temperatures = [
+        { device = "coretemp-isa-0000"; group = "Package id 0"; field_prefix = "temp1"; }
+      ];
       fullName = "Matej Cotman";
       email = "matej.cotman@eficode.com";
       signingkey = "E830DAC63C372EA6E7F0D6D90124F60926CFF815";
@@ -182,6 +183,7 @@ let
       #   '';
       # }];
       boot.blacklistedKernelModules = [ "intel_ipu6" "intel_ipu6_isys" "intel_ipu6_isys.isys" ];
+      programs.niri.enable = true;
     };
     home-configuration = {
       home.stateVersion = "22.05";
@@ -201,7 +203,6 @@ let
             }
         ];
       };
-      programs.niri.enable = true;
       programs.waybar.enable = true;
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
