@@ -10,7 +10,7 @@
     fi
   '';
 } {
-  target = "/bin/lockscreen-all";
+  target = "${variables.homeDir}/bin/lockscreen-all";
   source = pkgs.writeScript "lockscreen-all" ''
     #!${pkgs.stdenv.shell}
 

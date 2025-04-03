@@ -14,10 +14,23 @@ let
     in
       dotFiles;
 
-  dotFiles = builtins.listToAttrs (map (n: {
-    name = n.target; value.target = n.target; value.source = n.source;
-    value.force = true;
-  }) (lib.flatten (map dotFileFun context.dotFilePaths)));
+  binFiles =
+    let
+      dotFiles = lib.flatten (map dotFileFun context.dotFilePaths);
+      binDotFiles = builtins.filter (d: (builtins.substring 0 4 d.target) == "bin/") dotFiles;
+    in
+      pkgs.runCommand "dot-bins" {} ''
+        mkdir -p $out/bin
+        ${lib.concatMapStringsSep "\n" (b: ''ln -vs "${b.source}" "$out/${b.target}"'') binDotFiles}
+      '';
+
+  dotFiles = let
+    dots = (lib.flatten (map dotFileFun context.dotFilePaths));
+  in
+    builtins.listToAttrs (map (n: {
+      name = n.target; value.target = n.target; value.source = n.source;
+      value.force = true;
+    }) (builtins.filter (d: (builtins.substring 0 4 d.target) != "bin/") dots));
 
   dotFileAt = file: at:
     (lib.elemAt (import "${helper_scripts}/dotfiles/${file}" { inherit lib pkgs; inherit (context) variables config; }) at).source;
@@ -405,6 +418,7 @@ in {
           pkgs.python3
           pkgs.jq
           pkgs.devenv
+          binFiles
         ] ++ services-cmds ++ programs;
         home.sessionVariables = {
           #NVIM_QT_PATH = "/mnt/c/tools/neovim-qt/bin/nvim-qt.exe";
