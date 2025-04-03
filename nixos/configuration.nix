@@ -1895,8 +1895,8 @@ in {
               Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
               Ctrl+Alt+H { spawn "${context.variables.programs.filemanager}"; }
               Ctrl+Alt+Space { spawn "${context.variables.profileDir}/bin/launcher"; }
-              Ctrl+Alt+L { spawn "${context.variables.binDir}/lockscreen"; }
-              Super+L { spawn "${context.variables.binDir}/lockscreen"; }
+              Ctrl+Alt+L { spawn "${context.variables.profileDir}/bin/lockscreen"; }
+              Super+L { spawn "${context.variables.profileDir}/bin/lockscreen"; }
               Ctrl+Alt+Delete { spawn "${pkgs.nwg-bar}/bin/nwg-bar"; }
               Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"; }
 
