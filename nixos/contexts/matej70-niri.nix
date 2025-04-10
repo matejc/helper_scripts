@@ -29,7 +29,6 @@ let
       "${helper_scripts}/dotfiles/xfce4-terminal.nix"
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
-      "${helper_scripts}/dotfiles/nix.nix"
       "${helper_scripts}/dotfiles/oath.nix"
       "${helper_scripts}/dotfiles/jstools.nix"
       "${helper_scripts}/dotfiles/superslicer.nix"
@@ -98,6 +97,7 @@ let
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
         #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         #tmux = "${pkgs.tmux}/bin/tmux";
+        caprine = "${pkgs.caprine}/bin/caprine --ozone-platform-hint=auto";
       };
       shell = "${self.variables.profileDir}/bin/zsh";
       shellRc = "${self.variables.homeDir}/.zshrc";
