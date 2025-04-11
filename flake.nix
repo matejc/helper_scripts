@@ -143,14 +143,14 @@
         ];
       }).config.system.build.toplevel;
       packages = let
-        aider = pkgs.callPackage ./nixes/aider { };
         sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
         sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
+        openvpn-custom = pkgs.callPackage ./nixes/openvpn-custom.nix { };
       in pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.pname p) [
         pkgs.clamav
-        aider
         sway-workspace
         sway-scratchpad
+        openvpn-custom
       ]);
     };
     nixosConfigurations = {
