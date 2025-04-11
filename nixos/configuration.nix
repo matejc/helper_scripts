@@ -210,7 +210,6 @@ in {
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
       (final: prev: {
-        nixd = inputs.nixd.packages.${pkgs.system}.nixd;
         sway-workspace = pkgs.callPackage ../nixes/sway-workspace.nix { };
         sway-scratchpad = pkgs.callPackage ../nixes/sway-scratchpad.nix { };
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };

@@ -152,7 +152,6 @@ let
         };
       };
       boot.kernelPackages = pkgs.linuxPackages_latest;
-      nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"

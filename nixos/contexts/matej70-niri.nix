@@ -140,7 +140,6 @@ let
       };
       startup = [
         "${self.variables.programs.browser}"
-        "${self.variables.profileDir}/bin/chromium"
         "${pkgs.keepassxc}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
