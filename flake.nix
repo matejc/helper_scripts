@@ -146,12 +146,12 @@
         sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
         sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
         openvpn-custom = pkgs.callPackage ./nixes/openvpn-custom.nix { };
-      in pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.pname p) [
+      in pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.pname p) (pkgs.lib.flatten [
         pkgs.clamav
         sway-workspace
         sway-scratchpad
         openvpn-custom
-      ]);
+      ]));
     };
     nixosConfigurations = {
       matej70 = nixosBuild {
