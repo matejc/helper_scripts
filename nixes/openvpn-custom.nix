@@ -10,5 +10,11 @@ let
         useSystemd = false;
         pam = null;
     };
-in
-    openvpn
+in {
+    inherit openvpn;
+    openvpn_tar_xz = pkgs.runCommand "openvpn.tar.xz" {
+    } ''
+        cd "${openvpn}"
+        tar cvJf $out .
+    '';
+}
