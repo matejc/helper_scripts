@@ -16,6 +16,7 @@ in {
         pname = "openvpn_archive";
     } ''
         cd "${openvpn}"
-        tar cvJf $out .
+        mkdir -p "$out"
+        tar cvJf "$out/openvpn.tar.xz" .
     '';
 }
