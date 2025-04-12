@@ -10,13 +10,11 @@ let
         useSystemd = false;
         pam = null;
     };
-in [
-    openvpn
-    (pkgs.runCommand "openvpn.tar.xz" {
-      pname = "openvpn_tar_xz";
+in {
+    package = openvpn;
+    archive = pkgs.runCommand "openvpn.tar.xz" {
     } ''
         cd "${openvpn}"
-        mkdir -p $out
-        tar cvJf $out/openvpn.tar.xz .
-    '')
-]
+        tar cvJf $out .
+    '';
+}
