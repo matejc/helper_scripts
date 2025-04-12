@@ -150,8 +150,7 @@
         pkgs.clamav
         sway-workspace
         sway-scratchpad
-        openvpn-custom.package
-        openvpn-custom.archive
+        openvpn-custom
       ]);
     };
     nixosConfigurations = {
