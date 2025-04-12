@@ -8,20 +8,11 @@ let
         configureFlags = ["--disable-plugin-auth-pam"];
         outputs = [ "out" "archive" ];
         postInstall = ''
-            mkdir -p "$out/archive"
-            tar cvJf "$out/archive/openvpn.tar.xz" "$out/bin/openvpn"
+            mkdir -p "$archive"
+            tar cvJf "$archive/openvpn.tar.xz" "$out/sbin/openvpn"
         '';
     })).override {
         useSystemd = false;
         pam = null;
     };
-in {
-    package = openvpn;
-    archive = pkgs.runCommand "openvpn.tar.xz" {
-        pname = "openvpn_archive";
-    } ''
-        cd "${openvpn}"
-        mkdir -p "$out"
-        tar cvJf "$out/openvpn.tar.xz" .
-    '';
-}
+in openvpn
