@@ -7,7 +7,7 @@ let
     openvpn = (pkgsArm32.pkgsStatic.openvpn.overrideAttrs (old: {
         configureFlags = ["--disable-plugin-auth-pam"];
         outputs = [ "out" "archive" ];
-        installPhase = old.installPhase + ''
+        postInstall = ''
             tar cvJf "$out/archive/openvpn.tar.xz" "$out/bin/openvpn"
         '';
     })).override {
