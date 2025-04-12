@@ -6,13 +6,18 @@ let
 
     openvpn = (pkgsArm32.pkgsStatic.openvpn.overrideAttrs (old: {
         configureFlags = ["--disable-plugin-auth-pam"];
-        outputs = [ "out" "archive" ];
-        postInstall = ''
-            mkdir -p "$archive"
-            tar cvJf "$archive/openvpn.tar.xz" "$out/sbin/openvpn"
-        '';
     })).override {
         useSystemd = false;
         pam = null;
     };
-in { inherit openvpn; }
+
+    mkTarball = package: pkgs.runCommand "binary-tarball" {
+    } ''
+        mkdir -p $out/tarballs
+        tar cvJf "$out/tarballs/${package.name}.tar.xz" -C "${package}" .
+
+        mkdir -p $out/nix-support
+        echo "file binary-dist $out/tarballs/${package.name}.tar.xz" >> $out/nix-support/hydra-build-products
+        echo "${package.name}" >> "$out/nix-support/hydra-release-name"
+    '';
+in { inherit openvpn; tarball = mkTarball openvpn; }
