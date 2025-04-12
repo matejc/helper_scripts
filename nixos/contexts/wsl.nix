@@ -42,7 +42,6 @@ let
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
       "${helper_scripts}/dotfiles/swaylockscreen.nix"
-      "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
