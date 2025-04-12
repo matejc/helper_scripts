@@ -15,4 +15,4 @@ let
         useSystemd = false;
         pam = null;
     };
-in openvpn
+in { inherit openvpn; }
