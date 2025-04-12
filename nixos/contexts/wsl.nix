@@ -62,8 +62,7 @@ let
       nixpkgs = "${homeDir}/workarea/nixpkgs";
       #nixpkgsConfig = "${pkgs.dotfiles}/nixpkgs-config.nix";
       binDir = "${homeDir}/bin";
-      temperatureFiles = [ hwmonPath ];
-      hwmonPath = "/sys/class/hwmon/hwmon1/temp1_input";
+      temperatures = [ ];
       lockscreen = "${homeDir}/bin/lockscreen";
       lockImage = "${homeDir}/Pictures/blade-of-grass-blur.png";
       wallpaper = "${homeDir}/Pictures/pexels.png";

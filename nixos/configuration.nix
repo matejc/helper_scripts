@@ -215,7 +215,6 @@ in {
         cproxy = pkgs.callPackage ../nixes/cproxy.nix { };
         graftcp = pkgs.callPackage ../nixes/graftcp.nix { };
         sway-wsshare = pkgs.callPackage ../nixes/sway-wsshare/default.nix { };
-        aider = pkgs.callPackage ../nixes/aider { };
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
         logseq = pkgs.callPackage ../nixes/logseq.nix { };

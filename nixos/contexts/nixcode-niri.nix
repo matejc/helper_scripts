@@ -215,7 +215,6 @@ let
         proxychains-ng cproxy graftcp
         aichat
         deploy-rs
-        aider
         freerdp3
         file-roller
 
