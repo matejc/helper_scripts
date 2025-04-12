@@ -12,10 +12,10 @@ let
     };
 in [
     openvpn
-    pkgs.runCommand "openvpn.tar.xz" {
+    (pkgs.runCommand "openvpn.tar.xz" {
       pname = "openvpn_tar_xz";
     } ''
         cd "${openvpn}"
         tar cvJf $out .
-    ''
+    '')
 ]
