@@ -13,6 +13,7 @@ let
 in {
     package = openvpn;
     archive = pkgs.runCommand "openvpn.tar.xz" {
+        pname = "openvpn_archive";
     } ''
         cd "${openvpn}"
         tar cvJf $out .
