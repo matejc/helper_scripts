@@ -8,6 +8,7 @@ let
         configureFlags = ["--disable-plugin-auth-pam"];
         outputs = [ "out" "archive" ];
         postInstall = ''
+            mkdir -p "$out/archive"
             tar cvJf "$out/archive/openvpn.tar.xz" "$out/bin/openvpn"
         '';
     })).override {
