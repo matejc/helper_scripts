@@ -638,8 +638,8 @@ in {
                 "${modifier}+k" = "kill";
                 "Mod1+Control+space" = "exec ${context.variables.programs.launcher}";
                 "${modifier}+Control+space" = "exec ${context.variables.programs.launcher}";
-                "${modifier}+l" = "exec ${context.variables.binDir}/lockscreen";
-                "Mod1+Control+l" = "exec ${context.variables.binDir}/lockscreen";
+                "${modifier}+l" = "exec ${context.variables.profileDir}/bin/lockscreen";
+                "Mod1+Control+l" = "exec ${context.variables.profileDir}/bin/lockscreen";
                 "Control+Tab" = "workspace back_and_forth";
                 "Mod1+Control+n" = "exec ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
                 "Mod1+Control+Up" = "exec ${pkgs.sway-workspace}/bin/sway-workspace prev-output";
@@ -750,8 +750,8 @@ in {
           bind = CTRL ALT, t, exec, ${context.variables.programs.terminal}
           bind = CTRL ALT, h, exec, ${context.variables.programs.filemanager}
 
-          bind = CTRL ALT, l, exec, ${context.variables.binDir}/lockscreen
-          bind = $mod, l, exec, ${context.variables.binDir}/lockscreen
+          bind = CTRL ALT, l, exec, ${context.variables.profileDir}/bin/lockscreen
+          bind = $mod, l, exec, ${context.variables.profileDir}/bin/lockscreen
 
           bind = $mod, Up, movefocus, u
           bind = $mod, Down, movefocus, d
@@ -922,13 +922,13 @@ in {
           systemdTarget = context.variables.graphical.target;
           #enable = true;
           events = lib.mkDefault [
-            { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "before-sleep"; command = "${context.variables.profileDir}/bin/lockscreen"; }
+            { event = "lock"; command = "${context.variables.profileDir}/bin/lockscreen"; }
             { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
             { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms on"'') context.variables.outputs; }
           ];
           timeouts = lib.mkDefault [
-            { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
+            { timeout = 120; command = "${context.variables.profileDir}/bin/lockscreen"; }
             {
               timeout = 300;
               command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} "output ${o.output} dpms off"'') context.variables.outputs;
@@ -2053,20 +2053,20 @@ in {
           Install.WantedBy = [ "sleep.target" ];
           Service = {
             Type = "simple";
-            ExecStart = "${context.variables.binDir}/lockscreen";
+            ExecStart = "${context.variables.profileDir}/bin/lockscreen";
           };
         };
         services.swayidle = {
           events = lib.mkOverride 900 [
-            { event = "before-sleep"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "after-resume"; command = "${context.variables.binDir}/lockscreen"; }
-            { event = "lock"; command = "${context.variables.binDir}/lockscreen"; }
+            { event = "before-sleep"; command = "${context.variables.profileDir}/bin/lockscreen"; }
+            { event = "after-resume"; command = "${context.variables.profileDir}/bin/lockscreen"; }
+            { event = "lock"; command = "${context.variables.profileDir}/bin/lockscreen"; }
             # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
             # { event = "unlock"; command = "${pkgs.systemd}/bin/systemctl --user restart waybar"; }
           ];
           timeouts = lib.mkOverride 900 [
-              { timeout = 120; command = "${context.variables.binDir}/lockscreen"; }
+              { timeout = 120; command = "${context.variables.profileDir}/bin/lockscreen"; }
               {
                   timeout = 300;
                   command = ''${context.variables.graphical.exec} msg action power-off-monitors'';

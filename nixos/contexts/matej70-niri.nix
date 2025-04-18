@@ -227,6 +227,7 @@ let
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
+        "fluffychat-linux-1.25.1"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -292,7 +293,7 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord nheko cinny-desktop
+          legcord cinny-desktop fluffychat
           steamcmd
           jq
           scanmem
