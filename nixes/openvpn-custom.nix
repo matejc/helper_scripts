@@ -1,35 +1,22 @@
 { pkgs ? import <nixpkgs> { } }:
 let
     # OpenVPN
-
-    pkgsArmMusl = import "${pkgs.path}" {
-        crossSystem = "armv7l-unknown-linux-musleabi";
+    pkgsArm = import "${pkgs.path}" {
+        crossSystem = "armv7l-unknown-linux-gnueabi";
     };
-
-    openvpn = (pkgsArmMusl.pkgsStatic.openvpn.overrideAttrs (old: {
+    openvpn = (pkgsArm.pkgsStatic.openvpn.overrideAttrs (old: {
         configureFlags = ["--disable-plugin-auth-pam"];
     })).override {
         useSystemd = false;
         pam = null;
     };
 
-    mkTarball = package: pkgs.runCommand "binary-tarball" {
-    } ''
-        mkdir -p $out/tarballs
-        tar cvJf "$out/tarballs/${package.name}.tar.xz" -C "${package}" .
-
-        mkdir -p $out/nix-support
-        echo "file binary-dist $out/tarballs/${package.name}.tar.xz" >> $out/nix-support/hydra-build-products
-        echo "${package.name}" >> "$out/nix-support/hydra-release-name"
-    '';
-
-
     # Linux kernel 3.18.20
-
     nixpkgsOld = pkgs.fetchzip {
       url = "https://github.com/NixOS/nixpkgs/archive/50dc28d7a0d3a22e624b44bbd1708ad148cef554.tar.gz";
       hash = "sha256-427XqvjnNLuQWbSBrNozlBKvBg6K4fj4oFvL+4Kcg5I=";
     };
+
     pkgsOld = import nixpkgsOld {
         crossSystem = {
             config = "armv7l-unknown-linux-gnueabi";
@@ -37,6 +24,7 @@ let
             arch = "arm";
             withTLS = true;
             float = "hard";
+            openssl.system = "linux-generic32";
             platform = {
                 name = "arm";
                 kernelMajor = "2.6";
@@ -59,6 +47,16 @@ let
     };
 
     linux = pkgsOld.linux_3_18.crossDrv;
+
+    mkTarball = package: pkgs.runCommand "binary-tarball" {
+    } ''
+        mkdir -p $out/tarballs
+        tar cvJf "$out/tarballs/${package.name}.tar.xz" -C "${package}" .
+
+        mkdir -p $out/nix-support
+        echo "file binary-dist $out/tarballs/${package.name}.tar.xz" >> $out/nix-support/hydra-build-products
+        echo "${package.name}" >> "$out/nix-support/hydra-release-name"
+    '';
 
     mkTunTarball = package: pkgs.runCommand "binary-tarball" {
     } ''
