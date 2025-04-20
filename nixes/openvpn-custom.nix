@@ -1,11 +1,9 @@
 { pkgs ? import <nixpkgs> { } }:
 let
+    # OpenVPN
+
     pkgsArmMusl = import "${pkgs.path}" {
         crossSystem = "armv6l-unknown-linux-musleabihf";
-    };
-
-    pkgsArm = import "${pkgs.path}" {
-        crossSystem = "armv6l-unknown-linux-gnueabihf";
     };
 
     openvpn = (pkgsArmMusl.pkgsStatic.openvpn.overrideAttrs (old: {
@@ -25,7 +23,9 @@ let
         echo "${package.name}" >> "$out/nix-support/hydra-release-name"
     '';
 
-    # For linux kernel 3.18.20
+
+    # Linux kernel 3.18.20
+
     nixpkgsOld = pkgs.fetchzip {
       url = "https://github.com/NixOS/nixpkgs/archive/50dc28d7a0d3a22e624b44bbd1708ad148cef554.tar.gz";
       hash = "sha256-427XqvjnNLuQWbSBrNozlBKvBg6K4fj4oFvL+4Kcg5I=";
