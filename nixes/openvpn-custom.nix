@@ -63,7 +63,7 @@ let
     mkTunTarball = package: pkgs.runCommand "binary-tarball" {
     } ''
         mkdir -p $out/tarballs
-        tar cvJf "$out/tarballs/${package.name}-tun.tar.xz" -C "${package}/lib/modules/${package.version}/kernel/drivers/net" .
+        tar cvJf "$out/tarballs/${package.name}-tun.tar.xz" -C "${package}/lib/modules/${package.version}/kernel/drivers/net" tun.ko
 
         mkdir -p $out/nix-support
         echo "file binary-dist $out/tarballs/${package.name}-tun.tar.xz" >> $out/nix-support/hydra-build-products
