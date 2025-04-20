@@ -3,7 +3,7 @@ let
     # OpenVPN
 
     pkgsArmMusl = import "${pkgs.path}" {
-        crossSystem = "armv6l-unknown-linux-musleabihf";
+        crossSystem = "armv7l-unknown-linux-musleabihf";
     };
 
     openvpn = (pkgsArmMusl.pkgsStatic.openvpn.overrideAttrs (old: {
@@ -32,13 +32,13 @@ let
     };
     pkgsOld = import nixpkgsOld {
         crossSystem = {
-            config = "armv6l-unknown-linux-gnueabihf";
+            config = "armv7l-unknown-linux-gnueabihf";
             libc = "glibc";
-            arch = "armv6";
+            arch = "armv7";
             withTLS = true;
             float = "hard";
             platform = {
-                name = "armv6l";
+                name = "arm";
                 kernelMajor = "2.6";
                 kernelArch = "arm";
                 kernelHeadersBaseConfig = "kirkwood_defconfig";
@@ -48,7 +48,7 @@ let
                 '';
                 kernelAutoModules = true;
                 gcc = {
-                    arch = "armv6";
+                    arch = "armv7";
                     fpu = "vfp";
                     float = "hard";
                 };
