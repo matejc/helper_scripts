@@ -32,6 +32,8 @@ in
         ctrl-o = "project_panel::ToggleFocus";
         ctrl-p = "file_finder::Toggle";
         ctrl-shift-p = "command_palette::Toggle";
+        ctrl-q = "workspace::CloseWindow";
+        ctrl-shift-q = "zed::Quit";
       };
     } {
       context = "ProjectPanel";
