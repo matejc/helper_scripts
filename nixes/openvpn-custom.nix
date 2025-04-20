@@ -34,22 +34,22 @@ let
         crossSystem = {
             config = "armv7l-unknown-linux-gnueabihf";
             libc = "glibc";
-            arch = "armv7";
+            arch = "arm";
             withTLS = true;
             float = "hard";
             platform = {
                 name = "arm";
                 kernelMajor = "2.6";
                 kernelArch = "arm";
-                kernelHeadersBaseConfig = "kirkwood_defconfig";
-                kernelBaseConfig = "versatile_defconfig";
+                kernelHeadersBaseConfig = "multi_v7_defconfig";
+                kernelBaseConfig = "multi_v7_defconfig";
                 kernelExtraConfig = ''
                   TUN m
                 '';
                 kernelAutoModules = true;
                 gcc = {
-                    arch = "armv7";
-                    fpu = "vfp";
+                    arch = "armv7-a";
+                    fpu = "neon";
                     float = "hard";
                 };
                 kernelTarget = "zImage";
