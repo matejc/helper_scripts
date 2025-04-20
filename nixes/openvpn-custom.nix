@@ -3,7 +3,7 @@ let
     # OpenVPN
 
     pkgsArmMusl = import "${pkgs.path}" {
-        crossSystem = "armv7l-unknown-linux-musleabihf";
+        crossSystem = "armv7l-unknown-linux-musleabi";
     };
 
     openvpn = (pkgsArmMusl.pkgsStatic.openvpn.overrideAttrs (old: {
@@ -32,7 +32,7 @@ let
     };
     pkgsOld = import nixpkgsOld {
         crossSystem = {
-            config = "armv7l-unknown-linux-gnueabihf";
+            config = "armv7l-unknown-linux-gnueabi";
             libc = "glibc";
             arch = "arm";
             withTLS = true;
