@@ -46,7 +46,7 @@ let
                 kernelExtraConfig = ''
                   TUN m
                 '';
-                kernelAutoModules = true;
+                kernelAutoModules = false;
                 gcc = {
                     arch = "armv7-a";
                     fpu = "neon";
@@ -58,7 +58,7 @@ let
         };
     };
 
-    linux = pkgsOld.linux.crossDrv;
+    linux = pkgsOld.linux_3_18.crossDrv;
 
     mkTunTarball = package: pkgs.runCommand "binary-tarball" {
     } ''
