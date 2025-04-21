@@ -64,6 +64,7 @@
                       TUN m
                       PREEMPT y
                       SMP n
+                      MODVERSIONS n
                     '';
                     kernelAutoModules = false;
                     gcc = {
