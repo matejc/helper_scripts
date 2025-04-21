@@ -62,6 +62,8 @@
                     kernelBaseConfig = "multi_v7_defconfig";
                     kernelExtraConfig = ''
                       TUN m
+                      PREEMPT y
+                      SMP n
                     '';
                     kernelAutoModules = false;
                     gcc = {
