@@ -65,6 +65,10 @@
                       PREEMPT y
                       SMP n
                       MODVERSIONS n
+
+                      OUTER_CACHE y
+                      USER_NS y
+                      FUNCTION_TRACER y
                     '';
                     kernelAutoModules = false;
                     gcc = {
