@@ -69,6 +69,8 @@
                       OUTER_CACHE y
                       USER_NS y
                       FUNCTION_TRACER y
+                      NET y
+                      NET_CORE y
                     '';
                     kernelAutoModules = false;
                     gcc = {
@@ -82,10 +84,26 @@
             };
         };
 
-        linux = pkgsOld.linux_3_18.crossDrv;
+        # linux = pkgsOld.linux_3_18.crossDrv;
+
+        linux = (pkgsOld.linuxManualConfig {
+            version = "3.18.20";
+            src = pkgsOld.linux_3_18.src;
+            allowImportFromDerivation = true;
+            configfile = pkgs.writeText "config" ''
+                ${builtins.readFile ./mdm9607-config}
+
+                CONFIG_TUN=m
+
+                CONFIG_MODVERSIONS=n
+                CONFIG_OUTER_CACHE=y
+                CONFIG_USER_NS=y
+                CONFIG_FUNCTION_TRACER=y
+            '';
+        }).crossDrv;
     in {
         hydraJobs = {
-            inherit openvpn linux;
+            inherit linux;
             openvpn_tarball = mkTarball openvpn;
             tun_tarball = mkTunTarball linux;
         };
