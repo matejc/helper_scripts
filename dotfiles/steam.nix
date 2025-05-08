@@ -58,12 +58,10 @@ in
     # make steam directory if it does not exist
     echo "Creating Steam directory if it does not exist..."
     mkdir -p ~/.steam/steam/compatibilitytools.d
-    mkdir -p ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d
 
     # extract proton tarball to steam directory
     echo "Extracting $tarball_name to Steam directory..."
     tar -xf $tarball_name -C ~/.steam/steam/compatibilitytools.d/
-    tar -xf $tarball_name -C ~/.var/app/com.valvesoftware.Steam/data/Steam/compatibilitytools.d/
 
     echo "All done :)"
   '';
