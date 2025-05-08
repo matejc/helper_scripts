@@ -94,15 +94,15 @@ let
       fre --store_name dir_history --add "$entry" && echo -n "$entry"
     elif [ -n "$fzf_result" ]
     then
-      fre --store_name dir_history --delete "$fzf_result" && echo -n "."
+      fre --store_name dir_history --delete "''${fzf_result/#./$PWD}" && echo -n "."
     else
       echo -n "."
     fi
   '';
 in
 [{
-  target = "${variables.homeDir}/.zshrc";
-  source = pkgs.writeText "zshrc" ''
+  target = "${variables.homeDir}/.zshrc-my";
+  source = pkgs.writeScript "zshrc" ''
     ZSH_DISABLE_COMPFIX="true"
 
     unset RPS1  # clean up
@@ -309,27 +309,18 @@ in
     fi
   '';
 } {
-  target = "${variables.homeDir}/.zlogin";
-  source = pkgs.writeText "zlogin" ''
+  target = "${variables.homeDir}/.zlogin.my";
+  source = pkgs.writeScript "zlogin" ''
     (
-      # Function to determine the need of a zcompile. If the .zwc file
-      # does not exist, or the base file is newer, we need to compile.
-      # These jobs are asynchronous, and will not impact the interactive shell
-      zcompare() {
-        if [[ -s ''${1} && ( ! -s ''${1}.zwc || ''${1} -nt ''${1}.zwc) ]]; then
-          zcompile ''${1}
-        fi
-      }
-
       setopt EXTENDED_GLOB
 
       # zcompile the completion cache; siginificant speedup.
       for file in $HOME/.zcomp^(*.zwc)(.); do
-        zcompare ''${file}
+        zcompile $file
       done
 
       # zcompile .zshrc
-      zcompare $HOME/.zshrc
+      zcompile $HOME/.zshrc
     ) &!
   '';
 }]

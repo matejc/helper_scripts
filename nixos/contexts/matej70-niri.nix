@@ -98,6 +98,7 @@ let
         #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         #tmux = "${pkgs.tmux}/bin/tmux";
         caprine = "${pkgs.caprine}/bin/caprine --ozone-platform-hint=auto";
+        logseq = "${pkgs.logseq}/bin/logseq --ozone-platform-hint=auto";
       };
       shell = "${self.variables.profileDir}/bin/zsh";
       shellRc = "${self.variables.homeDir}/.zshrc";
@@ -227,7 +228,6 @@ let
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
-        "fluffychat-linux-1.25.1"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -293,13 +293,12 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord cinny-desktop fluffychat
+          legcord cinny-desktop
           steamcmd
           jq
           scanmem
-          steam-run steamtinkerlaunch yad xwayland-run cage winetricks
+          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher
           swiftpoint
-          logseq
           eog
           file-roller
           wf-recorder

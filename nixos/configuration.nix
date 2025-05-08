@@ -382,6 +382,8 @@ in {
             defaultApplications = {
               "x-scheme-handler/https" = [ "browser.desktop" ];
               "x-scheme-handler/http" = [ "browser.desktop" ];
+              "x-scheme-handler/file" = [ "browser.desktop" ];
+              "application/pdf" = [ "browser.desktop" ];
             };
           };
           desktopEntries = {
@@ -391,7 +393,7 @@ in {
               exec = "${context.variables.profileDir}/bin/browser %U";
               terminal = false;
               categories = [ "Application" "Network" "WebBrowser" ];
-              mimeType = [ "x-scheme-handler/https" "x-scheme-handler/http" ];
+              mimeType = [ "x-scheme-handler/https" "x-scheme-handler/http" "x-scheme-handler/file" "application/pdf"];
             };
           };
         };
@@ -1387,7 +1389,7 @@ in {
           enable = true;
           enableSshSupport = true;
           enableZshIntegration = true;
-          pinentryPackage = pkgs.pinentry-gnome3;
+          pinentry.package = pkgs.pinentry-gnome3;
         };
         services.ssh-agent.enable = true;
         programs.ssh = {
@@ -1404,8 +1406,8 @@ in {
         programs.zsh = {
           enable = true;
           enableVteIntegration = true;
-          initExtra = ''
-            ${lib.readFile (dotFileAt "zsh.nix" 0)}
+          initContent = ''
+            . "${dotFileAt "zsh.nix" 0}" || true
 
             . "${pkgs.nix}/etc/profile.d/nix.sh"
 
@@ -1413,7 +1415,7 @@ in {
             . "${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh" || true
           '';
           loginExtra = ''
-            ${lib.readFile (dotFileAt "zsh.nix" 1)}
+            . "${dotFileAt "zsh.nix" 1}" || true
           '';
           envExtra = ''
             setopt no_global_rcs

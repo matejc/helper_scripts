@@ -33,6 +33,18 @@
             echo "${package.name}-tun" >> "$out/nix-support/hydra-release-name"
         '';
 
+        readConfig =
+          configfile:
+          builtins.readFile
+            (pkgs.runCommand "config" { } ''
+              touch "$out"
+              while IFS='=' read key val; do
+                [ "x''${key#CONFIG_}" != "x$key" ] || continue
+                no_firstquote="''${val#\"}";
+                echo "''${key#CONFIG_} $val" >> "$out"
+              done < "${configfile}"
+            '').outPath;
+
         # OpenVPN
         pkgsArm = import "${inputs.nixpkgs}" {
             system = "x86_64-linux";
@@ -45,12 +57,14 @@
             pam = null;
         };
 
+        # Linux 3.18.20
         pkgsOld = import "${inputs.nixpkgsOld}" {
             system = "x86_64-linux";
             crossSystem = {
                 config = "armv7l-unknown-linux-gnueabihf";
                 libc = "glibc";
                 arch = "arm";
+                fpu = "vfpd32";
                 withTLS = true;
                 float = "hard";
                 openssl.system = "linux-generic32";
@@ -61,29 +75,26 @@
                     kernelHeadersBaseConfig = "multi_v7_defconfig";
                     kernelBaseConfig = "multi_v7_defconfig";
                     kernelExtraConfig = ''
-                      TUN m
-                      PREEMPT y
-                      SMP n
-                      MODVERSIONS n
+                      ${readConfig ./mdm9607-config}
 
+                      TUN m
+                      MODVERSIONS n
                       OUTER_CACHE y
                       USER_NS y
                       FUNCTION_TRACER y
-                      NET y
-                      NET_CORE y
                     '';
                     kernelAutoModules = false;
                     gcc = {
                         arch = "armv7-a";
-                        fpu = "neon";
+                        fpu = "vfpd32";
                         float = "hard";
+                        cpu = "cortex-a7";
                     };
                     kernelTarget = "zImage";
                     uboot = null;
                 };
             };
         };
-
         # linux = pkgsOld.linux_3_18.crossDrv;
 
         linux = (pkgsOld.linuxManualConfig {
@@ -93,9 +104,9 @@
             configfile = pkgs.writeText "config" ''
                 ${builtins.readFile ./mdm9607-config}
 
-                CONFIG_TUN=m
-
                 CONFIG_MODVERSIONS=n
+
+                CONFIG_TUN=m
                 CONFIG_OUTER_CACHE=y
                 CONFIG_USER_NS=y
                 CONFIG_FUNCTION_TRACER=y
@@ -105,7 +116,7 @@
         hydraJobs = {
             inherit linux;
             openvpn_tarball = mkTarball openvpn;
-            tun_tarball = mkTunTarball linux;
+            linux_tarball = mkTarball linux;
         };
     };
 }

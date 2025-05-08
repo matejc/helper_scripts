@@ -34,6 +34,8 @@
 , mounts ? [ ]
 , romounts ? [
   { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
+] ++ extraRomounts
+, extraRomounts ? [
   { from = "${home.outside}/.vpn/${name}/openvpn"; to = "/etc/openvpn"; }
   { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
 ]
@@ -369,6 +371,7 @@ let
     set -e
 
     mkdir -p ${stateDir}/.fwd
+    mkdir -p ${stateDir}/home
 
     cat ${resolvConf} >${stateDir}/.resolv.conf
     echo -n "" > ${stateDir}/.ns.pid

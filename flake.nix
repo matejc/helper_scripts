@@ -149,6 +149,8 @@
         pkgs.clamav
         sway-workspace
         sway-scratchpad
+        pkgs.conduwuit
+        pkgs.matrix-continuwuity
       ]);
     };
     nixosConfigurations = {
