@@ -8,6 +8,5 @@ pkgs.rustPlatform.buildRustPackage rec {
     rev = "refs/tags/v${version}";
     sha256 = "sha256-Ic0vzxby2vJTqdmfDDAYs0TNyntMJuEknbXK3wRjnR4=";
   };
-  cargoHash = "sha256-3wyZNv0VJT8hPOWQr2jL8A9xVsfLor/6Lhv3lN5JuXY=";
+  cargoHash = "sha256-Ueb/KHdIil7cHjTqZw5HqWrQ5uhzzs3k1nuF5TguJ5o=";
 }
-
