@@ -205,7 +205,6 @@ let
 in {
   imports = [
     "${inputs.nixmy}/default.nix"
-    inputs.niri.nixosModules.niri
   ];
   config = lib.mkMerge ([{
     nixpkgs.overlays = [
@@ -243,7 +242,6 @@ in {
         });
         */
       })
-      inputs.niri.overlays.niri
     ];
     xdg.portal = {
       enable = true;
@@ -318,8 +316,6 @@ in {
     #   ${pkgs.sudo}/bin/sudo -iu "${defaultUser}" env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR WAYLAND_DISPLAY=wayland-1 ${context.variables.homeDir}/bin/lockscreen
     # '';
 
-    niri-flake.cache.enable = true;
-
     home-manager.useGlobalPkgs = true;
     nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
     home-manager.useUserPackages = false;
@@ -327,7 +323,7 @@ in {
     home-manager.users.${defaultUser} = { config, ... }: {
       imports = [
         # inputs.hyprland.homeManagerModules.default
-        # inputs.niri.homeModules.niri
+        inputs.niri.homeModules.niri
       ];
       config = lib.mkMerge ([{
 
@@ -1619,7 +1615,7 @@ in {
         };
 
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
-        programs.niri.package = pkgs.niri-stable;
+        programs.niri.package = pkgs.niri;
         programs.niri.config = ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
@@ -1843,7 +1839,7 @@ in {
           // Add lines like this to spawn processes at startup.
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
-          spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
+          spawn-at-startup "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
@@ -1878,6 +1874,12 @@ in {
           hotkey-overlay {
               // Uncomment this line if you don't want to see the hotkey help at niri startup.
               skip-at-startup
+          }
+
+          gestures {
+              hot-corners {
+                  off
+              }
           }
 
           binds {
@@ -2014,6 +2016,8 @@ in {
               Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
               Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head context.variables.outputs).output}"; }
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
+
+              Mod+O repeat=false { toggle-overview; }
           }
 
           environment {

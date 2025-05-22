@@ -1,10 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 let
   pname = "logseq";
-  version = "0.10.9";
+  version = "0.10.11";
   src = pkgs.fetchurl {
     url = "https://github.com/logseq/logseq/releases/download/${version}/Logseq-linux-x64-${version}.AppImage";
-    sha256 = "sha256-XROuY2RlKnGvK1VNvzauHuLJiveXVKrIYPppoz8fCmc=";
+    sha256 = "sha256-x4efBXU9tlpMbrZONCdbhQJjJk+9vpwCklsIO59x1EU=";
   };
   appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
 in
