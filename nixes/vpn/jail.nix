@@ -84,6 +84,9 @@
   }
 ] ++ extraLaunchers
 , extraLaunchers ? []
+, enableDBus ? false
+, enableGnomeKeyring ? false
+, enableNM ? false
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -117,6 +120,22 @@ let
       '') launchers}
     </menu>
     </openbox_menu>
+  '';
+
+  sessionDBusConf = pkgs.writeText "session.conf" ''
+      <?xml version="1.0" encoding="UTF-8"?>
+      <!DOCTYPE busconfig SYSTEM "busconfig.dtd">
+      <busconfig>
+          <listen>unix:path=/run/dbus/session_bus_socket</listen>
+          <policy context="default">
+            <!-- Allow everything to be sent -->
+            <allow send_destination="*" eavesdrop="true"/>
+            <!-- Allow everything to be received -->
+            <allow eavesdrop="true"/>
+            <!-- Allow anyone to own anything -->
+            <allow own="*"/>
+          </policy>
+      </busconfig>
   '';
 
   shadowsocksFile = pkgs.writeText "shadowsocks.json" (builtins.toJSON {
@@ -261,6 +280,26 @@ let
     stdout_logfile_maxbytes = 0
     '' else ""}
 
+    ${if enableDBus then ''
+    [program:dbus]
+    command = ${mkCmd "dbus" { start = "dbus-daemon --session --address=unix:path=/run/user/${uid}/dbus --nofork --nopidfile"; stop = "pkill dbus-daemon";}}
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = unexpected
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/dbus.log
+    stdout_logfile_maxbytes = 0
+    '' else ""}
+
     [program:shadowsocks]
     command = ${mkCmd "shadowsocks" { start = "sslocal -c ${shadowsocksFile}"; stop = "pkill sslocal";}}
     priority = 0
@@ -296,6 +335,26 @@ let
     killasgroup = true
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/compositor.log
+    stdout_logfile_maxbytes = 0
+    '' else ""}
+
+    ${if enableGnomeKeyring then ''
+    [program:gnome-keyring]
+    command = ${mkCmd "gnome-keyring" { start = "gnome-keyring-daemon --start --foreground --components=secrets"; stop = "pkill gnome-keyring-daemon"; }}
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = true
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/gnome_keyring.log
     stdout_logfile_maxbytes = 0
     '' else ""}
 
@@ -474,6 +533,7 @@ let
       ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
       ${if x11 != null then "--bindmount_ro /tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11}:/tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11} --env DISPLAY=${x11}" else "--env DISPLAY=:0"} \
       ${if enablePulse then "--bindmount_ro /run/user/${uid}/pulse:/run/user/${uid}/pulse --env PULSE_SERVER=/run/user/${uid}/pulse/native" else ""} \
+      ${if enableDBus then "--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus" else ""} \
       --hostname RESTRICTED \
       --cwd / \
       --keep_caps \
@@ -556,7 +616,9 @@ let
     shadowsocks-rust
   ]
     ++ packages
-    ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect]);
+    ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect])
+    ++ (pkgs.lib.optionals enableDBus [dbus])
+    ++ (pkgs.lib.optionals enableGnomeKeyring [gnome-keyring]);
 
   binPaths = pkgs.lib.makeBinPath buildInputs;
 

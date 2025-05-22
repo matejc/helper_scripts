@@ -180,7 +180,11 @@ let
         vt = 2;
       };
       programs.niri.enable = true;
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages_cachyos;
+      services.scx.enable = true;
+      services.scx.scheduler = "scx_bpfland";
+      services.scx.extraArgs = [ "-m" "performance" ];
+      services.scx.package = pkgs.scx_git.full;
       # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
       # boot.kernelPatches = [
       #   {
@@ -237,9 +241,7 @@ let
       ];
       programs.steam = {
         enable = true;
-        gamescopeSession.enable = true;
       };
-      programs.gamemode.enable = true;
       hardware.openrazer = {
         # enable = true;
         users = [ "matejc" ];
@@ -302,11 +304,19 @@ let
           eog
           file-roller
           wf-recorder
+
+          code-cursor
+          asdf-vm
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
       home.sessionVariables.VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+      programs.zsh.initContent = ''
+        . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+        autoload -Uz bashcompinit && bashcompinit
+        . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+      '';
     };
   };
 in

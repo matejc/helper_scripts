@@ -74,14 +74,17 @@
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
   };
 
   nixConfig = {
     extra-substituters = [
       "https://cache.matejc.com"
+      "https://chaotic-nyx.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.matejc.com-1:1gX7YfpZK4zkYf5MRrz9HPsJq9XZBC6bJgDySZmzbUM="
+      "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
     ];
   };
 
@@ -120,6 +123,7 @@
         context = "matej70-niri";
         modules = [
           ./nixos/minimal-configuration.nix
+          inputs.chaotic.nixosModules.default
         ];
       }).config.system.build.toplevel;
       matej80 = (nixosBuild {
@@ -158,6 +162,7 @@
         context = "matej70-niri";
         modules = [
           (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
+          inputs.chaotic.nixosModules.default
         ];
       };
       matej80 = nixosBuild {
