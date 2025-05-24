@@ -299,7 +299,7 @@ let
           steamcmd
           jq
           scanmem
-          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher
+          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher nexusmods-app-unfree
           swiftpoint
           eog
           file-roller

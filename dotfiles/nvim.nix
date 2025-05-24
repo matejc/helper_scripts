@@ -1309,7 +1309,12 @@ cmp.setup({
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 40 })(entry, vim_item)
+      local kind = require("lspkind").cmp_format({
+        mode = "symbol_text",
+        maxwidth = 50,
+        ellipsis_char = '...',
+        show_labelDetails = true,
+      })(entry, vim_item)
       local strings = vim.split(kind.kind, "%s", { trimempty = true })
       kind.kind = " " .. strings[1] .. " "
       --kind.menu = "    (" .. strings[2] .. ")"
@@ -1386,6 +1391,7 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
+    { name = 'cmp_ai' },
     -- { name = 'vsnip' }, -- For vsnip users.
     { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
@@ -1396,7 +1402,7 @@ cmp.setup({
     -- { name = 'rg' },
   }, {
     { name = 'spell' },
-  })
+  }),
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -1444,6 +1450,25 @@ cmp.setup.cmdline('/', {
   sources = {
     { name = 'buffer' }
   }
+})
+
+local cmp_ai = require('cmp_ai.config')
+cmp_ai:setup({
+  max_lines = 1000,
+  provider = 'Codestral',
+  provider_options = {
+    model = 'codestral-latest',
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+  ignored_file_types = {
+    -- default is not to ignore
+    -- uncomment to ignore in lua:
+    -- lua = true
+  },
 })
 
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
@@ -2466,7 +2491,10 @@ require("lspsaga").setup({
 
 -- require("nvim-surround").setup({})
 
-vim.diagnostic.config({ virtual_text = false })
+vim.diagnostic.config({
+  virtual_text = false,
+  update_in_insert = true,
+})
 
 require("tiny-inline-diagnostic").setup({
     -- Style preset for diagnostic messages
@@ -2474,6 +2502,9 @@ require("tiny-inline-diagnostic").setup({
     -- "modern", "classic", "minimal", "powerline",
     -- "ghost", "simple", "nonerdfont", "amongus"
     preset = "simple",
+
+    transparent_bg = false, -- Set the background of the diagnostic to transparent
+    transparent_cursorline = false, -- Set the background of the cursorline to transparent (only one the first diagnostic)
 
     hi = {
         error = "DiagnosticError", -- Highlight group for error messages
@@ -2493,10 +2524,16 @@ require("tiny-inline-diagnostic").setup({
 
     options = {
         -- Display the source of the diagnostic (e.g., basedpyright, vsserver, lua_ls etc.)
-        show_source = false,
+        show_source = {
+            enabled = false,
+            if_many = false,
+        },
 
         -- Use icons defined in the diagnostic configuration
         use_icons_from_diagnostic = false,
+
+        -- Set the arrow icon to the same color as the first diagnostic severity
+        set_arrow_to_diag_color = false,
 
         -- Add messages to diagnostics when multiline diagnostics are enabled
         -- If set to false, only signs will be displayed
@@ -2509,10 +2546,6 @@ require("tiny-inline-diagnostic").setup({
 
         -- Minimum message length before wrapping to a new line
         softwrap = 30,
-
-        -- Show all diagnostics under the cursor if multiple diagnostics exist on the same line
-        -- If set to false, only the diagnostics under the cursor will be displayed
-        multiple_diag_under_cursor = false,
 
         -- Configuration for multiline diagnostics
         -- Can either be a boolean or a table with the following options:
@@ -2540,6 +2573,9 @@ require("tiny-inline-diagnostic").setup({
         -- If enabled, it is better to set the `throttle` option to 0 to avoid visual artifacts
         enable_on_insert = true,
 
+        -- Enable diagnostics in Select mode (e.g when auto inserting with Blink)
+        enable_on_select = false,
+
         overflow = {
             -- Manage how diagnostic messages handle overflow
             -- Options:
@@ -2547,6 +2583,11 @@ require("tiny-inline-diagnostic").setup({
             -- "none" - Do not truncate messages
             -- "oneline" - Keep the message on a single line, even if it's long
             mode = "wrap",
+
+            -- Trigger wrapping to occur this many characters earlier when mode == "wrap".
+            -- Increase this value appropriately if you notice that the last few characters
+            -- of wrapped diagnostics are sometimes obscured.
+            padding = 0,
         },
 
         -- Configuration for breaking long messages into separate lines
@@ -2588,6 +2629,7 @@ require("tiny-inline-diagnostic").setup({
         -- You should not change this unless the plugin does not work with your configuration
         overwrite_events = nil,
     },
+    disabled_ft = {} -- List of filetypes to disable the plugin
 })
 
 -- local null_ls = require("null-ls")
@@ -3345,6 +3387,7 @@ EOF
           pkgs.vimPlugins.cmp-nvim-lsp-document-symbol
           pkgs.vimPlugins.cmp-rg
           pkgs.vimPlugins.cmp-treesitter
+          pkgs.vimPlugins.cmp-ai
           myVimPlugins.nvim-hlslens
           myVimPlugins.nvim-scrollbar
           myVimPlugins.themer-lua
