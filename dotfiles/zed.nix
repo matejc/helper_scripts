@@ -47,6 +47,8 @@ in
       bindings = {
         pageup = ["editor::MoveUpByLines" { "lines" = 10; }];
         pagedown = ["editor::MoveDownByLines" { "lines" = 10; }];
+        shift-pageup = ["editor::SelectUpByLines" { "lines" = 10; }];
+        shift-pagedown = ["editor::SelectDownByLines" { "lines" = 10; }];
         ctrl-enter = "editor::NewlineBelow";
         ctrl-up = "editor::MoveLineUp";
         ctrl-down = "editor::MoveLineDown";
@@ -55,6 +57,12 @@ in
         "ctrl-k" = "editor::DeleteLine";
         "ctrl-shift-up" = "editor::AddSelectionAbove";
         "ctrl-shift-down" = "editor::AddSelectionBelow";
+        "ctrl-left" = "editor::MoveToPreviousSubwordStart";
+        "ctrl-right" = "editor::MoveToNextSubwordEnd";
+        "ctrl-shift-left" = "editor::SelectToPreviousSubwordStart";
+        "ctrl-shift-right" = "editor::SelectToNextSubwordEnd";
+        "ctrl-backspace" = "editor::DeleteToPreviousSubwordStart";
+        "ctrl-delete" = "editor::DeleteToNextSubwordEnd";
       };
     }
   ]);

@@ -1285,6 +1285,7 @@ end
 
 local cmp = require'cmp'
 local lspkind = require('lspkind')
+local cmp_compare = require('cmp.config.compare')
 
 cmp.setup({
   window = {
@@ -1403,6 +1404,20 @@ cmp.setup({
   }, {
     { name = 'spell' },
   }),
+  sorting = {
+    priority_weight = 2,
+    comparators = {
+      require('cmp_ai.compare'),
+      cmp_compare.offset,
+      cmp_compare.exact,
+      cmp_compare.score,
+      cmp_compare.recently_used,
+      cmp_compare.kind,
+      cmp_compare.sort_text,
+      cmp_compare.length,
+      cmp_compare.order,
+    },
+  },
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
@@ -1458,6 +1473,12 @@ cmp_ai:setup({
   provider = 'Codestral',
   provider_options = {
     model = 'codestral-latest',
+    prompt = function(lines_before, lines_after)
+      return lines_before
+    end,
+    suffix = function(lines_after)
+      return lines_after
+    end
   },
   notify = true,
   notify_callback = function(msg)
