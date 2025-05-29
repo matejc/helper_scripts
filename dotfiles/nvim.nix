@@ -1285,7 +1285,6 @@ end
 
 local cmp = require'cmp'
 local lspkind = require('lspkind')
-local cmp_compare = require('cmp.config.compare')
 
 cmp.setup({
   window = {
@@ -1324,6 +1323,7 @@ cmp.setup({
     end,
   },
   mapping = cmp.mapping.preset.insert({
+    ["<C-a>"] = require('minuet').make_cmp_map(),
     ['<PageUp>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<PageDown>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -1390,9 +1390,9 @@ cmp.setup({
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
   sources = cmp.config.sources({
+    { name = 'minuet' },
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
-    { name = 'cmp_ai' },
     -- { name = 'vsnip' }, -- For vsnip users.
     { name = 'luasnip' }, -- For luasnip users.
     -- { name = 'ultisnips' }, -- For ultisnips users.
@@ -1404,19 +1404,12 @@ cmp.setup({
   }, {
     { name = 'spell' },
   }),
-  sorting = {
-    priority_weight = 2,
-    comparators = {
-      require('cmp_ai.compare'),
-      cmp_compare.offset,
-      cmp_compare.exact,
-      cmp_compare.score,
-      cmp_compare.recently_used,
-      cmp_compare.kind,
-      cmp_compare.sort_text,
-      cmp_compare.length,
-      cmp_compare.order,
-    },
+  performance = {
+    -- It is recommended to increase the timeout duration due to
+    -- the typically slower response speed of LLMs compared to
+    -- other completion sources. This is not needed when you only
+    -- need manual completion.
+    fetching_timeout = 2000,
   },
 })
 
@@ -1467,30 +1460,34 @@ cmp.setup.cmdline('/', {
   }
 })
 
-local cmp_ai = require('cmp_ai.config')
-cmp_ai:setup({
-  max_lines = 1000,
-  provider = 'Codestral',
+require('minuet').setup {
+  cmp = {
+    enable_auto_complete = false,
+  },
+  add_single_line_entry = false,
+  request_timeout = 20,
+  lsp = nil,
+  provider = 'openai_fim_compatible',
+  n_completions = 1, -- recommend for local model for resource saving
+  -- I recommend beginning with a small context window size and incrementally
+  -- expanding it, depending on your local computing power. A context window
+  -- of 512, serves as an good starting point to estimate your computing
+  -- power. Once you have a reliable estimate of your local computing power,
+  -- you should adjust the context window to a larger value.
+  context_window = 512,
   provider_options = {
-    model = 'codestral-latest',
-    prompt = function(lines_before, lines_after)
-      return lines_before
-    end,
-    suffix = function(lines_after)
-      return lines_after
-    end
+    openai_fim_compatible = {
+      api_key = 'TERM',
+      name = 'Ollama',
+      end_point = 'http://100.68.2.84:11434/v1/completions',
+      model = 'qwen2.5-coder:7b',
+      optional = {
+        max_tokens = 56,
+        top_p = 0.9,
+      },
+    },
   },
-  notify = true,
-  notify_callback = function(msg)
-    vim.notify(msg)
-  end,
-  run_on_every_keystroke = true,
-  ignored_file_types = {
-    -- default is not to ignore
-    -- uncomment to ignore in lua:
-    -- lua = true
-  },
-})
+}
 
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
@@ -3389,7 +3386,7 @@ EOF
           pkgs.vimPlugins.vim-rsi
           pkgs.vimPlugins.vim-signify
           myVimPlugins.git-blame-vim
-          myVimPlugins.nvim-web-devicons
+          pkgs.vimPlugins.nvim-web-devicons
           pkgs.vimPlugins.vim-matchup
           pkgs.vimPlugins.plenary-nvim
           pkgs.vimPlugins.telescope-nvim
@@ -3440,6 +3437,7 @@ EOF
           # myVimPlugins.indent-rainbowline-nvim
           pkgs.vimPlugins.rainbow-delimiters-nvim
           pkgs.vimPlugins.tiny-inline-diagnostic-nvim
+          myVimPlugins.minuet-ai-nvim
         ];
         opt = [
         ];

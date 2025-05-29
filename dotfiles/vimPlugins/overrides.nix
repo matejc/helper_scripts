@@ -60,4 +60,23 @@ self: super: {
   themer-lua = super.themer-lua.overrideAttrs (old: {
     dependencies = [ vimPlugins.telescope-nvim vimPlugins.plenary-nvim ];
   });
+
+
+  minuet-ai-nvim = super.minuet-ai-nvim.overrideAttrs {
+    nvimSkipModules = [
+      # Backends require configuration
+      "minuet.backends.claude"
+      "minuet.backends.codestral"
+      "minuet.backends.gemini"
+      "minuet.backends.huggingface"
+      "minuet.backends.openai"
+      "minuet.backends.openai_compatible"
+      "minuet.backends.openai_fim_compatible"
+      "minuet.lualine"
+      "minuet.cmp"
+      "minuet.backends.openai_base"
+      "minuet.backends.common"
+    ];
+};
+
 }

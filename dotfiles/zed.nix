@@ -23,6 +23,14 @@ in
       folder_icons = false;
     };
     auto_update = false;
+    languages = {
+      Nix = {
+        tab_size = 2;
+      };
+    };
+    lsp = {
+      nil.settings.nix.flake.autoArchive = false;
+    };
   });
 } {
   target = "${variables.homeDir}/.config/zed/keymap.json";

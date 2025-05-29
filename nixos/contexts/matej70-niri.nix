@@ -180,7 +180,7 @@ let
         vt = 2;
       };
       programs.niri.enable = true;
-      boot.kernelPackages = pkgs.linuxPackages_cachyos;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       services.scx.enable = true;
       services.scx.scheduler = "scx_bpfland";
       services.scx.extraArgs = [ "-m" "performance" ];
@@ -299,7 +299,7 @@ let
           steamcmd
           jq
           scanmem
-          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher nexusmods-app-unfree
+          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher # nexusmods-app-unfree
           swiftpoint
           eog
           file-roller
@@ -311,7 +311,11 @@ let
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
-      home.sessionVariables.VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+      home.sessionVariables = {
+        VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+        PROTON_ENABLE_WAYLAND = "1";
+        PROTON_ENABLE_HDR = "1";
+      };
       programs.zsh.initContent = ''
         . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
         autoload -Uz bashcompinit && bashcompinit
