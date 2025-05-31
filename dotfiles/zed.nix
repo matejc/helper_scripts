@@ -90,6 +90,6 @@ in
   target = "${variables.homeDir}/bin/z";
   source = pkgs.writeShellScript "zeditor.sh" ''
     export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
-    exec ${pkgs.zed-editor}/bin/zeditor "$@"
+    exec ${pkgs.zed-editor}/bin/zeditor "''${@:-.}"
   '';
 }]

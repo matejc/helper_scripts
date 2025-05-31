@@ -242,6 +242,7 @@ in {
         });
         */
       })
+      inputs.niri.overlays.niri
     ];
     xdg.portal = {
       enable = true;
@@ -1615,7 +1616,7 @@ in {
         };
 
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
-        programs.niri.package = pkgs.niri;
+        programs.niri.package = pkgs.niri-unstable;
         programs.niri.config = ''
           // This config is in the KDL format: https://kdl.dev
           // "/-" comments out the following node.
@@ -1757,7 +1758,7 @@ in {
           }
 
           window-rule {
-              draw-border-with-background false
+              draw-border-with-background true
               geometry-corner-radius 3
           }
 
@@ -1839,7 +1840,7 @@ in {
           // Add lines like this to spawn processes at startup.
           // Note that running niri as a session supports xdg-desktop-autostart,
           // which may be more convenient to use.
-          spawn-at-startup "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
+          spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${configure-gtk}/bin/configure-gtk"
@@ -1920,6 +1921,7 @@ in {
               XF86AudioPrev { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl previous"; }
 
               Super+K { spawn "${niriWorkspaces}" "action" "close-window"; }
+              Super+Shift+K { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
 
               Super+Left  { spawn "${niriWorkspaces}" "action" "focus-column-left"; }
               Super+Down  { spawn "${niriWorkspaces}" "action" "focus-window-down"; }
@@ -2018,6 +2020,7 @@ in {
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Mod+O repeat=false { toggle-overview; }
+              Alt+Tab repeat=false { switch-focus-between-floating-and-tiling; }
           }
 
           environment {

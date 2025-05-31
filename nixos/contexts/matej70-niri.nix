@@ -273,10 +273,6 @@ let
         enable = true;
         enable32Bit = true;
       };
-      hardware.amdgpu.amdvlk = {
-        enable = true;
-        support32Bit.enable = true;
-      };
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -312,9 +308,9 @@ let
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
       home.sessionVariables = {
-        VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
-        PROTON_ENABLE_WAYLAND = "1";
-        PROTON_ENABLE_HDR = "1";
+        # VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+        # PROTON_ENABLE_WAYLAND = "1";
+        # PROTON_ENABLE_HDR = "1";
       };
       programs.zsh.initContent = ''
         . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
