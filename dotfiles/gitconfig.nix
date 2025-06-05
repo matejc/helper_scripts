@@ -44,10 +44,11 @@ in
     [alias]
         lol = log --graph --decorate --pretty=oneline --abbrev-commit --branches --remotes --tags
         l = log --graph --pretty=format:'%Cred%h%Creset%C(yellow)%d%Creset %s\n%Cgreen%cr %C(bold blue)%an%Creset %Cgreen%G?%Creset\n' --abbrev-commit --branches --remotes --tags
-        inplace-rebase = !git checkout $1 && git rebase $2 && git checkout - && echo
-        stash-pull = !git stash && git pull origin $1 && git stash pop && echo
+        inplace-rebase = !git checkout "$1" && git rebase "$2" && git checkout - && echo
+        stash-pull = !git stash && git pull "$@" && git stash pop && echo
         grep-history = !git rev-list --all --date-order | PAGER=cat xargs git grep -n
         grep-all = !git show-ref | ${pkgs.gawk}/bin/awk '{print $2}' | PAGER=cat xargs git grep -n
+        x = "!f() { git add -p && git commit -m \"$@\" && git push; }; f"
     [pull]
         rebase = true
     [commit]
