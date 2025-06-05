@@ -78,7 +78,7 @@ let
       };
       term = null;
       programs = {
-        filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
+        filemanager = "${pkgs.cosmic-files}/bin/cosmic-files";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
@@ -180,7 +180,7 @@ let
         vt = 2;
       };
       programs.niri.enable = true;
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages_cachyos;
       services.scx.enable = true;
       services.scx.scheduler = "scx_bpfland";
       services.scx.extraArgs = [ "-m" "performance" ];
@@ -308,7 +308,7 @@ let
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
       home.sessionVariables = {
-        # VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+        VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
         # PROTON_ENABLE_WAYLAND = "1";
         # PROTON_ENABLE_HDR = "1";
       };

@@ -219,6 +219,9 @@ in {
         logseq = pkgs.callPackage ../nixes/logseq.nix { };
         cinny-desktop = pkgs.callPackage ../nixes/cinny-desktop.nix { pkgs = prev; };
         nix-index = inputs.nix-index-database.packages.${pkgs.system}.nix-index-with-db;  # for nixmy
+        mpv = prev.mpv.override {
+          scripts = [ prev.mpvScripts.mpris ];
+        };
         /*
         freerdp3 = (prev.freerdp3.override {
           SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
