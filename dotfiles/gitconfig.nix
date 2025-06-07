@@ -1,15 +1,43 @@
 { variables, config, pkgs, lib }:
 let
-  dsf = pkgs.gitAndTools.diff-so-fancy.overrideDerivation (old: rec {
-    version = "1.4.3";
-    name = "diff-so-fancy-${version}";
-    src = pkgs.fetchFromGitHub {
-      owner = "so-fancy";
-      repo = "diff-so-fancy";
-      rev = "refs/tags/v${version}";
-      sha256 = "11vkq5njjlvjipic7db44ga875n61drszw1qrdzwxmmfmnz425zz";
-    };
-  });
+  push_sh = pkgs.writeShellScript "push.sh" ''
+    export PATH="$PATH:${pkgs.gum}/bin"
+
+    REMOTE="$1"
+    BRANCH="$2"
+
+    if [ -z "$REMOTE" ]
+    then
+        REMOTE="$(gum filter --limit=1 --height=10 --value="$(git config branch.$(git symbolic-ref -q --short HEAD).remote)" $(git remote))"
+    fi
+
+    if [ -z "$BRANCH" ]
+    then
+        BRANCH="$(gum filter --limit=1 --height=10 --value="$(git symbolic-ref -q --short HEAD)" $(git branch --format="%(refname:short)"))"
+    fi
+
+    if [ -n "$REMOTE" ] && [ -n "$BRANCH" ]
+    then
+        git push "$REMOTE" "$BRANCH"
+    fi
+  '';
+  commit_sh = pkgs.writeShellScript "commit.sh" ''
+    export PATH="$PATH:${pkgs.gum}/bin"
+
+    SUMMARY="$@"
+
+    if [ -z "$@" ]
+    then
+        TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
+        SCOPE=$(gum input --placeholder "scope")
+
+        test -n "$SCOPE" && SCOPE="($SCOPE)"
+
+        SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
+    fi
+
+    git commit -m "$SUMMARY"
+  '';
 in
 {
   target = "${variables.homeDir}/.gitconfig";
@@ -48,7 +76,7 @@ in
         stash-pull = !git stash && git pull "$@" && git stash pop && echo
         grep-history = !git rev-list --all --date-order | PAGER=cat xargs git grep -n
         grep-all = !git show-ref | ${pkgs.gawk}/bin/awk '{print $2}' | PAGER=cat xargs git grep -n
-        x = "!f() { git add -p && git commit -m \"$@\" && git push; }; f"
+        x = "!f() { git add -p && ${commit_sh} \"$3\" && ${push_sh} \"$1\" \"$2\"; }; f"
     [pull]
         rebase = true
     [commit]
