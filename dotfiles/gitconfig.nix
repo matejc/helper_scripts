@@ -3,6 +3,11 @@ let
   push_sh = pkgs.writeShellScript "push.sh" ''
     export PATH="$PATH:${pkgs.gum}/bin"
 
+    echor() {
+        echo "> $@" >&2
+        "$@"
+    }
+
     REMOTE="$1"
     BRANCH="$2"
 
@@ -18,11 +23,16 @@ let
 
     if [ -n "$REMOTE" ] && [ -n "$BRANCH" ]
     then
-        git push "$REMOTE" "$BRANCH"
+        echor git push "$REMOTE" "$BRANCH"
     fi
   '';
   commit_sh = pkgs.writeShellScript "commit.sh" ''
     export PATH="$PATH:${pkgs.gum}/bin"
+
+    echor() {
+        echo "> $@" >&2
+        "$@"
+    }
 
     SUMMARY="$@"
 
@@ -36,7 +46,7 @@ let
         SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
     fi
 
-    git commit -m "$SUMMARY"
+    echor git commit -m "$SUMMARY"
   '';
 in
 {
