@@ -494,7 +494,7 @@ let
       --bindmount /dev/null:/dev/null \
       --bindmount /dev/net/tun:/dev/net/tun \
       --bindmount /dev/dri:/dev/dri \
-      --mount none:/dev/shm:tmpfs:rw,mode=1777,size=1048576k \
+      --mount none:/dev/shm:tmpfs:rw,mode=1777,size=5242880k \
       --mount none:/dev/pts:devpts:ptmxmode=0666 \
       --symlink /dev/pts/ptmx:/dev/ptmx \
       --mount none:/dev/mqueue:mqueue:rw \

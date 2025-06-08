@@ -916,7 +916,7 @@ EOF
     " inoremap <silent> <c-p> <c-o>:CtrlP<cr>
 
     let g:gitgutter_git_executable = '${pkgs.git}/bin/git'
-    nnoremap <C-h> <leader>hu
+    " nnoremap <C-h> <leader>hu
 
     " let g:airline#extensions#tabline#enabled = 1
     " let g:airline_powerline_fonts = 0
@@ -1287,9 +1287,15 @@ local cmp = require'cmp'
 local lspkind = require('lspkind')
 
 cmp.setup({
+  view = {
+    -- entries = { name = 'custom', selection_order = 'near_cursor' },
+    docs = {
+      auto_open = true,
+    },
+  },
   window = {
     completion = {
-      --winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+      winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
       col_offset = -3,
       side_padding = 0,
     },
@@ -1309,21 +1315,15 @@ cmp.setup({
   formatting = {
     fields = { "kind", "abbr", "menu" },
     format = function(entry, vim_item)
-      local kind = require("lspkind").cmp_format({
-        mode = "symbol_text",
-        maxwidth = 50,
-        ellipsis_char = '...',
-        show_labelDetails = true,
-      })(entry, vim_item)
+      local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
       local strings = vim.split(kind.kind, "%s", { trimempty = true })
-      kind.kind = " " .. strings[1] .. " "
-      --kind.menu = "    (" .. strings[2] .. ")"
+      kind.kind = " " .. (strings[1] or "") .. " "
+      -- kind.menu = "    (" .. (strings[2] or "") .. ")"
 
       return kind
     end,
   },
   mapping = cmp.mapping.preset.insert({
-    ["<C-a>"] = require('minuet').make_cmp_map(),
     ['<PageUp>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
     ['<PageDown>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
     ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
@@ -1351,6 +1351,7 @@ cmp.setup({
     end,
     ['<Esc>'] = cmp.mapping({
       i = cmp.mapping.abort(),
+      n = cmp.mapping.abort(),
     }),
     ['<Left>'] = function(fallback)
       local cmp = require('cmp')
@@ -1390,7 +1391,6 @@ cmp.setup({
     ['<S-Tab>'] = cmp.mapping.select_prev_item(),
   }),
   sources = cmp.config.sources({
-    { name = 'minuet' },
     { name = 'nvim_lsp' },
     { name = 'nvim_lsp_signature_help' },
     -- { name = 'vsnip' }, -- For vsnip users.
@@ -1412,6 +1412,47 @@ cmp.setup({
     fetching_timeout = 2000,
   },
 })
+
+vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#282C34", fg = "NONE" })
+vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "#22252A" })
+
+vim.api.nvim_set_hl(0, "CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
+vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true })
+
+vim.api.nvim_set_hl(0, "CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" })
+vim.api.nvim_set_hl(0, "CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" })
+vim.api.nvim_set_hl(0, "CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" })
+vim.api.nvim_set_hl(0, "CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" })
+vim.api.nvim_set_hl(0, "CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" })
+vim.api.nvim_set_hl(0, "CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" })
+vim.api.nvim_set_hl(0, "CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" })
+vim.api.nvim_set_hl(0, "CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" })
+vim.api.nvim_set_hl(0, "CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" })
+vim.api.nvim_set_hl(0, "CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" })
+vim.api.nvim_set_hl(0, "CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" })
+vim.api.nvim_set_hl(0, "CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
+vim.api.nvim_set_hl(0, "CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
+vim.api.nvim_set_hl(0, "CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
@@ -1464,30 +1505,45 @@ require('minuet').setup {
   cmp = {
     enable_auto_complete = false,
   },
+  blink = {
+    enable_auto_complete = false,
+  },
   add_single_line_entry = false,
-  request_timeout = 20,
+  request_timeout = 5,
+  throttle = 1000,
+  debounce = 600,
   lsp = nil,
-  provider = 'openai_fim_compatible',
+  provider = 'codestral',
   n_completions = 1, -- recommend for local model for resource saving
   -- I recommend beginning with a small context window size and incrementally
   -- expanding it, depending on your local computing power. A context window
   -- of 512, serves as an good starting point to estimate your computing
   -- power. Once you have a reliable estimate of your local computing power,
   -- you should adjust the context window to a larger value.
-  context_window = 512,
+  context_window = 2048,
+  virtualtext = {
+    auto_trigger_ft = { '*' },
+    show_on_completion_menu = false,
+  },
   provider_options = {
-    openai_fim_compatible = {
-      api_key = 'TERM',
-      name = 'Ollama',
-      end_point = 'http://100.68.2.84:11434/v1/completions',
-      model = 'qwen2.5-coder:7b',
+    codestral = {
       optional = {
-        max_tokens = 56,
-        top_p = 0.9,
+        max_tokens = 256,
+        -- stop = { '\n\n' },
       },
     },
   },
 }
+
+vim.schedule(function()
+  require('minuet.virtualtext').action.disable_auto_trigger()
+end)
+local opts = { noremap = true, silent = true }
+vim.keymap.set({'n', 'i'}, "<A-S-a>", require('minuet.virtualtext').action.toggle_auto_trigger, opts)
+vim.keymap.set({'n', 'i'}, "<A-a>", require('minuet.virtualtext').action.accept, opts)
+vim.keymap.set({'n', 'i'}, "<A-]>", require('minuet.virtualtext').action.next, opts)
+vim.keymap.set({'n', 'i'}, "<A-[>", require('minuet.virtualtext').action.prev, opts)
+vim.keymap.set({'n', 'i'}, "<A-e>", require('minuet.virtualtext').action.dismiss, opts)
 
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
@@ -2726,94 +2782,133 @@ vim.api.nvim_set_keymap("i", "<C-S-c>", "<cmd>:lua my_git_commits()<CR>", {norem
 --   },
 -- })
 
--- require("parrot").setup({
---   -- The provider definitions with endpoints, api keys and models used for chat summarization
---   providers = {
---     openai = {
---       api_key = os.getenv "OPENAI_API_KEY",
---     },
---   },
---
---   -- the prefix used for all commands
---   cmd_prefix = "Prt",
---
---   -- optional parameters for curl
---   curl_params = {},
---
---   -- The directory to store persisted state information like the
---   -- current provider and the selected agents
---   state_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/persisted",
---
---   -- Defintion of the agents (similar to GPTs) for the chats and the inline hooks
---   agents = {
---       chat = ...,
---       command = ...,
---   },
---
---   -- The directory to store the chats (searched with PrtChatFinder)
---   chat_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/chats",
---
---   -- Chat user prompt prefix
---   chat_user_prefix = "🗨:",
---
---   -- Explicitly confirm deletion of a chat file
---   chat_confirm_delete = true,
---
---   -- Local chat buffer shortcuts
---   chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g><C-g>" },
---   chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>d" },
---   chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>s" },
---   chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<C-g>c" },
---
---   -- Option to move the chat to the end of the file after finished respond
---   chat_free_cursor = false,
---
---    -- use prompt buftype for chats (:h prompt-buffer)
---   chat_prompt_buf_type = false,
---
---   -- Default target for  PrtChatToggle, PrtChatNew, PrtContext and the chats opened from the ChatFinder
---   -- values: popup / split / vsplit / tabnew
---   toggle_target = "vsplit",
---
---   -- The interactive user input appearing when can be "native" for
---   -- vim.ui.input or "buffer" to query the input within a native nvim buffer
---   -- (see video demonstrations below)
---   user_input_ui = "native",
---
---   -- Popup window layout
---   -- border: "single", "double", "rounded", "solid", "shadow", "none"
---   style_popup_border = "single",
---
---   -- margins are number of characters or lines
---   style_popup_margin_bottom = 8,
---   style_popup_margin_left = 1,
---   style_popup_margin_right = 2,
---   style_popup_margin_top = 2,
---   style_popup_max_width = 160,
---
---   -- Prompt used for interactive LLM calls like PrtRewrite where {{agent}} is
---   -- a placeholder for the agent name
---   command_prompt_prefix_template = "🤖 {{agent}} ~ ",
---
---   -- auto select command response (easier chaining of commands)
---   -- if false it also frees up the buffer cursor for further editing elsewhere
---   command_auto_select_response = true,
---
---   -- fzf_lua options for PrtAgent and PrtChatFinder when plugin is installed
---   fzf_lua_opts = {
---       ["--ansi"] = true,
---       ["--sort"] = "",
---       ["--info"] = "inline",
---       ["--layout"] = "reverse",
---       ["--preview-window"] = "nohidden:right:75%",
---   },
---
---   -- Enables the query spinner animation
---   enable_spinner = true,
---   -- Type of spinner animation to display while loading
---   -- Available options: "dots", "line", "star", "bouncing_bar", "bouncing_ball"
---   spinner_type = "star",
--- })
+require("parrot").setup({
+  -- The provider definitions include endpoints, API keys, default parameters,
+  -- and topic model arguments for chat summarization. You can use any name
+  -- for your providers and configure them with custom functions.
+  providers = {
+    openai = {
+      name = "openai",
+      endpoint = "https://api.openai.com/v1/chat/completions",
+      -- endpoint to query the available models online
+      model_endpoint = "https://api.openai.com/v1/models",
+      api_key = os.getenv("OPENAI_API_KEY"),
+      -- OPTIONAL: Alternative methods to retrieve API key
+      -- Using GPG for decryption:
+      -- api_key = { "gpg", "--decrypt", vim.fn.expand("$HOME") .. "/my_api_key.txt.gpg" },
+      -- Using macOS Keychain:
+      -- api_key = { "/usr/bin/security", "find-generic-password", "-s my-api-key", "-w" },
+      --- default model parameters used for chat and interactive commands
+      params = {
+        chat = { temperature = 1.1, top_p = 1 },
+        command = { temperature = 1.1, top_p = 1 },
+      },
+      -- topic model parameters to summarize chats
+      topic = {
+        model = "gpt-4.1-nano",
+        params = { max_completion_tokens = 64 },
+      },
+      --  a selection of models that parrot can remember across sessions
+      --  NOTE: This will be handled more intelligently in a future version
+      models = {
+        "gpt-4.1-mini",
+        "gpt-4.1-nano",
+      },
+    },
+  },
+
+  -- default system prompts used for the chat sessions and the command routines
+  --system_prompt = {
+  --  chat = ...,
+  --  command = ...
+  --},
+
+  -- the prefix used for all commands
+  cmd_prefix = "Prt",
+
+  -- optional parameters for curl
+  curl_params = {},
+
+  -- The directory to store persisted state information like the
+  -- current provider and the selected models
+  state_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/persisted",
+
+  -- The directory to store the chats (searched with PrtChatFinder)
+  chat_dir = vim.fn.stdpath("data"):gsub("/$", "") .. "/parrot/chats",
+
+  -- Chat user prompt prefix
+  chat_user_prefix = "🗨:",
+
+  -- llm prompt prefix
+  llm_prefix = "🦜:",
+
+  -- Explicitly confirm deletion of a chat file
+  chat_confirm_delete = true,
+
+  -- Local chat buffer shortcuts
+  chat_shortcut_respond = { modes = { "n", "i", "v", "x" }, shortcut = "<A-i><A-i>" },
+  chat_shortcut_delete = { modes = { "n", "i", "v", "x" }, shortcut = "<A-i>d" },
+  chat_shortcut_stop = { modes = { "n", "i", "v", "x" }, shortcut = "<A-i>s" },
+  chat_shortcut_new = { modes = { "n", "i", "v", "x" }, shortcut = "<A-i>c" },
+
+  -- Option to move the cursor to the end of the file after finished respond
+  chat_free_cursor = false,
+
+   -- use prompt buftype for chats (:h prompt-buffer)
+  chat_prompt_buf_type = false,
+
+  -- Default target for  PrtChatToggle, PrtChatNew, PrtContext and the chats opened from the ChatFinder
+  -- values: popup / split / vsplit / tabnew
+  toggle_target = "vsplit",
+
+  -- The interactive user input appearing when can be "native" for
+  -- vim.ui.input or "buffer" to query the input within a native nvim buffer
+  -- (see video demonstrations below)
+  user_input_ui = "native",
+
+  -- Popup window layout
+  -- border: "single", "double", "rounded", "solid", "shadow", "none"
+  style_popup_border = "single",
+
+  -- margins are number of characters or lines
+  style_popup_margin_bottom = 8,
+  style_popup_margin_left = 1,
+  style_popup_margin_right = 2,
+  style_popup_margin_top = 2,
+  style_popup_max_width = 160,
+
+  -- Prompt used for interactive LLM calls like PrtRewrite where {{llm}} is
+  -- a placeholder for the llm name
+  command_prompt_prefix_template = "🤖 {{llm}} ~ ",
+
+  -- auto select command response (easier chaining of commands)
+  -- if false it also frees up the buffer cursor for further editing elsewhere
+  command_auto_select_response = true,
+
+  -- Time in hours until the model cache is refreshed
+  -- Set to 0 to deactive model caching
+  model_cache_expiry_hours = 48,
+
+  -- fzf_lua options for PrtModel and PrtChatFinder when plugin is installed
+  fzf_lua_opts = {
+      ["--ansi"] = true,
+      ["--sort"] = "",
+      ["--info"] = "inline",
+      ["--layout"] = "reverse",
+      ["--preview-window"] = "nohidden:right:75%",
+  },
+
+  -- Enables the query spinner animation
+  enable_spinner = true,
+  -- Type of spinner animation to display while loading
+  -- Available options: "dots", "line", "star", "bouncing_bar", "bouncing_ball"
+  spinner_type = "star",
+  -- Show hints for context added through completion with @file, @buffer or @directory
+  show_context_hints = true
+})
+
+vim.keymap.set("i", "<A-i>t", "<cmd>PrtChatToggle<cr>", { noremap = true })
+vim.keymap.set("v", "<A-i>i", ":<c-u>'<,'>PrtImplement<cr>", { noremap = true })
 
 local wk = require("which-key")
 -- wk.add({
@@ -3438,6 +3533,7 @@ EOF
           pkgs.vimPlugins.rainbow-delimiters-nvim
           pkgs.vimPlugins.tiny-inline-diagnostic-nvim
           myVimPlugins.minuet-ai-nvim
+          pkgs.vimPlugins.parrot-nvim
         ];
         opt = [
         ];
