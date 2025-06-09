@@ -491,15 +491,17 @@ let
     endif
 
     if exists("g:neovide")
-      let g:neovide_cursor_animation_length=0.05
-      let g:neovide_position_animation_length = 0.08
-      let g:neovide_scroll_animation_length = 0.2
+      let g:neovide_cursor_animation_length=0.1
+      let g:neovide_position_animation_length = 0.1
+      let g:neovide_scroll_animation_length = 0.1
       set guifont=${lib.escape [" "] "${variables.font.family}:h${toString variables.font.size}"}
 
-      " Set transparency and background color (title bar color)
-      let g:neovide_transparency=1
-      let g:neovide_transparency_point=1
-      let g:neovide_background_color = '#0f1117'.printf('%x', float2nr(255 * g:neovide_transparency_point))
+      let g:neovide_opacity = 0.95
+      let g:neovide_normal_opacity = 0.95
+
+      let g:neovide_refresh_rate = 45
+      let g:neovide_refresh_rate_idle = 5
+      let g:neovide_no_idle = v:false
     endif
 
 lua << EOF
@@ -1522,7 +1524,7 @@ require('minuet').setup {
   -- you should adjust the context window to a larger value.
   context_window = 2048,
   virtualtext = {
-    auto_trigger_ft = { '*' },
+    -- auto_trigger_ft = { '*' },
     show_on_completion_menu = false,
   },
   provider_options = {
@@ -1535,21 +1537,19 @@ require('minuet').setup {
   },
 }
 
-vim.schedule(function()
-  require('minuet.virtualtext').action.disable_auto_trigger()
-end)
 local opts = { noremap = true, silent = true }
-vim.keymap.set({'n', 'i'}, "<A-S-a>", require('minuet.virtualtext').action.toggle_auto_trigger, opts)
-vim.keymap.set({'n', 'i'}, "<A-a>", require('minuet.virtualtext').action.accept, opts)
+vim.keymap.set({'n', 'i'}, "<A-e>", require('minuet.virtualtext').action.enable_auto_trigger, opts)
+vim.keymap.set({'n', 'i'}, "<A-S-e>", require('minuet.virtualtext').action.disable_auto_trigger, opts)
+vim.keymap.set({'n', 'i'}, "<A-CR>", require('minuet.virtualtext').action.accept, opts)
 vim.keymap.set({'n', 'i'}, "<A-]>", require('minuet.virtualtext').action.next, opts)
 vim.keymap.set({'n', 'i'}, "<A-[>", require('minuet.virtualtext').action.prev, opts)
-vim.keymap.set({'n', 'i'}, "<A-e>", require('minuet.virtualtext').action.dismiss, opts)
+vim.keymap.set({'n', 'i'}, "<A-Esc>", require('minuet.virtualtext').action.dismiss, opts)
 
 local aug = vim.api.nvim_create_augroup("buf_large", { clear = true })
 vim.api.nvim_create_autocmd({ "BufReadPre" }, {
   callback = function()
     local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf()))
-    if ok and stats and (stats.size > 100000) then
+    if ok and stats and (stats.size > 500000) then
       vim.b.large_buf = true
     else
       vim.b.large_buf = false
