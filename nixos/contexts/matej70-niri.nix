@@ -296,7 +296,8 @@ let
           steamcmd
           jq
           scanmem
-          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher # nexusmods-app-unfree
+          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher
+          nexusmods-app-unfree heroic
           swiftpoint
           eog
           file-roller
