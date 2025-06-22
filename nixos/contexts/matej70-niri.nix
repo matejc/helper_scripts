@@ -232,7 +232,7 @@ let
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
-        "fluffychat-linux-1.26.1"
+        "fluffychat-linux-1.27.0"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
