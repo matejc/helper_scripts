@@ -1618,6 +1618,22 @@ in {
           style = builtins.replaceStrings ["1.1rem" "1.25rem" "1.5rem" "font-size: 16px" "font-size: 15px"] ["0.9rem" "1.1rem" "1.2rem" "font-size: 13px" "font-size: 11px"] (lib.readFile "${pkgs.swaynotificationcenter}/etc/xdg/swaync/style.css");
         };
 
+        # services.wpaperd = {
+        #   enable = true;
+        #   settings = builtins.listToAttrs (map (o: lib.nameValuePair o.output {
+        #     path = o.wallpaper;
+        #     mode = "center";
+        #   }) context.variables.outputs);
+        # };
+
+        services.hyprpaper = {
+          enable = true;
+          settings = {
+            preload = map (o: o.wallpaper) context.variables.outputs;
+            wallpaper = map (o: "${o.output},${o.wallpaper}") context.variables.outputs;
+          };
+        };
+
       } (lib.optionalAttrs (context.variables.graphical.name == "niri") {
         programs.niri.package = pkgs.niri-unstable;
         programs.niri.config = ''
@@ -1728,7 +1744,6 @@ in {
             ''
             }
           }
-          spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.swaybg}/bin/swaybg -o '${o.output}' -m fill -i '${o.wallpaper}'"
           ''
           ) context.variables.outputs}
 
@@ -2023,7 +2038,7 @@ in {
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Mod+O repeat=false { toggle-overview; }
-              Alt+Tab repeat=false { switch-focus-between-floating-and-tiling; }
+              Mod+Tab repeat=false { switch-focus-between-floating-and-tiling; }
           }
 
           environment {

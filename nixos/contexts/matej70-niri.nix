@@ -13,8 +13,8 @@ let
 
   wallpaper = pkgs.fetchurl {
     name = "wallpaper.jpg";
-    url = "https://images.pexels.com/photos/2680270/pexels-photo-2680270.jpeg?cs=srgb&dl=pexels-pixelcop-2680270.jpg&fm=jpg&w=1920&h=2562";
-    hash = "sha256-DEkplqXqS9hpwHRSg7BucEmSdzu1Un7UhWSgG9Hpc94=";
+    url = "https://images.pexels.com/photos/11805050/pexels-photo-11805050.jpeg?cs=srgb&dl=pexels-alfomedeiros-11805050.jpg&fm=jpg&w=1920&h=1277";
+    hash = "sha256-QyDRY2aawDsFvXqZpL+o8XlsstEau4bmu2xm9ldcmH0=";
   };
 
   witcher4-wallpaper = pkgs.fetchurl {
@@ -181,6 +181,7 @@ let
       };
       programs.niri.enable = true;
       boot.kernelPackages = pkgs.linuxPackages_cachyos;
+      chaotic.mesa-git.enable = true;
       services.scx.enable = true;
       services.scx.scheduler = "scx_bpfland";
       services.scx.extraArgs = [ "-m" "performance" ];
@@ -232,7 +233,6 @@ let
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
-        "fluffychat-linux-1.27.0"
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -308,7 +308,7 @@ let
         inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
       ] ++ (with pkgs; [
           solvespace keepassxc libreoffice aichat mpv
-          legcord cinny-desktop fluffychat
+          legcord cinny-desktop
           steamcmd
           jq
           scanmem
@@ -318,9 +318,6 @@ let
           eog
           file-roller
           wf-recorder
-
-          code-cursor
-          asdf-vm
       ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
