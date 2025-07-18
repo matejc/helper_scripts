@@ -1,4 +1,11 @@
-{ pkgs, lib, config, helper_scripts, inputs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  helper_scripts,
+  inputs,
+  ...
+}:
 let
   homeConfig = config.home-manager.users.matejc.home;
 
@@ -65,11 +72,22 @@ let
       locale.all = "en_US.UTF-8";
       wirelessInterfaces = [ "wlp0s20f3" ];
       ethernetInterfaces = [ "eno1" ];
-      mounts = [ "/" "/mnt/games" ];
+      mounts = [
+        "/"
+        "/mnt/games"
+      ];
       # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       temperatures = [
-          { device = "coretemp-isa-0000"; group = "Package id 0"; field_prefix = "temp1"; }
-          { device = "amdgpu-pci-0300"; group = "junction"; field_prefix = "temp2"; }
+        {
+          device = "coretemp-isa-0000";
+          group = "Package id 0";
+          field_prefix = "temp1";
+        }
+        {
+          device = "amdgpu-pci-0300";
+          group = "junction";
+          field_prefix = "temp2";
+        }
       ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
@@ -115,25 +133,33 @@ let
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${self.variables.profileDir}/bin/nvim" --frame none --no-vsync'';
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
-      outputs = [{
-        criteria = "DP-2";
-        position = "0,0";
-        output = "DP-2";
-        mode = "1920x1080";
-        workspaces = [ "1" "2" "3" "4" ];
-        wallpaper = self.variables.wallpaper;
-        scale = 1.0;
-        status = "enable";
-      } {
-        criteria = "DP-1";
-        position = "2000,0";
-        output = "DP-1";
-        mode = "2560x1440";
-        workspaces = [ "5" ];
-        wallpaper = "${witcher4-wallpaper}";
-        scale = 1.0;
-        status = "enable";
-      }];
+      outputs = [
+        {
+          criteria = "DP-2";
+          position = "0,0";
+          output = "DP-2";
+          mode = "1920x1080";
+          workspaces = [
+            "1"
+            "2"
+            "3"
+            "4"
+          ];
+          wallpaper = self.variables.wallpaper;
+          scale = 1.0;
+          status = "enable";
+        }
+        {
+          criteria = "DP-1";
+          position = "2000,0";
+          output = "DP-1";
+          mode = "2560x1440";
+          workspaces = [ "5" ];
+          wallpaper = "${witcher4-wallpaper}";
+          scale = 1.0;
+          status = "enable";
+        }
+      ];
       nixmy = {
         backup = "git@github.com:matejc/configurations.git";
         remote = "https://github.com/matejc/nixpkgs";
@@ -163,11 +189,23 @@ let
       # { name = "kdeconnect"; delay = 4; group = "always"; }
       # { name = "wireplumber"; delay = 4; group = "always"; }
       # { name = "swayidle"; delay = 5; group = "always"; }
-      { name = "xdg-desktop-portal"; delay = 5; group = "always"; }
-      { name = "network-manager-applet"; delay = 5; group = "always"; }
-      { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
+      {
+        name = "xdg-desktop-portal";
+        delay = 5;
+        group = "always";
+      }
+      {
+        name = "network-manager-applet";
+        delay = 5;
+        group = "always";
+      }
+      {
+        name = "kdeconnect-indicator";
+        delay = 5;
+        group = "always";
+      }
     ];
-    config = {};
+    config = { };
     nixos-configuration = {
       services.greetd = {
         enable = true;
@@ -184,8 +222,19 @@ let
       chaotic.mesa-git.enable = true;
       services.scx.enable = true;
       services.scx.scheduler = "scx_bpfland";
-      services.scx.extraArgs = [ "-m" "performance" ];
+      services.scx.extraArgs = [
+        "-m"
+        "performance"
+      ];
       services.scx.package = pkgs.scx_git.full;
+      boot.kernelModules = ["ntsync"];
+      services.udev.packages = [
+        (pkgs.writeTextFile {
+          name = "ntsync-udev-rules";
+          text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess", GROUP="matejc"'';
+          destination = "/etc/udev/rules.d/70-ntsync.rules";
+        })
+      ];
       # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
       # boot.kernelPatches = [
       #   {
@@ -235,36 +284,46 @@ let
         "olm-3.2.16"
       ];
       services.ipp-usb.enable = true;
-      nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-        "steam"
-        "steam-original"
-        "steam-run"
-      ];
+      nixpkgs.config.allowUnfreePredicate =
+        pkg:
+        builtins.elem (lib.getName pkg) [
+          "steam"
+          "steam-original"
+          "steam-run"
+        ];
       programs.steam = {
         enable = true;
+        package = pkgs.steam.override {
+          extraPkgs = pkgs: [ pkgs.xdg-user-dirs ];
+        };
       };
       hardware.openrazer = {
         # enable = true;
         users = [ "matejc" ];
       };
-      users.users.matejc.extraGroups = [ "openrazer" "gamemode" ];
-      systemd.services.after-sleep = let
-        script = pkgs.writeShellScript "after-sleep.sh" ''
-          ${pkgs.kmod}/bin/modprobe -r igc
-          ${pkgs.kmod}/bin/modprobe igc
-        '';
-      in {
-        enable = true;
-        description = "Run after sleep";
-        after = [ "suspend.target" ];
-        wantedBy = [ "suspend.target" ];
-        unitConfig = {
-          Type = "oneshot";
+      users.users.matejc.extraGroups = [
+        "openrazer"
+        "gamemode"
+      ];
+      systemd.services.after-sleep =
+        let
+          script = pkgs.writeShellScript "after-sleep.sh" ''
+            ${pkgs.kmod}/bin/modprobe -r igc
+            ${pkgs.kmod}/bin/modprobe igc
+          '';
+        in
+        {
+          enable = true;
+          description = "Run after sleep";
+          after = [ "suspend.target" ];
+          wantedBy = [ "suspend.target" ];
+          unitConfig = {
+            Type = "oneshot";
+          };
+          serviceConfig = {
+            ExecStart = "${script}";
+          };
         };
-        serviceConfig = {
-          ExecStart = "${script}";
-        };
-      };
       security.pam.services.login.fprintAuth = false;
       # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
       #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
@@ -286,44 +345,43 @@ let
       #services.syncthing.tray.enable = true;
       programs.obs-studio = {
         enable = true;
-        plugins = [ pkgs.obs-studio-plugins.wlrobs pkgs.obs-studio-plugins.obs-vkcapture ];
-        package = pkgs.obs-studio.overrideAttrs (oldAttrs: {
-          src = pkgs.fetchFromGitHub {
-            owner = "obsproject";
-            repo = "obs-studio";
-            rev = "12c6febae21f369da50f09d511b54eadc1dc1342"; # https://github.com/obsproject/obs-studio/pull/11906
-            sha256 = "sha256-DIlAMCdve7wfbMV5YCd3qJnZ2xwJMmQD6LamGP7ECOA=";
-            fetchSubmodules = true;
-          };
-          version = "31.1.0-beta1";
-          patches = builtins.filter (
-            patch:
-            !(
-              builtins.baseNameOf (toString patch) == "Enable-file-access-and-universal-access-for-file-URL.patch"
-            )
-          ) oldAttrs.patches;
-        });
+        plugins = [
+          pkgs.obs-studio-plugins.wlrobs
+          pkgs.obs-studio-plugins.obs-vkcapture
+        ];
       };
-      home.packages = [
-        inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
-      ] ++ (with pkgs; [
-          solvespace keepassxc libreoffice aichat mpv
-          legcord cinny-desktop
+      home.packages =
+        [
+          inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
+        ]
+        ++ (with pkgs; [
+          solvespace
+          keepassxc
+          libreoffice
+          aichat
+          mpv
+          legcord
+          cinny-desktop
           steamcmd
           jq
           scanmem
-          steam-run steamtinkerlaunch xwayland-run winetricks umu-launcher
-          nexusmods-app-unfree heroic
+          steam-run
+          steamtinkerlaunch
+          xwayland-run
+          winetricks
+          umu-launcher
+          nexusmods-app-unfree
+          heroic
           swiftpoint
           eog
           file-roller
           wf-recorder
-      ]);
+        ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
       home.sessionVariables = {
-        VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
+        # VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
         # PROTON_ENABLE_WAYLAND = "1";
         # PROTON_ENABLE_HDR = "1";
       };
@@ -335,4 +393,4 @@ let
     };
   };
 in
-  self
+self

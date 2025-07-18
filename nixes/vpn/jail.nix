@@ -1,92 +1,110 @@
-{ pkgs ? import <nixpkgs> {}
-, name ? "default"
-, user ? {
-  outside = builtins.getEnv "USER";
-  inside = "user";
-}
-, uid ? "1000"
-, gid ? "1000"
-, timeZone ? "UTC"
-, nameservers ? [ "1.1.1.1" ]
-, vpn ? {
-  start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log ${home.inside}/.openvpn.log --auth-user-pass /etc/openvpn/pass";
-  stop = "pkill openvpn";
-}
-, gpconnect ? null
-, compositor ? {
-  start = "labwc --startup /bin/compositor-cmds -C /etc/xdg/labwc";
-  stop = "pkill labwc";
-}
-, socksproxy ? {
-  guestPort = 1080; hostPort = 1080;
-}
-, httpproxy ? {
-  guestPort = 3128; hostPort = 3128;
-}
-, cmds ? [
-]
-, preCmds ? {
-  outside = [ ];
-  inside = [ ];
-}
-, packages ? with pkgs; [ firefox foot ]
-, stateDir ? "${home.outside}/.vpn/${name}"
-, mounts ? [ ]
-, romounts ? [
-  { from = "/run/opengl-driver"; to = "/run/opengl-driver"; }
-] ++ extraRomounts
-, extraRomounts ? [
-  { from = "${home.outside}/.vpn/${name}/openvpn"; to = "/etc/openvpn"; }
-  { from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf"; to = "/etc/openvpn/update-resolv-conf"; }
-]
-, mountHome ? false
-, symlinks ? [ ]
-, variables ? [
-  { name = "HISTFILE"; value = "${home.inside}/.zsh_history"; }
-]
-, wayland ? {
-  outside = "wayland-1";
-  inside = "wayland-9";
-}
-# , x11 ? ":0"
-, x11 ? null
-, enablePulse ? true
-, caps ? [ ]
-, extraArgs ? ""
-, tmpfs ? [ ]
-, home ? {
-  outside = builtins.getEnv "HOME";
-  inside = "/home/${user.inside}";
-}
-, newuidmap ? "/run/wrappers/bin/newuidmap"
-, newgidmap ? "/run/wrappers/bin/newgidmap"
-, extraSlirp4netnsArgs ? "--disable-host-loopback"
-, hostFwds ? []
-, slirp4netnsHostFwds ? []
-, interactiveShell ? "${pkgs.bashInteractive}/bin/bash"
-, defaultBrowser ? "firefox --no-remote"
-, launchers ? [
-  {
-    name = "Clipboard Pull";
-    exec = "/usr/bin/clipboard-pull >/dev/null 2>/dev/null </dev/null";
-  }
-  {
-    name = "Clipboard Push";
-    exec = "/usr/bin/clipboard-push >/dev/null 2>/dev/null </dev/null";
-  }
-  {
-    name = "Browser";
-    exec = defaultBrowser;
-  }
-  {
-    name = "Terminal";
-    exec = "foot";
-  }
-] ++ extraLaunchers
-, extraLaunchers ? []
-, enableDBus ? false
-, enableGnomeKeyring ? false
-, enableNM ? false
+{
+  pkgs ? import <nixpkgs> { },
+  name ? "default",
+  user ? {
+    outside = builtins.getEnv "USER";
+    inside = "user";
+  },
+  uid ? "1000",
+  gid ? "1000",
+  timeZone ? "UTC",
+  nameservers ? [ "1.1.1.1" ],
+  vpn ? {
+    start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log ${home.inside}/.openvpn.log --auth-user-pass /etc/openvpn/pass";
+    stop = "pkill openvpn";
+  },
+  gpconnect ? null,
+  compositor ? {
+    start = "labwc --startup /bin/compositor-cmds -C /etc/xdg/labwc";
+    stop = "pkill labwc";
+  },
+  socksproxy ? {
+    guestPort = 1080;
+    hostPort = 1080;
+  },
+  httpproxy ? {
+    guestPort = 3128;
+    hostPort = 3128;
+  },
+  cmds ? [
+  ],
+  preCmds ? {
+    outside = [ ];
+    inside = [ ];
+  },
+  packages ? with pkgs; [
+    firefox
+    foot
+  ],
+  stateDir ? "${home.outside}/.vpn/${name}",
+  mounts ? [ ],
+  romounts ? [
+    {
+      from = "/run/opengl-driver";
+      to = "/run/opengl-driver";
+    }
+  ] ++ extraRomounts,
+  extraRomounts ? [
+    {
+      from = "${home.outside}/.vpn/${name}/openvpn";
+      to = "/etc/openvpn";
+    }
+    {
+      from = "${pkgs.update-resolv-conf}/libexec/openvpn/update-resolv-conf";
+      to = "/etc/openvpn/update-resolv-conf";
+    }
+  ],
+  mountHome ? false,
+  symlinks ? [ ],
+  variables ? [
+    {
+      name = "HISTFILE";
+      value = "${home.inside}/.zsh_history";
+    }
+  ],
+  wayland ? {
+    outside = "wayland-1";
+    inside = "wayland-9";
+  },
+  # , x11 ? ":0"
+  x11 ? null,
+  enablePulse ? true,
+  caps ? [ ],
+  extraArgs ? "",
+  tmpfs ? [ ],
+  home ? {
+    outside = builtins.getEnv "HOME";
+    inside = "/home/${user.inside}";
+  },
+  newuidmap ? "/run/wrappers/bin/newuidmap",
+  newgidmap ? "/run/wrappers/bin/newgidmap",
+  extraSlirp4netnsArgs ? "--disable-host-loopback",
+  hostFwds ? [ ],
+  slirp4netnsHostFwds ? [ ],
+  interactiveShell ? "${pkgs.bashInteractive}/bin/bash",
+  defaultBrowser ? "firefox --no-remote",
+  launchers ? [
+    {
+      name = "Clipboard Pull";
+      exec = "/usr/bin/clipboard-pull >/dev/null 2>/dev/null </dev/null";
+    }
+    {
+      name = "Clipboard Push";
+      exec = "/usr/bin/clipboard-push >/dev/null 2>/dev/null </dev/null";
+    }
+    {
+      name = "Browser";
+      exec = defaultBrowser;
+    }
+    {
+      name = "Terminal";
+      exec = "foot";
+    }
+  ] ++ extraLaunchers,
+  extraLaunchers ? [ ],
+  enableDBus ? false,
+  enableGnomeKeyring ? false,
+  enableNM ? false,
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -111,49 +129,51 @@ let
     <openbox_menu>
     <menu id="root-menu">
       ${pkgs.lib.concatImapStringsSep "\n" (i: l: ''
-      <item label="${l.name}">
-        <action>
-          <name>Execute</name>
-          <command>${pkgs.writeShellScript "launcher${toString i}.sh" "${l.exec}"}</command>
-        </action>
-      </item>
+        <item label="${l.name}">
+          <action>
+            <name>Execute</name>
+            <command>${pkgs.writeShellScript "launcher${toString i}.sh" "${l.exec}"}</command>
+          </action>
+        </item>
       '') launchers}
     </menu>
     </openbox_menu>
   '';
 
   sessionDBusConf = pkgs.writeText "session.conf" ''
-      <?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE busconfig SYSTEM "busconfig.dtd">
-      <busconfig>
-          <listen>unix:path=/run/dbus/session_bus_socket</listen>
-          <policy context="default">
-            <!-- Allow everything to be sent -->
-            <allow send_destination="*" eavesdrop="true"/>
-            <!-- Allow everything to be received -->
-            <allow eavesdrop="true"/>
-            <!-- Allow anyone to own anything -->
-            <allow own="*"/>
-          </policy>
-      </busconfig>
+    <?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE busconfig SYSTEM "busconfig.dtd">
+    <busconfig>
+        <listen>unix:path=/run/dbus/session_bus_socket</listen>
+        <policy context="default">
+          <!-- Allow everything to be sent -->
+          <allow send_destination="*" eavesdrop="true"/>
+          <!-- Allow everything to be received -->
+          <allow eavesdrop="true"/>
+          <!-- Allow anyone to own anything -->
+          <allow own="*"/>
+        </policy>
+    </busconfig>
   '';
 
-  shadowsocksFile = pkgs.writeText "shadowsocks.json" (builtins.toJSON {
-    # local_address = "0.0.0.0";
-    # local_port = shadowsocks.guestPort;
-    locals = [
-      {
-        protocol = "http";
-        local_address = "0.0.0.0";
-        local_port = httpproxy.guestPort;
-      }
-      {
-        protocol = "socks";
-        local_address = "0.0.0.0";
-        local_port = socksproxy.guestPort;
-      }
-    ];
-  });
+  shadowsocksFile = pkgs.writeText "shadowsocks.json" (
+    builtins.toJSON {
+      # local_address = "0.0.0.0";
+      # local_port = shadowsocks.guestPort;
+      locals = [
+        {
+          protocol = "http";
+          local_address = "0.0.0.0";
+          local_port = httpproxy.guestPort;
+        }
+        {
+          protocol = "socks";
+          local_address = "0.0.0.0";
+          local_port = socksproxy.guestPort;
+        }
+      ];
+    }
+  );
 
   gp-connect = pkgs.writeShellScriptBin "gp-connect" ''
     { sleep 2; chown -R ${uid}:${gid} "/run/user/${uid}"; } &
@@ -170,22 +190,28 @@ let
     ${pkgs.lib.concatMapStringsSep "\n" (c: "${c}") preCmds.inside}
   '';
 
-  mkCmd = name: { start, stop ? "" }: pkgs.writeShellScript "start-${name}.sh" ''
-    set -e
-    stop_script() {
-      echo "Exiting ${name} ..."
-      ${stop}
-      exit 0
-    }
-    trap stop_script SIGINT SIGTERM
-    ${start}
-    wait $!
-  '';
+  mkCmd =
+    name:
+    {
+      start,
+      stop ? "",
+    }:
+    pkgs.writeShellScript "start-${name}.sh" ''
+      set -e
+      stop_script() {
+        echo "Exiting ${name} ..."
+        ${stop}
+        exit 0
+      }
+      trap stop_script SIGINT SIGTERM
+      ${start}
+      wait $!
+    '';
 
   mkUpCmd = pkgs.writeShellScript "start-up.sh" ''
     set -e
     ${pkgs.lib.concatImapStringsSep "\n" (i: p: ''
-    supervisorctl --serverurl=unix:///tmp/supervisor.sock restart p${toString i}
+      supervisorctl --serverurl=unix:///tmp/supervisor.sock restart p${toString i}
     '') cmds}
   '';
 
@@ -215,10 +241,21 @@ let
     WAYLAND_DISPLAY=${wayland.outside} ${compositor.start}
   '';
 
-  hostFwds' = if hostFwds == null then null else [
-    { host_port = httpproxy.hostPort; guest_port = httpproxy.guestPort; }
-    { host_port = socksproxy.hostPort; guest_port = socksproxy.guestPort; }
-  ] ++ hostFwds;
+  hostFwds' =
+    if hostFwds == null then
+      null
+    else
+      [
+        {
+          host_port = httpproxy.hostPort;
+          guest_port = httpproxy.guestPort;
+        }
+        {
+          host_port = socksproxy.hostPort;
+          guest_port = socksproxy.guestPort;
+        }
+      ]
+      ++ hostFwds;
 
   slirp4netnsHostFwds' = [
   ] ++ slirp4netnsHostFwds;
@@ -240,68 +277,98 @@ let
     [supervisorctl]
     serverurl = unix:///tmp/supervisor.sock
 
-    ${if vpn != null then ''
-    [program:vpn]
-    command = ${mkVpnCmd}
-    priority = 0
-    directory = /root
-    user = root
-    numprocs = 1
-    autostart = true
-    autorestart = unexpected
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/vpn.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
+    ${
+      if vpn != null then
+        ''
+          [program:vpn]
+          command = ${mkVpnCmd}
+          priority = 0
+          directory = /root
+          user = root
+          numprocs = 1
+          autostart = true
+          autorestart = unexpected
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/vpn.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
-    ${if gpconnect != null then ''
-    [program:gp-connect]
-    command = ${mkCmd "gp-connect" { start = "gp-connect ${gpconnect.type} ${gpconnect.server}"; stop = "pkill gp-connect";}}
-    priority = 0
-    directory = /root
-    user = root
-    numprocs = 1
-    autostart = true
-    autorestart = unexpected
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/gp-connect.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
+    ${
+      if gpconnect != null then
+        ''
+          [program:gp-connect]
+          command = ${
+            mkCmd "gp-connect" {
+              start = "gp-connect ${gpconnect.type} ${gpconnect.server}";
+              stop = "pkill gp-connect";
+            }
+          }
+          priority = 0
+          directory = /root
+          user = root
+          numprocs = 1
+          autostart = true
+          autorestart = unexpected
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/gp-connect.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
-    ${if enableDBus then ''
-    [program:dbus]
-    command = ${mkCmd "dbus" { start = "dbus-daemon --session --address=unix:path=/run/user/${uid}/dbus --nofork --nopidfile"; stop = "pkill dbus-daemon";}}
-    priority = 0
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = true
-    autorestart = unexpected
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/dbus.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
+    ${
+      if enableDBus then
+        ''
+          [program:dbus]
+          command = ${
+            mkCmd "dbus" {
+              start = "dbus-daemon --session --address=unix:path=/run/user/${uid}/dbus --nofork --nopidfile";
+              stop = "pkill dbus-daemon";
+            }
+          }
+          priority = 0
+          directory = ${home.inside}
+          user = ${user.inside}
+          numprocs = 1
+          autostart = true
+          autorestart = unexpected
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/dbus.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
     [program:shadowsocks]
-    command = ${mkCmd "shadowsocks" { start = "sslocal -c ${shadowsocksFile}"; stop = "pkill sslocal";}}
+    command = ${
+      mkCmd "shadowsocks" {
+        start = "sslocal -c ${shadowsocksFile}";
+        stop = "pkill sslocal";
+      }
+    }
     priority = 0
     directory = ${home.inside}
     user = ${user.inside}
@@ -318,84 +385,105 @@ let
     stdout_logfile = ${home.inside}/.supervisord/shadowsocks.log
     stdout_logfile_maxbytes = 0
 
-    ${if compositor != null then ''
-    [program:compositor]
-    command = ${mkCompositorCmd}
-    priority = 0
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = true
-    autorestart = true
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/compositor.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
+    ${
+      if compositor != null then
+        ''
+          [program:compositor]
+          command = ${mkCompositorCmd}
+          priority = 0
+          directory = ${home.inside}
+          user = ${user.inside}
+          numprocs = 1
+          autostart = true
+          autorestart = true
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/compositor.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
-    ${if enableGnomeKeyring then ''
-    [program:gnome-keyring]
-    command = ${mkCmd "gnome-keyring" { start = "gnome-keyring-daemon --start --foreground --components=secrets"; stop = "pkill gnome-keyring-daemon"; }}
-    priority = 0
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = true
-    autorestart = true
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/gnome_keyring.log
-    stdout_logfile_maxbytes = 0
-    '' else ""}
+    ${
+      if enableGnomeKeyring then
+        ''
+          [program:gnome-keyring]
+          command = ${
+            mkCmd "gnome-keyring" {
+              start = "gnome-keyring-daemon --start --foreground --components=secrets";
+              stop = "pkill gnome-keyring-daemon";
+            }
+          }
+          priority = 0
+          directory = ${home.inside}
+          user = ${user.inside}
+          numprocs = 1
+          autostart = true
+          autorestart = true
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/gnome_keyring.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
     ${pkgs.lib.concatMapStringsSep "\n" (f: ''
-    [program:socket${toString f.host_port}]
-    command = ${mkCmd "socket-${toString f.host_port}" {start = "socat UNIX-LISTEN:/tmp/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${if f ? guest_addr then f.guest_addr else "127.0.0.1"}:${toString f.guest_port}";}}
-    priority = 0
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = true
-    autorestart = true
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/socket-${toString f.host_port}.log
-    stdout_logfile_maxbytes = 0
+      [program:socket${toString f.host_port}]
+      command = ${
+        mkCmd "socket-${toString f.host_port}" {
+          start = "socat UNIX-LISTEN:/tmp/fwd/${toString f.host_port}.sock,fork,reuseaddr,unlink-early,mode=777 TCP:${
+            if f ? guest_addr then f.guest_addr else "127.0.0.1"
+          }:${toString f.guest_port}";
+        }
+      }
+      priority = 0
+      directory = ${home.inside}
+      user = ${user.inside}
+      numprocs = 1
+      autostart = true
+      autorestart = true
+      startsecs = 3
+      exitcodes = 0
+      stopsignal = TERM
+      stopwaitsecs = 10
+      stopasgroup = true
+      killasgroup = true
+      redirect_stderr = true
+      stdout_logfile = ${home.inside}/.supervisord/socket-${toString f.host_port}.log
+      stdout_logfile_maxbytes = 0
     '') hostFwds'}
 
     ${pkgs.lib.concatImapStringsSep "\n" (i: p: ''
-    [program:p${toString i}]
-    command = ${mkCmd "p${toString i}" p}
-    priority = ${toString i}
-    directory = ${home.inside}
-    user = ${user.inside}
-    numprocs = 1
-    autostart = false
-    autorestart = true
-    startsecs = 3
-    exitcodes = 0
-    stopsignal = TERM
-    stopwaitsecs = 10
-    stopasgroup = true
-    killasgroup = true
-    redirect_stderr = true
-    stdout_logfile = ${home.inside}/.supervisord/p${toString i}.log
-    stdout_logfile_maxbytes = 0
+      [program:p${toString i}]
+      command = ${mkCmd "p${toString i}" p}
+      priority = ${toString i}
+      directory = ${home.inside}
+      user = ${user.inside}
+      numprocs = 1
+      autostart = false
+      autorestart = true
+      startsecs = 3
+      exitcodes = 0
+      stopsignal = TERM
+      stopwaitsecs = 10
+      stopasgroup = true
+      killasgroup = true
+      redirect_stderr = true
+      stdout_logfile = ${home.inside}/.supervisord/p${toString i}.log
+      stdout_logfile_maxbytes = 0
     '') cmds}
   '';
 
@@ -423,8 +511,13 @@ let
     exec supervisord --configuration=${supervisorConf}
   '';
 
-  slirp4netnsExecute =
-    map (o: { execute = "add_hostfwd"; arguments = { proto = "tcp"; host_addr = "127.0.0.1"; } // o; }) slirp4netnsHostFwds';
+  slirp4netnsExecute = map (o: {
+    execute = "add_hostfwd";
+    arguments = {
+      proto = "tcp";
+      host_addr = "127.0.0.1";
+    } // o;
+  }) slirp4netnsHostFwds';
 
   script = pkgs.writeShellScript "script.sh" ''
     set -e
@@ -437,16 +530,21 @@ let
 
     ${preCmdOutside}
 
-    ${if hostFwds' != null && hostFwds' != [] then ''
-    inotifywait -r -m ${stateDir}/.fwd |
-      while read a b file; do
-      ${pkgs.lib.concatMapStringsSep "\n" (f: ''
-        [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/.fwd/${toString f.host_port}.sock &";
-        [[ $b == *DELETE* ]] && [[ $file == *${toString f.host_port}.sock ]] && fuser -k ${toString f.host_port}/TCP;
-      '') hostFwds'}
-      done &
-    echo -n "$!" > ${stateDir}/.inotifywait.pid
-    '' else ""}
+    ${
+      if hostFwds' != null && hostFwds' != [ ] then
+        ''
+          inotifywait -r -m ${stateDir}/.fwd |
+            while read a b file; do
+            ${pkgs.lib.concatMapStringsSep "\n" (f: ''
+              [[ $b == *CREATE* ]] && [[ $file == *${toString f.host_port}.sock ]] && sh -c "socat TCP-LISTEN:${toString f.host_port},reuseaddr,fork UNIX-CONNECT:${stateDir}/.fwd/${toString f.host_port}.sock &";
+              [[ $b == *DELETE* ]] && [[ $file == *${toString f.host_port}.sock ]] && fuser -k ${toString f.host_port}/TCP;
+            '') hostFwds'}
+            done &
+          echo -n "$!" > ${stateDir}/.inotifywait.pid
+        ''
+      else
+        ""
+    }
 
     for i in {1..50}
     do
@@ -467,7 +565,9 @@ let
           fi
         done
 
-        ${pkgs.lib.concatMapStringsSep "\n" (e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock'') slirp4netnsExecute}
+        ${pkgs.lib.concatMapStringsSep "\n" (
+          e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock''
+        ) slirp4netnsExecute}
         break
       fi
       sleep 0.1
@@ -486,7 +586,12 @@ let
     ${nsjail}/bin/nsjail \
       -Mo \
       --tmpfsmount / \
-      ${if mountHome then "--bindmount ${home.outside}:${home.inside}" else "--bindmount ${stateDir}/home:${home.inside}"} \
+      ${
+        if mountHome then
+          "--bindmount ${home.outside}:${home.inside}"
+        else
+          "--bindmount ${stateDir}/home:${home.inside}"
+      } \
       --tmpfsmount /root \
       --disable_proc \
       --mount none:/proc:proc \
@@ -530,10 +635,32 @@ let
       --tmpfsmount /var/run \
       --tmpfsmount /run \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
-      ${if wayland != null then "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}" else ""} \
-      ${if x11 != null then "--bindmount_ro /tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11}:/tmp/.X11-unix/${pkgs.lib.replaceStrings [":"] ["X"] x11} --env DISPLAY=${x11}" else "--env DISPLAY=:0"} \
-      ${if enablePulse then "--bindmount_ro /run/user/${uid}/pulse:/run/user/${uid}/pulse --env PULSE_SERVER=/run/user/${uid}/pulse/native" else ""} \
-      ${if enableDBus then "--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus" else ""} \
+      ${
+        if wayland != null then
+          "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}"
+        else
+          ""
+      } \
+      ${
+        if x11 != null then
+          "--bindmount_ro /tmp/.X11-unix/${pkgs.lib.replaceStrings [ ":" ] [ "X" ] x11}:/tmp/.X11-unix/${
+            pkgs.lib.replaceStrings [ ":" ] [ "X" ] x11
+          } --env DISPLAY=${x11}"
+        else
+          "--env DISPLAY=:0"
+      } \
+      ${
+        if enablePulse then
+          "--bindmount_ro /run/user/${uid}/pulse:/run/user/${uid}/pulse --env PULSE_SERVER=/run/user/${uid}/pulse/native"
+        else
+          ""
+      } \
+      ${
+        if enableDBus then
+          "--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus"
+        else
+          ""
+      } \
       --hostname RESTRICTED \
       --cwd / \
       --keep_caps \
@@ -608,29 +735,69 @@ let
     /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
   '';
 
-  buildInputs = with pkgs; [
-    iproute2 slirp4netns curl fakeroot which sysctl procps kmod openvpn
-    util-linux fontconfig coreutils libcap strace less python3Packages.supervisor gawk dnsutils iptables
-    gnugrep shadow labwc foot xfce.xfce4-icon-theme wl-clipboard pullClipboard pushClipboard
-    openssl dconf netcat vanilla-dmz inetutils gnused openssh socat psmisc inotify-tools
-    shadowsocks-rust
-  ]
+  buildInputs =
+    with pkgs;
+    [
+      iproute2
+      slirp4netns
+      curl
+      fakeroot
+      which
+      sysctl
+      procps
+      kmod
+      openvpn
+      util-linux
+      fontconfig
+      coreutils
+      libcap
+      strace
+      less
+      python3Packages.supervisor
+      gawk
+      dnsutils
+      iptables
+      gnugrep
+      shadow
+      labwc
+      foot
+      xfce.xfce4-icon-theme
+      wl-clipboard
+      pullClipboard
+      pushClipboard
+      openssl
+      dconf
+      netcat
+      vanilla-dmz
+      inetutils
+      gnused
+      openssh
+      socat
+      psmisc
+      inotify-tools
+      shadowsocks-rust
+    ]
     ++ packages
-    ++ (pkgs.lib.optionals (gpconnect != null) [gp-connect])
-    ++ (pkgs.lib.optionals enableDBus [dbus])
-    ++ (pkgs.lib.optionals enableGnomeKeyring [gnome-keyring]);
+    ++ (pkgs.lib.optionals (gpconnect != null) [ gp-connect ])
+    ++ (pkgs.lib.optionals enableDBus [ dbus ])
+    ++ (pkgs.lib.optionals enableGnomeKeyring [ gnome-keyring ]);
 
   binPaths = pkgs.lib.makeBinPath buildInputs;
 
   paths = pkgs.buildEnv {
     name = "paths";
     paths = buildInputs;
-    pathsToLink = [ "/bin" "/share" "/lib" "/libexec" ];
+    pathsToLink = [
+      "/bin"
+      "/share"
+      "/lib"
+      "/libexec"
+    ];
   };
 in
-  pkgs.mkShell {
-    inherit name buildInputs;
-    shellHook = ''
-      exec ${script}
-    '';
-  }
+pkgs.mkShell {
+  inherit name buildInputs;
+  shellHook = ''
+    exec ${script}
+  '';
+}

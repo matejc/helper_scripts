@@ -90,133 +90,151 @@
     ];
   };
 
-  outputs = { self, ... }@inputs: let
-    system = "x86_64-linux";
-    helper_scripts = ./.;
-    defaultUser = "matejc";
-    nixosBuild = { context, modules ? [] }:
-      (inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts + "/${context}.nix"; };
-        modules = [
-          inputs.home-manager.nixosModules.home-manager
-          inputs.nix-index-database.nixosModules.nix-index
-          ./nixos/configuration.nix
-        ] ++ modules;
-      });
-    pkgs = inputs.nixpkgs.legacyPackages.${system};
-  in {
-    # homeConfigurations = {
-    #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
-    #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-    #     modules = [
-    #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
-    #     ];
-    #   };
-    #   nixcode = inputs.home-manager.lib.homeManagerConfiguration {
-    #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-    #     modules = [
-    #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
-    #     ];
-    #   };
-    # };
-    hydraJobs = {
-      matej70 = (nixosBuild {
-        context = "matej70-niri";
-        modules = [
-          ./nixos/minimal-configuration.nix
-          inputs.chaotic.nixosModules.default
-        ];
-      }).config.system.build.toplevel;
-      matej80 = (nixosBuild {
-        context = "matej80-niri";
-        modules = [
-          ./nixos/minimal-configuration.nix
-        ];
-      }).config.system.build.toplevel;
-      nixcode = (nixosBuild {
-        context = "nixcode-niri";
-        modules = [
-          inputs.lanzaboote.nixosModules.lanzaboote
-          ./nixos/minimal-configuration.nix
-        ];
-      }).config.system.build.toplevel;
-      wsl = (nixosBuild {
-        context = "wsl";
-        modules = [
-          inputs.NixOS-WSL.nixosModules.wsl
-          ./nixos/wsl/configuration.nix
-        ];
-      }).config.system.build.toplevel;
-      packages = let
-        sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
-        sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
-      in pkgs.lib.listToAttrs (map (p: pkgs.lib.nameValuePair p.pname p) [
-        pkgs.clamav
-        sway-workspace
-        sway-scratchpad
-        pkgs.conduwuit
-        pkgs.matrix-continuwuity
-      ]);
-    };
-    nixosConfigurations = {
-      matej70 = nixosBuild {
-        context = "matej70-niri";
-        modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-          inputs.chaotic.nixosModules.default
-        ];
-      };
-      matej80 = nixosBuild {
-        context = "matej80-niri";
-        modules = [
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-        ];
-      };
-      nixcode = nixosBuild {
-        context = "nixcode-niri";
-        modules = [
-          inputs.lanzaboote.nixosModules.lanzaboote
-          (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
-        ];
-      };
-      wsl = nixosBuild {
-        context = "wsl";
-        modules = [
-          inputs.NixOS-WSL.nixosModules.wsl
-          ./nixos/wsl/configuration.nix
-        ];
-      };
-      # matej70 = inputs.nixpkgs.lib.nixosSystem {
-      #   inherit system;
-      #   specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
-      #   modules = [
-      #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-      #     inputs.home-manager.nixosModules.home-manager
-      #     ./nixos/configuration.nix
-      #     # {
-      #     #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
-      #     # }
-      #     # {
-      #     #   imports = [(import ../jupyenv.nix { jupyenv = import inputs.jupyenv; })];
-      #     #   services.jupyenv.my = {
-      #     #     enable = false;
-      #     #     port = 9980;
-      #     #     token = "'token'";
-      #     #     attrs = {
-      #     #       kernel.python.minimal.enable = true;
-      #     #       kernel.nix.minimal.enable = true;
-      #     #     };
-      #     #   };
-      #     # }
-      #   ];
+  outputs =
+    { self, ... }@inputs:
+    let
+      system = "x86_64-linux";
+      helper_scripts = ./.;
+      defaultUser = "matejc";
+      nixosBuild =
+        {
+          context,
+          modules ? [ ],
+        }:
+        (inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs helper_scripts defaultUser;
+            contextFile = ./nixos/contexts + "/${context}.nix";
+          };
+          modules = [
+            inputs.home-manager.nixosModules.home-manager
+            inputs.nix-index-database.nixosModules.nix-index
+            ./nixos/configuration.nix
+          ] ++ modules;
+        });
+      pkgs = inputs.nixpkgs.legacyPackages.${system};
+    in
+    {
+      # homeConfigurations = {
+      #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
+      #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+      #     modules = [
+      #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
+      #     ];
+      #   };
+      #   nixcode = inputs.home-manager.lib.homeManagerConfiguration {
+      #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
+      #     modules = [
+      #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
+      #     ];
+      #   };
       # };
-    };
-    images = {
-      wsl = {
-        system = self.nixosConfigurations.wsl.config.system.build.toplevel;
-        builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
+      hydraJobs = {
+        matej70 =
+          (nixosBuild {
+            context = "matej70-niri";
+            modules = [
+              ./nixos/minimal-configuration.nix
+              inputs.chaotic.nixosModules.default
+            ];
+          }).config.system.build.toplevel;
+        matej80 =
+          (nixosBuild {
+            context = "matej80-niri";
+            modules = [
+              ./nixos/minimal-configuration.nix
+            ];
+          }).config.system.build.toplevel;
+        nixcode =
+          (nixosBuild {
+            context = "nixcode-niri";
+            modules = [
+              inputs.lanzaboote.nixosModules.lanzaboote
+              ./nixos/minimal-configuration.nix
+            ];
+          }).config.system.build.toplevel;
+        wsl =
+          (nixosBuild {
+            context = "wsl";
+            modules = [
+              inputs.NixOS-WSL.nixosModules.wsl
+              ./nixos/wsl/configuration.nix
+            ];
+          }).config.system.build.toplevel;
+        packages =
+          let
+            sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
+            sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
+          in
+          pkgs.lib.listToAttrs (
+            map (p: pkgs.lib.nameValuePair p.pname p) [
+              pkgs.clamav
+              sway-workspace
+              sway-scratchpad
+              pkgs.conduwuit
+              pkgs.matrix-continuwuity
+            ]
+          );
+      };
+      nixosConfigurations = {
+        matej70 = nixosBuild {
+          context = "matej70-niri";
+          modules = [
+            (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
+            inputs.chaotic.nixosModules.default
+          ];
+        };
+        matej80 = nixosBuild {
+          context = "matej80-niri";
+          modules = [
+            (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
+          ];
+        };
+        nixcode = nixosBuild {
+          context = "nixcode-niri";
+          modules = [
+            inputs.lanzaboote.nixosModules.lanzaboote
+            (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
+          ];
+        };
+        wsl = nixosBuild {
+          context = "wsl";
+          modules = [
+            inputs.NixOS-WSL.nixosModules.wsl
+            ./nixos/wsl/configuration.nix
+          ];
+        };
+        # matej70 = inputs.nixpkgs.lib.nixosSystem {
+        #   inherit system;
+        #   specialArgs = { inherit inputs helper_scripts defaultUser; contextFile = ./nixos/contexts/matej70.nix; };
+        #   modules = [
+        #     (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
+        #     inputs.home-manager.nixosModules.home-manager
+        #     ./nixos/configuration.nix
+        #     # {
+        #     #   nixpkgs.overlays = [ inputs.nixgl.overlay (import ../teleport/overlay.nix) ];
+        #     # }
+        #     # {
+        #     #   imports = [(import ../jupyenv.nix { jupyenv = import inputs.jupyenv; })];
+        #     #   services.jupyenv.my = {
+        #     #     enable = false;
+        #     #     port = 9980;
+        #     #     token = "'token'";
+        #     #     attrs = {
+        #     #       kernel.python.minimal.enable = true;
+        #     #       kernel.nix.minimal.enable = true;
+        #     #     };
+        #     #   };
+        #     # }
+        #   ];
+        # };
+      };
+      images = {
+        wsl = {
+          system = self.nixosConfigurations.wsl.config.system.build.toplevel;
+          builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
+        };
       };
     };
-  };
 }
