@@ -1701,13 +1701,11 @@ in
 
                   programs.gpg = {
                     enable = true;
-                    settings."pinentry-mode" = "loopback";
                   };
                   services.gpg-agent = {
                     enable = true;
-                    enableSshSupport = true;
                     enableZshIntegration = true;
-                    pinentry.package = pkgs.pinentry-tty;
+                    pinentry.package = pkgs.pinentry-curses;
                   };
                   services.ssh-agent.enable = true;
                   programs.ssh = {
@@ -1904,7 +1902,7 @@ in
                       control-center-margin-right = 20;
                       control-center-margin-top = 20;
                       control-center-width = 600;
-                      cssPriority = "application";
+                      cssPriority = "user";
                       fit-to-screen = true;
                       hide-on-action = true;
                       hide-on-clear = false;
