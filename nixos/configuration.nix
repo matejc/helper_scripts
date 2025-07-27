@@ -1832,8 +1832,9 @@ in
                           execution = ":panel_right";
                         }
                         {
+                          invocation = "open";
                           key = "alt-enter";
-                          execution = ":panel_right";
+                          execution = ":open_stay";
                         }
                         {
                           key = "right";
