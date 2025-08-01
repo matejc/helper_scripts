@@ -1821,35 +1821,40 @@ in
                     #   };
                     # };
                   };
-                  programs.broot = {
+                  programs.yazi = {
                     enable = true;
+                    enableZshIntegration = true;
+                  };
+                  programs.broot = {
                     enableZshIntegration = true;
                     settings = {
                       default_flags = "--sort-by-date --show-git-info --git-ignored --sizes --hidden";
                       verbs = [
                         {
+                          invocation = "open";
                           key = "enter";
-                          execution = ":panel_right";
+                          execution = ":open_stay";
+                          apply_to = "file";
                         }
                         {
-                          invocation = "open";
-                          key = "alt-enter";
-                          execution = ":open_stay";
+                          key = "enter";
+                          execution = ":focus";
+                          apply_to = "directory";
                         }
                         {
                           key = "right";
-                          execution = ":panel_right";
-                          apply_to = "file";
+                          execution = ":focus";
+                          apply_to = "directory";
                         }
                         {
                           key = "left";
-                          execution = ":panel_left_no_open";
-                          apply_to = "file";
+                          execution = ":parent";
                         }
                         {
                           invocation = "edit";
                           key = "ctrl-enter";
                           execution = "$EDITOR {file}";
+                          apply_to = "text_file";
                           from_shell = true;
                         }
                       ];
@@ -1982,6 +1987,16 @@ in
                     };
                   };
 
+                  services.wlsunset = {
+                    enable = true;
+                    # curl -s http://ip-api.com/json/
+                    latitude = 60.2;
+                    longitude = 24.9;
+                    temperature = {
+                      day = 6000;
+                      night = 3700;
+                    };
+                  };
                 }
                 (lib.optionalAttrs (context.variables.graphical.name == "niri") {
                   programs.niri.package = pkgs.niri-unstable;
