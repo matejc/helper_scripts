@@ -215,7 +215,6 @@ let
             user = "greeter";
           };
         };
-        vt = 2;
       };
       programs.niri.enable = true;
       boot.kernelPackages = pkgs.linuxPackages_cachyos;
@@ -235,53 +234,11 @@ let
           destination = "/etc/udev/rules.d/70-ntsync.rules";
         })
       ];
-      # https://gitlab.freedesktop.org/drm/amd/-/issues/3693#note_2715822
-      # boot.kernelPatches = [
-      #   {
-      #     name = "issue-3693_1";
-      #     patch = pkgs.fetchurl {
-      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/1c86c81a86c60f9b15d3e3f43af0363cf56063e7.patch";
-      #       hash = "sha256-pv2IABCcBbWhPGLXW8C6bIvZdIl5nabNrM0vdkSIvCc=";
-      #     };
-      #   }
-      #   {
-      #     name = "issue-3693_2";
-      #     patch = pkgs.fetchurl {
-      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/b8d6daffc871a42026c3c20bff7b8fa0302298c1.patch";
-      #       hash = "sha256-GCoR9q0PuD/TuR6w9B2fC0U5QdA/8PCcLTUxi1kJLig=";
-      #     };
-      #   }
-      #   {
-      #     name = "issue-3693_3";
-      #     patch = pkgs.fetchurl {
-      #       url = "https://gitlab.freedesktop.org/agd5f/linux/-/commit/ab75a0d2e07942ae15d32c0a5092fd336451378c.patch";
-      #       hash = "sha256-lSjY8J2655yKPJZoieEnVaorCFzV/+rYyH9vaLN8Wcg=";
-      #     };
-      #   }
-      # ];
-      # hardware.firmware = let
-      #   vcn = pkgs.stdenv.mkDerivation {
-      #     name = "vcn";
-      #     src = pkgs.fetchurl {
-      #       url = "https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/plain/amdgpu/navy_flounder_vcn.bin?id=3e78bb66e604d2140ea3628d27024266a181ca14";
-      #       hash = "sha256-OheYiOhZyCsUPyTCPGRIqAiJrePdKk+2RIzKYmPd5es=";
-      #       name = "navy_flounder_vcn.bin";
-      #     };
-      #     unpackPhase = "true";
-      #     installPhase = ''
-      #       mkdir -p $out/lib/firmware/amdgpu
-      #       cp $src $out/lib/firmware/amdgpu/navy_flounder_vcn.bin
-      #     '';
-      #   };
-      # in [
-      #   pkgs.linux-firmware
-      # ];
-
-      # nix.package = pkgs.nixVersions.nix_2_21;
       nixpkgs.config.permittedInsecurePackages = [
         "openssl-1.1.1w"
         "electron-27.3.11"
         "olm-3.2.16"
+        "libsoup-2.74.3"  # heroic
       ];
       services.ipp-usb.enable = true;
       nixpkgs.config.allowUnfreePredicate =

@@ -4,7 +4,7 @@ let
     export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xsel pkgs.xwayland-run config.programs.steam.package ]}"
     export DISPLAY=:10
     trap 'kill $(jobs -p)' EXIT
-    xwayland-run $DISPLAY -ac -- openbox --startup "bash -c '${lib.concatStringsSep " & " (["wl-paste -n --watch xsel -bi"] ++ variables.steam.xrun)} & steam -pipewire-dmabuf; openbox --exit'"
+    xwayland-run $DISPLAY -ac -- openbox --startup "bash -c '${lib.concatStringsSep " & " (["wl-paste -n --watch xsel -bi"] ++ variables.steam.xrun)} & steam; openbox --exit'"
   '';
   steamtinkerlaunch = pkgs.writeShellScriptBin "steamtinkerlaunch" ''
     unset WAYLAND_DISPLAY
