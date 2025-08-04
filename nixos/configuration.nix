@@ -315,6 +315,7 @@ in
                 # };
               });
             */
+            notion-desktop = inputs.notion-desktop.packages.x86_64-linux.default;
           })
           inputs.niri.overlays.niri
         ];

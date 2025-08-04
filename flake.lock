@@ -202,6 +202,24 @@
         "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%3D0.1.5.tar.gz"
       }
     },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems_2"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "gitignore": {
       "inputs": {
         "nixpkgs": [
@@ -435,8 +453,8 @@
     "nixos-configuration": {
       "flake": false,
       "locked": {
-        "lastModified": 1754326976,
-        "narHash": "sha256-QqP8XlrXb5TgHFkWvtekOD4DHLq3VqYAvzEn0csGdNw=",
+        "lastModified": 1752860101,
+        "narHash": "sha256-6/v48DYty15nqzYDqUL8HvRi3UqrfMGTMjb23Ker36U=",
         "path": "/etc/nixos",
         "type": "path"
       },
@@ -541,6 +559,27 @@
         "type": "github"
       }
     },
+    "notion-desktop": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1754071518,
+        "narHash": "sha256-JDVemgtnhZlQyiLvnyP/LNbdFr7uwADmmWzlM8pW57c=",
+        "owner": "heytcass",
+        "repo": "notion-mac-flake",
+        "rev": "53956ac78b13dd9504d37bf9045cbe37d78515df",
+        "type": "github"
+      },
+      "original": {
+        "owner": "heytcass",
+        "repo": "notion-mac-flake",
+        "type": "github"
+      }
+    },
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts_2",
@@ -601,6 +640,7 @@
         "nixos-configuration": "nixos-configuration",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
+        "notion-desktop": "notion-desktop",
         "nur": "nur",
         "sway-scratchpad": "sway-scratchpad",
         "sway-workspace": "sway-workspace"
@@ -681,6 +721,21 @@
       }
     },
     "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
