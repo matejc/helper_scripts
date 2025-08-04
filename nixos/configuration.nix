@@ -1896,7 +1896,6 @@ in
                   };
                   services.swayosd = {
                     enable = true;
-                    display = (builtins.head context.variables.outputs).output;
                   };
                   services.swaync = {
                     enable = true;
