@@ -146,11 +146,10 @@
               ./nixos/minimal-configuration.nix
             ];
           }).config.system.build.toplevel;
-        nixcode =
+        nixko =
           (nixosBuild {
-            context = "nixcode-niri";
+            context = "nixko";
             modules = [
-              inputs.lanzaboote.nixosModules.lanzaboote
               ./nixos/minimal-configuration.nix
             ];
           }).config.system.build.toplevel;
@@ -191,10 +190,10 @@
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           ];
         };
-        nixcode = nixosBuild {
-          context = "nixcode-niri";
+        nixko = nixosBuild {
+          context = "nixko";
           modules = [
-            inputs.lanzaboote.nixosModules.lanzaboote
+            inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           ];
         };
