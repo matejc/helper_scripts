@@ -172,11 +172,8 @@
           in
           pkgs.lib.listToAttrs (
             map (p: pkgs.lib.nameValuePair p.pname p) [
-              pkgs.clamav
               sway-workspace
               sway-scratchpad
-              pkgs.conduwuit
-              pkgs.matrix-continuwuity
             ]
           );
       };
