@@ -184,6 +184,7 @@ let
       hardware.bluetooth.enable = true;
       nixpkgs.config.permittedInsecurePackages = [
         "electron-27.3.11"
+        "libsoup-2.74.3"  # cinny-desktop
       ];
     };
     home-configuration = {
