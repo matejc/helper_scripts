@@ -2108,7 +2108,6 @@ in
                             position x=${x} y=${y}
                           ''
                         }
-                        variable-refresh-rate
                       }
                     '') context.variables.outputs}
 
