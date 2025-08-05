@@ -95,7 +95,7 @@ let
           position = "0,0";
           output = "eDP-1";
           mode = "2256x1504";
-          scale = 1.15;
+          scale = 1.2;
           workspaces = [ ];
           wallpaper = self.variables.wallpaper;
           status = "enable";
@@ -150,6 +150,14 @@ let
       ];
       boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
       programs.niri.enable = true;
+      hardware.bluetooth.enable = true;
+      services.udev.extraRules = ''
+        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video $sys$devpath/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w $sys$devpath/brightness"
+      '';
+      hardware.graphics = {
+        enable = true;
+      };
+      services.power-profiles-daemon.enable = lib.mkForce false;
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -181,6 +189,8 @@ let
       services.network-manager-applet.enable = true;
       home.packages = with pkgs; [
         slack
+        notion-desktop
+        teams-for-linux
         logseq
         keepassxc
         pulseaudio
@@ -193,6 +203,8 @@ let
         graftcp
         freerdp3
         file-roller
+        eog
+        minikube kubectl docker-machine-kvm2 k9s ttyd
       ];
       programs.direnv = {
         enable = true;

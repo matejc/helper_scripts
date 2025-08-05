@@ -357,6 +357,7 @@ in
         ];
 
         services.tlp = {
+          enable = true;
           settings = {
             START_CHARGE_THRESH_BAT0 = 90;
             STOP_CHARGE_THRESH_BAT0 = 95;
@@ -1992,7 +1993,7 @@ in
                     latitude = 60.2;
                     longitude = 24.9;
                     temperature = {
-                      day = 6000;
+                      day = 5500;
                       night = 3700;
                     };
                   };
@@ -2107,6 +2108,7 @@ in
                             position x=${x} y=${y}
                           ''
                         }
+                        variable-refresh-rate
                       }
                     '') context.variables.outputs}
 

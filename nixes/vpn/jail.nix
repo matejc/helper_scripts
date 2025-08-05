@@ -104,7 +104,6 @@
   extraLaunchers ? [ ],
   enableDBus ? false,
   enableGnomeKeyring ? false,
-  enableNM ? false,
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
