@@ -49,9 +49,9 @@ let
       wallpaper = "${nixos-wallpaper}";
       temperatures = [
         {
-          device = "cros_ec-isa-0000";
-          group = "cpu_f75303@4d";
-          field_prefix = "temp2";
+          device = "k10temp-pci-00c3";
+          group = "Tctl";
+          field_prefix = "temp1";
         }
       ];
       fullName = "Matej Cotman";

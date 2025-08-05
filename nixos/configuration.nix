@@ -246,7 +246,7 @@ let
       while true
       do
         tempdata="$(sensors -j "${device}" | jq --unbuffered -c '."${device}"."${group}"')"
-        tempp="$(jq --unbuffered -n --argjson data "$tempdata" -r '($data."${field_prefix}_input" / $data."${field_prefix}_crit" * 100)|tonumber|floor' | cut -d "." -f 1)"
+        tempp="$(jq --unbuffered -n --argjson data "$tempdata" -r '($data."${field_prefix}_input" / ($data | ."${field_prefix}_crit" // 90) * 100)|tonumber|floor' | cut -d "." -f 1)"
         if (( prev_tempp != tempp ))
         then
           cssclass="normal"
@@ -257,7 +257,7 @@ let
           then
             cssclass="high"
           fi
-          jq --unbuffered -nc --argjson data "$tempdata" --arg cssclass "$cssclass" '{text: $data."${field_prefix}_input"|tonumber|floor|tostring, percentage: ($data."${field_prefix}_input" / $data."${field_prefix}_crit" * 100)|tonumber|floor, alt: "", tooltip: "${device}", class: $cssclass}'
+          jq --unbuffered -nc --argjson data "$tempdata" --arg cssclass "$cssclass" '{text: $data."${field_prefix}_input"|tonumber|floor|tostring, percentage: ($data."${field_prefix}_input" / ($data | ."${field_prefix}_crit" // 90) * 100)|tonumber|floor, alt: "", tooltip: "${device}", class: $cssclass}'
         fi
         prev_tempp="$tempp"
         sleep 5
