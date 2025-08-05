@@ -159,7 +159,6 @@ let
             command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
           };
         };
-        vt = 2;
       };
       programs.niri.enable = true;
       security.rtkit.enable = true;
