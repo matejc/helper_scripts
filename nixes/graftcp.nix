@@ -4,17 +4,17 @@ let
   src = fetchFromGitHub {
     owner = "hmgle";
     repo = "graftcp";
-    rev = "b8f775f4b2f2e738f0db165cd708d516b203e8cc";
-    hash = "sha256-hpiPpZpD5hNdR6UsZI67fyw1u2YyLSp6chpLxDYs21c=";
+    rev = "e062ffe20673c222bc68e297070be1e10e46be47";
+    hash = "sha256-wGLsqCdH+QtBp5mn7lOhsr1g4d+R9ZMp5Z6I5mo+Bbw=";
   };
 
-  version = "unstable-2024-10-27";
+  version = "unstable-2025-04-17";
 
   graftcp_go = buildGoModule {
     pname = "graftcp";
     inherit version src;
     sourceRoot = "${src.name}/local";
-    vendorHash = "sha256-jXX5YPl9ubqvL4edSIWkcVQqtDVoi88ZhoLaG/Gykm8=";
+    vendorHash = "sha256-+yRSi65wAYPSIe/rJ2Fc9lMPBZ+vb4Fefw0s7H7E7HM=";
     buildInputs = [ graftcp_gcc ];
     LIBRARY_PATH = "${graftcp_gcc}/lib";
   };

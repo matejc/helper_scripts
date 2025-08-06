@@ -2031,8 +2031,8 @@ in
                         touchpad {
                             tap
                             // dwt
-                            natural-scroll
-                            // accel-speed 0.2
+                            // natural-scroll
+                            accel-speed 0.2
                             // accel-profile "flat"
                             // tap-button-map "left-middle-right"
                         }

@@ -13,6 +13,7 @@
     start = "openvpn --config /etc/openvpn/ovpn --script-security 2 --up /etc/openvpn/update-resolv-conf --down /etc/openvpn/update-resolv-conf --daemon --log ${home.inside}/.openvpn.log --auth-user-pass /etc/openvpn/pass";
     stop = "pkill openvpn";
   },
+  extraPath ? "",
   gpconnect ? null,
   compositor ? {
     start = "labwc --startup /bin/compositor-cmds -C /etc/xdg/labwc";
@@ -677,7 +678,7 @@ let
       --env XDG_DATA_DIRS=/usr/share \
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
-      --env PATH="${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin" \
+      --env PATH="${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin:${extraPath}" \
       --env LD_LIBRARY_PATH=/lib \
       --env GIO_EXTRA_MODULES=/lib/gio/modules \
       ${pkgs.lib.concatMapStringsSep " " (c: "--cap ${c}") caps} \

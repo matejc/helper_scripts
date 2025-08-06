@@ -104,7 +104,7 @@ let
       nixmy = {
         backup = "git@github.com:matejc/configurations.git";
         remote = "https://github.com/matejc/nixpkgs";
-        nixpkgs = "/home/matejc/workarea/nixpkgs";
+        nixpkgs = "${inputs.nixpkgs}";
       };
       startup = [
         "${self.variables.profileDir}/bin/logseq"
@@ -204,7 +204,8 @@ let
         freerdp3
         file-roller
         eog
-        minikube kubectl docker-machine-kvm2 k9s ttyd
+        minikube kubectl docker-machine-kvm2 ttyd
+        asdf-vm unzip stdenv.cc gnumake python313Packages.python redis colima docker docker-compose ansible
       ];
       programs.direnv = {
         enable = true;
@@ -212,6 +213,11 @@ let
       };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
+      programs.zsh.initContent = ''
+        . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+        autoload -Uz bashcompinit && bashcompinit
+        . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+      '';
     };
   };
 in
