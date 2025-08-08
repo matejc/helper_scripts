@@ -167,7 +167,6 @@ let
           local_port = httpproxy.guestPort;
         }
         {
-          protocol = "socks";
           local_address = "0.0.0.0";
           local_port = socksproxy.guestPort;
         }
@@ -611,6 +610,7 @@ let
       --bindmount_ro /nix/store:/nix/store \
       --bindmount_ro /nix/var/nix:/nix/var/nix \
       --tmpfsmount /etc \
+      --symlink ${nsswitchFile}:/etc/nsswitch.conf \
       --symlink ${hostsFile}:/etc/hosts \
       --symlink ${passwdFile}:/etc/passwd \
       --symlink ${groupFile}:/etc/group \
@@ -717,6 +717,22 @@ let
 
   hostsFile = pkgs.writeText "hosts" ''
     127.0.0.1  RESTRICTED
+    127.0.0.1  localhost
+  '';
+
+  nsswitchFile = pkgs.writeText "nsswitch.conf" ''
+    passwd:    files
+    group:     files
+    shadow:    files
+    sudoers:   files
+
+    hosts:     mymachines files myhostname dns
+    networks:  files
+
+    ethers:    files
+    services:  files
+    protocols: files
+    rpc:       files
   '';
 
   hostnameFile = pkgs.writeText "hostname" ''RESTRICTED'';
@@ -776,6 +792,7 @@ let
       psmisc
       inotify-tools
       shadowsocks-rust
+      glibc.out
     ]
     ++ packages
     ++ (pkgs.lib.optionals (gpconnect != null) [ gp-connect ])

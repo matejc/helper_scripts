@@ -205,7 +205,8 @@ let
         file-roller
         eog
         minikube kubectl docker-machine-kvm2 ttyd
-        asdf-vm unzip stdenv.cc gnumake python313Packages.python redis colima docker docker-compose ansible
+        asdf-vm unzip stdenv.cc gnumake python313Packages.python colima docker docker-compose ansible
+        devenv
       ];
       programs.direnv = {
         enable = true;
