@@ -105,6 +105,7 @@
   extraLaunchers ? [ ],
   enableDBus ? false,
   enableGnomeKeyring ? false,
+  enableSystemD ? false,
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -360,6 +361,35 @@ let
       else
         ""
     }
+    ${
+      if enableSystemD then
+        ''
+          [program:systemd]
+          command = ${
+            mkCmd "systemd" {
+              start = "/lib/systemd/systemd --user";
+              stop = "pkill systemd";
+            }
+          }
+          priority = 0
+          directory = ${home.inside}
+          user = ${user.inside}
+          numprocs = 1
+          autostart = true
+          autorestart = unexpected
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/systemd.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
 
     [program:shadowsocks]
     command = ${
@@ -603,7 +633,9 @@ let
       --symlink /dev/pts/ptmx:/dev/ptmx \
       --mount none:/dev/mqueue:mqueue:rw \
       --mount none:/sys:sysfs \
+      --mount none:/sys/fs/cgroup:cgroup2 \
       --mount none:/tmp:tmpfs:rw \
+      --symlink /proc/self/fd:/dev/fd \
       --mount none:/tmp/.X11-unix:tmpfs:rw \
       --bindmount ${stateDir}/.fwd:/tmp/fwd \
       --tmpfsmount /nix \
@@ -689,10 +721,41 @@ let
       ${pkgs.lib.concatMapStringsSep " " (m: "--env ${m.name}=${m.value}") variables} \
       --forward_signals \
       ${extraArgs} \
+      ${
+        if enableSystemD then
+          "--tmpfsmount /run/systemd --tmpfsmount /run/systemd/system --tmpfsmount /run/systemd/user --symlink ${basicTarget}:/run/systemd/user/basic.target --symlink ${dbusSocket}:/run/systemd/user/dbus.socket --symlink ${defaultTarget}:/run/systemd/user/default.target --tmpfsmount /run/user/${uid}/systemd"
+        else
+          ""
+      } \
       -- ${insideCmd} & nsjail_pid=$!
       sleep 0.1
       ps -o pid,cmd -u 100000 | awk '$3 == "${insideCmd}" {printf $1}' > ${stateDir}/.ns.pid
       wait $nsjail_pid
+  '';
+
+  defaultTarget = pkgs.writeText "default.target" ''
+    [Unit]
+    Description=Main User Target
+    Documentation=man:systemd.special(7)
+    Requires=basic.target
+    After=basic.target
+  '';
+
+  basicTarget = pkgs.writeText "basic.target" ''
+    [Unit]
+    Description=Main User Target
+    Documentation=man:systemd.special(7)
+    Wants=sockets.target timers.target paths.target
+    After=sockets.target timers.target paths.target
+  '';
+
+  dbusSocket = pkgs.writeText "dbus.socket" ''
+    [Unit]
+    Description=D-Bus User Message Bus Socket
+
+    [Socket]
+    ListenStream=/run/user/${uid}/dbus
+    ExecStartPost=-${pkgs.systemdMinimal}/bin/systemctl --user set-environment DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus
   '';
 
   resolvConf = pkgs.writeText "resolv.conf" ''
@@ -797,6 +860,7 @@ let
     ++ packages
     ++ (pkgs.lib.optionals (gpconnect != null) [ gp-connect ])
     ++ (pkgs.lib.optionals enableDBus [ dbus ])
+    ++ (pkgs.lib.optionals enableSystemD [ systemd ])
     ++ (pkgs.lib.optionals enableGnomeKeyring [ gnome-keyring ]);
 
   binPaths = pkgs.lib.makeBinPath buildInputs;

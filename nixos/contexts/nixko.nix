@@ -66,7 +66,7 @@ let
         size = 12.0;
         style = "Bold";
       };
-      i3-msg = "${self.variables.profileDir}/bin/niri msg";
+      i3-msg = "${self.variables.graphical.exec} msg";
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
@@ -83,7 +83,7 @@ let
         logout = "${self.variables.graphical.exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
-        exec = "${self.variables.profileDir}/bin/niri";
+        exec = "${config.programs.niri.package}/bin/niri";
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.profileDir}/bin/nvim";
@@ -158,6 +158,11 @@ let
         enable = true;
       };
       services.power-profiles-daemon.enable = lib.mkForce false;
+      networking.enableIPv6 = false;
+      virtualisation.docker.rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
     };
     home-configuration = {
       home.stateVersion = "25.05";
