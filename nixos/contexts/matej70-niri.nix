@@ -212,9 +212,10 @@ let
         enable = true;
         settings = {
           default_session = {
-            command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd niri-session";
+            command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
             user = "greeter";
           };
+          terminal.vt = lib.mkForce 2;
         };
       };
       programs.niri.enable = true;
@@ -336,7 +337,7 @@ let
           aichat
           mpv
           legcord
-          cinny-desktop
+          nheko
           steamcmd
           jq
           scanmem

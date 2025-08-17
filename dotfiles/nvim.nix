@@ -1532,17 +1532,70 @@ let
       -- of 512, serves as an good starting point to estimate your computing
       -- power. Once you have a reliable estimate of your local computing power,
       -- you should adjust the context window to a larger value.
-      context_window = 2048,
+      context_window = 512,
       virtualtext = {
         -- auto_trigger_ft = { '*' },
         show_on_completion_menu = false,
       },
       provider_options = {
         codestral = {
+          model = 'codestral-latest',
+          api_key = 'CODESTRAL_API_KEY',
           optional = {
             max_tokens = 256,
-            -- stop = { '\n\n' },
+            stop = { '\n\n' },
           },
+        },
+        openai_fim_compatible = {
+          -- For Windows users, TERM may not be present in environment variables.
+          -- Consider using APPDATA instead.
+          api_key = 'TERM',
+          name = 'Ollama',
+          end_point = 'http://100.68.2.84:11434/v1/completions',
+          model = 'qwen2.5-coder:7b',
+          optional = {
+            max_tokens = 56,
+            top_p = 0.9,
+          },
+        },
+        gemini = {
+          model = 'gemini-2.0-flash',
+          api_key = 'GEMINI_API_KEY',
+          optional = {
+            generationConfig = {
+              maxOutputTokens = 256,
+              -- When using `gemini-2.5-flash`, it is recommended to entirely
+              -- disable thinking for faster completion retrieval.
+              thinkingConfig = {
+                thinkingBudget = 0,
+              },
+            },
+            safetySettings = {
+              {
+                -- HARM_CATEGORY_HATE_SPEECH,
+                -- HARM_CATEGORY_HARASSMENT
+                -- HARM_CATEGORY_SEXUALLY_EXPLICIT
+                category = 'HARM_CATEGORY_DANGEROUS_CONTENT',
+                -- BLOCK_NONE
+                threshold = 'BLOCK_ONLY_HIGH',
+              },
+            },
+          },
+        },
+      },
+      presets = {
+        codestral = {
+          context_window = 2048,
+          provider = 'codestral',
+        },
+        ollama = {
+          context_window = 512,
+          request_timeout = 20,
+          provider = 'openai_fim_compatible',
+        },
+        gemini = {
+          context_window = 2048,
+          provider = 'gemini',
         },
       },
     }

@@ -106,6 +106,7 @@
   enableDBus ? false,
   enableGnomeKeyring ? false,
   enableSystemD ? false,
+  enableJournalD ? false,
 }:
 let
   nsjail = import ../nsjail.nix { inherit pkgs newuidmap newgidmap; };
@@ -390,6 +391,58 @@ let
       else
         ""
     }
+    ${
+      if enableJournalD then
+        ''
+          [program:journald]
+          command = ${
+            mkCmd "journald" {
+              start = "/lib/systemd/systemd-journald";
+              stop = "pkill systemd-journald";
+            }
+          }
+          priority = 0
+          directory = ${home.inside}
+          user = ${user.inside}
+          numprocs = 1
+          autostart = true
+          autorestart = unexpected
+          startsecs = 3
+          exitcodes = 0
+          stopsignal = TERM
+          stopwaitsecs = 10
+          stopasgroup = true
+          killasgroup = true
+          redirect_stderr = true
+          stdout_logfile = ${home.inside}/.supervisord/journald.log
+          stdout_logfile_maxbytes = 0
+        ''
+      else
+        ""
+    }
+
+    [program:rootshell]
+    command = ${
+      mkCmd "rootshell" {
+        start = "rm -f ${home.inside}/.rootshell.sock; TERM=screen-256color dtach -N ${home.inside}/.rootshell.sock ${interactiveShell}";
+        stop = "pkill dtach";
+      }
+    }
+    priority = 0
+    directory = /root
+    user = root
+    numprocs = 1
+    autostart = true
+    autorestart = unexpected
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 10
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/rootshell.log
+    stdout_logfile_maxbytes = 0
 
     [program:shadowsocks]
     command = ${
@@ -433,36 +486,6 @@ let
           killasgroup = true
           redirect_stderr = true
           stdout_logfile = ${home.inside}/.supervisord/compositor.log
-          stdout_logfile_maxbytes = 0
-        ''
-      else
-        ""
-    }
-
-    ${
-      if enableGnomeKeyring then
-        ''
-          [program:gnome-keyring]
-          command = ${
-            mkCmd "gnome-keyring" {
-              start = "gnome-keyring-daemon --start --foreground --components=secrets";
-              stop = "pkill gnome-keyring-daemon";
-            }
-          }
-          priority = 0
-          directory = ${home.inside}
-          user = ${user.inside}
-          numprocs = 1
-          autostart = true
-          autorestart = true
-          startsecs = 3
-          exitcodes = 0
-          stopsignal = TERM
-          stopwaitsecs = 10
-          stopasgroup = true
-          killasgroup = true
-          redirect_stderr = true
-          stdout_logfile = ${home.inside}/.supervisord/gnome_keyring.log
           stdout_logfile_maxbytes = 0
         ''
       else
@@ -534,6 +557,10 @@ let
     mkdir -p ${home.inside}/.supervisord
 
     trap 'echo "Be patient inside"' SIGINT
+
+    ${mkSetuidProgram { program = "dbus-daemon-launch-helper"; source = "${pkgs.dbus}/libexec/dbus-daemon-launch-helper"; setuid = true; }}
+    ${mkSetuidProgram { program = "login"; source = "${pkgs.shadow}/bin/login"; setuid = true; }}
+    ${mkSetuidProgram { program = "gnome-keyring-daemon"; source = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon"; setuid = true; }}
 
     ${preCmdInside}
 
@@ -629,7 +656,7 @@ let
       --bindmount /dev/net/tun:/dev/net/tun \
       --bindmount /dev/dri:/dev/dri \
       --mount none:/dev/shm:tmpfs:rw,mode=1777,size=5242880k \
-      --mount none:/dev/pts:devpts:ptmxmode=0666 \
+      --mount none:/dev/pts:devpts:ptmxmode=0666,mode=0620,gid=${gid} \
       --symlink /dev/pts/ptmx:/dev/ptmx \
       --mount none:/dev/mqueue:mqueue:rw \
       --mount none:/sys:sysfs \
@@ -645,11 +672,14 @@ let
       --symlink ${nsswitchFile}:/etc/nsswitch.conf \
       --symlink ${hostsFile}:/etc/hosts \
       --symlink ${passwdFile}:/etc/passwd \
+      --symlink ${passwdFile}:/etc/shadow \
       --symlink ${groupFile}:/etc/group \
       --symlink ${hostnameFile}:/etc/hostname \
       --symlink ${machineId}:/etc/machine-id \
       --symlink ${pkgs.tzdata}/share/zoneinfo/${timeZone}:/etc/localtime \
       --symlink ${nixConfFile}:/etc/nix/nix.conf \
+      --tmpfsmount /etc/pam.d \
+      --symlink ${pamConf}:/etc/pam.d/other \
       --mount none:/etc/ssl:tmpfs:rw \
       --bindmount_ro ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt:/etc/ssl/certs/ca-certificates.crt \
       --tmpfsmount /etc/xdg/labwc \
@@ -666,6 +696,7 @@ let
       --symlink ${paths}/share:/usr/share \
       --tmpfsmount /var/run \
       --tmpfsmount /run \
+      --tmpfsmount /run/wrappers \
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${
         if wayland != null then
@@ -689,7 +720,8 @@ let
       } \
       ${
         if enableDBus then
-          "--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus"
+          "--symlink ${dBusConfigDir}:/etc/dbus-1 --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus --env DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus --symlink /run/user/${uid}/dbus:/run/dbus/system_bus_socket"
+          #--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf
         else
           ""
       } \
@@ -704,13 +736,14 @@ let
       --bindmount_ro /etc/fonts:/etc/fonts \
       --bindmount_ro ${paths}/lib:/lib \
       --bindmount_ro ${paths}/libexec:/libexec \
+      --symlink ${paths}/etc/security:/etc/security \
       --env FONTCONFIG_FILE=/etc/fonts/fonts.conf \
       --env FC_CONFIG_FILE=/etc/fonts/fonts.conf \
       --env XDG_RUNTIME_DIR=/run/user/${uid} \
       --env XDG_DATA_DIRS=/usr/share \
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
-      --env PATH="${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin:${extraPath}" \
+      --env PATH="/run/wrappers/bin:${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin:${extraPath}" \
       --env LD_LIBRARY_PATH=/lib \
       --env GIO_EXTRA_MODULES=/lib/gio/modules \
       ${pkgs.lib.concatMapStringsSep " " (c: "--cap ${c}") caps} \
@@ -723,7 +756,13 @@ let
       ${extraArgs} \
       ${
         if enableSystemD then
-          "--tmpfsmount /run/systemd --tmpfsmount /run/systemd/system --tmpfsmount /run/systemd/user --symlink ${basicTarget}:/run/systemd/user/basic.target --symlink ${dbusSocket}:/run/systemd/user/dbus.socket --symlink ${defaultTarget}:/run/systemd/user/default.target --tmpfsmount /run/user/${uid}/systemd"
+          "--mount none:/run/systemd:tmpfs:rw,mode=1777,size=32m --tmpfsmount /run/systemd/system --tmpfsmount /run/systemd/user --symlink ${basicTarget}:/run/systemd/user/basic.target --symlink ${dbusSocket}:/run/systemd/user/dbus.socket --symlink ${defaultTarget}:/run/systemd/user/default.target --tmpfsmount /run/user/${uid}/systemd"
+        else
+          ""
+      } \
+      ${
+        if enableJournalD then
+          "--symlink /run/systemd/journal/dev-log:/dev/log"
         else
           ""
       } \
@@ -731,6 +770,68 @@ let
       sleep 0.1
       ps -o pid,cmd -u 100000 | awk '$3 == "${insideCmd}" {printf $1}' > ${stateDir}/.ns.pid
       wait $nsjail_pid
+  '';
+
+  securityWrapper =
+    sourceProg:
+    pkgs.pkgsStatic.callPackage <nixpkgs/nixos/modules/security/wrappers/wrapper.nix> {
+      inherit sourceProg;
+      unsecvars = pkgs.lib.overrideDerivation (pkgs.srcOnly pkgs.glibc) (
+        { name, ... }:
+        {
+          name = "${name}-unsecvars";
+          installPhase = ''
+            mkdir $out
+            cp sysdeps/generic/unsecvars.h $out
+          '';
+        }
+      );
+    };
+
+  mkSetuidProgram =
+    {
+      program,
+      source,
+      owner ? "root",
+      group ? "root",
+      setuid ? false,
+      setgid ? false,
+      permissions ? "u+rx,g+x,o+x",
+      ...
+    }:
+    ''
+      export wrapperDir=/run/wrappers/bin
+      mkdir -p $wrapperDir
+      cp ${securityWrapper source}/bin/security-wrapper "$wrapperDir/${program}"
+
+      # Prevent races
+      chmod 0000 "$wrapperDir/${program}"
+      chown ${owner}:${group} "$wrapperDir/${program}"
+
+      chmod "u${if setuid then "+" else "-"}s,g${if setgid then "+" else "-"}s,${permissions}" "$wrapperDir/${program}"
+    '';
+
+  dBusConfigDir = pkgs.makeDBusConf.override {
+    apparmor = "disabled";
+    dbus = pkgs.dbus;
+    suidHelper = "/run/wrappers/bin/dbus-daemon-launch-helper";
+    serviceDirectories = buildInputs;
+  };
+
+  pamConf = pkgs.writeText "pam.conf" ''
+    auth       required pam_env.so
+    auth       required pam_unix.so nullok shadow
+    auth optional ${pkgs.intune-portal}/lib/security/pam_intune.so
+    auth optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so
+    password optional ${pkgs.intune-portal}/lib/security/pam_intune.so
+    password optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so use_authtok
+    password   required pam_unix.so use_authtok nullok
+    account    required pam_unix.so
+    session optional ${pkgs.intune-portal}/lib/security/pam_intune.so
+    session optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
+    session    optional ${pkgs.systemd}/lib/security/pam_systemd.so
+    session    required pam_limits.so
+    session    required pam_unix.so
   '';
 
   defaultTarget = pkgs.writeText "default.target" ''
@@ -755,7 +856,7 @@ let
 
     [Socket]
     ListenStream=/run/user/${uid}/dbus
-    ExecStartPost=-${pkgs.systemdMinimal}/bin/systemctl --user set-environment DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus
+    ExecStartPost=-${pkgs.systemdMinimal}/bin/systemctl --user set-environment DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus
   '';
 
   resolvConf = pkgs.writeText "resolv.conf" ''
@@ -768,7 +869,7 @@ let
 
   passwdFile = pkgs.writeText "passwd" ''
     root:!:0:0::/root:${interactiveShell}
-    ${user.inside}:!:${uid}:${gid}::${home.inside}:${interactiveShell}
+    ${user.inside}::${uid}:${gid}::${home.inside}:${interactiveShell}
     nobody:!:65534:65534::/var/empty:${pkgs.shadow}/bin/nologin
   '';
 
@@ -856,6 +957,8 @@ let
       inotify-tools
       shadowsocks-rust
       glibc.out
+      dtach
+      pam
     ]
     ++ packages
     ++ (pkgs.lib.optionals (gpconnect != null) [ gp-connect ])
@@ -873,6 +976,7 @@ let
       "/share"
       "/lib"
       "/libexec"
+      "/etc"
     ];
   };
 in
