@@ -2013,6 +2013,8 @@ in
                                 // For example:
                                 // layout "us,ru"
                                 // options "grp:win_space_toggle,compose:ralt,ctrl:nocaps"
+
+                                options "caps:escape_shifted_capslock"
                             }
 
                             // You can set the keyboard repeat parameters. The defaults match wlroots and sway.
