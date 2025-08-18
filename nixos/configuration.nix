@@ -264,6 +264,27 @@ let
       done
     '';
 
+  tempstatus_all =
+    let
+      temp_calc = "${lib.concatMapStringsSep " + " (t: ''$(${getTempstatus t.device t.group t.field_prefix})'') context.variables.temperatures} / ${toString (builtins.length context.variables.temperatures)}";
+    in
+      pkgs.writeShellScriptBin "tempstatus" ''
+        ${pkgs.coreutils}/bin/printf "%.0f\n" $(${pkgs.bc}/bin/bc -l <<< "(${temp_calc})")
+      '';
+
+  getTempstatus =
+    device: group: field_prefix:
+    pkgs.writeShellScript "tempstatus-${device}-${group}-${field_prefix}.sh" ''
+      export PATH="$PATH:${
+        lib.makeBinPath [
+          pkgs.jq
+          pkgs.lm_sensors
+          pkgs.coreutils
+        ]
+      }"
+      sensors -j "${device}" | jq --unbuffered -c '."${device}"."${group}"."${field_prefix}_input"|tonumber|floor'
+    '';
+
   programs = lib.mapAttrsToList (
     name: exec:
     pkgs.writeShellScriptBin name ''
@@ -516,6 +537,7 @@ in
                       pkgs.jq
                       pkgs.devenv
                       binFiles
+                      tempstatus_all
                     ]
                     ++ services-cmds
                     ++ programs;

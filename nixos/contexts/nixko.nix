@@ -34,6 +34,7 @@ let
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/zellij.nix"
       "${helper_scripts}/dotfiles/tmux.nix"
+      "${helper_scripts}/dotfiles/batstatus.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -56,6 +57,7 @@ let
         }
       ];
       temperatureFiles = [];
+      batteries = [ "1" ];
       fullName = "Matej Cotman";
       email = "matej.cotman@kumorion.com";
       signingkey = "429264DEEB7036EE8B426AA9E97E56DFA314778A";
