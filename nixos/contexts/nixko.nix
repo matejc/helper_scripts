@@ -33,6 +33,7 @@ let
       "${helper_scripts}/dotfiles/helix.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/zellij.nix"
+      "${helper_scripts}/dotfiles/tmux.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -54,6 +55,7 @@ let
           field_prefix = "temp1";
         }
       ];
+      temperatureFiles = [];
       fullName = "Matej Cotman";
       email = "matej.cotman@kumorion.com";
       signingkey = "429264DEEB7036EE8B426AA9E97E56DFA314778A";
@@ -87,7 +89,7 @@ let
       };
       vims = {
         q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${self.variables.profileDir}/bin/nvim";
-        n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${self.variables.profileDir}/bin/nvim" --frame none'';
+        neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${self.variables.profileDir}/bin/nvim" --frame none'';
       };
       outputs = [
         {
@@ -164,6 +166,7 @@ let
         enable = true;
         setSocketVariable = true;
       };
+      hardware.enableAllFirmware = true;
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -213,6 +216,7 @@ let
         minikube kubectl docker-machine-kvm2 ttyd
         asdf-vm unzip stdenv.cc gnumake python313Packages.python colima docker docker-compose ansible
         devenv
+        tmux
       ];
       programs.direnv = {
         enable = true;

@@ -690,8 +690,8 @@ let
       --tmpfsmount /bin \
       --tmpfsmount /usr \
       --symlink ${paths}/bin:/usr/bin \
-      --symlink ${pkgs.bash}/bin/bash:/bin/bash \
-      --symlink ${pkgs.bash}/bin/sh:/bin/sh \
+      --symlink ${pkgs.bashInteractive}/bin/bash:/bin/bash \
+      --symlink ${pkgs.stdenv.shell}:/bin/sh \
       --symlink ${mkUpCmd}:/bin/compositor-cmds \
       --symlink ${paths}/share:/usr/share \
       --tmpfsmount /var/run \
