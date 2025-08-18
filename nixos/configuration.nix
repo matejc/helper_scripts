@@ -266,10 +266,10 @@ let
 
   tempstatus_all =
     let
-      temp_calc = "${lib.concatMapStringsSep " + " (t: ''$(${getTempstatus t.device t.group t.field_prefix})'') context.variables.temperatures} / ${toString (builtins.length context.variables.temperatures)}";
+      temp_list = "${lib.concatMapStringsSep "; " (t: ''${getTempstatus t.device t.group t.field_prefix}'') context.variables.temperatures}";
     in
       pkgs.writeShellScriptBin "tempstatus" ''
-        ${pkgs.coreutils}/bin/printf "%.0f\n" $(${pkgs.bc}/bin/bc -l <<< "(${temp_calc})")
+        ${pkgs.gawk}/bin/awk '{i=$1}i>max{max=i}END{print max}' <(${temp_list})
       '';
 
   getTempstatus =

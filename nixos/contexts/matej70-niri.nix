@@ -53,6 +53,7 @@ let
       "${helper_scripts}/dotfiles/steam.nix"
       "${helper_scripts}/dotfiles/zed.nix"
       "${helper_scripts}/dotfiles/caprine.nix"
+      "${helper_scripts}/dotfiles/tmux.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -90,6 +91,7 @@ let
           field_prefix = "temp2";
         }
       ];
+      batteries = [];
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -352,6 +354,7 @@ let
           eog
           file-roller
           wf-recorder
+          tmux
         ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;

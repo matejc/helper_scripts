@@ -73,9 +73,9 @@
 
     set-option -s set-clipboard off
     # For vi copy mode bindings
-    bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection clipboard -i"
+    bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.wl-clipboard}/bin/wl-copy -n"
     # For emacs copy mode bindings
-    bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.xclip}/bin/xclip -selection clipboard -i"
+    bind-key -T copy-mode MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "${pkgs.wl-clipboard}/bin/wl-copy -n"
 
     set -g set-titles on
     set -g set-titles-string "#{session_name}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev): #{pane_current_command}"
@@ -112,7 +112,7 @@
     # Right side of status bar
     set -g status-right-style bg="#272822",fg="#66D9EF"
     set -g status-right-length 150
-    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold]#(echo $(tempstatus)°C) ${if variables.temperatures == [] then '''' else '' / ''}#(echo $(batstatus)%) ${if variables.batteries == [] then '''' else '' / ''}#(date '+%H:%M %a %d of %b') "
+    set -g status-right "#[fg=\"#66D9EF\",bg=\"#272822\"]#[fg=colour245,bg=\"#272822\",bold]${if variables.temperatures == [] then '''' else ''#(echo $(tempstatus)°C) / ''}${if variables.batteries == [] then '''' else ''#(echo $(batstatus)%) / ''}#(date '+%H:%M %a %d of %b') "
 
     # Window status
     set -g window-status-format " #(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev):#{pane_current_command} "
