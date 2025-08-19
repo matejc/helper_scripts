@@ -184,7 +184,7 @@ let
       hardware.bluetooth.enable = true;
       nixpkgs.config.permittedInsecurePackages = [
         "electron-27.3.11"
-        "libsoup-2.74.3"  # cinny-desktop
+        "olm-3.2.16"
       ];
     };
     home-configuration = {
@@ -213,7 +213,7 @@ let
       programs.waybar.enable = true;
       home.packages = with pkgs; [
         networkmanagerapplet aichat deploy-rs logseq
-        cinny-desktop
+        nheko
       ];
       programs.firefox.enable = true;
       programs.chromium.enable = true;
