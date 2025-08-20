@@ -2382,7 +2382,6 @@ in
                         Super+R { switch-preset-column-width; }
                         Super+M { maximize-column; }
                         Super+F { fullscreen-window; }
-                        Super+C { center-column; }
 
                         // Finer width adjustments.
                         // This command can also:
@@ -2419,14 +2418,16 @@ in
                         Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
                         Ctrl+Alt+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
+                        Super+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${context.variables.homeDir}/.cache PATH=${pkgs.wl-clipboard}/bin:${pkgs.wofi}/bin:${pkgs.cliphist}/bin:${pkgs.ripgrep}/bin:$PATH ${pkgs.stdenv.shell} ${pkgs.cliphist}/bin/cliphist-wofi-img | ${pkgs.wl-clipboard}/bin/wl-copy -n"; }
+                        Super+Shift+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${context.variables.homeDir}/.cache ${pkgs.cliphist}/bin/cliphist wipe"; }
                         Ctrl+Alt+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
                         Ctrl+Alt+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
                         Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
                         Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head context.variables.outputs).output}"; }
                         Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
-                        Mod+O repeat=false { toggle-overview; }
-                        Mod+Tab repeat=false { switch-focus-between-floating-and-tiling; }
+                        Super+O repeat=false { toggle-overview; }
+                        Super+Tab repeat=false { switch-focus-between-floating-and-tiling; }
                     }
 
                     environment {
@@ -2516,6 +2517,29 @@ in
                         "nix-command"
                         "flakes"
                       ];
+                    };
+                  };
+
+                  systemd.user.services.cliphist-text = {
+                    Unit = {
+                      Description = "Cliphist (text) User Service";
+                      After = [ context.variables.graphical.target ];
+                    };
+                    Install.WantedBy = [ context.variables.graphical.target ];
+                    Service = {
+                      Type = "simple";
+                      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store";
+                    };
+                  };
+                  systemd.user.services.cliphist-image = {
+                    Unit = {
+                      Description = "Cliphist (image) User Service";
+                      After = [ context.variables.graphical.target ];
+                    };
+                    Install.WantedBy = [ context.variables.graphical.target ];
+                    Service = {
+                      Type = "simple";
+                      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store";
                     };
                   };
                 })
