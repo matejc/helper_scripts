@@ -2246,7 +2246,7 @@ in
                     // Add lines like this to spawn processes at startup.
                     // Note that running niri as a session supports xdg-desktop-autostart,
                     // which may be more convenient to use.
-                    spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
+                    //spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
                     spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
                     spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
                     spawn-at-startup "${configure-gtk}/bin/configure-gtk"
@@ -2470,6 +2470,21 @@ in
                     Service = {
                       Type = "simple";
                       ExecStart = "${context.variables.profileDir}/bin/lockscreen";
+                    };
+                  };
+                  systemd.user.services.xwayland-satellite = {
+                    Unit = {
+                      Description = "XWayland Satellite User Service";
+                      BindsTo = [ context.variables.graphical.target ];
+                      PartOf = [ context.variables.graphical.target ];
+                      After = [ context.variables.graphical.target ];
+                      Requisite = [ context.variables.graphical.target ];
+                    };
+                    Install.WantedBy = [ context.variables.graphical.target ];
+                    Service = {
+                      Type = "notify";
+                      NotifyAccess = "all";
+                      ExecStart = "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite";
                     };
                   };
                   services.swayidle = {

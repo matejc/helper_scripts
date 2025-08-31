@@ -3086,456 +3086,469 @@ let
 
     highlight! CmpItemMenu guifg=pink gui=italic
 
-        " gray
-        highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
-        " blue
-        highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6 gui=bold
-        highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
-        " light blue
-        highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
-        highlight! link CmpItemKindInterface CmpItemKindVariable
-        highlight! link CmpItemKindText CmpItemKindVariable
-        " pink
-        highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
-        highlight! link CmpItemKindMethod CmpItemKindFunction
-        " front
-        highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
-        highlight! link CmpItemKindProperty CmpItemKindKeyword
-        highlight! link CmpItemKindUnit CmpItemKindKeyword
-
-
-        " au VimEnter * lua _G.self_color_gruvbox_dark()
-
-        " inoremap <silent> <c-g>h <Cmd>:Lspsaga lsp_finder<CR>
-        inoremap <silent> <c-g>a <Cmd>:lua vim.lsp.buf.code_action()<CR>
-        inoremap <silent> <c-g>k <Cmd>:Lspsaga hover_doc<CR>
-        inoremap <silent> <c-g>s <Cmd>:Lspsaga signature_help<CR>
-        inoremap <silent> <c-g>r <Cmd>:Lspsaga rename<CR>
-        "inoremap <silent> <c-g>d <Cmd>:Lspsaga preview_definition<CR>
-        "inoremap <silent> <c-g>g <Cmd>:Lspsaga show_line_diagnostics<CR>
-        "inoremap <silent> <c-g>] <Cmd>:Lspsaga diagnostic_jump_next<CR>
-        "inoremap <silent> <c-g>[ <Cmd>:Lspsaga diagnostic_jump_prev<CR>
-        "inoremap <silent> <c-`> <Cmd>:Lspsaga open_floaterm<CR>
-        "tnoremap <silent> <c-`> <C-\><C-n>:Lspsaga close_floaterm<CR>
-
-        inoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
-        vnoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
-
-        inoremap <c-g>d <Cmd>:lua require'telescope.builtin'.lsp_definitions{}<cr>
-        inoremap <c-g>D <Cmd>:lua require'telescope.builtin'.lsp_implementations{}<cr>
-        inoremap <c-g>g <Cmd>:lua require'telescope.builtin'.diagnostics{ bufnr = 0 }<cr>
-        "nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
-        "nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
-        "vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
-
-        nnoremap <C-S-p> :lua require'telescope.builtin'.keymaps{}<cr>
-
-        nnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
-        inoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
-        vnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
-
-        nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
-        vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
-        inoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
-
-        " nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
-        inoremap <C-S-g> <C-o>:call gitblame#echo()<CR>
-
-        " function! OpenCompletion()
-        "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
-        "         call feedkeys("\<C-x>\<C-o>", "n")
-        "     endif
-        " endfunction
-        " autocmd InsertCharPre * call OpenCompletion()
-        " set completeopt+=menuone,noselect,noinsert
-
-        " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
-        " found' messages
-        " set shortmess+=c
-
-        " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
-        " inoremap <silent> <c-c> <C-o>:startinsert<cr>
-
-        "imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
-        "imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-        "imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-        "imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-
-        "imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
-        "imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
-        "imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-        "imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
-
-        " Use <TAB> to select the popup menu:
-        "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-        "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-d>"
-
-        "autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
-
-        let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-        " let g:airline#extensions#tabline#enabled = 1
-
-        " set sessionoptions-=options
-        " set sessionoptions+=globals
-
-        " function! Sha1(text)
-        "   let hash = system('${sha1Cmd} "' . a:text . '"')
-        "   return hash
-        " endfunction
-
-        " function! SessionPath()
-        "   return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . Sha1( getcwd() ) . ".vim"
-        " endfunction
-
-        " function! WipeAll()
-        "     let i = 0
-        "     let n = bufnr("$")
-        "     while i < n
-        "         let i = i + 1
-        "         if bufexists(i)
-        "             execute("bw " . i)
-        "         endif
-        "     endwhile
-        " endfunction
-
-        " autocmd VimLeavePre * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
-        "     \ call mkdir("${variables.homeDir}/.vim-sessions") |
-        "     \ endif |
-        "     \ execute "mksession! " . SessionPath()
-
-        " function! MySessionLoad()
-        "   let l:sessionPath = SessionPath()
-        "   if argc() == 0 && filereadable(l:sessionPath)
-        "     " call WipeAll()
-        "     execute "source " . l:sessionPath
-        "   endif
-        " endfunction
-
-        " autocmd VimEnter * nested call MySessionLoad()
-
-        "augroup CtrlPExtension
-        "  autocmd!
-        "  autocmd FocusGained  * CtrlPClearCache
-        "  autocmd BufWritePost * CtrlPClearCache
-        "augroup END
-
-        " tab sball
-        " set switchbuf=usetab,newtab
-        " au BufAdd,BufNewFile,BufRead * nested tab sball
-
-        "augroup bufclosetrack
-        "  au!
-        "  autocmd BufLeave * let g:lastWinName = @%
-        "augroup END
-        "function! LastWindow()
-        "  exe "edit " . g:lastWinName
-        "endfunction
-        "command -nargs=0 LastWindow call LastWindow()
-
-        set list
-        set listchars=tab:▸\ ,trail:×,nbsp:⎵
-
-        augroup python
-          au!
-          au BufNewFile,BufRead *.py setlocal tabstop=4
-          au BufNewFile,BufRead *.py setlocal softtabstop=4
-          au BufNewFile,BufRead *.py setlocal shiftwidth=4
-          au BufNewFile,BufRead *.py setlocal textwidth=79
-          au BufNewFile,BufRead *.py setlocal expandtab
-          au BufNewFile,BufRead *.py setlocal autoindent
-          au BufNewFile,BufRead *.py setlocal fileformat=unix
-        augroup END
-
-        augroup web
-          au!
-          au BufNewFile,BufRead *.js,*.html,*.css setlocal tabstop=2
-          au BufNewFile,BufRead *.js,*.html,*.css setlocal softtabstop=2
-          au BufNewFile,BufRead *.js,*.html,*.css setlocal shiftwidth=2
-        augroup END
-
-        augroup markdown
-          au!
-          au FileType markdown,textile,text setlocal spell spelllang=en_us
-          au FileType markdown,textile,text setlocal formatoptions+=t
-        augroup END
-
-        let g:deoplete#enable_at_startup = 1
-        autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-        tnoremap <silent> <C-l> <C-\><C-n>
-        tnoremap <C-v> <C-\><C-N>"+pi
-        tnoremap <C-S-v> <C-\><C-N>"+pi
-        tnoremap <silent> <a-left> <C-left>
-        tnoremap <silent> <a-right> <C-right>
-
-        nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
-        inoremap <silent> <C-S-T> <C-o>:edit term://${variables.vimShell or "zsh"}<cr>
-        tnoremap <silent> <C-S-T> <C-\><C-N>:edit term://${variables.vimShell or "zsh"}<cr>
-        " let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
-
-        cnoremap <C-v> <C-r>+
-
-        let g:NERDDefaultAlign = 'left'
-        let g:NERDSpaceDelims = 1
-
-        nnoremap <C-o> :Neotree toggle reveal<CR>
-        tnoremap <C-o> <C-\><C-N>:Neotree toggle reveal<CR>
-        inoremap <C-o> <Cmd>Neotree toggle reveal<CR>
-        " nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
-        " inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
-        " nnoremap <leader>r :NvimTreeRefresh<CR>
-        " nnoremap <leader>n :NvimTreeFindFile<CR>
-        " NvimTreeOpen and NvimTreeClose are also available if you need them
-
-        " let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
-
-        au BufNewFile,BufRead *.robot setlocal filetype=robot
-
-        au BufNewFile,BufRead *Jenkinsfile* setlocal filetype=groovy
-
-        " let g:gitblame_date_format = '%r'
-        " let g:blamer_enabled = 1
-        " let g:blamer_show_in_visual_modes = 0
-        " let g:blamer_show_in_insert_modes = 0
-        " let g:blamer_relative_time = 1
-        " let g:blamer_template = '<committer> • <committer-time> • <summary>'
-
-        set splitbelow
-        set splitright
-        inoremap <silent> <A-h> <Cmd>:sp<cr>
-        inoremap <silent> <A-v> <Cmd>:vsp<cr>
-        inoremap <silent> <A-w> <Cmd>:close<cr>
-        " nnoremap <A-Down> <C-W><C-J>
-        " nnoremap <A-Up> <C-W><C-K>
-        " nnoremap <A-Right> <C-W><C-L>
-        " nnoremap <A-Left> <C-W><C-H>
-
-        inoremap <A-Left> <Cmd>:lua require('smart-splits').move_cursor_left()<CR>
-        inoremap <A-Down> <Cmd>:lua require('smart-splits').move_cursor_down()<CR>
-        inoremap <A-Up> <Cmd>:lua require('smart-splits').move_cursor_up()<CR>
-        inoremap <A-Right> <Cmd>:lua require('smart-splits').move_cursor_right()<CR>
-
-        inoremap <A-S-Left> <Cmd>:lua require('smart-splits').resize_left()<CR>
-        inoremap <A-S-Down> <Cmd>:lua require('smart-splits').resize_down()<CR>
-        inoremap <A-S-Up> <Cmd>:lua require('smart-splits').resize_up()<CR>
-        inoremap <A-S-Right> <Cmd>:lua require('smart-splits').resize_right()<CR>
-
-        set redrawtime=3000
-
-        set re=0
-
-        hi BlackBg guibg=black
-
-        augroup term
-          au!
-          au TermOpen * :setlocal winhighlight=Normal:BlackBg
-          au TermOpen * :setlocal nonumber
-          au TermOpen * :setlocal nocursorline
-          au TermOpen * :setlocal signcolumn=no
-          au TermOpen * :nnoremap <buffer><cr> i
-        augroup END
-
-        function! TerminalOptions()
-          silent! au BufEnter <buffer> startinsert!
-          silent! au BufLeave <buffer> stopinsert!
-        endfunction
-        au TermOpen * call TerminalOptions()
-
-        highlight CursorLine guibg=Grey22
-        highlight GalaxyLineFillSection guibg=#32302f
-
-        highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
-        highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
-        highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
-
-        nnoremap <C-S-h> :SignifyHunkDiff<cr>
-        inoremap <C-S-h> <C-o>:SignifyHunkDiff<cr>
-        inoremap <C-S-u> <C-o>:SignifyHunkUndo<cr>
-
-        inoremap <C-S-}> <cmd>:call sy#jump#next_hunk(1)<cr>
-        inoremap <C-S-{> <cmd>:call sy#jump#prev_hunk(1)<cr>
-
-        autocmd User SignifyHunk call s:show_current_hunk()
-
-        function! s:show_current_hunk() abort
-          let h = sy#util#get_hunk_stats()
-          if !empty(h)
-            echo printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks)
-          endif
-        endfunction
-
-        nnoremap <silent> <C-L> :noh<cr>i
-
-        let g:novim_mode_use_editor_fixes = 0
-        let g:novim_mode_use_pane_controls = 0
-        let g:novim_mode_use_general_app_shortcuts = 0
-        let g:novim_mode_use_copypasting = 0
-        let g:novim_mode_use_undoing = 0
-
-        inoremap <silent> <M-Left>  <C-O><C-W><Left>
-        snoremap <silent> <M-Left>  <Esc><C-W><Left>
-        nnoremap <silent> <M-Left>  <C-W><Left>
-        inoremap <silent> <M-Down>  <C-O><C-W><Down>
-        snoremap <silent> <M-Down>  <Esc><C-W><Down>
-        nnoremap <silent> <M-Down>  <C-W><Down>
-        inoremap <silent> <M-Up>    <C-O><C-W><Up>
-        snoremap <silent> <M-Up>    <Esc><C-W><Up>
-        nnoremap <silent> <M-Up>    <C-W><Up>
-        inoremap <silent> <M-Right> <C-O><C-W><Right>
-        snoremap <silent> <M-Right> <Esc><C-W><Right>
-        nnoremap <silent> <M-Right> <C-W><Right>
-
-        inoremap <C-Q> <C-O>:qall
-        snoremap <C-Q> <C-O>:qall
-        nnoremap <C-Q> :qall
-        tnoremap <C-Q> <C-\><C-N>:qall
-        cnoremap <C-Q> <C-C><C-O>:qall
-
-        inoremap <silent> <C-S> <C-o>:w<CR><C-o>:update<CR>
-        nnoremap <silent> <C-S> :w<CR>:update<CR>i
-
-        inoremap <M-;> <C-O>:
-        snoremap <M-;> <C-O>:
-        inoremap <M-c> <C-O>:
-        snoremap <M-c> <C-O>:
-        nnoremap <M-;> :
-        nnoremap <M-c> :
-
-        inoremap <M-o> <C-O>
-        snoremap <M-o> <C-O>
-
-        "inoremap <C-V> <C-O>:call novim_mode#Paste()<CR>
-        " The odd <Space><Backspace> here is because one-off Normal Mode commands
-        " don't seem to work as expected when some text is selected. Also just
-        " using <Backspace> on its own seems to cause weird behaviour too.
-        "snoremap <C-V> <Space><Backspace><C-O>:call novim_mode#Paste()<CR>
-        "cnoremap <C-V> <C-R>"
-        "snoremap <C-C> <C-O>"+ygv
-        "snoremap <C-X> <C-O>"+xi
-
-        " Use <M-o><C-Z> for native terminal backgrounding.
-        " The <Esc>s used in the `snoremap` commands seem to prevent the selection
-        " process itself being put in the undo history - so now the undo actually undoes
-        " the last *text* activity.
-        inoremap <silent> <C-Z> <C-O>u
-        snoremap <silent> <C-Z> <Esc><C-O>u
-        vnoremap <silent> <C-Z> <Esc><C-O>u
-        " Redo
-        inoremap <silent> <C-Y> <C-O><C-R>
-        snoremap <silent> <C-Y> <Esc><C-O><C-R>
-        vnoremap <silent> <C-Y> <Esc><C-O><C-R>
-
-        " inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
-        " inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>
-        " inoremap <silent> <S-Up> <C-O>:call novim_mode#EnterSelectionMode('up')<CR>
-        " inoremap <silent> <S-Down> <C-O>:call novim_mode#EnterSelectionMode('down')<CR>
-        " inoremap <silent> <S-Home> <C-O>:call novim_mode#EnterSelectionMode('home')<CR>
-        " inoremap <silent> <S-End> <C-O>:call novim_mode#EnterSelectionMode('end')<CR>
-
-        " CTRL-A for selecting all text
-        " inoremap <silent> <C-a> <C-O>:call novim_mode#EnterSelectionMode('all')<CR>
-        " snoremap <C-a> <C-O><C-C>gggH<C-O>G
-
-        set wildcharm=<C-Z>
-        cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
-        cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
-        cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
-        cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
-
-        inoremap <C-S-o> <Cmd>:Lexplore<cr>
-        nnoremap <C-S-o> <Cmd>:Lexplore<cr>
-
-        " function! NetrwMapping()
-        "     " noremap <buffer> <C-l> <C-W>l
-        "     " noremap <buffer> <C-h> <C-W>h
-
-        "     " let g:netrw_banner = 0 " remove the banner at the top
-        "     let g:netrw_liststyle = 3  " default directory view. Cycle with i
-        "     let g:netrw_browse_split = 4
-        "     let g:netrw_altv = 1
-        "     let g:netrw_sort_sequence = '[\/]$,*'
-
-        "     let g:netrw_list_hide= '.*.swp$,
-        "             \ *.pyc$,
-        "             \ *.log$,
-        "             \ *.o$,
-        "             \ *.xmi$,
-        "             \ *.swp$,
-        "             \ *.bak$,
-        "             \ *.pyc$,
-        "             \ *.class$,
-        "             \ *.jar$,
-        "             \ *.war$,
-        "             \ *__pycache__*'
-
-        " endfunction
-
-        " augroup netrw_mapping
-        "     autocmd!
-        "     autocmd filetype netrw call NetrwMapping()
-        " augroup END
-
-        " augroup AutoDeleteNetrwHiddenBuffers
-        "   au!
-        "   au FileType netrw setlocal bufhidden=wipe
-        " augroup end
-
-        " let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
-        au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = "${pkgs.plantuml}/lib/plantuml.jar"
-        let g:plantuml_previewer#viewer_path = "${variables.homeDir}/.plantuml-previewer-vim"
-        let g:plantuml_previewer#debug_mode = 1
-        let g:plantuml_previewer#save_format = "png"
-        let g:plantuml_previewer#java_path = "${pkgs.jre}/bin/java"
-
-        " augroup matchup_matchparen_highlight
-        "   autocmd!
-        "   autocmd ColorScheme * hi MatchParen guifg=Gray40
-        "   autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
-        " augroup END
-
-        let g:matchup_matchparen_deferred = 1
-        let g:matchup_matchparen_deferred_show_delay = 100
-        let g:matchup_matchparen_deferred_hide_delay = 500
-        inoremap <C-m> <C-o><plug>(matchup-%)
-        let g:matchup_matchparen_offscreen = {'method': 'popup'}
-        let g:matchup_matchparen_hi_surround_always = 0
-
-        " augroup large_file_support
-        "   autocmd!
-        "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | setlocal syntax=off | endif
-        "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | lua require'cmp'.setup.buffer { enabled = false } | endif
-        " augroup END
-
-        autocmd BufRead xml setlocal syntax=on
-
-        " highlight LineTooLongMarker guibg=Gray26
-        " call matchadd('LineTooLongMarker', '\%81v', 100)
-
-        let g:signify_vcs_cmds = {
-          \ 'git':      '${pkgs.git}/bin/git diff --no-color --no-ext-diff -U0 -- %f',
-          \ 'yadm':     'yadm diff --no-color --no-ext-diff -U0 -- %f',
-          \ 'hg':       'hg diff --color=never --config aliases.diff= --nodates -U0 -- %f',
-          \ 'svn':      'svn diff --diff-cmd %d -x -U0 -- %f',
-          \ 'bzr':      'bzr diff --using %d --diff-options=-U0 -- %f',
-          \ 'darcs':    'darcs diff --no-pause-for-gui --no-unified --diff-opts=-U0 -- %f',
-          \ 'fossil':   'fossil diff --unified -c 0 -- %f',
-          \ 'cvs':      'cvs diff -U0 -- %f',
-          \ 'rcs':      'rcsdiff -U0 %f 2>%n',
-          \ 'accurev':  'accurev diff %f -- -U0',
-          \ 'perforce': 'p4 info '. sy#util#shell_redirect('%n') . (has('win32') ? ' &&' : ' && env P4DIFF= P4COLORS=') .' p4 diff -du0 %f',
-          \ 'tfs':      'tf diff -version:W -noprompt -format:Unified %f'
-          \ }
-
-        autocmd UIEnter * source ${ginitVim}
-
-        function! SetColumnToStart()
+    " gray
+    highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080
+    " blue
+    highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6 gui=bold
+    highlight! link CmpItemAbbrMatchFuzzy CmpItemAbbrMatch
+    " light blue
+    highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE
+    highlight! link CmpItemKindInterface CmpItemKindVariable
+    highlight! link CmpItemKindText CmpItemKindVariable
+    " pink
+    highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0
+    highlight! link CmpItemKindMethod CmpItemKindFunction
+    " front
+    highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4
+    highlight! link CmpItemKindProperty CmpItemKindKeyword
+    highlight! link CmpItemKindUnit CmpItemKindKeyword
+
+
+    " au VimEnter * lua _G.self_color_gruvbox_dark()
+
+    " inoremap <silent> <c-g>h <Cmd>:Lspsaga lsp_finder<CR>
+    inoremap <silent> <c-g>a <Cmd>:lua vim.lsp.buf.code_action()<CR>
+    inoremap <silent> <c-g>k <Cmd>:Lspsaga hover_doc<CR>
+    inoremap <silent> <c-g>s <Cmd>:Lspsaga signature_help<CR>
+    inoremap <silent> <c-g>r <Cmd>:Lspsaga rename<CR>
+    "inoremap <silent> <c-g>d <Cmd>:Lspsaga preview_definition<CR>
+    "inoremap <silent> <c-g>g <Cmd>:Lspsaga show_line_diagnostics<CR>
+    "inoremap <silent> <c-g>] <Cmd>:Lspsaga diagnostic_jump_next<CR>
+    "inoremap <silent> <c-g>[ <Cmd>:Lspsaga diagnostic_jump_prev<CR>
+    "inoremap <silent> <c-`> <Cmd>:Lspsaga open_floaterm<CR>
+    "tnoremap <silent> <c-`> <C-\><C-n>:Lspsaga close_floaterm<CR>
+
+    inoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
+    vnoremap <silent> <c-g>f <cmd>:lua vim.lsp.buf.format{ async = true }<CR>
+
+    inoremap <c-g>d <Cmd>:lua require'telescope.builtin'.lsp_definitions{}<cr>
+    inoremap <c-g>D <Cmd>:lua require'telescope.builtin'.lsp_implementations{}<cr>
+    inoremap <c-g>g <Cmd>:lua require'telescope.builtin'.diagnostics{ bufnr = 0 }<cr>
+    "nnoremap gr :lua require'telescope.builtin'.lsp_references{}<cr>
+    "nnoremap ca :lua require'telescope.builtin'.lsp_code_actions{}<cr>
+    "vnoremap ca :lua require'telescope.builtin'.lsp_range_code_actions{}<cr>
+
+    nnoremap <C-S-p> :lua require'telescope.builtin'.keymaps{}<cr>
+
+    nnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+    inoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+    vnoremap <C-S-f> <Cmd>lua require("telescope").extensions.live_grep_args.live_grep_args()<cr>
+
+    nnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
+    vnoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
+    inoremap <C-p> <Cmd>lua require('telescope').extensions.frecency.frecency()<cr>
+
+    " nnoremap <C-g> :<C-u>call gitblame#echo()<CR>
+    inoremap <C-S-g> <C-o>:call gitblame#echo()<CR>
+
+    " function! OpenCompletion()
+    "     if !pumvisible() && ((v:char >= 'a' && v:char <= 'z') || (v:char >= 'A' && v:char <= 'Z'))
+    "         call feedkeys("\<C-x>\<C-o>", "n")
+    "     endif
+    " endfunction
+    " autocmd InsertCharPre * call OpenCompletion()
+    " set completeopt+=menuone,noselect,noinsert
+
+    " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+    " found' messages
+    " set shortmess+=c
+
+    " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
+    " inoremap <silent> <c-c> <C-o>:startinsert<cr>
+
+    "imap <expr> <Esc>      pumvisible() ? "\<C-y>" : "\<Esc>"
+    "imap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+    "imap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+    "imap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+
+    "imap <expr> <C-Right>  pumvisible() ? "\<Right>" : "\<C-Right>"
+    "imap <expr> <C-Left>   pumvisible() ? "\<Left>" : "\<C-Left>"
+    "imap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+    "imap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
+    " Use <TAB> to select the popup menu:
+    "inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+    "inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-d>"
+
+    "autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | silent! pclose | endif
+
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+    " let g:airline#extensions#tabline#enabled = 1
+
+    " set sessionoptions-=options
+    " set sessionoptions+=globals
+
+    " function! Sha1(text)
+    "   let hash = system('${sha1Cmd} "' . a:text . '"')
+    "   return hash
+    " endfunction
+
+    " function! SessionPath()
+    "   return "${variables.homeDir}/.vim-sessions/" . ProjectName() . "-" . Sha1( getcwd() ) . ".vim"
+    " endfunction
+
+    " function! WipeAll()
+    "     let i = 0
+    "     let n = bufnr("$")
+    "     while i < n
+    "         let i = i + 1
+    "         if bufexists(i)
+    "             execute("bw " . i)
+    "         endif
+    "     endwhile
+    " endfunction
+
+    " autocmd VimLeavePre * nested if (!isdirectory("${variables.homeDir}/.vim-sessions")) |
+    "     \ call mkdir("${variables.homeDir}/.vim-sessions") |
+    "     \ endif |
+    "     \ execute "mksession! " . SessionPath()
+
+    " function! MySessionLoad()
+    "   let l:sessionPath = SessionPath()
+    "   if argc() == 0 && filereadable(l:sessionPath)
+    "     " call WipeAll()
+    "     execute "source " . l:sessionPath
+    "   endif
+    " endfunction
+
+    " autocmd VimEnter * nested call MySessionLoad()
+
+    "augroup CtrlPExtension
+    "  autocmd!
+    "  autocmd FocusGained  * CtrlPClearCache
+    "  autocmd BufWritePost * CtrlPClearCache
+    "augroup END
+
+    " tab sball
+    " set switchbuf=usetab,newtab
+    " au BufAdd,BufNewFile,BufRead * nested tab sball
+
+    "augroup bufclosetrack
+    "  au!
+    "  autocmd BufLeave * let g:lastWinName = @%
+    "augroup END
+    "function! LastWindow()
+    "  exe "edit " . g:lastWinName
+    "endfunction
+    "command -nargs=0 LastWindow call LastWindow()
+
+    set list
+    set listchars=tab:▸\ ,trail:×,nbsp:⎵
+
+    augroup python
+      au!
+      au BufNewFile,BufRead *.py setlocal tabstop=4
+      au BufNewFile,BufRead *.py setlocal softtabstop=4
+      au BufNewFile,BufRead *.py setlocal shiftwidth=4
+      au BufNewFile,BufRead *.py setlocal textwidth=79
+      au BufNewFile,BufRead *.py setlocal expandtab
+      au BufNewFile,BufRead *.py setlocal autoindent
+      au BufNewFile,BufRead *.py setlocal fileformat=unix
+    augroup END
+
+    augroup web
+      au!
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal tabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal softtabstop=2
+      au BufNewFile,BufRead *.js,*.html,*.css setlocal shiftwidth=2
+    augroup END
+
+    augroup markdown
+      au!
+      au FileType markdown,textile,text setlocal spell spelllang=en_us
+      au FileType markdown,textile,text setlocal formatoptions+=t
+    augroup END
+
+    let g:deoplete#enable_at_startup = 1
+    autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+
+    tnoremap <silent> <C-l> <C-\><C-n>
+    tnoremap <C-v> <C-\><C-N>"+pi
+    tnoremap <C-S-v> <C-\><C-N>"+pi
+    tnoremap <silent> <a-left> <C-left>
+    tnoremap <silent> <a-right> <C-right>
+
+    nnoremap <silent> <C-S-T> :edit term://${variables.vimShell or "zsh"}<cr>
+    inoremap <silent> <C-S-T> <C-o>:edit term://${variables.vimShell or "zsh"}<cr>
+    tnoremap <silent> <C-S-T> <C-\><C-N>:edit term://${variables.vimShell or "zsh"}<cr>
+    " let g:airline#extensions#tabline#ignore_bufadd_pat = '!|defx|gundo|nerd_tree|startify|tagbar|undotree|vimfiler'
+
+    cnoremap <C-v> <C-r>+
+
+    let g:NERDDefaultAlign = 'left'
+    let g:NERDSpaceDelims = 1
+
+    nnoremap <C-o> :Neotree toggle reveal<CR>
+    tnoremap <C-o> <C-\><C-N>:Neotree toggle reveal<CR>
+    inoremap <C-o> <Cmd>Neotree toggle reveal<CR>
+    " nnoremap <C-o> :NvimTreeToggle<CR>:NvimTreeRefresh<CR>
+    " inoremap <C-o> <esc>:NvimTreeToggle<CR>:NvimTreeRefresh<CR>
+    " nnoremap <leader>r :NvimTreeRefresh<CR>
+    " nnoremap <leader>n :NvimTreeFindFile<CR>
+    " NvimTreeOpen and NvimTreeClose are also available if you need them
+
+    " let g:fakeclip_provide_clipboard_key_mappings = !empty($WAYLAND_DISPLAY)
+
+    au BufNewFile,BufRead *.robot setlocal filetype=robot
+
+    au BufNewFile,BufRead *Jenkinsfile* setlocal filetype=groovy
+
+    " let g:gitblame_date_format = '%r'
+    " let g:blamer_enabled = 1
+    " let g:blamer_show_in_visual_modes = 0
+    " let g:blamer_show_in_insert_modes = 0
+    " let g:blamer_relative_time = 1
+    " let g:blamer_template = '<committer> • <committer-time> • <summary>'
+
+    set splitbelow
+    set splitright
+    inoremap <silent> <A-h> <Cmd>:sp<cr>
+    inoremap <silent> <A-v> <Cmd>:vsp<cr>
+    inoremap <silent> <A-w> <Cmd>:close<cr>
+    " nnoremap <A-Down> <C-W><C-J>
+    " nnoremap <A-Up> <C-W><C-K>
+    " nnoremap <A-Right> <C-W><C-L>
+    " nnoremap <A-Left> <C-W><C-H>
+
+    inoremap <A-Left> <Cmd>:lua require('smart-splits').move_cursor_left()<CR>
+    inoremap <A-Down> <Cmd>:lua require('smart-splits').move_cursor_down()<CR>
+    inoremap <A-Up> <Cmd>:lua require('smart-splits').move_cursor_up()<CR>
+    inoremap <A-Right> <Cmd>:lua require('smart-splits').move_cursor_right()<CR>
+
+    inoremap <A-S-Left> <Cmd>:lua require('smart-splits').resize_left()<CR>
+    inoremap <A-S-Down> <Cmd>:lua require('smart-splits').resize_down()<CR>
+    inoremap <A-S-Up> <Cmd>:lua require('smart-splits').resize_up()<CR>
+    inoremap <A-S-Right> <Cmd>:lua require('smart-splits').resize_right()<CR>
+
+    set redrawtime=3000
+
+    set re=0
+
+    hi BlackBg guibg=black
+
+    augroup term
+      au!
+      au TermOpen * :setlocal winhighlight=Normal:BlackBg
+      au TermOpen * :setlocal nonumber
+      au TermOpen * :setlocal nocursorline
+      au TermOpen * :setlocal signcolumn=no
+      au TermOpen * :nnoremap <buffer><cr> i
+    augroup END
+
+    function! TerminalOptions()
+      silent! au BufEnter <buffer> startinsert!
+      silent! au BufLeave <buffer> stopinsert!
+    endfunction
+    au TermOpen * call TerminalOptions()
+
+    highlight CursorLine guibg=Grey22
+    highlight GalaxyLineFillSection guibg=#32302f
+
+    highlight SignifySignAdd    ctermfg=green  guifg=#00ff00 cterm=NONE gui=NONE
+    highlight SignifySignDelete ctermfg=red    guifg=#ff0000 cterm=NONE gui=NONE
+    highlight SignifySignChange ctermfg=yellow guifg=#ffff00 cterm=NONE gui=NONE
+
+    nnoremap <C-S-h> :SignifyHunkDiff<cr>
+    inoremap <C-S-h> <C-o>:SignifyHunkDiff<cr>
+    inoremap <C-S-u> <C-o>:SignifyHunkUndo<cr>
+
+    inoremap <C-S-}> <cmd>:call sy#jump#next_hunk(1)<cr>
+    inoremap <C-S-{> <cmd>:call sy#jump#prev_hunk(1)<cr>
+
+    autocmd User SignifyHunk call s:show_current_hunk()
+
+    function! s:show_current_hunk() abort
+      let h = sy#util#get_hunk_stats()
+      if !empty(h)
+        echo printf('[Hunk %d/%d]', h.current_hunk, h.total_hunks)
+      endif
+    endfunction
+
+    nnoremap <silent> <C-L> :noh<cr>i
+
+    let g:novim_mode_use_editor_fixes = 0
+    let g:novim_mode_use_pane_controls = 0
+    let g:novim_mode_use_general_app_shortcuts = 0
+    let g:novim_mode_use_copypasting = 0
+    let g:novim_mode_use_undoing = 0
+
+    inoremap <silent> <M-Left>  <C-O><C-W><Left>
+    snoremap <silent> <M-Left>  <Esc><C-W><Left>
+    nnoremap <silent> <M-Left>  <C-W><Left>
+    inoremap <silent> <M-Down>  <C-O><C-W><Down>
+    snoremap <silent> <M-Down>  <Esc><C-W><Down>
+    nnoremap <silent> <M-Down>  <C-W><Down>
+    inoremap <silent> <M-Up>    <C-O><C-W><Up>
+    snoremap <silent> <M-Up>    <Esc><C-W><Up>
+    nnoremap <silent> <M-Up>    <C-W><Up>
+    inoremap <silent> <M-Right> <C-O><C-W><Right>
+    snoremap <silent> <M-Right> <Esc><C-W><Right>
+    nnoremap <silent> <M-Right> <C-W><Right>
+
+    inoremap <C-Q> <C-O>:qall
+    snoremap <C-Q> <C-O>:qall
+    nnoremap <C-Q> :qall
+    tnoremap <C-Q> <C-\><C-N>:qall
+    cnoremap <C-Q> <C-C><C-O>:qall
+
+    inoremap <silent> <C-S> <C-o>:w<CR><C-o>:update<CR>
+    nnoremap <silent> <C-S> :w<CR>:update<CR>i
+
+    inoremap <M-;> <C-O>:
+    snoremap <M-;> <C-O>:
+    inoremap <M-c> <C-O>:
+    snoremap <M-c> <C-O>:
+    nnoremap <M-;> :
+    nnoremap <M-c> :
+
+    inoremap <M-o> <C-O>
+    snoremap <M-o> <C-O>
+
+    "inoremap <C-V> <C-O>:call novim_mode#Paste()<CR>
+    " The odd <Space><Backspace> here is because one-off Normal Mode commands
+    " don't seem to work as expected when some text is selected. Also just
+    " using <Backspace> on its own seems to cause weird behaviour too.
+    "snoremap <C-V> <Space><Backspace><C-O>:call novim_mode#Paste()<CR>
+    "cnoremap <C-V> <C-R>"
+    "snoremap <C-C> <C-O>"+ygv
+    "snoremap <C-X> <C-O>"+xi
+
+    " Use <M-o><C-Z> for native terminal backgrounding.
+    " The <Esc>s used in the `snoremap` commands seem to prevent the selection
+    " process itself being put in the undo history - so now the undo actually undoes
+    " the last *text* activity.
+    inoremap <silent> <C-Z> <C-O>u
+    snoremap <silent> <C-Z> <Esc><C-O>u
+    vnoremap <silent> <C-Z> <Esc><C-O>u
+    " Redo
+    inoremap <silent> <C-Y> <C-O><C-R>
+    snoremap <silent> <C-Y> <Esc><C-O><C-R>
+    vnoremap <silent> <C-Y> <Esc><C-O><C-R>
+
+    " inoremap <silent> <S-Left> <C-O>:call novim_mode#EnterSelectionMode('left')<CR>
+    " inoremap <silent> <S-Right> <C-O>:call novim_mode#EnterSelectionMode('right')<CR>
+    " inoremap <silent> <S-Up> <C-O>:call novim_mode#EnterSelectionMode('up')<CR>
+    " inoremap <silent> <S-Down> <C-O>:call novim_mode#EnterSelectionMode('down')<CR>
+    " inoremap <silent> <S-Home> <C-O>:call novim_mode#EnterSelectionMode('home')<CR>
+    " inoremap <silent> <S-End> <C-O>:call novim_mode#EnterSelectionMode('end')<CR>
+
+    " CTRL-A for selecting all text
+    " inoremap <silent> <C-a> <C-O>:call novim_mode#EnterSelectionMode('all')<CR>
+    " snoremap <C-a> <C-O><C-C>gggH<C-O>G
+
+    set wildcharm=<C-Z>
+    cnoremap <expr> <up> wildmenumode() ? "\<left>" : "\<up>"
+    cnoremap <expr> <down> wildmenumode() ? "\<right>" : "\<down>"
+    cnoremap <expr> <left> wildmenumode() ? "\<up>" : "\<left>"
+    cnoremap <expr> <right> wildmenumode() ? " \<bs>\<C-Z>" : "\<right>"
+
+    inoremap <C-S-o> <Cmd>:Lexplore<cr>
+    nnoremap <C-S-o> <Cmd>:Lexplore<cr>
+
+    " function! NetrwMapping()
+    "     " noremap <buffer> <C-l> <C-W>l
+    "     " noremap <buffer> <C-h> <C-W>h
+
+    "     " let g:netrw_banner = 0 " remove the banner at the top
+    "     let g:netrw_liststyle = 3  " default directory view. Cycle with i
+    "     let g:netrw_browse_split = 4
+    "     let g:netrw_altv = 1
+    "     let g:netrw_sort_sequence = '[\/]$,*'
+
+    "     let g:netrw_list_hide= '.*.swp$,
+    "             \ *.pyc$,
+    "             \ *.log$,
+    "             \ *.o$,
+    "             \ *.xmi$,
+    "             \ *.swp$,
+    "             \ *.bak$,
+    "             \ *.pyc$,
+    "             \ *.class$,
+    "             \ *.jar$,
+    "             \ *.war$,
+    "             \ *__pycache__*'
+
+    " endfunction
+
+    " augroup netrw_mapping
+    "     autocmd!
+    "     autocmd filetype netrw call NetrwMapping()
+    " augroup END
+
+    " augroup AutoDeleteNetrwHiddenBuffers
+    "   au!
+    "   au FileType netrw setlocal bufhidden=wipe
+    " augroup end
+
+    " let g:previm_custom_preview_base_dir = "${variables.homeDir}/.previm"
+    au FileType plantuml let g:plantuml_previewer#plantuml_jar_path = "${pkgs.plantuml}/lib/plantuml.jar"
+    let g:plantuml_previewer#viewer_path = "${variables.homeDir}/.plantuml-previewer-vim"
+    let g:plantuml_previewer#debug_mode = 1
+    let g:plantuml_previewer#save_format = "png"
+    let g:plantuml_previewer#java_path = "${pkgs.jre}/bin/java"
+
+    " augroup matchup_matchparen_highlight
+    "   autocmd!
+    "   autocmd ColorScheme * hi MatchParen guifg=Gray40
+    "   autocmd ColorScheme * hi MatchWord cterm=underline gui=underline
+    " augroup END
+
+    let g:matchup_matchparen_deferred = 1
+    let g:matchup_matchparen_deferred_show_delay = 100
+    let g:matchup_matchparen_deferred_hide_delay = 500
+    inoremap <C-m> <C-o><plug>(matchup-%)
+    let g:matchup_matchparen_offscreen = {'method': 'popup'}
+    let g:matchup_matchparen_hi_surround_always = 0
+
+    " augroup large_file_support
+    "   autocmd!
+    "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | setlocal syntax=off | endif
+    "   autocmd CursorHoldI if getfsize(expand(@%)) > 1000000 | lua require'cmp'.setup.buffer { enabled = false } | endif
+    " augroup END
+
+    autocmd BufRead xml setlocal syntax=on
+
+    " highlight LineTooLongMarker guibg=Gray26
+    " call matchadd('LineTooLongMarker', '\%81v', 100)
+
+    let g:signify_vcs_cmds = {
+      \ 'git':      '${pkgs.git}/bin/git diff --no-color --no-ext-diff -U0 -- %f',
+      \ 'yadm':     'yadm diff --no-color --no-ext-diff -U0 -- %f',
+      \ 'hg':       'hg diff --color=never --config aliases.diff= --nodates -U0 -- %f',
+      \ 'svn':      'svn diff --diff-cmd %d -x -U0 -- %f',
+      \ 'bzr':      'bzr diff --using %d --diff-options=-U0 -- %f',
+      \ 'darcs':    'darcs diff --no-pause-for-gui --no-unified --diff-opts=-U0 -- %f',
+      \ 'fossil':   'fossil diff --unified -c 0 -- %f',
+      \ 'cvs':      'cvs diff -U0 -- %f',
+      \ 'rcs':      'rcsdiff -U0 %f 2>%n',
+      \ 'accurev':  'accurev diff %f -- -U0',
+      \ 'perforce': 'p4 info '. sy#util#shell_redirect('%n') . (has('win32') ? ' &&' : ' && env P4DIFF= P4COLORS=') .' p4 diff -du0 %f',
+      \ 'tfs':      'tf diff -version:W -noprompt -format:Unified %f'
+      \ }
+
+    lua << EOF
+    function GetLastWordFromAbove()
+      local line_num = vim.fn.line('.') - 1
+      if line_num < 1 then return "" end  -- no line above
+
+      local line = vim.fn.getline(line_num)
+      local last_word = line:match("(%S+)$")  -- matches last sequence of non-whitespace
+
+      return last_word or ""
+    end
+    vim.keymap.set('i', '<A-.>', GetLastWordFromAbove, { expr = true })
+    EOF
+
+    autocmd UIEnter * source ${ginitVim}
+
+    function! SetColumnToStart()
     lua << EOF
     local r, c = unpack(vim.api.nvim_win_get_cursor(0))
     vim.api.nvim_win_set_cursor(0, {r, 0})
     EOF
-        endfunction
+    endfunction
 
-        " autocmd SessionLoadPost * call SetColumnToStart()
+    " autocmd SessionLoadPost * call SetColumnToStart()
   '';
 
   neovim = (pkgs.wrapNeovim pkgs.neovim-unwrapped { }).override {
