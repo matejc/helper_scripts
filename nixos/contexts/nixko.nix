@@ -164,11 +164,15 @@ let
       };
       services.power-profiles-daemon.enable = lib.mkForce false;
       networking.enableIPv6 = false;
-      virtualisation.docker.rootless = {
-        enable = true;
-        setSocketVariable = true;
-      };
+      # virtualisation.docker.rootless = {
+      #   enable = true;
+      #   setSocketVariable = true;
+      # };
       hardware.enableAllFirmware = true;
+      services.tlp.settings = {
+        START_CHARGE_THRESH_BAT1 = 90;
+        STOP_CHARGE_THRESH_BAT1 = 95;
+      };
     };
     home-configuration = {
       home.stateVersion = "25.05";

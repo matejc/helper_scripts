@@ -1733,7 +1733,8 @@ in
                   services.ssh-agent.enable = true;
                   programs.ssh = {
                     enable = true;
-                    addKeysToAgent = "10m";
+                    enableDefaultConfig = false;
+                    matchBlocks."*".addKeysToAgent = "10m";
                   };
 
                   programs.bash = {

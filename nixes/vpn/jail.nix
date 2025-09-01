@@ -23,10 +23,6 @@
     guestPort = 1080;
     hostPort = 1080;
   },
-  httpproxy ? {
-    guestPort = 3128;
-    hostPort = 3128;
-  },
   cmds ? [
   ],
   preCmds ? {
@@ -164,11 +160,6 @@ let
       # local_port = shadowsocks.guestPort;
       locals = [
         {
-          protocol = "http";
-          local_address = "0.0.0.0";
-          local_port = httpproxy.guestPort;
-        }
-        {
           local_address = "0.0.0.0";
           local_port = socksproxy.guestPort;
         }
@@ -195,7 +186,7 @@ let
     name:
     {
       start,
-      stop ? "",
+      stop ? "kill -- -$$",
     }:
     pkgs.writeShellScript "start-${name}.sh" ''
       set -e
@@ -247,10 +238,6 @@ let
       null
     else
       [
-        {
-          host_port = httpproxy.hostPort;
-          guest_port = httpproxy.guestPort;
-        }
         {
           host_port = socksproxy.hostPort;
           guest_port = socksproxy.guestPort;
@@ -425,7 +412,6 @@ let
     command = ${
       mkCmd "rootshell" {
         start = "rm -f ${home.inside}/.rootshell.sock; TERM=screen-256color dtach -N ${home.inside}/.rootshell.sock ${interactiveShell}";
-        stop = "pkill dtach";
       }
     }
     priority = 0
@@ -437,11 +423,33 @@ let
     startsecs = 3
     exitcodes = 0
     stopsignal = TERM
-    stopwaitsecs = 10
+    stopwaitsecs = 1
     stopasgroup = true
     killasgroup = true
     redirect_stderr = true
     stdout_logfile = ${home.inside}/.supervisord/rootshell.log
+    stdout_logfile_maxbytes = 0
+
+    [program:usershell]
+    command = ${
+      mkCmd "usershell" {
+        start = "rm -f ${home.inside}/.usershell.sock; TERM=screen-256color dtach -N ${home.inside}/.usershell.sock ${interactiveShell}";
+      }
+    }
+    priority = 0
+    directory = ${home.inside}
+    user = ${user.inside}
+    numprocs = 1
+    autostart = true
+    autorestart = unexpected
+    startsecs = 3
+    exitcodes = 0
+    stopsignal = TERM
+    stopwaitsecs = 1
+    stopasgroup = true
+    killasgroup = true
+    redirect_stderr = true
+    stdout_logfile = ${home.inside}/.supervisord/usershell.log
     stdout_logfile_maxbytes = 0
 
     [program:shadowsocks]
@@ -607,13 +615,13 @@ let
       nspid="$(cat ${stateDir}/.ns.pid || echo "")"
       if [ ! -z "$nspid" ] && [ -f "/proc/$nspid/cmdline" ]
       then
-        slirp4netns --disable-dns --configure --mtu=65520 --api-socket /tmp/slirp4netns.sock ${extraSlirp4netnsArgs} $nspid tap0 &
+        slirp4netns --disable-dns --configure --mtu=65520 --api-socket ${stateDir}/.slirp4netns.sock ${extraSlirp4netnsArgs} $nspid tap0 &
         echo "$!" >${stateDir}/home/.slirp4netns.pid
 
         json='{"execute": "list_hostfwd"}'
         for i in {1..50}
         do
-          if echo $json | nc -U /tmp/slirp4netns.sock
+          if echo $json | nc -U ${stateDir}/.slirp4netns.sock
           then
             break
           else
@@ -622,7 +630,7 @@ let
         done
 
         ${pkgs.lib.concatMapStringsSep "\n" (
-          e: ''echo -n '${builtins.toJSON e}' | nc -U /tmp/slirp4netns.sock''
+          e: ''echo -n '${builtins.toJSON e}' | nc -U ${stateDir}/.slirp4netns.sock''
         ) slirp4netnsExecute}
         break
       fi
