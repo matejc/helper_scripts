@@ -2560,41 +2560,21 @@ let
       max_path_length = 80,  -- Shorten the display path if length exceeds this threshold. Use 0 if don't want to shorten the path at all.
     })
 
-    -- require'treesitter-context'.setup{
-    --     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-    --     max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-    --     patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
-    --         -- For all filetypes
-    --         -- Note that setting an entry here replaces all other patterns for this entry.
-    --         -- By setting the 'default' entry below, you can control which nodes you want to
-    --         -- appear in the context window.
-    --         -- default = {
-    --         --     'class',
-    --         --     'function',
-    --         --     'method',
-    --         --     -- 'for', -- These won't appear in the context
-    --         --     -- 'while',
-    --         --     -- 'if',
-    --         --     -- 'switch',
-    --         --     -- 'case',
-    --         -- },
-    --         -- Example for a specific filetype.
-    --         -- If a pattern is missing, *open a PR* so everyone can benefit.
-    --         --   rust = {
-    --         --       'impl_item',
-    --         --   },
-    --     },
-    --     exact_patterns = {
-    --         -- Example for a specific filetype with Lua patterns
-    --         -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
-    --         -- exactly match "impl_item" only)
-    --         -- rust = true,
-    --     },
-    --     -- [!] The options below are exposed but shouldn't require your attention,
-    --     --     you can safely ignore them.
-    --     zindex = 20, -- The Z-index of the context window
-    -- }
-
+    require'treesitter-context'.setup{
+      enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+      multiwindow = false, -- Enable multiwindow support.
+      max_lines = 8, -- How many lines the window should span. Values <= 0 mean no limit.
+      min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+      line_numbers = true,
+      multiline_threshold = 3, -- Maximum number of lines to show for a single context
+      trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+      mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+      -- Separator between context and content. Should be a single character string, like '-'.
+      -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+      separator = nil,
+      zindex = 20, -- The Z-index of the context window
+      on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+    }
 
     require("lspsaga").setup({
       ui = {
@@ -3000,7 +2980,7 @@ let
     --   { "ccl", "<cmd>ChatGPTRun code_readability_analysis<CR>", desc = "Code Readability Analysis", mode = { "n", "v" } },
     -- })
 
-    require('render-markdown').setup({})
+    -- require('render-markdown').setup({})
 
     -- require('hlchunk').setup({
     --   chunk = {
@@ -3609,7 +3589,6 @@ let
           # myVimPlugins.ChatGPT-nvim
           pkgs.vimPlugins.which-key-nvim
           pkgs.vimPlugins.markdown-preview-nvim
-          myVimPlugins.render-markdown-nvim
           #pkgs.vimPlugins.multicursors-nvim
           #pkgs.vimPlugins.hydra-nvim
           # myVimPlugins.hlchunk-nvim
@@ -3619,6 +3598,7 @@ let
           pkgs.vimPlugins.tiny-inline-diagnostic-nvim
           myVimPlugins.minuet-ai-nvim
           #pkgs.vimPlugins.parrot-nvim
+          pkgs.vimPlugins.nvim-treesitter-context
         ];
         opt = [
         ];

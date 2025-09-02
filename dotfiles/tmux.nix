@@ -4,6 +4,7 @@
   source = pkgs.writeText "tmux.conf" ''
     set -ga terminal-overrides ",xterm-256color:Tc"
     set -g default-terminal "screen-256color"
+    set-option -g default-shell "$SHELL"
 
     set -g mouse on
 
