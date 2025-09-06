@@ -27,18 +27,14 @@ let
       "${helper_scripts}/dotfiles/jstools.nix"
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/noctalialockscreen.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
       "${helper_scripts}/dotfiles/wofi.nix"
-      "${helper_scripts}/dotfiles/nwgbar.nix"
       "${helper_scripts}/dotfiles/helix.nix"
-      "${helper_scripts}/dotfiles/vlc.nix"
       "${helper_scripts}/dotfiles/mac.nix"
-      "${helper_scripts}/dotfiles/zed.nix"
-      "${helper_scripts}/dotfiles/zen.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -50,7 +46,7 @@ let
       prefix = "${self.variables.homeDir}/workarea/helper_scripts";
       nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
       binDir = "${self.variables.homeDir}/bin";
-      lockscreen = "${self.variables.binDir}/lockscreen";
+      lockscreen = "${self.variables.profileDir}/bin/lockscreen";
       lockImage = "";
       wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
@@ -122,8 +118,8 @@ let
         nixpkgs = "${inputs.nixpkgs}";
       };
       startup = [
-        "${self.variables.programs.browser}"
-        "${pkgs.keepassxc}/bin/keepassxc"
+        "${self.variables.profileDir}/bin/browser"
+        "${self.variables.profileDir}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
     };
@@ -150,7 +146,6 @@ let
       nixpkgs.config.allowUnfree = true;
       environment.systemPackages = with pkgs; [
         vulkan-tools
-        wl-clipboard
       ];
       services.greetd = {
         enable = true;
@@ -179,10 +174,6 @@ let
       # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
       security.pam.services.swaylock.fprintAuth = true;
       services.tailscale.enable = true;
-      services.udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness"
-        ACTION=="add", SUBSYSTEM=="backlight", KERNEL=="intel_backlight", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
-      '';
       hardware.bluetooth.enable = true;
       nixpkgs.config.permittedInsecurePackages = [
         "electron-27.3.11"
@@ -191,22 +182,7 @@ let
     };
     home-configuration = {
       home.stateVersion = "23.05";
-      services.swayidle = {
-        enable = true;
-        timeouts = lib.mkForce [
-            {
-                timeout = 100;
-                command = "${pkgs.brillo}/bin/brillo -U 30";
-                resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
-            }
-            { timeout = 120; command = "${self.variables.binDir}/lockscreen"; }
-            {
-                timeout = 300;
-                command = ''${self.variables.graphical.exec} msg action power-off-monitors'';
-                resumeCommand = lib.concatMapStringsSep "; " (o: ''${self.variables.graphical.exec} msg output ${o.output} on'') self.variables.outputs;
-            }
-        ];
-      };
+      services.swayidle.enable = true;
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
@@ -215,7 +191,7 @@ let
       programs.waybar.enable = true;
       home.packages = with pkgs; [
         networkmanagerapplet aichat deploy-rs logseq
-        nheko
+        nheko keepassxc kitty
       ];
       programs.firefox.enable = true;
       programs.chromium.enable = true;

@@ -291,6 +291,203 @@ let
       exec ${exec} "$@"
     ''
   ) context.variables.programs;
+
+  noctaliaShellDefaultSettings = pkgs.writeText "noctalia-shell-settings.json" ''
+{
+    "appLauncher": {
+        "backgroundOpacity": 0.98,
+        "enableClipboardHistory": true,
+        "pinnedExecs": [
+        ],
+        "position": "center"
+    },
+    "audio": {
+        "cavaFrameRate": 30,
+        "mprisBlacklist": [
+        ],
+        "preferredPlayer": "mpv",
+        "showMiniplayerAlbumArt": false,
+        "showMiniplayerCava": false,
+        "visualizerType": "linear",
+        "volumeStep": 5
+    },
+    "bar": {
+        "alwaysShowBatteryPercentage": true,
+        "backgroundOpacity": 0.98,
+        "monitors": [
+        ],
+        "position": "bottom",
+        "showActiveWindowIcon": true,
+        "showNetworkStats": false,
+        "showWorkspaceLabel": "index",
+        "useDistroLogo": false,
+        "widgets": {
+            "center": [
+                {
+                    "id": "Workspace"
+                }
+            ],
+            "left": [
+                {
+                    "id": "SystemMonitor"
+                },
+                {
+                    "id": "MediaMini"
+                },
+                {
+                    "id": "ActiveWindow"
+                }
+            ],
+            "right": [
+                {
+                    "id": "ScreenRecorderIndicator"
+                },
+                {
+                    "id": "KeepAwake"
+                },
+                {
+                    "id": "NotificationHistory"
+                },
+                {
+                    "id": "WiFi"
+                },
+                {
+                    "id": "Bluetooth"
+                },
+                {
+                    "id": "Battery"
+                },
+                {
+                    "id": "Volume"
+                },
+                {
+                    "id": "Microphone"
+                },
+                {
+                    "id": "Brightness"
+                },
+                {
+                    "id": "NightLight"
+                },
+                {
+                    "id": "Tray"
+                },
+                {
+                    "id": "Clock"
+                },
+                {
+                    "id": "SidePanelToggle"
+                }
+            ]
+        }
+    },
+    "brightness": {
+        "brightnessStep": 5
+    },
+    "colorSchemes": {
+        "darkMode": true,
+        "predefinedScheme": "${pkgs.noctalia-shell}/share/noctalia-shell/Assets/ColorScheme/Gruvbox.json",
+        "useWallpaperColors": false
+    },
+    "dock": {
+        "autoHide": true,
+        "exclusive": false,
+        "monitors": [
+        ]
+    },
+    "general": {
+        "animationSpeed": 0.5,
+        "avatarImage": "/home/matejc/.face",
+        "dimDesktop": true,
+        "radiusRatio": 1,
+        "showScreenCorners": false
+    },
+    "hooks": {
+        "darkModeChange": "",
+        "enabled": false,
+        "wallpaperChange": ""
+    },
+    "location": {
+        "name": "Helsinki",
+        "reverseDayMonth": false,
+        "showDateWithClock": true,
+        "use12HourClock": false,
+        "useFahrenheit": false
+    },
+    "matugen": {
+        "enableUserTemplates": false,
+        "foot": false,
+        "fuzzel": false,
+        "ghostty": false,
+        "gtk3": true,
+        "gtk4": true,
+        "kitty": false,
+        "qt5": true,
+        "qt6": true,
+        "vesktop": false
+    },
+    "network": {
+        "bluetoothEnabled": true,
+        "wifiEnabled": true
+    },
+    "nightLight": {
+        "autoSchedule": true,
+        "dayTemp": "6500",
+        "enabled": true,
+        "manualSunrise": "06:30",
+        "manualSunset": "18:30",
+        "nightTemp": "4000"
+    },
+    "notifications": {
+        "monitors": [
+        ]
+    },
+    "screenRecorder": {
+        "audioCodec": "opus",
+        "audioSource": "both",
+        "colorRange": "limited",
+        "directory": "/home/matejc/Videos",
+        "frameRate": 60,
+        "quality": "very_high",
+        "showCursor": true,
+        "videoCodec": "h264",
+        "videoSource": "portal"
+    },
+    "settingsVersion": 1,
+    "ui": {
+        "fontBillboard": "Roboto Medium",
+        "fontDefault": "Roboto",
+        "fontFixed": "SauceCodePro Nerd Font Mono",
+        "idleInhibitorEnabled": false,
+        "monitorsScaling": [
+        ]
+    },
+    "wallpaper": {
+        "directory": "/home/matejc/Pictures/Wallpapers",
+        "enableMultiMonitorDirectories": false,
+        "enabled": true,
+        "fillColor": "#000000",
+        "fillMode": "crop",
+        "monitors": [
+        ],
+        "randomEnabled": false,
+        "randomIntervalSec": 300,
+        "setWallpaperOnAllMonitors": true,
+        "transitionDuration": 1500,
+        "transitionEdgeSmoothness": 0.05,
+        "transitionType": "random"
+    }
+}
+  '';
+
+  noctaliaShellStartPreSh = pkgs.writeShellScript "noctalia-shell-start-pre.sh" ''
+    mkdir -p ${context.variables.homeDir}/.config/noctalia
+
+    if [ ! -e "${context.variables.homeDir}/.config/noctalia/settings.json" ]
+    then
+      cat "${noctaliaShellDefaultSettings}" > "${context.variables.homeDir}/.config/noctalia/settings.json"
+    fi
+  '';
 in
 {
   imports = [
@@ -314,6 +511,8 @@ in
             mpv = prev.mpv.override {
               scripts = [ prev.mpvScripts.mpris ];
             };
+            noctalia-shell = inputs.noctalia.packages.${pkgs.system}.default;
+            quickshell = inputs.quickshell.packages.${pkgs.system}.default;
             /*
               freerdp3 = (prev.freerdp3.override {
                 SDL2 = pkgs.callPackage ../nixes/SDL3/default.nix { };
@@ -336,7 +535,7 @@ in
                 # };
               });
             */
-            notion-desktop = inputs.notion-desktop.packages.x86_64-linux.default;
+            notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
           })
           inputs.niri.overlays.niri
         ];
@@ -421,6 +620,11 @@ in
         #   export XDG_RUNTIME_DIR="/run/user/$(${pkgs.stdenv.cc.libc.getent}/bin/getent passwd "${defaultUser}" | ${pkgs.coreutils}/bin/cut -d: -f3)"
         #   ${pkgs.sudo}/bin/sudo -iu "${defaultUser}" env XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR WAYLAND_DISPLAY=wayland-1 ${context.variables.homeDir}/bin/lockscreen
         # '';
+
+        services.udev.extraRules = ''
+          ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video $sys$devpath/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w $sys$devpath/brightness"
+        '';
+        users.users.${defaultUser}.extraGroups = [ "video" ];
 
         home-manager.useGlobalPkgs = true;
         nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
@@ -1269,7 +1473,7 @@ in
                     };
                   };
 
-                  programs.waybar.enable = true;
+                  # programs.waybar.enable = true;
                   programs.waybar.style = ''
                     * {
                         border: none;
@@ -1918,11 +2122,11 @@ in
                       };
                     };
                   };
-                  services.swayosd = {
-                    enable = true;
-                  };
+                  # services.swayosd = {
+                  #   enable = true;
+                  # };
                   services.swaync = {
-                    enable = true;
+                    # enable = true;
                     settings = {
                       "\$schema" = "${pkgs.swaynotificationcenter}/etc/xdg/swaync/configSchema.json";
                       control-center-height = 600;
@@ -2002,28 +2206,48 @@ in
                   #   }) context.variables.outputs);
                   # };
 
-                  services.hyprpaper = {
-                    enable = true;
-                    settings = {
-                      preload = map (o: o.wallpaper) context.variables.outputs;
-                      wallpaper = map (o: "${o.output},${o.wallpaper}") context.variables.outputs;
-                    };
-                  };
+                  # services.hyprpaper = {
+                  #   enable = true;
+                  #   settings = {
+                  #     preload = map (o: o.wallpaper) context.variables.outputs;
+                  #     wallpaper = map (o: "${o.output},${o.wallpaper}") context.variables.outputs;
+                  #   };
+                  # };
 
-                  services.wlsunset = {
-                    enable = true;
-                    # curl -s http://ip-api.com/json/
-                    latitude = 60.2;
-                    longitude = 24.9;
-                    temperature = {
-                      day = 5500;
-                      night = 3700;
-                    };
-                  };
+                  # services.wlsunset = {
+                  #   enable = true;
+                  #   # curl -s http://ip-api.com/json/
+                  #   latitude = 60.2;
+                  #   longitude = 24.9;
+                  #   temperature = {
+                  #     day = 5500;
+                  #     night = 3700;
+                  #   };
+                  # };
                 }
-                (lib.optionalAttrs (context.variables.graphical.name == "niri") {
+                (lib.optionalAttrs (context.variables.graphical.name == "niri") (lib.mkMerge [{
+                  home.packages = with pkgs; [
+                    noctalia-shell
+                    quickshell
+                    bluez
+                    brightnessctl
+                    cava
+                    cliphist
+                    coreutils
+                    ddcutil
+                    file
+                    findutils
+                    gpu-screen-recorder
+                    libnotify
+                    matugen
+                    networkmanager
+                    wl-clipboard
+                    wlsunset
+                  ];
                   programs.niri.package = pkgs.niri-unstable;
-                  programs.niri.config = ''
+                  programs.niri.config = let
+                    noctalia-shell = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+                  in ''
                     // This config is in the KDL format: https://kdl.dev
                     // "/-" comments out the following node.
 
@@ -2247,11 +2471,9 @@ in
                     // Add lines like this to spawn processes at startup.
                     // Note that running niri as a session supports xdg-desktop-autostart,
                     // which may be more convenient to use.
-                    //spawn-at-startup "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
                     spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.systemd}/bin/systemctl --user import-environment DISPLAY WAYLAND_DISPLAY XDG_RUNTIME_DIR"
                     spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
                     spawn-at-startup "${configure-gtk}/bin/configure-gtk"
-                    spawn-at-startup "${config.programs.waybar.package}/bin/waybar"
                     spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${context.variables.profileDir}/bin/service-group-always restart"
 
                     ${lib.concatMapStringsSep "\n" (i: ''
@@ -2305,38 +2527,35 @@ in
                         // Suggested binds for running programs: terminal, app launcher, screen locker.
                         Ctrl+Alt+T { spawn "${context.variables.programs.terminal}"; }
                         Ctrl+Alt+H { spawn "${context.variables.programs.filemanager}"; }
-                        Ctrl+Alt+Space { spawn "${context.variables.profileDir}/bin/launcher"; }
-                        Ctrl+Alt+L { spawn "${context.variables.profileDir}/bin/lockscreen"; }
-                        Super+L { spawn "${context.variables.profileDir}/bin/lockscreen"; }
-                        Ctrl+Alt+Delete { spawn "${pkgs.nwg-bar}/bin/nwg-bar"; }
-                        Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw"; }
+                        Ctrl+Alt+Space { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher toggle"; }
+                        Ctrl+Alt+L { spawn "${context.variables.lockscreen}"; }
+                        Super+L { spawn "${context.variables.lockscreen}"; }
+                        Ctrl+Alt+Delete { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call powerPanel toggle"; }
+                        Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call notifications toggleHistory"; }
 
-                        // You can also use a shell:
-                        // Mod+T { spawn "bash" "-c" "notify-send hello && exec alacritty"; }
-
-                        XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume 3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        Shift+XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume 3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        XF86AudioLowerVolume allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --output-volume -3 --max-volume 120; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        Shift+XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume -3 --max-volume 100; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --input-volume mute-toggle; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --brightness +10"; }
-                        XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.swayosd}/bin/swayosd-client --brightness -10"; }
+                        XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume increase"; }
+                        XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume decrease"; }
+                        XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteOutput"; }
+                        Shift+XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 5%+"; }
+                        Shift+XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"; }
+                        Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteInput"; }
+                        XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteInput"; }
+                        XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call brightness increase"; }
+                        XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call brightness decrease"; }
                         XF86AudioPlay { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl play-pause"; }
                         XF86AudioNext { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl next"; }
                         XF86AudioPrev { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl previous"; }
 
-                        Super+K { spawn "${niriWorkspaces}" "action" "close-window"; }
+                        Super+K { close-window; }
                         Super+Shift+K { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
 
-                        Super+Left  { spawn "${niriWorkspaces}" "action" "focus-column-left"; }
-                        Super+Down  { spawn "${niriWorkspaces}" "action" "focus-window-down"; }
-                        Super+Up    { spawn "${niriWorkspaces}" "action" "focus-window-up"; }
-                        Super+Right { spawn "${niriWorkspaces}" "action" "focus-column-right"; }
+                        Super+Left  { focus-column-left; }
+                        Super+Down  { focus-window-down; }
+                        Super+Up    { focus-window-up; }
+                        Super+Right { focus-column-right; }
 
-                        Ctrl+Alt+Left  {  spawn "${niriWorkspaces}" "action" "focus-column-left"; }
-                        Ctrl+Alt+Right {  spawn "${niriWorkspaces}" "action" "focus-column-right"; }
+                        Ctrl+Alt+Left  { focus-column-left; }
+                        Ctrl+Alt+Right { focus-column-right; }
                         Ctrl+Alt+Shift+Left  { move-column-left; }
                         Ctrl+Alt+Shift+Right { move-column-right; }
 
@@ -2352,18 +2571,18 @@ in
                         // Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
                         // Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
 
-                        Super+Home { spawn "${niriWorkspaces}" "action" "focus-column-first"; }
-                        Super+End  { spawn "${niriWorkspaces}" "action" "focus-column-last"; }
+                        Super+Home { focus-column-first; }
+                        Super+End  { focus-column-last; }
                         Super+Shift+Home { move-column-to-first; }
                         Super+Shift+End  { move-column-to-last; }
 
-                        Super+Ctrl+Left  { spawn "${niriWorkspaces}" "action" "focus-monitor-left"; }
-                        Super+Ctrl+Down  { spawn "${niriWorkspaces}" "action" "focus-monitor-down"; }
-                        Super+Ctrl+Up    { spawn "${niriWorkspaces}" "action" "focus-monitor-up"; }
-                        Super+Ctrl+Right { spawn "${niriWorkspaces}" "action" "focus-monitor-right"; }
+                        Super+Ctrl+Left  { focus-monitor-left; }
+                        Super+Ctrl+Down  { focus-monitor-down; }
+                        Super+Ctrl+Up    { focus-monitor-up; }
+                        Super+Ctrl+Right { focus-monitor-right; }
 
-                        Ctrl+Alt+Page_Up  { spawn "${niriWorkspaces}" "action" "focus-monitor-left"; }
-                        Ctrl+Alt+Page_Down { spawn "${niriWorkspaces}" "action" "focus-monitor-right"; }
+                        Ctrl+Alt+Page_Up  { focus-monitor-left; }
+                        Ctrl+Alt+Page_Down { focus-monitor-right; }
                         Ctrl+Shift+Alt+Page_Up  { move-window-to-monitor-left; }
                         Ctrl+Shift+Alt+Page_Down { move-window-to-monitor-right; }
 
@@ -2372,10 +2591,10 @@ in
                         Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
                         Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
-                        Ctrl+Alt+Up        { spawn "${niriWorkspaces}" "action" "focus-workspace-up"; }
-                        Ctrl+Alt+Down      { spawn "${niriWorkspaces}" "action" "focus-workspace-down"; }
-                        Ctrl+Alt+Shift+Up   { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-up"; }
-                        Ctrl+Alt+Shift+Down { spawn "${niriWorkspaces}" "action" "move-window-to-workspace-down"; }
+                        Ctrl+Alt+Up        { focus-workspace-up; }
+                        Ctrl+Alt+Down      { focus-workspace-down; }
+                        Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
+                        Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
 
                         Super+Comma  { consume-window-into-column; }
                         Super+Period { expel-window-from-column; }
@@ -2419,11 +2638,11 @@ in
                         Super+Shift+P { spawn "${context.variables.graphical.exec}" "msg" "output" "${(lib.head context.variables.outputs).output}" "off"; }
 
                         Ctrl+Alt+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
-                        Super+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${context.variables.homeDir}/.cache PATH=${pkgs.wl-clipboard}/bin:${pkgs.wofi}/bin:${pkgs.cliphist}/bin:${pkgs.ripgrep}/bin:$PATH ${pkgs.stdenv.shell} ${pkgs.cliphist}/bin/cliphist-wofi-img | ${pkgs.wl-clipboard}/bin/wl-copy -n"; }
-                        Super+Shift+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${context.variables.homeDir}/.cache ${pkgs.cliphist}/bin/cliphist wipe"; }
-                        Ctrl+Alt+S { spawn "bash" "-c" "${setDefaultSink}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        Ctrl+Alt+Shift+S { spawn "bash" "-c" "${setDefaultSource}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
-                        Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}; ${pkgs.procps}/bin/pkill -SIGRTMIN+8 waybar"; }
+                        Super+C { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher clipboard"; }
+                        Super+Shift+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${context.variables.homeDir}/.cache cliphist wipe"; }
+                        Ctrl+Alt+S { spawn "bash" "-c" "${setDefaultSink}"; }
+                        Ctrl+Alt+Shift+S { spawn "bash" "-c" "${setDefaultSource}"; }
+                        Ctrl+Alt+R { spawn "bash" "-c" "${recordCmd}"; }
                         Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head context.variables.outputs).output}"; }
                         Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
@@ -2488,19 +2707,34 @@ in
                       ExecStart = "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite";
                     };
                   };
+                  systemd.user.services.noctalia-shell = {
+                    Unit = {
+                      Description = "Noctalia Shell User Service";
+                      BindsTo = [ context.variables.graphical.target ];
+                      PartOf = [ context.variables.graphical.target ];
+                      After = [ context.variables.graphical.target ];
+                      Requisite = [ context.variables.graphical.target ];
+                    };
+                    Install.WantedBy = [ context.variables.graphical.target ];
+                    Service = {
+                      Type = "simple";
+                      ExecStartPre = "${noctaliaShellStartPreSh}";
+                      ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+                    };
+                  };
                   services.swayidle = {
                     events = lib.mkOverride 900 [
                       {
                         event = "before-sleep";
-                        command = "${context.variables.profileDir}/bin/lockscreen";
+                        command = "${context.variables.lockscreen}";
                       }
                       {
                         event = "after-resume";
-                        command = "${context.variables.profileDir}/bin/lockscreen";
+                        command = "${context.variables.lockscreen}";
                       }
                       {
                         event = "lock";
-                        command = "${context.variables.profileDir}/bin/lockscreen";
+                        command = "${context.variables.lockscreen}";
                       }
                       # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
                       # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
@@ -2508,8 +2742,13 @@ in
                     ];
                     timeouts = lib.mkOverride 900 [
                       {
+                        timeout = 100;
+                        command = "${pkgs.noctalia-shell} ipc call brightness decrease";
+                        resumeCommand = "${pkgs.noctalia-shell} ipc call brightness increase";
+                      }
+                      {
                         timeout = 120;
-                        command = "${context.variables.profileDir}/bin/lockscreen";
+                        command = "${context.variables.lockscreen}";
                       }
                       {
                         timeout = 300;
@@ -2522,6 +2761,7 @@ in
                       }
                     ];
                   };
+
                   programs.waybar.systemd.enable = false;
 
                   # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
@@ -2535,30 +2775,44 @@ in
                       ];
                     };
                   };
-
-                  systemd.user.services.cliphist-text = {
-                    Unit = {
-                      Description = "Cliphist (text) User Service";
-                      After = [ context.variables.graphical.target ];
+                  # systemd.user.services.cliphist-text = {
+                  #   Unit = {
+                  #     Description = "Cliphist (text) User Service";
+                  #     After = [ context.variables.graphical.target ];
+                  #   };
+                  #   Install.WantedBy = [ context.variables.graphical.target ];
+                  #   Service = {
+                  #     Type = "simple";
+                  #     ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store";
+                  #   };
+                  # };
+                  # systemd.user.services.cliphist-image = {
+                  #   Unit = {
+                  #     Description = "Cliphist (image) User Service";
+                  #     After = [ context.variables.graphical.target ];
+                  #   };
+                  #   Install.WantedBy = [ context.variables.graphical.target ];
+                  #   Service = {
+                  #     Type = "simple";
+                  #     ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store";
+                  #   };
+                  # };
+                } {
+                  systemd.user.services = builtins.listToAttrs (map (o: {
+                    name = "wallpaper-${o.output}";
+                    value = {
+                      Unit = {
+                        Description = "Wallpaper for ${o.output} User Service";
+                        After = [ context.variables.graphical.target ];
+                      };
+                      Install.WantedBy = [ context.variables.graphical.target ];
+                      Service = {
+                        Type = "oneshot";
+                        ExecStart = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";
+                      };
                     };
-                    Install.WantedBy = [ context.variables.graphical.target ];
-                    Service = {
-                      Type = "simple";
-                      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${pkgs.cliphist}/bin/cliphist store";
-                    };
-                  };
-                  systemd.user.services.cliphist-image = {
-                    Unit = {
-                      Description = "Cliphist (image) User Service";
-                      After = [ context.variables.graphical.target ];
-                    };
-                    Install.WantedBy = [ context.variables.graphical.target ];
-                    Service = {
-                      Type = "simple";
-                      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${pkgs.cliphist}/bin/cliphist store";
-                    };
-                  };
-                })
+                  }) context.variables.outputs);
+                }]))
               ]
               ++ [ context.home-configuration ]
             );

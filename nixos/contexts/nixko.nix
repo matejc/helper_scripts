@@ -20,7 +20,7 @@ let
       "${helper_scripts}/dotfiles/nvim.nix"
       "${helper_scripts}/dotfiles/gitconfig.nix"
       "${helper_scripts}/dotfiles/gitignore.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/noctalialockscreen.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
       "${helper_scripts}/dotfiles/mypassgen.nix"
@@ -113,7 +113,7 @@ let
       startup = [
         "${self.variables.profileDir}/bin/logseq"
         "${self.variables.profileDir}/bin/slack"
-        "${self.variables.programs.browser}"
+        "${self.variables.profileDir}/bin/browser"
         "${self.variables.profileDir}/bin/keepassxc"
       ];
     };
@@ -156,9 +156,6 @@ let
       boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
       programs.niri.enable = true;
       hardware.bluetooth.enable = true;
-      services.udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="backlight", RUN+="${pkgs.coreutils}/bin/chgrp video $sys$devpath/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w $sys$devpath/brightness"
-      '';
       hardware.graphics = {
         enable = true;
       };
@@ -176,27 +173,7 @@ let
     };
     home-configuration = {
       home.stateVersion = "25.05";
-      services.swayidle = {
-        enable = true;
-        timeouts = lib.mkForce [
-          {
-            timeout = 100;
-            command = "${pkgs.brillo}/bin/brillo -U 30";
-            resumeCommand = "${pkgs.brillo}/bin/brillo -A 30";
-          }
-          {
-            timeout = 120;
-            command = "${self.variables.profileDir}/bin/lockscreen";
-          }
-          {
-            timeout = 300;
-            command = ''${self.variables.graphical.exec} msg action power-off-monitors'';
-            resumeCommand = lib.concatMapStringsSep "; " (
-              o: ''${self.variables.graphical.exec} msg output ${o.output} on''
-            ) self.variables.outputs;
-          }
-        ];
-      };
+      services.swayidle.enable = true;
       programs.waybar.enable = true;
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
@@ -223,6 +200,7 @@ let
         asdf-vm unzip stdenv.cc gnumake python313Packages.python colima docker docker-compose ansible
         devenv
         tmux
+        kitty
       ];
       programs.direnv = {
         enable = true;

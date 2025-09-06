@@ -40,7 +40,7 @@ let
       "${helper_scripts}/dotfiles/jstools.nix"
       "${helper_scripts}/dotfiles/superslicer.nix"
       "${helper_scripts}/dotfiles/scan.nix"
-      "${helper_scripts}/dotfiles/swaylockscreen.nix"
+      "${helper_scripts}/dotfiles/noctalialockscreen.nix"
       "${helper_scripts}/dotfiles/kitty.nix"
       "${helper_scripts}/dotfiles/dd.nix"
       "${helper_scripts}/dotfiles/sync.nix"
@@ -65,7 +65,7 @@ let
       prefix = "${self.variables.homeDir}/workarea/helper_scripts";
       nixpkgs = "${self.variables.homeDir}/workarea/nixpkgs";
       binDir = "${self.variables.homeDir}/bin";
-      lockscreen = "${self.variables.binDir}/lockscreen";
+      lockscreen = "${self.variables.profileDir}/bin/lockscreen";
       lockImage = "";
       wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
@@ -118,8 +118,6 @@ let
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
         #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         #tmux = "${pkgs.tmux}/bin/tmux";
-        caprine = "${pkgs.caprine}/bin/caprine --ozone-platform-hint=auto";
-        logseq = "${pkgs.logseq}/bin/logseq --ozone-platform-hint=auto";
       };
       shell = "${self.variables.profileDir}/bin/zsh";
       shellRc = "${self.variables.homeDir}/.zshrc";
@@ -169,8 +167,8 @@ let
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${self.variables.programs.browser}"
-        "${pkgs.keepassxc}/bin/keepassxc"
+        "${self.variables.profileDir}/bin/browser"
+        "${self.variables.profileDir}/bin/keepassxc"
         "${self.variables.profileDir}/bin/logseq"
       ];
       steam = {
@@ -286,7 +284,10 @@ let
             ExecStart = "${script}";
           };
         };
+      services.fprintd.enable = true;
       security.pam.services.login.fprintAuth = false;
+      security.pam.services.greetd.fprintAuth = false;
+      security.pam.services.gnome_keyring.fprintAuth = true;
       # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
       #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
       #   options = [ "bind" ];
@@ -337,8 +338,9 @@ let
           solvespace
           keepassxc
           libreoffice
-          aichat
           mpv
+          caprine
+          logseq
           legcord
           nheko
           steamcmd
@@ -356,20 +358,11 @@ let
           file-roller
           wf-recorder
           tmux
+          kitty
         ]);
       programs.chromium.enable = true;
       services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
-      home.sessionVariables = {
-        # VK_ICD_FILENAMES = "${pkgs.amdvlk}/share/vulkan/icd.d/amd_icd64.json";
-        # PROTON_ENABLE_WAYLAND = "1";
-        # PROTON_ENABLE_HDR = "1";
-      };
-      programs.zsh.initContent = ''
-        . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
-        autoload -Uz bashcompinit && bashcompinit
-        . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
-      '';
     };
   };
 in
