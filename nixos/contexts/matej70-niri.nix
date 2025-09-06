@@ -54,6 +54,7 @@ let
       "${helper_scripts}/dotfiles/zed.nix"
       "${helper_scripts}/dotfiles/caprine.nix"
       "${helper_scripts}/dotfiles/tmux.nix"
+      "${helper_scripts}/dotfiles/gravatar.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -70,6 +71,10 @@ let
       wallpaper = "${wallpaper}";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
+      gravatar = {
+        id = "4da2b4fbe517560a41393bc38a9f2b40a05226ff1adf0840a6a0b841b20fc32f";
+        hash = "sha256-bUa7RrA6M+NUqX7OZJ2khUoBrU0iGEzIZSflK4fPKOg=";
+      };
       signingkey = "7F71148FAFC9B2EFE02FB9F466FDC7A2EEA1F8A6";
       locale.all = "en_US.UTF-8";
       wirelessInterfaces = [ "wlp0s20f3" ];
@@ -285,9 +290,7 @@ let
           };
         };
       services.fprintd.enable = true;
-      security.pam.services.login.fprintAuth = false;
       security.pam.services.greetd.fprintAuth = false;
-      security.pam.services.gnome_keyring.fprintAuth = true;
       # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
       #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
       #   options = [ "bind" ];
