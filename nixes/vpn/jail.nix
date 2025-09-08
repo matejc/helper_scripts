@@ -751,7 +751,7 @@ let
       --env XDG_DATA_DIRS=/usr/share \
       --env HOME=${home.inside} \
       --env USER=${user.inside} \
-      --env PATH="/run/wrappers/bin:${binPaths}:${home.inside}/.nix-profile/bin:${home.inside}/bin:${extraPath}" \
+      --env PATH="${binPaths}:/run/current-system/sw/bin:${home.inside}/.nix-profile/bin:/run/wrappers/bin:${home.inside}/bin:${extraPath}" \
       --env LD_LIBRARY_PATH=/lib \
       --env GIO_EXTRA_MODULES=/lib/gio/modules \
       ${pkgs.lib.concatMapStringsSep " " (c: "--cap ${c}") caps} \
@@ -923,9 +923,22 @@ let
     /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
   '';
 
+  xdgOpen = pkgs.writeShellScriptBin "xdg-open" ''
+    set -x
+
+    regex='^https?://.*$'
+    if [[ "$*" =~ $regex ]] && [ -n "$BROWSER" ]
+    then
+      exec $BROWSER "$*"
+    else
+      exec ${pkgs.xdg-utils}/bin/xdg-open "$*"
+    fi
+  '';
+
   buildInputs =
     with pkgs;
     [
+      xdgOpen
       iproute2
       slirp4netns
       curl
@@ -974,7 +987,7 @@ let
     ++ (pkgs.lib.optionals enableSystemD [ systemd ])
     ++ (pkgs.lib.optionals enableGnomeKeyring [ gnome-keyring ]);
 
-  binPaths = pkgs.lib.makeBinPath buildInputs;
+  binPaths = "${paths}/bin";
 
   paths = pkgs.buildEnv {
     name = "paths";

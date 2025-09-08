@@ -138,6 +138,21 @@ let
     ];
     config = { };
     nixos-configuration = {
+      environment.systemPackages = with pkgs; [
+        sbctl
+      ];
+
+      # Lanzaboote currently replaces the systemd-boot module.
+      # This setting is usually set to true in configuration.nix
+      # generated at installation time. So we force it to false
+      # for now.
+      boot.loader.systemd-boot.enable = lib.mkForce false;
+
+      boot.lanzaboote = {
+        enable = true;
+        pkiBundle = "/var/lib/sbctl";
+      };
+
       services.greetd = {
         enable = true;
         settings = {
@@ -170,6 +185,12 @@ let
         START_CHARGE_THRESH_BAT1 = 90;
         STOP_CHARGE_THRESH_BAT1 = 95;
       };
+
+      services.envfs.enable = true;
+      nix.settings = {
+        trusted-users = [ "@wheel" ];
+        experimental-features = [ "configurable-impure-env" ];
+      };
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -197,10 +218,11 @@ let
         file-roller
         eog
         minikube kubectl docker-machine-kvm2 ttyd
-        asdf-vm unzip stdenv.cc gnumake python313Packages.python colima docker docker-compose ansible
+        asdf-vm unzip stdenv.cc gnumake colima docker docker-compose
+        python312Packages.python
         devenv
         tmux
-        kitty
+        kitty neovim-qt
       ];
       programs.direnv = {
         enable = true;

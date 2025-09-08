@@ -737,7 +737,6 @@ in
                       pkgs.rofi
                       pkgs.qt6.qtwayland
                       pkgs.file
-                      pkgs.python3
                       pkgs.jq
                       pkgs.devenv
                       binFiles
@@ -2803,9 +2802,9 @@ in
                     value = {
                       Unit = {
                         Description = "Wallpaper for ${o.output} User Service";
-                        After = [ context.variables.graphical.target ];
+                        After = [ "noctalia-shell.service" ];
                       };
-                      Install.WantedBy = [ context.variables.graphical.target ];
+                      Install.WantedBy = [ "noctalia-shell.service" ];
                       Service = {
                         Type = "oneshot";
                         ExecStart = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";

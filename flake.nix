@@ -164,6 +164,7 @@
           (nixosBuild {
             context = "nixko";
             modules = [
+              inputs.lanzaboote.nixosModules.lanzaboote
               ./nixos/minimal-configuration.nix
             ];
           }).config.system.build.toplevel;
@@ -205,6 +206,7 @@
           context = "nixko";
           modules = [
             inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
+            inputs.lanzaboote.nixosModules.lanzaboote
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           ];
         };
