@@ -191,6 +191,7 @@ let
         trusted-users = [ "@wheel" ];
         experimental-features = [ "configurable-impure-env" ];
       };
+      services.upower.enable = true;
     };
     home-configuration = {
       home.stateVersion = "25.05";
