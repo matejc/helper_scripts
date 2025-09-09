@@ -626,6 +626,8 @@ in
         '';
         users.users.${defaultUser}.extraGroups = [ "video" ];
 
+        services.upower.enable = true;
+
         home-manager.useGlobalPkgs = true;
         nixpkgs.config = import "${helper_scripts}/dotfiles/nixpkgs-config.nix";
         home-manager.useUserPackages = false;
