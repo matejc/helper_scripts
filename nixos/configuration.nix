@@ -537,7 +537,7 @@ in
             */
             notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
           })
-          # inputs.niri.overlays.niri
+          inputs.niri.overlays.niri
         ];
         xdg.portal = {
           enable = true;
