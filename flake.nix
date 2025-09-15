@@ -24,6 +24,7 @@
     };
     nur = {
       url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     # clearprimary = {
     #   url = "github:matejc/clearprimary/main";
@@ -80,8 +81,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     noctalia = {
-      # url = "github:noctalia-dev/noctalia-shell";
-      url = "github:matejc/noctalia-shell";
+      url = "github:noctalia-dev/noctalia-shell";
+      # url = "github:matejc/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.quickshell.follows = "quickshell";
     };

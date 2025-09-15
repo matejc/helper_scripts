@@ -537,7 +537,7 @@ in
             */
             notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
           })
-          inputs.niri.overlays.niri
+          # inputs.niri.overlays.niri
         ];
         xdg.portal = {
           enable = true;
@@ -1923,8 +1923,8 @@ in
                   ];
 
                   services.syncthing.extraOptions = [
-                    "-gui-address=127.0.0.1:8384"
-                    "-home=${context.variables.homeDir}/Syncthing/.config/syncthing"
+                    "--gui-address=127.0.0.1:8384"
+                    "--home=${context.variables.homeDir}/Syncthing/.config/syncthing"
                   ];
 
                   programs.gpg = {
@@ -2245,9 +2245,9 @@ in
                     wl-clipboard
                     wlsunset
                   ];
-                  programs.niri.package = pkgs.niri-unstable;
+                  programs.niri.package = pkgs.niri;  # use in-nixpkgs niri, related to https://github.com/sodiboo/niri-flake/issues/990
                   programs.niri.config = let
-                    noctalia-shell = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+                    noctalia-shell = "${pkgs.noctalia-shell}/bin/noctalia-shell";
                   in ''
                     // This config is in the KDL format: https://kdl.dev
                     // "/-" comments out the following node.

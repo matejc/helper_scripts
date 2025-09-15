@@ -461,6 +461,14 @@ let
         on_attach = on_attach;
       }
     '';
+    qmlls = ''
+      setup_lsp("qmlls", {
+        on_attach = on_attach;
+        filetypes = { 'qml', 'qmljs' },
+        cmd = {"${pkgs.kdePackages.qtdeclarative}/bin/qmlls", "-E", "--log-file", vim.fn.getenv("XDG_STATE_HOME") .. "/nvim/qmlls.log"};
+        capabilities = capabilities;
+      })
+    '';
   };
 
   execCommand = pkgs.writeScript "exec" ''
@@ -3671,7 +3679,7 @@ in
     first="''${@:$OPTIND:1}"
     if [[ "$first" =~ ^scp: ]]
     then
-        ${value} $args
+        exec ${value} $args
     else
       if [ -d "$first" ]
       then
@@ -3698,7 +3706,7 @@ in
           pickfile="$(${pkgs.fzf}/bin/fzf --height 10 --bind 'tab:up' --bind 'shift-tab:down' -1 -0)"
       fi
 
-      ${value} $args ''${pickfile:+"$pickfile"} ''${gitfiles:+"''${gitfiles[@]}"}
+      exec ${value} $args ''${pickfile:+"$pickfile"} ''${gitfiles:+"''${gitfiles[@]}"}
     fi
   '';
 }) (variables.vims or { }))

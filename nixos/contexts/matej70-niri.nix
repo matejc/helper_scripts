@@ -195,16 +195,16 @@ let
       # { name = "kdeconnect"; delay = 4; group = "always"; }
       # { name = "wireplumber"; delay = 4; group = "always"; }
       # { name = "swayidle"; delay = 5; group = "always"; }
-      {
-        name = "xdg-desktop-portal";
-        delay = 5;
-        group = "always";
-      }
-      {
-        name = "network-manager-applet";
-        delay = 5;
-        group = "always";
-      }
+      # {
+      #   name = "xdg-desktop-portal";
+      #   delay = 5;
+      #   group = "always";
+      # }
+      # {
+      #   name = "network-manager-applet";
+      #   delay = 5;
+      #   group = "always";
+      # }
       {
         name = "kdeconnect-indicator";
         delay = 5;
@@ -362,9 +362,10 @@ let
           wf-recorder
           tmux
           kitty
+          networkmanagerapplet
         ]);
       programs.chromium.enable = true;
-      services.network-manager-applet.enable = true;
+      # services.network-manager-applet.enable = true;
       programs.firefox.enable = true;
     };
   };
