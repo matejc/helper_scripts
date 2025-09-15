@@ -264,7 +264,7 @@ in
     export PATH="${path}:${variables.homeDir}/.npm-packages/bin:${variables.homeDir}/.py-packages/bin:$PATH"
     export LIBRARY_PATH="${pkgs.stdenv.cc.libc}/lib:${pkgs.stdenv.cc.cc.lib}/lib''${LIBRARY_PATH+:$LIBRARY_PATH}"
 
-    exec ${pkgs.helix}/bin/.hx-wrapped $@
+    exec ${pkgs.helix}/bin/hx "$@"
   '';
 }{
   target = "${variables.homeDir}/bin/lsp-install";

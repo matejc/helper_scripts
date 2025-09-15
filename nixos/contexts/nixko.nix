@@ -35,6 +35,7 @@ let
       "${helper_scripts}/dotfiles/zellij.nix"
       "${helper_scripts}/dotfiles/tmux.nix"
       "${helper_scripts}/dotfiles/batstatus.nix"
+      "${helper_scripts}/dotfiles/gravatar.nix"
     ];
     activationScript = ''
       rm -vf ${self.variables.homeDir}/.zshrc.zwc
@@ -60,6 +61,10 @@ let
       batteries = [ "1" ];
       fullName = "Matej Cotman";
       email = "matej.cotman@kumorion.com";
+      gravatar = {
+        id = "4da2b4fbe517560a41393bc38a9f2b40a05226ff1adf0840a6a0b841b20fc32f";
+        hash = "sha256-bUa7RrA6M+NUqX7OZJ2khUoBrU0iGEzIZSflK4fPKOg=";
+      };
       signingkey = "429264DEEB7036EE8B426AA9E97E56DFA314778A";
       locale.all = "en_GB.UTF-8";
       wirelessInterfaces = [ "wlp192s0" ];
@@ -125,11 +130,11 @@ let
       # { name = "network-manager-applet"; delay = 3; group = "always"; }
       # { name = "wireplumber"; delay = 4; group = "always"; }
       # { name = "swayidle"; delay = 5; group = "always"; }
-      {
-        name = "network-manager-applet";
-        delay = 5;
-        group = "always";
-      }
+      # {
+      #   name = "network-manager-applet";
+      #   delay = 5;
+      #   group = "always";
+      # }
       {
         name = "kdeconnect-indicator";
         delay = 5;
@@ -199,7 +204,7 @@ let
       services.kanshi.enable = true;
       services.kdeconnect.enable = true;
       services.kdeconnect.indicator = true;
-      services.network-manager-applet.enable = true;
+      # services.network-manager-applet.enable = true;
       home.packages = with pkgs; [
         slack
         notion-desktop
@@ -218,7 +223,8 @@ let
         file-roller
         eog
         minikube kubectl docker-machine-kvm2 ttyd
-        asdf-vm unzip stdenv.cc gnumake colima docker docker-compose
+        unzip stdenv.cc gnumake colima docker docker-compose
+        # asdf-vm
         python312Packages.python
         devenv
         tmux
@@ -230,11 +236,11 @@ let
       };
       programs.chromium.enable = true;
       programs.firefox.enable = true;
-      programs.zsh.initContent = ''
-        . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
-        autoload -Uz bashcompinit && bashcompinit
-        . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
-      '';
+      # programs.zsh.initContent = ''
+      #   . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
+      #   autoload -Uz bashcompinit && bashcompinit
+      #   . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
+      # '';
     };
   };
 in
