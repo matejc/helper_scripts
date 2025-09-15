@@ -79,7 +79,7 @@ let
         exec = "${self.variables.profileDir}/bin/swaymsg";
       };
       vims = {
-        q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
+        q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${homeDir}/bin/nvim";
       };
       outputs = [{
         criteria = "eDP-1";
