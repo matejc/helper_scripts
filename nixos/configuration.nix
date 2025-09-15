@@ -2279,7 +2279,7 @@ in
                         // Next sections include libinput settings.
                         // Omitting settings disables them, or leaves them at their default values.
                         touchpad {
-                            tap
+                            // tap
                             // dwt
                             // natural-scroll
                             accel-speed 0.2
