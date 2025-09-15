@@ -85,7 +85,7 @@ let
     dockerls = ''
       nvim_lsp["dockerls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.dockerfile-language-server-nodejs}/bin/docker-langserver", "--stdio"};
+        cmd = {"${pkgs.dockerfile-language-server}/bin/docker-langserver", "--stdio"};
         capabilities = capabilities;
       }
     '';

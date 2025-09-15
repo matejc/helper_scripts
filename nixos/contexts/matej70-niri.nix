@@ -232,7 +232,7 @@ let
         "-m"
         "performance"
       ];
-      services.scx.package = pkgs.scx_git.full;
+      services.scx.package = pkgs.scx.full;
       boot.kernelModules = ["ntsync"];
       services.udev.packages = [
         (pkgs.writeTextFile {
