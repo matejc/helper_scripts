@@ -80,9 +80,10 @@
       url = "github:heytcass/notion-mac-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia = {
+    noctalia-shell = {
       url = "github:noctalia-dev/noctalia-shell";
       # url = "github:matejc/noctalia-shell";
+      # url = "path:/home/matejc/workarea/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.quickshell.follows = "quickshell";
     };

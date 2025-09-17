@@ -543,7 +543,7 @@
         "type": "github"
       }
     },
-    "noctalia": {
+    "noctalia-shell": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -554,11 +554,11 @@
         "systems": "systems_2"
       },
       "locked": {
-        "lastModified": 1757917737,
-        "narHash": "sha256-IYO9wRhnoljj4LsrmKbYczAmIuWkKXzZ95ERwlPFaZY=",
+        "lastModified": 1758029152,
+        "narHash": "sha256-Fcd+rRWAbmMXHN0QRlN0THygOpdvL485hQngAq9dgio=",
         "owner": "noctalia-dev",
         "repo": "noctalia-shell",
-        "rev": "8cb9f04a227b16f19fc8735aebe561fbed2ca17a",
+        "rev": "8e034cd912c6b0863a2ca8f57e0ac5a4a11b2f06",
         "type": "github"
       },
       "original": {
@@ -670,7 +670,7 @@
         "nixos-configuration": "nixos-configuration",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
-        "noctalia": "noctalia",
+        "noctalia-shell": "noctalia-shell",
         "notion-desktop": "notion-desktop",
         "nur": "nur",
         "quickshell": "quickshell",

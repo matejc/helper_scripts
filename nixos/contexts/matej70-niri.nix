@@ -363,6 +363,7 @@ let
           tmux
           kitty
           networkmanagerapplet
+          tsukimi
         ]);
       programs.chromium.enable = true;
       # services.network-manager-applet.enable = true;

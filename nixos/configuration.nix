@@ -515,7 +515,7 @@ in
             mpv = prev.mpv.override {
               scripts = [ prev.mpvScripts.mpris ];
             };
-            noctalia-shell = inputs.noctalia.packages.${pkgs.system}.default;
+            noctalia-shell = inputs.noctalia-shell.packages.${pkgs.system}.default;
             quickshell = inputs.quickshell.packages.${pkgs.system}.default;
             /*
               freerdp3 = (prev.freerdp3.override {
@@ -540,6 +540,7 @@ in
               });
             */
             notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
+            tsukimi = pkgs.callPackage ../nixes/tsukimi.nix { pkgs = prev; nixpkgs = inputs.nixpkgs; };
           })
           inputs.niri.overlays.niri
         ];
@@ -2818,7 +2819,7 @@ in
                       Install.WantedBy = [ "noctalia-shell.service" ];
                       Service = {
                         Type = "oneshot";
-                        ExecStart = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";
+                        ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";
                       };
                     };
                   }) context.variables.outputs);
