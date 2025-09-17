@@ -193,9 +193,13 @@ let
 
       services.envfs.enable = true;
       nix.settings = {
-        trusted-users = [ "@wheel" ];
+        trusted-users = [ "@wheel" "matejc" ];
         experimental-features = [ "configurable-impure-env" ];
       };
+
+      virtualisation.libvirtd.enable = true;
+      users.groups.libvirtd.members = ["matejc"];
+      programs.virt-manager.enable = true;
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -229,6 +233,7 @@ let
         devenv
         tmux
         kitty neovim-qt
+        vagrant
       ];
       programs.direnv = {
         enable = true;
@@ -241,6 +246,12 @@ let
       #   autoload -Uz bashcompinit && bashcompinit
       #   . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
       # '';
+      dconf.settings = {
+        "org/virt-manager/virt-manager/connections" = {
+          autoconnect = ["qemu:///system"];
+          uris = ["qemu:///system"];
+        };
+      };
     };
   };
 in

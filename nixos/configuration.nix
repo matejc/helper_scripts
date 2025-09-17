@@ -488,6 +488,10 @@ let
       cat "${noctaliaShellDefaultSettings}" > "${context.variables.homeDir}/.config/noctalia/settings.json"
     fi
   '';
+
+  sleepCmd = pkgs.writeShellScriptBin "systemctl-sleep" ''
+    exec ${pkgs.systemd}/bin/systemctl ${if context.variables ? "hibernate" && context.variables.hibernate then "hibernate" else "suspend"}
+  '';
 in
 {
   imports = [
@@ -539,6 +543,17 @@ in
           })
           inputs.niri.overlays.niri
         ];
+
+        environment.systemPackages = [ sleepCmd ];
+
+        systemd.sleep.extraConfig = lib.mkIf (context.variables ? "hibernate" && context.variables.hibernate) ''
+          AllowHibernation=yes
+        '';
+        services.logind.settings.Login = lib.mkIf (context.variables ? "hibernate" && context.variables.hibernate) {
+          HandleSuspendKey = "hibernate";
+          HandleLidSwitch = "hibernate";
+        };
+
         xdg.portal = {
           enable = true;
           wlr = {
@@ -653,6 +668,8 @@ in
                       target = ".config/nixpkgs/config.nix";
                     };
                   } // dotFiles;
+
+                  nix.settings.experimental-features = [ "configurable-impure-env" "nix-command" "flakes" ];
 
                   xdg = {
                     enable = true;
@@ -1417,7 +1434,7 @@ in
                       }
                       {
                         timeout = 3600;
-                        command = "${pkgs.systemd}/bin/systemctl suspend";
+                        command = "${sleepCmd}/bin/systemctl-sleep";
                       }
                     ];
                   };
@@ -2758,7 +2775,7 @@ in
                       }
                       {
                         timeout = 3600;
-                        command = "${pkgs.systemd}/bin/systemctl suspend";
+                        command = "${sleepCmd}/bin/systemctl-sleep";
                       }
                     ];
                   };
@@ -2768,14 +2785,6 @@ in
                   # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
                   systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
 
-                  nix = {
-                    settings = {
-                      experimental-features = [
-                        "nix-command"
-                        "flakes"
-                      ];
-                    };
-                  };
                   # systemd.user.services.cliphist-text = {
                   #   Unit = {
                   #     Description = "Cliphist (text) User Service";
