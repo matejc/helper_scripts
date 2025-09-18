@@ -2263,7 +2263,7 @@ in
                     wl-clipboard
                     wlsunset
                   ];
-                  programs.niri.package = pkgs.niri;  # use in-nixpkgs niri, related to https://github.com/sodiboo/niri-flake/issues/990
+                  programs.niri.package = pkgs.niri-unstable;
                   programs.niri.config = let
                     noctalia-shell = "${pkgs.noctalia-shell}/bin/noctalia-shell";
                   in ''
