@@ -345,7 +345,7 @@ let
           caprine
           logseq
           legcord
-          nheko
+          element-desktop
           steamcmd
           jq
           scanmem

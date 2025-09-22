@@ -49,6 +49,8 @@ let
     "terraformls"
     "tflint"
     "helm_ls"
+    "qmlls"
+    "jinja_lsp"
   ];
 
   mkNvimLsp = enabled: lib.concatMapStringsSep "\n" (name: nvimLsp."${name}") enabled;
@@ -76,11 +78,11 @@ let
       })
     '';
     bashls = ''
-      nvim_lsp["bashls"].setup {
+      setup_lsp("bashls", {
         on_attach = on_attach;
         cmd = {"${pkgs.nodePackages.bash-language-server}/bin/bash-language-server", "start"};
         capabilities = capabilities;
-      }
+      })
     '';
     dockerls = ''
       nvim_lsp["dockerls"].setup {
@@ -466,6 +468,14 @@ let
         on_attach = on_attach;
         filetypes = { 'qml', 'qmljs' },
         cmd = {"${pkgs.kdePackages.qtdeclarative}/bin/qmlls", "-E", "--log-file", vim.fn.getenv("XDG_STATE_HOME") .. "/nvim/qmlls.log"};
+        capabilities = capabilities;
+      })
+    '';
+    jinja_lsp = ''
+      setup_lsp("jinja_lsp", {
+        on_attach = on_attach;
+        filetypes = { 'jinja', 'jinja2', 'j2' },
+        cmd = {"${pkgs.jinja-lsp}/bin/jinja-lsp"};
         capabilities = capabilities;
       })
     '';

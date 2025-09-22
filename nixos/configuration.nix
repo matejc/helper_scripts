@@ -541,6 +541,7 @@ in
             */
             notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
             tsukimi = pkgs.callPackage ../nixes/tsukimi.nix { pkgs = prev; nixpkgs = inputs.nixpkgs; };
+            element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
           })
           inputs.niri.overlays.niri
         ];
