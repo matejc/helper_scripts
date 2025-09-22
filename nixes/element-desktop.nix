@@ -9,7 +9,7 @@ let
       echo "$DESKTOP_ITEM" > "$out/share/applications/element-desktop.desktop"
 
       substituteInPlace $out/share/applications/element-desktop.desktop \
-        --replace-fail 'element-desktop %u' 'element-desktop --password-store=gnome-libsecret %u' \
+        --replace-fail 'element-desktop %u' 'element-desktop --password-store=gnome-libsecret --enable-features=UseOzonePlatform --ozone-platform-hint=auto %u' \
         --replace-fail 'Icon=element' 'Icon=element-desktop'
 
       mkdir -p "$out/share/icons/hicolor/512x512/apps"
