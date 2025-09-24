@@ -234,6 +234,8 @@ let
         tmux
         kitty neovim-qt
         vagrant
+        quickemu
+        spice-gtk
       ];
       programs.direnv = {
         enable = true;

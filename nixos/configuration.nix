@@ -544,6 +544,7 @@ in
             element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
           })
           inputs.niri.overlays.niri
+          inputs.quickemu.overlays.default
         ];
 
         environment.systemPackages = [ sleepCmd ];
