@@ -636,6 +636,27 @@
         "type": "github"
       }
     },
+    "quickemu": {
+      "inputs": {
+        "flake-schemas": "flake-schemas_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1756948943,
+        "narHash": "sha256-F9+LNDIWK0EU3m/ljaLYM+VtdJjZHejVKln9q1MKWtc=",
+        "owner": "quickemu-project",
+        "repo": "quickemu",
+        "rev": "78b938facf4927720f8c4b76d8304b3ea8dc07f1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "quickemu-project",
+        "repo": "quickemu",
+        "type": "github"
+      }
+    },
     "quickshell": {
       "inputs": {
         "nixpkgs": [
@@ -673,6 +694,7 @@
         "noctalia-shell": "noctalia-shell",
         "notion-desktop": "notion-desktop",
         "nur": "nur",
+        "quickemu": "quickemu",
         "quickshell": "quickshell",
         "sway-scratchpad": "sway-scratchpad",
         "sway-workspace": "sway-workspace"
