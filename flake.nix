@@ -76,10 +76,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    notion-desktop = {
-      url = "github:heytcass/notion-mac-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     noctalia-shell = {
       url = "github:noctalia-dev/noctalia-shell";
       # url = "github:matejc/noctalia-shell";

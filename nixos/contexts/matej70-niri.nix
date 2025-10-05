@@ -188,6 +188,7 @@ let
           # "1716740".compatibilityTool = "SteamTinkerLaunch";
         };
       };
+      sleepMode = "deep";
     };
     services = [
       # { name = "kanshi"; delay = 1; group = "always"; }

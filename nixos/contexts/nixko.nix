@@ -193,7 +193,6 @@ let
 
       services.envfs.enable = true;
       nix.settings = {
-        trusted-users = [ "@wheel" "matejc" ];
         experimental-features = [ "configurable-impure-env" ];
       };
 

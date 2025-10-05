@@ -539,7 +539,6 @@ in
                 # };
               });
             */
-            notion-desktop = inputs.notion-desktop.packages.${pkgs.system}.default;
             tsukimi = pkgs.callPackage ../nixes/tsukimi.nix { pkgs = prev; nixpkgs = inputs.nixpkgs; };
             element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
           })
@@ -549,9 +548,11 @@ in
 
         environment.systemPackages = [ sleepCmd ];
 
-        systemd.sleep.extraConfig = lib.mkIf (context.variables ? "hibernate" && context.variables.hibernate) ''
+        systemd.sleep.extraConfig = (lib.optionalString (context.variables ? "hibernate" && context.variables.hibernate) ''
           AllowHibernation=yes
-        '';
+        '') + (lib.optionalString (context.variables ? "sleepMode" && context.variables.sleepMode != "") ''
+          MemorySleepMode=${context.variables.sleepMode}
+        '');
         services.logind.settings.Login = lib.mkIf (context.variables ? "hibernate" && context.variables.hibernate) {
           HandleSuspendKey = "hibernate";
           HandleLidSwitch = "hibernate";
@@ -619,6 +620,7 @@ in
               "nix-command"
               "flakes"
             ];
+            trusted-users = [ "@wheel" defaultUser ];
           };
           gc = {
             automatic = true;
@@ -672,7 +674,10 @@ in
                     };
                   } // dotFiles;
 
-                  nix.settings.experimental-features = [ "configurable-impure-env" "nix-command" "flakes" ];
+                  nix.settings = {
+                    trusted-users = [ "@wheel" defaultUser ];
+                    experimental-features = [ "configurable-impure-env" "nix-command" "flakes" ];
+                  };
 
                   xdg = {
                     enable = true;
@@ -2073,6 +2078,37 @@ in
                   programs.yazi = {
                     enable = true;
                     enableZshIntegration = true;
+                    settings = {
+                      log = {
+                        enabled = false;
+                      };
+                      mgr = {
+                        show_hidden = false;
+                        sort_by = "mtime";
+                        sort_dir_first = true;
+                        sort_reverse = true;
+                      };
+                      opener = {
+                        play = [
+                          { run = ''mpv "$@"''; orphan = true; for = "unix"; }
+                        ];
+                        edit = [
+                          { run = ''$EDITOR "$@"''; block = true; for = "unix"; }
+                        ];
+                        open = [
+                          { run = ''xdg-open "$@"''; desc = "Open"; }
+                        ];
+                        open-json = [
+                          { run = ''${pkgs.jq}/bin/jq '.' "$@" | $EDITOR''; block = true; for = "unix"; }
+                        ];
+                      };
+                      open.append_rules = [
+                        { mime = "text/*"; use = "edit"; }
+                        { mime = "video/*"; use = "play"; }
+                        { name = "*.json"; use = "open-json"; }
+                        { name = "*"; use = "open"; }
+                      ];
+                    };
                   };
                   programs.broot = {
                     enableZshIntegration = true;
@@ -2551,7 +2587,7 @@ in
                         Ctrl+Alt+Space { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher toggle"; }
                         Ctrl+Alt+L { spawn "${context.variables.lockscreen}"; }
                         Super+L { spawn "${context.variables.lockscreen}"; }
-                        Ctrl+Alt+Delete { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call powerPanel toggle"; }
+                        Ctrl+Alt+Delete { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call sessionMenu toggle"; }
                         Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call notifications toggleHistory"; }
 
                         XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume increase"; }
