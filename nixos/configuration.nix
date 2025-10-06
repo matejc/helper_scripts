@@ -620,7 +620,7 @@ in
               "nix-command"
               "flakes"
             ];
-            trusted-users = [ "@wheel" defaultUser ];
+            trusted-users = [ "root" "@wheel" defaultUser ];
           };
           gc = {
             automatic = true;

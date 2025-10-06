@@ -247,6 +247,9 @@ let
       #   autoload -Uz bashcompinit && bashcompinit
       #   . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
       # '';
+      home.sessionVariables = {
+        SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
+      };
       dconf.settings = {
         "org/virt-manager/virt-manager/connections" = {
           autoconnect = ["qemu:///system"];
