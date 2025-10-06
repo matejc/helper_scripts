@@ -196,9 +196,9 @@ let
         experimental-features = [ "configurable-impure-env" ];
       };
 
-      virtualisation.libvirtd.enable = true;
-      users.groups.libvirtd.members = ["matejc"];
-      programs.virt-manager.enable = true;
+      # virtualisation.libvirtd.enable = true;
+      # users.groups.libvirtd.members = ["matejc"];
+      # programs.virt-manager.enable = true;
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -210,7 +210,6 @@ let
       # services.network-manager-applet.enable = true;
       home.packages = with pkgs; [
         slack
-        notion-desktop
         teams-for-linux
         logseq
         keepassxc
@@ -250,12 +249,12 @@ let
       home.sessionVariables = {
         SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
       };
-      dconf.settings = {
-        "org/virt-manager/virt-manager/connections" = {
-          autoconnect = ["qemu:///system"];
-          uris = ["qemu:///system"];
-        };
-      };
+      # dconf.settings = {
+      #   "org/virt-manager/virt-manager/connections" = {
+      #     autoconnect = ["qemu:///system"];
+      #     uris = ["qemu:///system"];
+      #   };
+      # };
     };
   };
 in
