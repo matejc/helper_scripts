@@ -339,13 +339,10 @@ let
           inputs.deploy-rs.packages.${pkgs.system}.deploy-rs
         ]
         ++ (with pkgs; [
-          solvespace
           keepassxc
-          libreoffice
           mpv
           caprine
           logseq
-          legcord
           element-desktop
           steamcmd
           jq
@@ -364,7 +361,6 @@ let
           tmux
           kitty
           networkmanagerapplet
-          tsukimi
           freecad-wayland
         ]);
       programs.chromium.enable = true;
