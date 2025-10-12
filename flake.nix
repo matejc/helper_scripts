@@ -180,13 +180,13 @@
           }).config.system.build.toplevel;
         packages =
           let
-            sway-scratchpad = pkgs.callPackage ./nixes/sway-scratchpad.nix { };
-            sway-workspace = pkgs.callPackage ./nixes/sway-workspace.nix { };
+            deploy-rs = inputs.deploy-rs.packages."${system}".deploy-rs;
+            deploy-rs_aarch64 = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
           in
           pkgs.lib.listToAttrs (
             map (p: pkgs.lib.nameValuePair p.pname p) [
-              sway-workspace
-              sway-scratchpad
+              deploy-rs
+              deploy-rs_aarch64
             ]
           );
       };
