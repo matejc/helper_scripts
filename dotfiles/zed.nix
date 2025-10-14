@@ -4,41 +4,38 @@ let
     nixd
     nil
   ];
+  configFile = pkgs.writeText "settings.json" (
+    builtins.toJSON {
+      features = {
+        copilot = false;
+      };
+      base_keymap = "VSCode";
+      theme = "Gruvbox Dark";
+      vim_mode = false;
+      telemetry = {
+        metrics = false;
+        diagnostics = false;
+      };
+      buffer_font_family = variables.font.family;
+      buffer_font_size = variables.font.size + 3;
+      project_panel = {
+        default_width = 180;
+        file_icons = false;
+        folder_icons = false;
+      };
+      auto_update = false;
+      languages = {
+        Nix = {
+          tab_size = 2;
+        };
+      };
+      lsp = {
+        nil.settings.nix.flake.autoArchive = false;
+      };
+    }
+  );
 in
 [
-  {
-    target = "${variables.homeDir}/.config/zed/settings.json";
-    source = pkgs.writeText "settings.json" (
-      builtins.toJSON {
-        features = {
-          copilot = false;
-        };
-        base_keymap = "VSCode";
-        theme = "Gruvbox Dark";
-        vim_mode = false;
-        telemetry = {
-          metrics = false;
-          diagnostics = false;
-        };
-        buffer_font_family = variables.font.family;
-        buffer_font_size = variables.font.size + 3;
-        project_panel = {
-          default_width = 180;
-          file_icons = false;
-          folder_icons = false;
-        };
-        auto_update = false;
-        languages = {
-          Nix = {
-            tab_size = 2;
-          };
-        };
-        lsp = {
-          nil.settings.nix.flake.autoArchive = false;
-        };
-      }
-    );
-  }
   {
     target = "${variables.homeDir}/.config/zed/keymap.json";
     source = pkgs.writeText "keymap.json" (
@@ -120,6 +117,10 @@ in
     target = "${variables.homeDir}/bin/z";
     source = pkgs.writeShellScript "zeditor.sh" ''
       export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
+      if [ ! -f "${variables.homeDir}/.config/zed/settings.json" ]
+      then
+        cat ${configFile} > ${variables.homeDir}/.config/zed/settings.json
+      fi
       exec ${pkgs.zed-editor}/bin/zeditor "''${@:-.}"
     '';
   }

@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> {} }:
 let
-  quickemu = pkgs.quickemu.overrideAttrs (old: {
+  quickemu = (pkgs.quickemu.override { qemu_full = pkgs.qemu_kvm; }).overrideAttrs (old: {
     patches = old.patches ++ [
       (pkgs.fetchpatch {
         name = "fix-ubuntu-24_x_download.patch";

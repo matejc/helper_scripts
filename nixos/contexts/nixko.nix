@@ -199,6 +199,8 @@ let
       # virtualisation.libvirtd.enable = true;
       # users.groups.libvirtd.members = ["matejc"];
       # programs.virt-manager.enable = true;
+      programs.fuse.userAllowOther = true;
+      users.users.matejc.extraGroups = [ "fuse" ];
     };
     home-configuration = {
       home.stateVersion = "25.05";
@@ -231,9 +233,9 @@ let
         devenv
         tmux
         kitty neovim-qt
-        vagrant
         quickemu
         spice-gtk
+        sshfs
       ];
       programs.direnv = {
         enable = true;
