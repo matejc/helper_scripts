@@ -182,11 +182,13 @@
           let
             deploy-rs = inputs.deploy-rs.packages."${system}".deploy-rs;
             deploy-rs_aarch64 = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+            tsukimi = pkgs.callPackage ./nixes/tsukimi.nix { inherit pkgs; nixpkgs = inputs.nixpkgs; };
           in
           pkgs.lib.listToAttrs (
             map (p: pkgs.lib.nameValuePair p.pname p) [
               deploy-rs
               deploy-rs_aarch64
+              tsukimi
             ]
           );
       };

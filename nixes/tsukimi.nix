@@ -26,13 +26,13 @@ in
   src = pkgs.fetchFromGitHub {
     owner = "tsukinaha";
     repo = "tsukimi";
-    rev = "7dec0591d7c4b6a2154af22969fb7018481383c2";
-    hash = "sha256-DcIoFQccEowM/k+Lh4xB0MUVEzN6laxNtRRnxskxdVs=";
+    rev = "700dbf4dbc87efb2125f825215c84207d1de292e";
+    hash = "sha256-mGMsvab5ZlPn2FefTI/v4HqChTrZQ8zxPISDTH2Mbl0=";
   };
 
   cargoDeps = rustPlatform.fetchCargoVendor {
   inherit (final) pname src version;
     hash = final.cargoHash;
   };
-  cargoHash = "sha256-s1+sC7gPX0W0gaTXw6nOgotFuPTy1A+ZZ39G4++nUro=";
+  cargoHash = "sha256-LAel67LG2mWJIblQeB4briVOylOwy5c991zGRCSdJ3A=";
 })
