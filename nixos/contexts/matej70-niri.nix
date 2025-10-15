@@ -362,6 +362,7 @@ let
           kitty
           networkmanagerapplet
           freecad-wayland
+          tsukimi
         ]);
       programs.chromium.enable = true;
       # services.network-manager-applet.enable = true;
