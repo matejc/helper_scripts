@@ -129,7 +129,7 @@
             ./nixos/configuration.nix
           ] ++ modules;
         });
-      pkgs = inputs.nixpkgs.legacyPackages.${system};
+      # pkgs = inputs.nixpkgs.legacyPackages.${system};
     in
     {
       # homeConfigurations = {
@@ -180,15 +180,15 @@
           }).config.system.build.toplevel;
         packages =
           let
-            deploy-rs = inputs.deploy-rs.packages."${system}".deploy-rs;
-            deploy-rs_aarch64 = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+            supportedSystems = [ system "aarch64-linux" ];
+            inherit (import "${inputs.nixpkgs}/pkgs/top-level/release-lib.nix" { inherit supportedSystems; }) mapTestOn;
           in
-          pkgs.lib.listToAttrs (
-            map (p: pkgs.lib.nameValuePair p.pname p) [
-              deploy-rs
-              deploy-rs_aarch64
-            ]
-          );
+          mapTestOn {
+              deploy-rs = {
+                ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
+                "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+              };
+          };
       };
       nixosConfigurations = {
         matej70 = nixosBuild {
