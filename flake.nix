@@ -180,10 +180,10 @@
           }).config.system.build.toplevel;
         packages =
           {
-              deploy-rs = {
-                ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
-                "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
-              };
+            deploy-rs = {
+              ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
+              "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+            };
           };
       };
       nixosConfigurations = {
