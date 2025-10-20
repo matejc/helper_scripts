@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+#
+# Usage:
+# 1. Run without arguments to run the "daemon" that listens on $SW_FIFO named pipe
+# 2. Bind it to keybindings, example of usage:
+#    Ctrl+Alt+Up        { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-up"; }
+#    Ctrl+Alt+Down      { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-down"; }
+#    Ctrl+Alt+Left      { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-left"; }
+#    Ctrl+Alt+Right     { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-right"; }
+
 
 SW_FIFO="$HOME/.niri-switch.fifo"
 
