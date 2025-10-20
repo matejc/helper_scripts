@@ -23,7 +23,7 @@ reader() {
     echo "> $line"
     timer_cancel
     niri msg action open-overview
-    sleep 0.1
+    sleep 0.05
     niri msg action "$line"
     timer_run
   done
