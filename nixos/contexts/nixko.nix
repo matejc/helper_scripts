@@ -192,9 +192,14 @@ let
         STOP_CHARGE_THRESH_BAT1 = 95;
       };
 
-      services.envfs.enable = true;
-      services.envfs.extraFallbackPathCommands = ''
-        ln -s ${pkgs.python312}/bin/python3 $out/python3
+      # services.envfs.enable = true;
+      # services.envfs.extraFallbackPathCommands = ''
+      #   ln -s ${pkgs.python312}/bin/python3 $out/python3
+      # '';
+      # system.activationScripts.binsh = lib.mkForce "";
+      # system.activationScripts.usrbinenv = lib.mkForce "";
+      system.activationScripts.python3 = ''
+        ln -sf ${pkgs.python312}/bin/python3 /usr/bin/python3
       '';
 
       nix.settings = {
