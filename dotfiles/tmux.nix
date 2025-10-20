@@ -29,7 +29,7 @@
             copy-mode\; send-keys Up
     bind-key -n S-Down \
             copy-mode\; send-keys Down
-    bind-key -n C-F \
+    bind-key / \
             copy-mode\; send-keys ?\; send-keys C-R
 
     bind m run "\

@@ -113,7 +113,7 @@ let
       nixmy = {
         backup = "git@github.com:matejc/configurations.git";
         remote = "https://github.com/matejc/nixpkgs";
-        nixpkgs = "${inputs.nixpkgs}";
+        nixpkgs = "${self.variables.nixpkgs}";
       };
       startup = [
         "${self.variables.profileDir}/bin/logseq"
@@ -145,6 +145,7 @@ let
     nixos-configuration = {
       environment.systemPackages = with pkgs; [
         sbctl
+        python312Packages.python
       ];
 
       # Lanzaboote currently replaces the systemd-boot module.
@@ -192,6 +193,10 @@ let
       };
 
       services.envfs.enable = true;
+      services.envfs.extraFallbackPathCommands = ''
+        ln -s ${pkgs.python312}/bin/python3 $out/python3
+      '';
+
       nix.settings = {
         experimental-features = [ "configurable-impure-env" ];
       };
