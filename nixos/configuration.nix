@@ -542,6 +542,7 @@ in
             tsukimi = pkgs.callPackage ../nixes/tsukimi.nix { pkgs = prev; nixpkgs = inputs.nixpkgs; };
             element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
             quickemu = inputs.quickemu.packages.${pkgs.system}.default.override { qemu_full = pkgs.qemu_kvm; };
+            niri-switcher = pkgs.callPackage ../nixes/niri-switcher { };
           })
           inputs.niri.overlays.niri
         ];
@@ -2611,8 +2612,8 @@ in
                         Super+Up    { focus-window-up; }
                         Super+Right { focus-column-right; }
 
-                        Ctrl+Alt+Left  { focus-column-left; }
-                        Ctrl+Alt+Right { focus-column-right; }
+                        Ctrl+Alt+Left  { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-left"; }
+                        Ctrl+Alt+Right { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-right"; }
                         Ctrl+Alt+Shift+Left  { move-column-left; }
                         Ctrl+Alt+Shift+Right { move-column-right; }
 
@@ -2648,8 +2649,8 @@ in
                         Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
                         Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
-                        Ctrl+Alt+Up        { focus-workspace-up; }
-                        Ctrl+Alt+Down      { focus-workspace-down; }
+                        Ctrl+Alt+Up        { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-up"; }
+                        Ctrl+Alt+Down      { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-down"; }
                         Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
                         Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
 
@@ -2823,6 +2824,18 @@ in
 
                   # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
                   systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
+
+                  systemd.user.services.niri-switcher = {
+                    Unit = {
+                      Description = "Niri Switcher User Service";
+                      After = [ context.variables.graphical.target ];
+                    };
+                    Install.WantedBy = [ context.variables.graphical.target ];
+                    Service = {
+                      Type = "simple";
+                      ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
+                    };
+                  };
 
                   # systemd.user.services.cliphist-text = {
                   #   Unit = {

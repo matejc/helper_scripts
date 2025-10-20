@@ -341,7 +341,6 @@ let
         ++ (with pkgs; [
           keepassxc
           mpv
-          caprine
           logseq
           element-desktop
           steamcmd
