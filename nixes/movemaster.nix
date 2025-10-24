@@ -16,8 +16,10 @@ let
       cp ./MoveMaster-${version}.AppImage $out
       mkdir -p $update
       cp -r ./update/* $update/
+      mkdir -p $docs
+      cp *.pdf $docs/
     '';
-    outputs = [ "out" "update" ];
+    outputs = [ "out" "update" "docs" ];
   };
   appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
 in
@@ -33,6 +35,9 @@ in
 
       install -d $out/share/movemaster/update
       cp -r ${src.update}/* $out/share/movemaster/update/
+
+      install -d $out/share/movemaster/docs
+      cp ${src.docs}/* $out/share/movemaster/docs/
 
       source "${pkgs.makeWrapper}/nix-support/setup-hook"
       wrapProgram $out/bin/movemaster --chdir "$out/share/movemaster"

@@ -270,6 +270,7 @@ let
       users.users.matejc.extraGroups = [
         "openrazer"
         "gamemode"
+        "dialout"
       ];
       systemd.services.after-sleep =
         let
@@ -317,6 +318,9 @@ let
           "default.clock.max-quantum" = 512;
         };
       };
+      # services.udev.extraRules = ''
+      #   SUBSYSTEM=="input", ATTRS{idVendor}=="16D0", ATTRS{idProduct}=="1182", MODE="0660", GROUP="input", TAG+="MCS MoveMaster RSG1"
+      # '';
     };
     home-configuration = {
       home.stateVersion = "20.09";
@@ -362,6 +366,7 @@ let
           networkmanagerapplet
           freecad-wayland
           tsukimi
+          movemaster
         ]);
       programs.chromium.enable = true;
       # services.network-manager-applet.enable = true;

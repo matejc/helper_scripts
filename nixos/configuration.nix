@@ -543,6 +543,7 @@ in
             element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
             quickemu = inputs.quickemu.packages.${pkgs.system}.default.override { qemu_full = pkgs.qemu_kvm; };
             niri-switcher = pkgs.callPackage ../nixes/niri-switcher { };
+            movemaster = pkgs.callPackage ../nixes/movemaster.nix { };
           })
           inputs.niri.overlays.niri
         ];
@@ -2612,8 +2613,8 @@ in
                         Super+Up    { focus-window-up; }
                         Super+Right { focus-column-right; }
 
-                        Ctrl+Alt+Left  { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-left"; }
-                        Ctrl+Alt+Right { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-column-right"; }
+                        Ctrl+Alt+Left  { focus-column-left; }
+                        Ctrl+Alt+Right { focus-column-right; }
                         Ctrl+Alt+Shift+Left  { move-column-left; }
                         Ctrl+Alt+Shift+Right { move-column-right; }
 
