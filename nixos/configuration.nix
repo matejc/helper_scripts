@@ -756,7 +756,7 @@ in
                     [
                       pkgs.font-awesome
                       config.gtk.font.package
-                      pkgs.noto-fonts-emoji
+                      pkgs.noto-fonts-color-emoji
                       pkgs.git
                       pkgs.git-crypt
                       pkgs.zsh

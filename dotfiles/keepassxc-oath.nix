@@ -5,6 +5,6 @@
     #!${pkgs.stdenv.shell}
 
     oath="$(${pkgs.keepassxc}/bin/keepassxc-cli show $KEEPASS_DB -k $KEEPASS_KEY $1 -a notes)"
-    ${pkgs.oathToolkit}/bin/oathtool --base32 --totp `echo "$oath" | ${pkgs.jq}/bin/jq ".[] | select(.name == \"$2\") | .secret" -r` | ${pkgs.gawk}/bin/awk '{print $1}'
+    ${pkgs.oath-toolkit}/bin/oathtool --base32 --totp `echo "$oath" | ${pkgs.jq}/bin/jq ".[] | select(.name == \"$2\") | .secret" -r` | ${pkgs.gawk}/bin/awk '{print $1}'
   '';
 }

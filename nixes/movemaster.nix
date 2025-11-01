@@ -7,11 +7,11 @@ let
     pname = "${pname}-appimage";
     inherit version;
     src = pkgs.fetchurl {
-      name = "movemaster-lin-en.rar";
-      url = "https://drive.usercontent.google.com/download?id=10QwQF3zKD-V7z_psJpIvOoL5Gfx2pIMd&export=download&authuser=0&confirm=t";
-      sha256 = "sha256-4npSVHf8c9NRUYgru2CRsmn3bVQIdbZwOyqSVt9sLWY=";
+      name = "movemaster-lin-en.zip";
+      url = "https://drive.usercontent.google.com/download?id=1rUZT56WmOH76DPhLBzDKb-E7v-5xM__q&export=download&authuser=0&confirm=t";
+      sha256 = "sha256-4AXBNFfoRUc0NBjMBE+de5Q2VAMNdu33bHpTBwgdfM8=";
     };
-    nativeBuildInputs = [ pkgs.unrar ];
+    nativeBuildInputs = [ pkgs.unzip ];
     installPhase = ''
       cp ./MoveMaster-${version}.AppImage $out
       mkdir -p $update
