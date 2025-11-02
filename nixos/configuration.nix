@@ -539,7 +539,6 @@ in
                 # };
               });
             */
-            tsukimi = pkgs.callPackage ../nixes/tsukimi.nix { pkgs = prev; nixpkgs = inputs.nixpkgs; };
             element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
             quickemu = inputs.quickemu.packages.${pkgs.system}.default.override { qemu_full = pkgs.qemu_kvm; };
             niri-switcher = pkgs.callPackage ../nixes/niri-switcher { };

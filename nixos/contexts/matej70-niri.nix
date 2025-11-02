@@ -365,7 +365,6 @@ let
           kitty
           networkmanagerapplet
           freecad-wayland
-          tsukimi
           movemaster
         ]);
       programs.chromium.enable = true;
