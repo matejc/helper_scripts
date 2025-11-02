@@ -136,7 +136,7 @@ let
     nixos-configuration = {
       hardware.graphics = {
         enable = true;
-        extraPackages = with pkgs; [ vaapiIntel intel-media-driver ];
+        extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
       };
       networking.networkmanager.enable = true;
       services.dbus.packages = [ pkgs.dconf ];

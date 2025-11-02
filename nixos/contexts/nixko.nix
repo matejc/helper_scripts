@@ -233,7 +233,6 @@ let
         proxychains-ng
         cproxy
         graftcp
-        freerdp3
         file-roller
         eog
         minikube kubectl docker-machine-kvm2 ttyd
