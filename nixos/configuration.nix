@@ -816,15 +816,27 @@ in
                   };
 
                   programs.chromium = {
+                    package = pkgs.ungoogled-chromium;
                     dictionaries = [
                       pkgs.hunspellDictsChromium.en_US
                     ];
-                    extensions = [
+                    extensions = let
+                      adn = rec {
+                        id = "omdnkjimmikpnlkkcjdfkmfknempnppc";
+                        version = "3.26.0";
+                        crxPath = pkgs.fetchurl {
+                          url = "https://github.com/dhowe/AdNauseam/releases/download/v${version}/adnauseam-${version}.chromium.crx";
+                          name = "adnauseam-${version}.chromium.crx";
+                          hash = "sha256-VK2uTuWjYu+Pg/mzbkLVydxxnajxtY0hTYyy8bhAFjY=";
+                        };
+                      };
+                    in [
                       # { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-                      { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
-                      { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
+                      # { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
+                      # { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
                       { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
-                      { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
+                      # { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
+                      adn
                     ];
                   };
 

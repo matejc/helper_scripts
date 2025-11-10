@@ -104,7 +104,7 @@ let
       };
       term = null;
       programs = {
-        filemanager = "${pkgs.cosmic-files}/bin/cosmic-files";
+        filemanager = "${pkgs.nemo-with-extensions}/bin/nemo";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
         terminal = "${pkgs.kitty}/bin/kitty";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
