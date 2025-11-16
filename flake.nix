@@ -222,8 +222,8 @@
           };
       };
       homeConfigurations = {
-        matej70 = homeBuild {
-          context = "matej70";
+        nixko = homeBuild {
+          context = "nixko-minimal";
         };
       };
       nixosConfigurations = {
@@ -239,11 +239,9 @@
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           ];
         };
-        nixko = nixosBuild {
+        nixko = nixosBuildNew {
           context = "nixko";
           modules = [
-            inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-            inputs.lanzaboote.nixosModules.lanzaboote
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           ];
         };

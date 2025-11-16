@@ -1,4 +1,4 @@
-{ pkgs, config, defaultUser, ... }:
+{ pkgs, lib, config, defaultUser, ... }:
 let
   variables = config.variables;
   nixos-wallpaper = pkgs.fetchurl {
@@ -14,7 +14,6 @@ in
     ../../home/dotfiles.nix
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix
-    ../../home/niri.nix
   ];
 
   config = {
@@ -22,12 +21,10 @@ in
       ../../dotfiles/nvim.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
-      ../../dotfiles/noctalialockscreen.nix
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix
       ../../dotfiles/mypassgen.nix
       ../../dotfiles/wofi.nix
-      ../../dotfiles/nwgbar.nix
       ../../dotfiles/countdown.nix
       ../../dotfiles/zed.nix
       ../../dotfiles/work.nix
@@ -37,7 +34,6 @@ in
       ../../dotfiles/zellij.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
-      ../../dotfiles/gravatar.nix
     ];
     variables = {
       homeDir = "/home/${variables.user}";
@@ -77,7 +73,7 @@ in
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${pkgs.kitty}/bin/kitty --start-as=maximized";
         browser = "${variables.profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
@@ -86,11 +82,8 @@ in
       shellRc = "${variables.homeDir}/.zshrc";
       sway.enable = false;
       graphical = {
-        name = "niri";
-        logout = "${variables.graphical.exec} msg action quit --skip-confirmation";
+        name = "gnome";
         target = "graphical-session.target";
-        waybar.prefix = "niri";
-        exec = "${config.programs.niri.package}/bin/niri";
       };
       vims = {
         q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
@@ -119,35 +112,16 @@ in
         "${variables.profileDir}/bin/browser"
         "${variables.profileDir}/bin/keepassxc"
       ];
-      services = [
-        {
-          name = "kdeconnect-indicator";
-          delay = 5;
-          group = "always";
-        }
-      ];
+      services = [ ];
     };
+    targets.genericLinux.enable = true;
+
     home.stateVersion = "25.05";
-    services.swayidle.enable = true;
-    services.kanshi.enable = true;
-    services.kdeconnect.enable = true;
-    services.kdeconnect.indicator = true;
-    # services.network-manager-applet.enable = true;
     home.packages = with pkgs; [
-      slack
-      teams-for-linux
-      logseq
       keepassxc
-      pulseaudio
-      networkmanagerapplet
       git-crypt
       jq
       yq-go
-      proxychains-ng
-      cproxy
-      graftcp
-      file-roller
-      eog
       minikube kubectl docker-machine-kvm2 ttyd
       unzip stdenv.cc gnumake colima docker docker-compose
       # asdf-vm
@@ -155,23 +129,35 @@ in
       devenv
       tmux
       kitty neovim-qt
-      quickemu
       spice-gtk
-      sshfs
     ];
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
     };
-    programs.chromium.enable = true;
-    programs.firefox.enable = true;
+    # programs.chromium.enable = true;
+    # programs.chromium.package = lib.mkForce (pkgs.ungoogled-chromium.overrideAttrs (old: {
+    #   buildCommand = let
+    #     oldStr = ''
+    #       if [ -x "/run/wrappers/bin/${old.passthru.sandboxExecutableName}" ]
+    #       then
+    #         export CHROME_DEVEL_SANDBOX="/run/wrappers/bin/${old.passthru.sandboxExecutableName}"
+    #       else
+    #         export CHROME_DEVEL_SANDBOX="$sandbox/bin/${old.passthru.sandboxExecutableName}"
+    #       fi
+    #     '';
+    #     newStr = ''export CHROME_DEVEL_SANDBOX=/usr/lib/chromium/chrome-sandbox'';
+    #   in
+    #     builtins.replaceStrings [oldStr] [newStr] old.buildCommand;
+    # }));
+    # programs.firefox.enable = true;
     # programs.zsh.initContent = ''
     #   . "${pkgs.asdf-vm}/share/asdf-vm/asdf.sh"
     #   autoload -Uz bashcompinit && bashcompinit
     #   . "${pkgs.asdf-vm}/share/asdf-vm/completions/asdf.bash"
     # '';
-    home.sessionVariables = {
-      SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
-    };
+    # home.sessionVariables = {
+    #   SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
+    # };
   };
 }

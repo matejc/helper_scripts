@@ -204,6 +204,7 @@ in
         pkgs.devenv
         pkgs.tempstatus_all
         pkgs.sleepCmd
+        config.nix.package
       ]
       ++ services-cmds
       ++ programs;
@@ -406,19 +407,22 @@ in
       #enable = true;
       #indicator = true;
     };
-    systemd.user.services.kdeconnect.Install.WantedBy = lib.mkForce [
+    systemd.user.services.kdeconnect.Install.WantedBy = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [
       config.variables.graphical.target
-    ];
-    systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkForce [
+    ]);
+    systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [
       config.variables.graphical.target
-    ];
-    systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkForce [ ];
+    ]);
+    systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [ ]);
 
-    systemd.user.services.network-manager-applet.Service.ExecStart =
-      lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
-    systemd.user.services.network-manager-applet.Unit.Requires = lib.mkForce [
-      "graphical-session-pre.target"
-    ];
+    systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkIf (config.services.network-manager-applet.enable) (
+      lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator"
+    );
+    systemd.user.services.network-manager-applet.Unit.Requires = lib.mkIf (config.services.network-manager-applet.enable) (
+      lib.mkForce [
+        "graphical-session-pre.target"
+      ]
+    );
 
     services.syncthing.extraOptions = [
       "--gui-address=127.0.0.1:8384"
