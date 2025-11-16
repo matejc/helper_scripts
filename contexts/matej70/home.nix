@@ -180,7 +180,6 @@ in
           # "1716740".compatibilityTool = "SteamTinkerLaunch";
         };
       };
-      sleepMode = "deep";
       services = [
         {
           name = "kdeconnect-indicator";

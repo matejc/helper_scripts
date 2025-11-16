@@ -1,6 +1,16 @@
 { pkgs, lib, config, inputs, ... }:
 {
+  imports = [
+    ../../nixos/modules/variables.nix
+    ../../nixos/modules/misc.nix
+    ../../nixos/modules/home-manager.nix
+  ];
+
   config = {
+    variables = {
+      hibernate = false;
+    };
+
     hardware.graphics = {
       enable = true;
       extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];

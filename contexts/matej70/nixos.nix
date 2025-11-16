@@ -1,13 +1,16 @@
 { pkgs, lib, inputs, ... }:
-let
-  helper_scripts = ../..;
-in
 {
   imports = [
+    ../../nixos/modules/variables.nix
+    ../../nixos/modules/misc.nix
     ../../nixos/modules/home-manager.nix
     inputs.chaotic.nixosModules.default
   ];
+
   config = {
+    variables = {
+      sleepMode = "deep";
+    };
     services.greetd = {
       enable = true;
       settings = {
