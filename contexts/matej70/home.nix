@@ -229,6 +229,7 @@ in
         networkmanagerapplet
         freecad-wayland
         movemaster
+        quickemu
       ]);
     programs.chromium.enable = true;
     # services.network-manager-applet.enable = true;

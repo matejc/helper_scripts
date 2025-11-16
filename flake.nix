@@ -186,7 +186,18 @@
           (homeBuild {
             context = "matej80";
           }).activationPackage;
-        nixko =
+        nixko.nixos =
+          (nixosBuildNew {
+            context = "nixko";
+            modules = [
+              ./nixos/minimal-configuration.nix
+            ];
+          }).config.system.build.toplevel;
+        nixko.home =
+          (homeBuild {
+            context = "nixko";
+          }).activationPackage;
+        nixko_ =
           (nixosBuild {
             context = "nixko";
             modules = [

@@ -118,7 +118,7 @@ in
           scripts = [ prev.mpvScripts.mpris ];
         };
         element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
-        quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default.override { qemu_full = pkgs.qemu_kvm; };
+        quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default;
         movemaster = pkgs.callPackage ../nixes/movemaster.nix { };
         sleepCmd = sleepCmd;
         configure-gtk = configure-gtk;
