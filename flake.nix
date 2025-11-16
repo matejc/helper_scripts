@@ -197,14 +197,10 @@
           (homeBuild {
             context = "nixko";
           }).activationPackage;
-        nixko_ =
-          (nixosBuild {
-            context = "nixko";
-            modules = [
-              inputs.lanzaboote.nixosModules.lanzaboote
-              ./nixos/minimal-configuration.nix
-            ];
-          }).config.system.build.toplevel;
+        nixko-minimal.home =
+          (homeBuild {
+            context = "nixko-minimal";
+          }).activationPackage;
         wsl =
           (nixosBuild {
             context = "wsl";
