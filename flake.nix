@@ -134,39 +134,58 @@
             ./nixos/configuration.nix
           ] ++ modules;
         });
-      # pkgs = inputs.nixpkgs.legacyPackages.${system};
+      nixosBuildNew =
+        {
+          context,
+          modules ? []
+        }:
+        (inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs context defaultUser;
+          };
+          modules = modules ++ [
+            (./contexts + "/${context}/nixos.nix")
+          ];
+        });
+      homeBuild =
+        {
+          context
+        }:
+        (inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = inputs.nixpkgs.legacyPackages.${system};
+          modules = [
+            (./contexts + "/${context}/home.nix")
+          ];
+          extraSpecialArgs = {
+            inherit inputs context defaultUser;
+          };
+        });
     in
     {
-      # homeConfigurations = {
-      #   wsl = inputs.home-manager.lib.homeManagerConfiguration {
-      #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-      #     modules = [
-      #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/wsl.nix; })
-      #     ];
-      #   };
-      #   nixcode = inputs.home-manager.lib.homeManagerConfiguration {
-      #     pkgs = inputs.nixpkgs.legacyPackages."x86_64-linux";
-      #     modules = [
-      #       (import ./configuration.nix { inherit inputs; contextFile = ./contexts/nixcode.nix; })
-      #     ];
-      #   };
-      # };
       hydraJobs = {
-        matej70 =
-          (nixosBuild {
-            context = "matej70-niri";
-            modules = [
-              ./nixos/minimal-configuration.nix
-              inputs.chaotic.nixosModules.default
-            ];
-          }).config.system.build.toplevel;
-        matej80 =
-          (nixosBuild {
-            context = "matej80-niri";
+        matej70.nixos =
+          (nixosBuildNew {
+            context = "matej70";
             modules = [
               ./nixos/minimal-configuration.nix
             ];
           }).config.system.build.toplevel;
+        matej70.home =
+          (homeBuild {
+            context = "matej70";
+          }).activationPackage;
+        matej80.nixos =
+          (nixosBuildNew {
+            context = "matej80";
+            modules = [
+              ./nixos/minimal-configuration.nix
+            ];
+          }).config.system.build.toplevel;
+        matej80.home =
+          (homeBuild {
+            context = "matej80";
+          }).activationPackage;
         nixko =
           (nixosBuild {
             context = "nixko";
@@ -191,16 +210,20 @@
             };
           };
       };
+      homeConfigurations = {
+        matej70 = homeBuild {
+          context = "matej70";
+        };
+      };
       nixosConfigurations = {
-        matej70 = nixosBuild {
-          context = "matej70-niri";
+        matej70 = nixosBuildNew {
+          context = "matej70";
           modules = [
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
-            inputs.chaotic.nixosModules.default
           ];
         };
-        matej80 = nixosBuild {
-          context = "matej80-niri";
+        matej80 = nixosBuildNew {
+          context = "matej80";
           modules = [
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           ];

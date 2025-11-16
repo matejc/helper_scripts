@@ -6,7 +6,7 @@
 }:
 
 let
-  myVimPlugins = pkgs.recurseIntoAttrs (
+  myVimPlugins = lib.recurseIntoAttrs (
     pkgs.callPackage ./vimPlugins {
       llvmPackages = pkgs.llvmPackages_6;
     }

@@ -1,7 +1,7 @@
 { variables, config, pkgs, lib }:
 let
   steam-xrun = pkgs.writeShellScriptBin "steam-xrun" ''
-    export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xsel pkgs.xwayland-run config.programs.steam.package ]}"
+    export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xsel pkgs.xwayland-run pkgs.steam ]}"
     export DISPLAY=:10
     trap 'kill $(jobs -p)' EXIT
     xwayland-run $DISPLAY -ac -- openbox --startup "bash -c '${lib.concatStringsSep " & " (["wl-paste -n --watch xsel -bi"] ++ variables.steam.xrun)} & steam; openbox --exit'"

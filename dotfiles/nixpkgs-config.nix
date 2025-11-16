@@ -595,8 +595,10 @@ rec {
   };
   android_sdk.accept_license = true;
   permittedInsecurePackages = [
-    "openssl-1.0.2u"
-    "p7zip-16.02"
-    "python-2.7.18.6"
+    "openssl-1.1.1w"
+    "electron-27.3.11"
+    "olm-3.2.16"
+    "libsoup-2.74.3"  # heroic
+    "qtwebengine-5.15.19"  # swiftpoint
   ];
 }
