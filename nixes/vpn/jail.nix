@@ -23,6 +23,10 @@
     guestPort = 1080;
     hostPort = 1080;
   },
+  internalCmds ? [
+    # { start = "/usr/bin/clipboard-pull-watch >/dev/null 2>/dev/null </dev/null"; }
+    { start = "/usr/bin/clipboard-push-watch >/dev/null 2>/dev/null </dev/null"; }
+  ],
   cmds ? [
   ],
   preCmds ? {
@@ -61,7 +65,7 @@
   ],
   wayland ? {
     outside = "wayland-1";
-    inside = "wayland-9";
+    inside = "wayland-0";
   },
   # , x11 ? ":0"
   x11 ? null,
@@ -204,7 +208,7 @@ let
     set -e
     ${pkgs.lib.concatImapStringsSep "\n" (i: p: ''
       supervisorctl --serverurl=unix:///tmp/supervisor.sock restart p${toString i}
-    '') cmds}
+    '') (cmds ++ internalCmds)}
   '';
 
   mkVpnCmd = pkgs.writeShellScript "start-vpn.sh" ''
@@ -544,7 +548,7 @@ let
       redirect_stderr = true
       stdout_logfile = ${home.inside}/.supervisord/p${toString i}.log
       stdout_logfile_maxbytes = 0
-    '') cmds}
+    '') (cmds ++ internalCmds)}
   '';
 
   insideCmd = pkgs.writeShellScript "inside-${name}.sh" ''
@@ -708,7 +712,7 @@ let
       --mount none:/run/user/${uid}:tmpfs:mode=0700,uid=${uid},gid=${gid} \
       ${
         if wayland != null then
-          "--bindmount_ro /run/user/${uid}/${wayland.outside}:/run/user/${uid}/${wayland.outside}"
+          "--bindmount_ro $XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:/run/user/${uid}/${wayland.outside}"
         else
           ""
       } \
@@ -829,13 +833,10 @@ let
   pamConf = pkgs.writeText "pam.conf" ''
     auth       required pam_env.so
     auth       required pam_unix.so nullok shadow
-    auth optional ${pkgs.intune-portal}/lib/security/pam_intune.so
     auth optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so
-    password optional ${pkgs.intune-portal}/lib/security/pam_intune.so
     password optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so use_authtok
     password   required pam_unix.so use_authtok nullok
     account    required pam_unix.so
-    session optional ${pkgs.intune-portal}/lib/security/pam_intune.so
     session optional ${pkgs.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
     session    optional ${pkgs.systemd}/lib/security/pam_systemd.so
     session    required pam_limits.so
@@ -923,6 +924,16 @@ let
     /usr/bin/wl-paste -n | WAYLAND_DISPLAY=${wayland.outside} /usr/bin/wl-copy -n
   '';
 
+  pushClipboardWatch = pkgs.writeShellScriptBin "clipboard-push-watch" ''
+    export XDG_RUNTIME_DIR=/run/user/${uid}
+    WAYLAND_DISPLAY=${wayland.inside} wl-paste -n -w env WAYLAND_DISPLAY=${wayland.outside} wl-copy -n
+  '';
+
+  pullClipboardWatch = pkgs.writeShellScriptBin "clipboard-pull-watch" ''
+    export XDG_RUNTIME_DIR=/run/user/${uid}
+    WAYLAND_DISPLAY=${wayland.outside} wl-paste -n -w env WAYLAND_DISPLAY=${wayland.inside} wl-copy -n
+  '';
+
   xdgOpen = pkgs.writeShellScriptBin "xdg-open" ''
     set -x
 
@@ -965,7 +976,9 @@ let
       xfce.xfce4-icon-theme
       wl-clipboard
       pullClipboard
+      pullClipboardWatch
       pushClipboard
+      pushClipboardWatch
       openssl
       dconf
       netcat
