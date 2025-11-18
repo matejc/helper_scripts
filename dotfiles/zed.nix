@@ -53,7 +53,6 @@ let
         font_size = null;
         line_height = "comfortable";
         option_as_meta = false;
-        button = false;
         shell = "system";
         working_directory = "current_project_directory";
       };
