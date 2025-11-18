@@ -197,7 +197,7 @@
           (homeBuild {
             context = "nixko";
           }).activationPackage;
-        nixko-minimal.home =
+        nixko.minimal =
           (homeBuild {
             context = "nixko-minimal";
           }).activationPackage;
