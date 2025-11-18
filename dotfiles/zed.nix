@@ -1,4 +1,9 @@
-{ variables, pkgs, ... }:
+{
+  variables,
+  pkgs,
+  lib,
+  ...
+}:
 let
   binPaths = with pkgs; [
     nixd
@@ -6,9 +11,6 @@ let
   ];
   configFile = pkgs.writeText "settings.json" (
     builtins.toJSON {
-      features = {
-        copilot = false;
-      };
       base_keymap = "VSCode";
       theme = "Gruvbox Dark";
       vim_mode = false;
@@ -31,6 +33,29 @@ let
       };
       lsp = {
         nil.settings.nix.flake.autoArchive = false;
+      };
+
+      node = {
+        path = lib.getExe pkgs.nodejs;
+        npm_path = lib.getExe' pkgs.nodejs "npm";
+      };
+
+      terminal = {
+        alternate_scroll = "off";
+        blinking = "off";
+        copy_on_select = false;
+        dock = "bottom";
+        env = {
+          TERM = "xterm-256color";
+        };
+        font_family = variables.font.family;
+        font_features = null;
+        font_size = null;
+        line_height = "comfortable";
+        option_as_meta = false;
+        button = false;
+        shell = "system";
+        working_directory = "current_project_directory";
       };
     }
   );
