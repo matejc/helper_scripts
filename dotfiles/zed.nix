@@ -120,6 +120,9 @@ in
       if [ ! -f "${variables.homeDir}/.config/zed/settings.json" ]
       then
         cat ${configFile} > ${variables.homeDir}/.config/zed/settings.json
+      else
+        jq -s '.[0] * .[1]' "${configFile}" "${variables.homeDir}/.config/zed/settings.json" > "${variables.homeDir}/.config/zed/_settings.json"
+        mv "${variables.homeDir}/.config/zed/_settings.json" "${variables.homeDir}/.config/zed/settings.json"
       fi
       exec ${pkgs.zed-editor}/bin/zeditor "''${@:-.}"
     '';

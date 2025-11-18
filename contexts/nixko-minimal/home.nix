@@ -159,5 +159,9 @@ in
     # home.sessionVariables = {
     #   SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
     # };
+    home.file.".zed_server" = {
+      source = "${pkgs.zed-editor.remote_server}/bin";
+      recursive = true;
+    };
   };
 }
