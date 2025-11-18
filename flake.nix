@@ -117,23 +117,6 @@
       system = "x86_64-linux";
       helper_scripts = ./.;
       defaultUser = "matejc";
-      nixosBuild =
-        {
-          context,
-          modules ? [ ],
-        }:
-        (inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            inherit inputs helper_scripts defaultUser;
-            contextFile = ./nixos/contexts + "/${context}.nix";
-          };
-          modules = [
-            inputs.home-manager.nixosModules.home-manager
-            inputs.nix-index-database.nixosModules.nix-index
-            ./nixos/configuration.nix
-          ] ++ modules;
-        });
       nixosBuildNew =
         {
           context,
@@ -145,7 +128,7 @@
             inherit inputs context defaultUser;
           };
           modules = modules ++ [
-            (./contexts + "/${context}/nixos.nix")
+            (./contexts + "/${context}/system.nix")
           ];
         });
       homeBuild =
@@ -164,7 +147,7 @@
     in
     {
       hydraJobs = {
-        matej70.nixos =
+        matej70.system =
           (nixosBuildNew {
             context = "matej70";
             modules = [
@@ -175,7 +158,7 @@
           (homeBuild {
             context = "matej70";
           }).activationPackage;
-        matej80.nixos =
+        matej80.system =
           (nixosBuildNew {
             context = "matej80";
             modules = [
@@ -186,7 +169,7 @@
           (homeBuild {
             context = "matej80";
           }).activationPackage;
-        nixko.nixos =
+        nixko.system =
           (nixosBuildNew {
             context = "nixko";
             modules = [
@@ -197,18 +180,12 @@
           (homeBuild {
             context = "nixko";
           }).activationPackage;
-        nixko.minimal =
+        nixko.home-minimal =
           (homeBuild {
             context = "nixko-minimal";
           }).activationPackage;
-        wsl =
-          (nixosBuild {
-            context = "wsl";
-            modules = [
-              inputs.NixOS-WSL.nixosModules.wsl
-              ./nixos/wsl/configuration.nix
-            ];
-          }).config.system.build.toplevel;
+        wsl.system = self.nixosConfigurations.wsl.config.system.build.toplevel;
+        wsl.builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
         packages =
           {
             deploy-rs = {
@@ -241,12 +218,8 @@
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           ];
         };
-        wsl = nixosBuild {
+        wsl = nixosBuildNew {
           context = "wsl";
-          modules = [
-            inputs.NixOS-WSL.nixosModules.wsl
-            ./nixos/wsl/configuration.nix
-          ];
         };
         # matej70 = inputs.nixpkgs.lib.nixosSystem {
         #   inherit system;
@@ -272,12 +245,6 @@
         #     # }
         #   ];
         # };
-      };
-      images = {
-        wsl = {
-          system = self.nixosConfigurations.wsl.config.system.build.toplevel;
-          builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
-        };
       };
     };
 }
