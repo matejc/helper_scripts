@@ -8,6 +8,7 @@ let
   binPaths = with pkgs; [
     nixd
     nil
+    jq
   ];
   configFile = pkgs.writeText "settings.json" (
     builtins.toJSON {
@@ -34,6 +35,8 @@ let
       lsp = {
         nil.settings.nix.flake.autoArchive = false;
       };
+      disable_ai = true;
+      collaboration_panel.button = false;
 
       node = {
         path = lib.getExe pkgs.nodejs;
@@ -42,7 +45,8 @@ let
 
       terminal = {
         alternate_scroll = "off";
-        blinking = "off";
+        blinking = "on";
+        cursor_shape = "bar";
         copy_on_select = false;
         dock = "bottom";
         env = {
@@ -51,9 +55,9 @@ let
         font_family = variables.font.family;
         font_features = null;
         font_size = null;
-        line_height = "comfortable";
-        option_as_meta = false;
+        line_height = "standard";
         shell = "system";
+        detect_venv = "off";
         working_directory = "current_project_directory";
       };
     }
@@ -71,6 +75,7 @@ in
             ctrl-shift-p = "command_palette::Toggle";
             ctrl-q = "workspace::CloseWindow";
             ctrl-shift-q = "zed::Quit";
+            ctrl-t = "terminal_panel::Toggle";
           };
         }
         {
@@ -122,6 +127,13 @@ in
             "ctrl-delete" = "editor::DeleteToNextSubwordEnd";
           };
         }
+        {
+          context = "Terminal";
+          bindings = {
+            ctrl-shift-t = "workspace::NewTerminal";
+            ctrl-t = "terminal_panel::Toggle";
+          };
+        }
       ]
     );
     # } {
@@ -141,13 +153,14 @@ in
     target = "${variables.homeDir}/bin/z";
     source = pkgs.writeShellScript "zeditor.sh" ''
       export PATH="$PATH:${pkgs.lib.makeBinPath binPaths}"
-      if [ ! -f "${variables.homeDir}/.config/zed/settings.json" ]
+      set -e
+
+      if [ -f "${variables.homeDir}/.config/zed/settings.json" ]
       then
-        cat ${configFile} > ${variables.homeDir}/.config/zed/settings.json
-      else
-        jq -s '.[0] * .[1]' "${configFile}" "${variables.homeDir}/.config/zed/settings.json" > "${variables.homeDir}/.config/zed/_settings.json"
-        mv "${variables.homeDir}/.config/zed/_settings.json" "${variables.homeDir}/.config/zed/settings.json"
+        mv "${variables.homeDir}/.config/zed/settings.json" "${variables.homeDir}/.config/zed/settings.backup.json"
       fi
+      jq '.' "${configFile}" > "${variables.homeDir}/.config/zed/settings.json"
+
       exec ${pkgs.zed-editor}/bin/zeditor "''${@:-.}"
     '';
   }

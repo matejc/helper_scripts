@@ -44,7 +44,8 @@
       from = "/run/opengl-driver";
       to = "/run/opengl-driver";
     }
-  ] ++ extraRomounts,
+  ]
+  ++ extraRomounts,
   extraRomounts ? [
     {
       from = "${home.outside}/.vpn/${name}/openvpn";
@@ -101,7 +102,8 @@
       name = "Terminal";
       exec = "foot";
     }
-  ] ++ extraLaunchers,
+  ]
+  ++ extraLaunchers,
   extraLaunchers ? [ ],
   enableDBus ? false,
   enableGnomeKeyring ? false,
@@ -250,7 +252,8 @@ let
       ++ hostFwds;
 
   slirp4netnsHostFwds' = [
-  ] ++ slirp4netnsHostFwds;
+  ]
+  ++ slirp4netnsHostFwds;
 
   supervisorConf = pkgs.writeText "supervisord.conf" ''
     [supervisord]
@@ -570,9 +573,21 @@ let
 
     trap 'echo "Be patient inside"' SIGINT
 
-    ${mkSetuidProgram { program = "dbus-daemon-launch-helper"; source = "${pkgs.dbus}/libexec/dbus-daemon-launch-helper"; setuid = true; }}
-    ${mkSetuidProgram { program = "login"; source = "${pkgs.shadow}/bin/login"; setuid = true; }}
-    ${mkSetuidProgram { program = "gnome-keyring-daemon"; source = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon"; setuid = true; }}
+    ${mkSetuidProgram {
+      program = "dbus-daemon-launch-helper";
+      source = "${pkgs.dbus}/libexec/dbus-daemon-launch-helper";
+      setuid = true;
+    }}
+    ${mkSetuidProgram {
+      program = "login";
+      source = "${pkgs.shadow}/bin/login";
+      setuid = true;
+    }}
+    ${mkSetuidProgram {
+      program = "gnome-keyring-daemon";
+      source = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon";
+      setuid = true;
+    }}
 
     ${preCmdInside}
 
@@ -584,7 +599,8 @@ let
     arguments = {
       proto = "tcp";
       host_addr = "127.0.0.1";
-    } // o;
+    }
+    // o;
   }) slirp4netnsHostFwds';
 
   script = pkgs.writeShellScript "script.sh" ''
@@ -733,7 +749,7 @@ let
       ${
         if enableDBus then
           "--symlink ${dBusConfigDir}:/etc/dbus-1 --env DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus --env DBUS_SYSTEM_BUS_ADDRESS=unix:path=/run/user/${uid}/dbus --symlink /run/user/${uid}/dbus:/run/dbus/system_bus_socket"
-          #--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf
+        #--bindmount_ro ${sessionDBusConf}:/etc/dbus-1/session.conf
         else
           ""
       } \
@@ -772,12 +788,7 @@ let
         else
           ""
       } \
-      ${
-        if enableJournalD then
-          "--symlink /run/systemd/journal/dev-log:/dev/log"
-        else
-          ""
-      } \
+      ${if enableJournalD then "--symlink /run/systemd/journal/dev-log:/dev/log" else ""} \
       -- ${insideCmd} & nsjail_pid=$!
       sleep 0.1
       ps -o pid,cmd -u 100000 | awk '$3 == "${insideCmd}" {printf $1}' > ${stateDir}/.ns.pid
