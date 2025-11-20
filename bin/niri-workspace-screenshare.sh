@@ -4,11 +4,12 @@ set -e
 
 if ! command -v jq &>/dev/null
 then
-    echo "Missing required command: jq" >&2
+    echo "Error: Missing required command: jq" >&2
+    exit 1
 fi
 
-output="${1:?First argument is output name}"
-ws_idx="${2:?Second argument is Niri workspace idx}"
+output="${1:?Error: First argument is required: output name}"
+ws_idx="${2:?Error: Second argument is required: Niri workspace idx}"
 
 ws_id="$(niri msg --json workspaces | jq --arg output "$output" --argjson idx "$ws_idx" -r --unbuffered '.[]|select(.output==$output and .idx==$idx).id')"
 
