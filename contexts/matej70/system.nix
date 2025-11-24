@@ -1,4 +1,9 @@
-{ pkgs, lib, inputs, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../../nixos/modules/variables.nix
@@ -22,7 +27,7 @@
       };
     };
     programs.niri.enable = true;
-    boot.kernelPackages = pkgs.linuxPackages_cachyos;
+    boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
     chaotic.mesa-git.enable = true;
     services.scx.enable = true;
     services.scx.scheduler = "scx_bpfland";
@@ -31,7 +36,7 @@
       "performance"
     ];
     services.scx.package = pkgs.scx.full;
-    boot.kernelModules = ["ntsync"];
+    boot.kernelModules = [ "ntsync" ];
     services.udev.packages = [
       (pkgs.writeTextFile {
         name = "ntsync-udev-rules";
@@ -96,7 +101,7 @@
     services.pipewire.extraConfig.pipewire."92-low-latency" = {
       "context.properties" = {
         "default.clock.rate" = 48000;
-        "default.clock.quantum" = 512;  # ~12ms
+        "default.clock.quantum" = 512; # ~12ms
         "default.clock.min-quantum" = 512;
         "default.clock.max-quantum" = 512;
       };

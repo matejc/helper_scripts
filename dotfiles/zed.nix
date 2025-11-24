@@ -60,6 +60,21 @@ let
         detect_venv = "off";
         working_directory = "current_project_directory";
       };
+
+      git = {
+        inline_blame = {
+          enabled = true;
+          delay_ms = 500;
+          show_commit_summary = true;
+          min_column = 80;
+        };
+      };
+      inlay_hints = {
+        enabled = true;
+        toggle_on_modifiers_press = {
+          alt = true;
+        };
+      };
     }
   );
 in
@@ -125,6 +140,7 @@ in
             "ctrl-shift-right" = "editor::SelectToNextSubwordEnd";
             "ctrl-backspace" = "editor::DeleteToPreviousSubwordStart";
             "ctrl-delete" = "editor::DeleteToNextSubwordEnd";
+            "ctrl-shift-d" = "editor::DuplicateLineDown";
           };
         }
         {

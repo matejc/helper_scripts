@@ -102,11 +102,13 @@
     extra-substituters = [
       "https://cache.matejc.com"
       "https://chaotic-nyx.cachix.org"
+      "https://nix-community.cachix.org"
       "https://niri.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.matejc.com-1:1gX7YfpZK4zkYf5MRrz9HPsJq9XZBC6bJgDySZmzbUM="
       "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
   };
@@ -120,7 +122,7 @@
       nixosBuildNew =
         {
           context,
-          modules ? []
+          modules ? [ ],
         }:
         (inputs.nixpkgs.lib.nixosSystem {
           inherit system;
@@ -133,7 +135,7 @@
         });
       homeBuild =
         {
-          context
+          context,
         }:
         (inputs.home-manager.lib.homeManagerConfiguration {
           pkgs = inputs.nixpkgs.legacyPackages.${system};
@@ -186,13 +188,12 @@
           }).activationPackage;
         wsl.system = self.nixosConfigurations.wsl.config.system.build.toplevel;
         wsl.builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
-        packages =
-          {
-            deploy-rs = {
-              ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
-              "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
-            };
+        packages = {
+          deploy-rs = {
+            ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
+            "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
           };
+        };
       };
       homeConfigurations = {
         nixko = homeBuild {
