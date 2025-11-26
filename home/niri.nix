@@ -697,6 +697,10 @@ in
           ExecStart = "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite";
         };
       };
+      home.sessionVariables = {
+        DISPLAY = ":0";
+      };
+
       systemd.user.services.noctalia-shell = {
         Unit = {
           Description = "Noctalia Shell User Service";
@@ -733,8 +737,8 @@ in
         timeouts = lib.mkOverride 900 [
           {
             timeout = 100;
-            command = "${pkgs.noctalia-shell} ipc call brightness decrease";
-            resumeCommand = "${pkgs.noctalia-shell} ipc call brightness increase";
+            command = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call brightness decrease";
+            resumeCommand = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call brightness increase";
           }
           {
             timeout = 120;
