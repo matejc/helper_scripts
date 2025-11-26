@@ -1,15 +1,26 @@
-{ pkgs, lib, inputs, config, defaultUser, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  config,
+  defaultUser,
+  ...
+}:
 {
   config = {
-    systemd.sleep.extraConfig = (lib.optionalString (config.variables ? "hibernate" && config.variables.hibernate) ''
-      AllowHibernation=yes
-    '') + (lib.optionalString (config.variables ? "sleepMode" && config.variables.sleepMode != "") ''
-      MemorySleepMode=${config.variables.sleepMode}
-    '');
-    services.logind.settings.Login = lib.mkIf (config.variables ? "hibernate" && config.variables.hibernate) {
-      HandleSuspendKey = "hibernate";
-      HandleLidSwitch = "hibernate";
-    };
+    systemd.sleep.extraConfig =
+      (lib.optionalString (config.variables ? "hibernate" && config.variables.hibernate) ''
+        AllowHibernation=yes
+      '')
+      + (lib.optionalString (config.variables ? "sleepMode" && config.variables.sleepMode != "") ''
+        MemorySleepMode=${config.variables.sleepMode}
+      '');
+    services.logind.settings.Login =
+      lib.mkIf (config.variables ? "hibernate" && config.variables.hibernate)
+        {
+          HandleSuspendKey = "hibernate";
+          HandleLidSwitch = "hibernate";
+        };
 
     xdg.portal = {
       enable = true;
@@ -55,10 +66,13 @@
       settings = {
         nix-path = "nixpkgs=${inputs.nixpkgs}";
         experimental-features = [
+          "configurable-impure-env"
           "nix-command"
           "flakes"
         ];
-        trusted-users = [ "root" "@wheel" defaultUser ];
+        trusted-users = [
+          defaultUser
+        ];
       };
       gc = {
         automatic = true;
