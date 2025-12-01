@@ -1,4 +1,10 @@
-{ pkgs, config, inputs, defaultUser, ... }:
+{
+  pkgs,
+  config,
+  inputs,
+  defaultUser,
+  ...
+}:
 let
   variables = config.variables;
 
@@ -88,7 +94,7 @@ in
           field_prefix = "temp2";
         }
       ];
-      batteries = [];
+      batteries = [ ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
@@ -166,7 +172,6 @@ in
       startup = [
         "${variables.profileDir}/bin/browser"
         "${variables.profileDir}/bin/keepassxc"
-        "${variables.profileDir}/bin/logseq"
       ];
       steam = {
         xrun = [
@@ -202,35 +207,35 @@ in
         pkgs.obs-studio-plugins.obs-vkcapture
       ];
     };
-    home.packages =
-      [
-        inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
-      ] ++ (with pkgs; [
-        keepassxc
-        mpv
-        logseq
-        element-desktop
-        steamcmd
-        jq
-        scanmem
-        steam-run
-        steamtinkerlaunch
-        xwayland-run
-        winetricks
-        umu-launcher
-        nexusmods-app-unfree
-        heroic
-        swiftpoint
-        eog
-        file-roller
-        wf-recorder
-        tmux
-        kitty
-        networkmanagerapplet
-        freecad-wayland
-        movemaster
-        quickemu
-      ]);
+    home.packages = [
+      inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
+    ]
+    ++ (with pkgs; [
+      keepassxc
+      mpv
+      logseq
+      element-desktop
+      steamcmd
+      jq
+      scanmem
+      steam-run
+      steamtinkerlaunch
+      xwayland-run
+      winetricks
+      umu-launcher
+      nexusmods-app-unfree
+      heroic
+      swiftpoint
+      eog
+      file-roller
+      wf-recorder
+      tmux
+      kitty
+      networkmanagerapplet
+      freecad-wayland
+      movemaster
+      quickemu
+    ]);
     programs.chromium.enable = true;
     # services.network-manager-applet.enable = true;
     programs.firefox.enable = true;

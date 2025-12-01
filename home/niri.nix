@@ -508,6 +508,19 @@ in
               }
           }
 
+          recent-windows {
+              // off
+              previews {
+                  max-height 480
+                  max-scale 0.5
+              }
+
+              binds {
+                  Super+Tab         { next-window scope="output"; }
+                  Super+Shift+Tab   { previous-window scope="output"; }
+              }
+          }
+
           binds {
               // Keys consist of modifiers separated by + signs, followed by an XKB key name
               // in the end. To find an XKB name for a particular key, you may use a program
@@ -641,7 +654,7 @@ in
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Super+O repeat=false { toggle-overview; }
-              Super+Tab repeat=false { switch-focus-between-floating-and-tiling; }
+              Super+grave repeat=false { switch-focus-between-floating-and-tiling; }
           }
 
           // Settings for debugging. Not meant for normal use.

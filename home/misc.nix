@@ -1,7 +1,15 @@
-{ pkgs, lib, config, inputs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  ...
+}:
 let
   sleepCmd = pkgs.writeShellScriptBin "systemctl-sleep" ''
-    exec ${pkgs.systemd}/bin/systemctl ${if config.variables ? "hibernate" && config.variables.hibernate then "hibernate" else "suspend"}
+    exec ${pkgs.systemd}/bin/systemctl ${
+      if config.variables ? "hibernate" && config.variables.hibernate then "hibernate" else "suspend"
+    }
   '';
   configure-gtk = pkgs.writeTextFile {
     name = "configure-gtk";
@@ -50,11 +58,13 @@ let
   '';
   tempstatus_all =
     let
-      temp_list = "${lib.concatMapStringsSep "; " (t: ''${getTempstatus t.device t.group t.field_prefix}'') config.variables.temperatures}";
+      temp_list = "${lib.concatMapStringsSep "; " (
+        t: ''${getTempstatus t.device t.group t.field_prefix}''
+      ) config.variables.temperatures}";
     in
-      pkgs.writeShellScriptBin "tempstatus" ''
-        ${pkgs.gawk}/bin/awk '{i=$1}i>max{max=i}END{print max}' <(${temp_list})
-      '';
+    pkgs.writeShellScriptBin "tempstatus" ''
+      ${pkgs.gawk}/bin/awk '{i=$1}i>max{max=i}END{print max}' <(${temp_list})
+    '';
   getTempstatus =
     device: group: field_prefix:
     pkgs.writeShellScript "tempstatus-${device}-${group}-${field_prefix}.sh" ''
@@ -113,7 +123,8 @@ in
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
         logseq = pkgs.callPackage ../nixes/logseq.nix { };
         cinny-desktop = pkgs.callPackage ../nixes/cinny-desktop.nix { pkgs = prev; };
-        nix-index = inputs.nix-index-database.packages.${pkgs.stdenv.hostPlatform.system}.nix-index-with-db; # for nixmy
+        nix-index =
+          inputs.nix-index-database.packages.${pkgs.stdenv.hostPlatform.system}.nix-index-with-db; # for nixmy
         mpv = prev.mpv.override {
           scripts = [ prev.mpvScripts.mpris ];
         };
@@ -136,8 +147,15 @@ in
     nix = {
       package = lib.mkDefault pkgs.nix;
       settings = {
-        trusted-users = [ "@wheel" config.variables.user ];
-        experimental-features = [ "configurable-impure-env" "nix-command" "flakes" ];
+        trusted-users = [
+          "@wheel"
+          config.variables.user
+        ];
+        experimental-features = [
+          "configurable-impure-env"
+          "nix-command"
+          "flakes"
+        ];
       };
     };
     programs.nixmy = {
@@ -186,28 +204,27 @@ in
     };
 
     fonts.fontconfig.enable = lib.mkForce true;
-    home.packages =
-      [
-        pkgs.font-awesome
-        config.gtk.font.package
-        pkgs.noto-fonts-color-emoji
-        pkgs.git
-        pkgs.git-crypt
-        pkgs.zsh
-        pkgs.wl-clipboard
-        pkgs.xdg-utils
-        pkgs.dconf
-        pkgs.rofi
-        pkgs.qt6.qtwayland
-        pkgs.file
-        pkgs.jq
-        pkgs.devenv
-        pkgs.tempstatus_all
-        pkgs.sleepCmd
-        config.nix.package
-      ]
-      ++ services-cmds
-      ++ programs;
+    home.packages = [
+      pkgs.font-awesome
+      config.gtk.font.package
+      pkgs.noto-fonts-color-emoji
+      pkgs.git
+      pkgs.git-crypt
+      pkgs.zsh
+      pkgs.wl-clipboard
+      pkgs.xdg-utils
+      pkgs.dconf
+      pkgs.rofi
+      pkgs.qt6.qtwayland
+      pkgs.file
+      pkgs.jq
+      pkgs.devenv
+      pkgs.tempstatus_all
+      pkgs.sleepCmd
+      config.nix.package
+    ]
+    ++ services-cmds
+    ++ programs;
 
     home.sessionVariables = {
       QT_QPA_PLATFORM = "wayland";
@@ -252,24 +269,26 @@ in
       dictionaries = [
         pkgs.hunspellDictsChromium.en_US
       ];
-      extensions = let
-        adn = rec {
-          id = "omdnkjimmikpnlkkcjdfkmfknempnppc";
-          version = "3.26.0";
-          crxPath = pkgs.fetchurl {
-            url = "https://github.com/dhowe/AdNauseam/releases/download/v${version}/adnauseam-${version}.chromium.crx";
-            name = "adnauseam-${version}.chromium.crx";
-            hash = "sha256-VK2uTuWjYu+Pg/mzbkLVydxxnajxtY0hTYyy8bhAFjY=";
+      extensions =
+        let
+          adn = rec {
+            id = "omdnkjimmikpnlkkcjdfkmfknempnppc";
+            version = "3.26.0";
+            crxPath = pkgs.fetchurl {
+              url = "https://github.com/dhowe/AdNauseam/releases/download/v${version}/adnauseam-${version}.chromium.crx";
+              name = "adnauseam-${version}.chromium.crx";
+              hash = "sha256-VK2uTuWjYu+Pg/mzbkLVydxxnajxtY0hTYyy8bhAFjY=";
+            };
           };
-        };
-      in [
-        # { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-        # { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
-        # { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
-        { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
-        # { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
-        adn
-      ];
+        in
+        [
+          # { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+          # { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
+          # { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
+          { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
+          # { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
+          adn
+        ];
     };
 
     programs.firefox = {
@@ -407,22 +426,33 @@ in
       #enable = true;
       #indicator = true;
     };
-    systemd.user.services.kdeconnect.Install.WantedBy = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [
-      config.variables.graphical.target
-    ]);
-    systemd.user.services.kdeconnect-indicator.Install.WantedBy = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [
-      config.variables.graphical.target
-    ]);
-    systemd.user.services.kdeconnect-indicator.Unit.Requires = lib.mkIf (config.services.kdeconnect.enable) (lib.mkForce [ ]);
-
-    systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkIf (config.services.network-manager-applet.enable) (
-      lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator"
-    );
-    systemd.user.services.network-manager-applet.Unit.Requires = lib.mkIf (config.services.network-manager-applet.enable) (
+    systemd.user.services.kdeconnect.Install.WantedBy = lib.mkIf (config.services.kdeconnect.enable) (
       lib.mkForce [
-        "graphical-session-pre.target"
+        config.variables.graphical.target
       ]
     );
+    systemd.user.services.kdeconnect-indicator.Install.WantedBy =
+      lib.mkIf (config.services.kdeconnect.enable)
+        (
+          lib.mkForce [
+            config.variables.graphical.target
+          ]
+        );
+    systemd.user.services.kdeconnect-indicator.Unit.Requires =
+      lib.mkIf (config.services.kdeconnect.enable)
+        (lib.mkForce [ ]);
+
+    systemd.user.services.network-manager-applet.Service.ExecStart =
+      lib.mkIf (config.services.network-manager-applet.enable) (
+        lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator"
+      );
+    systemd.user.services.network-manager-applet.Unit.Requires =
+      lib.mkIf (config.services.network-manager-applet.enable)
+        (
+          lib.mkForce [
+            "graphical-session-pre.target"
+          ]
+        );
 
     services.syncthing.extraOptions = [
       "--gui-address=127.0.0.1:8384"
@@ -555,23 +585,50 @@ in
         };
         opener = {
           play = [
-            { run = ''mpv "$@"''; orphan = true; for = "unix"; }
+            {
+              run = ''mpv "$@"'';
+              orphan = true;
+              for = "unix";
+            }
           ];
           edit = [
-            { run = ''$EDITOR "$@"''; block = true; for = "unix"; }
+            {
+              run = ''$EDITOR "$@"'';
+              block = true;
+              for = "unix";
+            }
           ];
           open = [
-            { run = ''xdg-open "$@"''; desc = "Open"; }
+            {
+              run = ''xdg-open "$@"'';
+              desc = "Open";
+            }
           ];
           open-json = [
-            { run = ''${pkgs.jq}/bin/jq '.' "$@" | $EDITOR''; block = true; for = "unix"; }
+            {
+              run = ''${pkgs.jq}/bin/jq '.' "$@" | $EDITOR'';
+              block = true;
+              for = "unix";
+            }
           ];
         };
         open.append_rules = [
-          { mime = "text/*"; use = "edit"; }
-          { mime = "video/*"; use = "play"; }
-          { name = "*.json"; use = "open-json"; }
-          { name = "*"; use = "open"; }
+          {
+            mime = "text/*";
+            use = "edit";
+          }
+          {
+            mime = "video/*";
+            use = "play";
+          }
+          {
+            name = "*.json";
+            use = "open-json";
+          }
+          {
+            name = "*";
+            use = "open";
+          }
         ];
       };
     };
@@ -645,12 +702,14 @@ in
       };
     };
     home.activation = {
-      zshrcActivationAction = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      zshrcActivationAction = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run rm -f ${config.variables.homeDir}/.zshrc.zwc
       '';
-      variablesActivationAction = lib.mkIf (config.variables ? activationScript) (lib.hm.dag.entryAfter ["writeBoundary"] ''
-        run ${pkgs.writeShellScript "variables-activation.sh" config.variables.activationScript}
-      '');
+      variablesActivationAction = lib.mkIf (config.variables ? activationScript) (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          run ${pkgs.writeShellScript "variables-activation.sh" config.variables.activationScript}
+        ''
+      );
     };
 
   };
