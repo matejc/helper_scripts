@@ -515,6 +515,10 @@ in
                   max-scale 0.5
               }
 
+              highlight {
+                  corner-radius 10
+              }
+
               binds {
                   Super+Tab         { next-window scope="output"; }
                   Super+Shift+Tab   { previous-window scope="output"; }
