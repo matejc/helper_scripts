@@ -1,4 +1,10 @@
-{ pkgs, lib, inputs, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  defaultUser,
+  ...
+}:
 {
   imports = [
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
@@ -9,6 +15,8 @@
   ];
 
   config = {
+    variables.graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
+
     environment.systemPackages = with pkgs; [
       sbctl
       python312Packages.python
@@ -25,18 +33,7 @@
       pkiBundle = "/var/lib/sbctl";
     };
 
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
-          user = "greeter";
-        };
-        terminal.vt = lib.mkForce 2;
-      };
-    };
     boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
-    programs.niri.enable = true;
     hardware.bluetooth.enable = true;
     hardware.graphics = {
       enable = true;
@@ -64,9 +61,9 @@
     '';
 
     # virtualisation.libvirtd.enable = true;
-    # users.groups.libvirtd.members = ["matejc"];
+    # users.groups.libvirtd.members = [ defaultUser ];
     # programs.virt-manager.enable = true;
     programs.fuse.userAllowOther = true;
-    users.users.matejc.extraGroups = [ "fuse" ];
+    users.users.${defaultUser}.extraGroups = [ "fuse" ];
   };
 }

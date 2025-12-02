@@ -213,7 +213,7 @@ in
       nixpkgs.overlays = [
         inputs.niri.overlays.niri
         (final: prev: {
-          niri-switcher = prev.callPackage ../nixes/niri-switcher { };
+          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.programs.niri.package; };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot { };
           noctalia-shell = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default;
           quickshell = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -237,7 +237,9 @@ in
         networkmanager
         wl-clipboard
         wlsunset
+        app2unit
       ];
+      programs.niri.enable = true;
       programs.niri.package = pkgs.niri-unstable;
       programs.niri.config =
         let

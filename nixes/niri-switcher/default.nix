@@ -1,5 +1,6 @@
 {
   pkgs ? import <nixpkgs> { },
+  niri ? pkgs.niri,
 }:
 pkgs.stdenv.mkDerivation {
   pname = "niri-switcher";
@@ -17,6 +18,7 @@ pkgs.stdenv.mkDerivation {
           [
             coreutils
             procps
+            niri
           ]
         )
       }"

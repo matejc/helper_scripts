@@ -2,6 +2,7 @@
   pkgs,
   lib,
   inputs,
+  defaultUser,
   ...
 }:
 {
@@ -15,18 +16,8 @@
   config = {
     variables = {
       sleepMode = "deep";
+      graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
-          user = "greeter";
-        };
-        terminal.vt = lib.mkForce 2;
-      };
-    };
-    programs.niri.enable = true;
     boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
     chaotic.mesa-git.enable = true;
     services.scx.enable = true;
@@ -40,7 +31,7 @@
     services.udev.packages = [
       (pkgs.writeTextFile {
         name = "ntsync-udev-rules";
-        text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess", GROUP="matejc"'';
+        text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess", GROUP="${defaultUser}"'';
         destination = "/etc/udev/rules.d/70-ntsync.rules";
       })
     ];
@@ -53,9 +44,9 @@
     };
     hardware.openrazer = {
       # enable = true;
-      users = [ "matejc" ];
+      users = [ defaultUser ];
     };
-    users.users.matejc.extraGroups = [
+    users.users.${defaultUser}.extraGroups = [
       "openrazer"
       "gamemode"
       "dialout"

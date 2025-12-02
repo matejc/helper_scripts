@@ -1,4 +1,9 @@
-{ pkgs, lib, config, inputs, ... }:
+{
+  pkgs,
+  lib,
+  defaultUser,
+  ...
+}:
 {
   imports = [
     ../../nixos/modules/variables.nix
@@ -9,11 +14,15 @@
   config = {
     variables = {
       hibernate = false;
+      graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
 
     hardware.graphics = {
       enable = true;
-      extraPackages = with pkgs; [ intel-vaapi-driver intel-media-driver ];
+      extraPackages = with pkgs; [
+        intel-vaapi-driver
+        intel-media-driver
+      ];
     };
     networking.networkmanager.enable = true;
     services.dbus.packages = [ pkgs.dconf ];
@@ -24,17 +33,6 @@
     environment.systemPackages = with pkgs; [
       vulkan-tools
     ];
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd niri-session";
-          user = "greeter";
-        };
-        terminal.vt = lib.mkForce 2;
-      };
-    };
-    programs.niri.enable = true;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = true;
@@ -43,8 +41,18 @@
       pulse.enable = true;
     };
     networking.firewall = {
-      allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
-      allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
+      allowedTCPPortRanges = [
+        {
+          from = 1714;
+          to = 1764;
+        }
+      ];
+      allowedUDPPortRanges = [
+        {
+          from = 1714;
+          to = 1764;
+        }
+      ];
     };
     services.fprintd.enable = true;
     # services.fprintd.tod.enable = true;

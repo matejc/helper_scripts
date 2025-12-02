@@ -8,6 +8,17 @@
 }:
 {
   config = {
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${config.variables.graphicalSessionCmd}";
+          user = "greeter";
+        };
+        terminal.vt = lib.mkForce 2;
+      };
+    };
+
     systemd.sleep.extraConfig =
       (lib.optionalString (config.variables ? "hibernate" && config.variables.hibernate) ''
         AllowHibernation=yes
