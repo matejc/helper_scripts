@@ -1,4 +1,9 @@
-{ pkgs, config, defaultUser, ... }:
+{
+  pkgs,
+  config,
+  defaultUser,
+  ...
+}:
 let
   variables = config.variables;
   nixos-wallpaper = pkgs.fetchurl {
@@ -55,7 +60,7 @@ in
           field_prefix = "temp1";
         }
       ];
-      temperatureFiles = [];
+      temperatureFiles = [ ];
       batteries = [ "1" ];
       fullName = "Matej Cotman";
       email = "matej.cotman@kumorion.com";
@@ -94,7 +99,7 @@ in
       };
       vims = {
         q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
-        neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';
+        # neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';
       };
       outputs = [
         {
@@ -148,13 +153,22 @@ in
       graftcp
       file-roller
       eog
-      minikube kubectl docker-machine-kvm2 ttyd
-      unzip stdenv.cc gnumake colima docker docker-compose
+      minikube
+      kubectl
+      docker-machine-kvm2
+      ttyd
+      unzip
+      stdenv.cc
+      gnumake
+      colima
+      docker
+      docker-compose
       # asdf-vm
       python312Packages.python
       devenv
       tmux
-      kitty neovim-qt
+      kitty
+      neovim-qt
       quickemu
       spice-gtk
       sshfs
