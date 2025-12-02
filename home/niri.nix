@@ -525,6 +525,10 @@ in
               }
           }
 
+          xwayland-satellite {
+              path "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
+          }
+
           binds {
               // Keys consist of modifiers separated by + signs, followed by an XKB key name
               // in the end. To find an XKB name for a particular key, you may use a program
@@ -698,24 +702,6 @@ in
           Type = "simple";
           ExecStart = "${config.variables.profileDir}/bin/lockscreen";
         };
-      };
-      systemd.user.services.xwayland-satellite = {
-        Unit = {
-          Description = "XWayland Satellite User Service";
-          BindsTo = [ config.variables.graphical.target ];
-          PartOf = [ config.variables.graphical.target ];
-          After = [ config.variables.graphical.target ];
-          Requisite = [ config.variables.graphical.target ];
-        };
-        Install.WantedBy = [ config.variables.graphical.target ];
-        Service = {
-          Type = "notify";
-          NotifyAccess = "all";
-          ExecStart = "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite";
-        };
-      };
-      home.sessionVariables = {
-        DISPLAY = ":0";
       };
 
       systemd.user.services.noctalia-shell = {
