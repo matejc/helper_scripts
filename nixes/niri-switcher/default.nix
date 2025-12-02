@@ -13,14 +13,11 @@ pkgs.stdenv.mkDerivation {
     cp $src $out/bin/niri-switcher
     wrapProgram $out/bin/niri-switcher \
       --prefix PATH : "${
-        pkgs.lib.makeBinPath (
-          with pkgs;
-          [
-            coreutils
-            procps
-            niri
-          ]
-        )
+        pkgs.lib.makeBinPath ([
+          pkgs.coreutils
+          pkgs.procps
+          niri
+        ])
       }"
   '';
 }

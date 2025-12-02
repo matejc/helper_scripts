@@ -214,7 +214,9 @@ in
         inputs.niri.overlays.niri
         (final: prev: {
           niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.programs.niri.package; };
-          annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot { };
+          annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
+            niri = config.programs.niri.package;
+          };
           noctalia-shell = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default;
           quickshell = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })

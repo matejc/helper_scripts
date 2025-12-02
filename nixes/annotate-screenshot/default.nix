@@ -1,5 +1,6 @@
 {
   pkgs ? import <nixpkgs> { },
+  niri ? pkgs.niri,
 }:
 pkgs.stdenv.mkDerivation {
   pname = "annotate-screenshot";
@@ -12,15 +13,11 @@ pkgs.stdenv.mkDerivation {
     cp $src $out/bin/annotate-screenshot
     wrapProgram $out/bin/annotate-screenshot \
       --prefix PATH : "${
-        pkgs.lib.makeBinPath (
-          with pkgs;
-          [
-            coreutils
-            grim
-            slurp
-            satty
-          ]
-        )
+        pkgs.lib.makeBinPath ([
+          pkgs.coreutils
+          pkgs.satty
+          niri
+        ])
       }"
   '';
 }
