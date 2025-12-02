@@ -781,9 +781,15 @@ in
           value = {
             Unit = {
               Description = "Wallpaper for ${o.output} User Service";
-              After = [ "noctalia-shell.service" ];
+              BindsTo = [ config.variables.graphical.target ];
+              PartOf = [ config.variables.graphical.target ];
+              After = [
+                config.variables.graphical.target
+                "noctalia-shell.service"
+              ];
+              Requisite = [ config.variables.graphical.target ];
             };
-            Install.WantedBy = [ "noctalia-shell.service" ];
+            Install.WantedBy = [ config.variables.graphical.target ];
             Service = {
               Type = "oneshot";
               ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";
