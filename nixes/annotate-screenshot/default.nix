@@ -17,6 +17,8 @@ pkgs.stdenv.mkDerivation {
           pkgs.coreutils
           pkgs.satty
           niri
+          pkgs.grim
+          pkgs.slurp
         ])
       }"
   '';
