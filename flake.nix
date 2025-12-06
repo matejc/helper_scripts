@@ -119,7 +119,7 @@
       system = "x86_64-linux";
       helper_scripts = ./.;
       defaultUser = "matejc";
-      nixosBuildNew =
+      nixosBuild =
         {
           context,
           modules ? [ ],
@@ -150,7 +150,7 @@
     {
       hydraJobs = {
         matej70.system =
-          (nixosBuildNew {
+          (nixosBuild {
             context = "matej70";
             modules = [
               ./nixos/minimal-configuration.nix
@@ -161,7 +161,7 @@
             context = "matej70";
           }).activationPackage;
         matej80.system =
-          (nixosBuildNew {
+          (nixosBuild {
             context = "matej80";
             modules = [
               ./nixos/minimal-configuration.nix
@@ -172,7 +172,7 @@
             context = "matej80";
           }).activationPackage;
         nixko.system =
-          (nixosBuildNew {
+          (nixosBuild {
             context = "nixko";
             modules = [
               ./nixos/minimal-configuration.nix
@@ -201,25 +201,25 @@
         };
       };
       nixosConfigurations = {
-        matej70 = nixosBuildNew {
+        matej70 = nixosBuild {
           context = "matej70";
           modules = [
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           ];
         };
-        matej80 = nixosBuildNew {
+        matej80 = nixosBuild {
           context = "matej80";
           modules = [
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs helper_scripts; })
           ];
         };
-        nixko = nixosBuildNew {
+        nixko = nixosBuild {
           context = "nixko";
           modules = [
             (import "${inputs.nixos-configuration}/configuration.nix" { inherit inputs; })
           ];
         };
-        wsl = nixosBuildNew {
+        wsl = nixosBuild {
           context = "wsl";
         };
         # matej70 = inputs.nixpkgs.lib.nixosSystem {

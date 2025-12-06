@@ -13,13 +13,13 @@ pkgs.stdenv.mkDerivation {
     cp $src $out/bin/annotate-screenshot
     wrapProgram $out/bin/annotate-screenshot \
       --prefix PATH : "${
-        pkgs.lib.makeBinPath ([
+        pkgs.lib.makeBinPath [
           pkgs.coreutils
           pkgs.satty
           niri
           pkgs.grim
           pkgs.slurp
-        ])
+        ]
       }"
   '';
 }
