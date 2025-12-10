@@ -725,22 +725,13 @@ in
       };
       services.swayidle = {
         systemdTarget = config.variables.graphical.target;
-        events = lib.mkOverride 900 [
-          {
-            event = "before-sleep";
-            command = "${config.variables.lockscreen}";
-          }
-          {
-            event = "after-resume";
-            command = "${config.variables.lockscreen}";
-          }
-          {
-            event = "lock";
-            command = "${config.variables.lockscreen}";
-          }
+        events = {
+          "before-sleep" = "${config.variables.lockscreen}";
+          "after-resume" = "${config.variables.lockscreen}";
+          "lock" = "${config.variables.lockscreen}";
           # { event = "after-resume"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
           # { event = "unlock"; command = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs; }
-        ];
+        };
         timeouts = lib.mkOverride 900 [
           {
             timeout = 100;
