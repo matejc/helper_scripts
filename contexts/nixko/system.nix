@@ -40,9 +40,8 @@
     };
     services.power-profiles-daemon.enable = lib.mkForce false;
     networking.enableIPv6 = false;
-    # virtualisation.docker.rootless = {
+    # virtualisation.docker = {
     #   enable = true;
-    #   setSocketVariable = true;
     # };
     hardware.enableAllFirmware = true;
     services.tlp.settings = {
@@ -64,6 +63,39 @@
     # users.groups.libvirtd.members = [ defaultUser ];
     # programs.virt-manager.enable = true;
     programs.fuse.userAllowOther = true;
-    users.users.${defaultUser}.extraGroups = [ "fuse" ];
+    users.users.${defaultUser}.extraGroups = [
+      "fuse"
+      # "docker"
+      "podman"
+    ];
+
+    services.dnsmasq = {
+      enable = false;
+      settings = {
+        listen-address = "127.0.0.1";
+        interface = "lo";
+      };
+    };
+
+    networking.resolvconf.extraConfig = ''
+      unbound_conf=/etc/unbound/resolvconf.conf
+    '';
+    services.unbound = {
+      enable = true;
+      settings = {
+        server = {
+          interface = [ "127.0.0.1" ];
+          port = 53;
+        };
+        include = [ "/etc/unbound/resolvconf.conf" ];
+      };
+    };
+    systemd.services.unbound.serviceConfig.ReadOnlyPaths = [ "/etc/unbound/resolvconf.conf" ];
+
+    virtualisation.podman = {
+      enable = true;
+      dockerSocket.enable = true;
+      dockerCompat = true;
+    };
   };
 }

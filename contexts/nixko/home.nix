@@ -160,9 +160,6 @@ in
       unzip
       stdenv.cc
       gnumake
-      colima
-      docker
-      docker-compose
       # asdf-vm
       python312Packages.python
       devenv
@@ -172,6 +169,9 @@ in
       quickemu
       spice-gtk
       sshfs
+      docker
+      podman-compose
+      docker-compose
     ];
     programs.direnv = {
       enable = true;
