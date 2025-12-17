@@ -765,7 +765,9 @@ in
         Install.WantedBy = [ config.variables.graphical.target ];
         Service = {
           Type = "simple";
+          Restart = "on-failure";
           ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
+          ExecStopPost = "${pkgs.coreutils}/bin/rm -f $HOME/.niri-switch.fifo";
         };
       };
     }

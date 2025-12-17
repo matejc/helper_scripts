@@ -72,6 +72,7 @@
       };
     services.fprintd.enable = true;
     security.pam.services.greetd.fprintAuth = true;
+    security.pam.services.quickshell.fprintAuth = true;
     # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
     #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
     #   options = [ "bind" ];

@@ -26,12 +26,14 @@
       + (lib.optionalString (config.variables ? "sleepMode" && config.variables.sleepMode != "") ''
         MemorySleepMode=${config.variables.sleepMode}
       '');
-    services.logind.settings.Login =
-      lib.mkIf (config.variables ? "hibernate" && config.variables.hibernate)
-        {
-          HandleSuspendKey = "hibernate";
-          HandleLidSwitch = "hibernate";
-        };
+
+    services.logind.settings.Login = {
+      KillUserProcesses = true;
+    }
+    // (lib.mkIf (config.variables ? "hibernate" && config.variables.hibernate) {
+      HandleSuspendKey = "hibernate";
+      HandleLidSwitch = "hibernate";
+    });
 
     xdg.portal = {
       enable = true;
