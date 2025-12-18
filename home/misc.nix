@@ -203,7 +203,7 @@ in
       enable = true;
     };
 
-    fonts.fontconfig.enable = lib.mkForce true;
+    fonts.fontconfig.enable = true;
     home.packages = [
       pkgs.font-awesome
       config.gtk.font.package

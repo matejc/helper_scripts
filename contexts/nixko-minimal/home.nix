@@ -1,4 +1,10 @@
-{ pkgs, lib, config, defaultUser, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  defaultUser,
+  ...
+}:
 let
   variables = config.variables;
   nixos-wallpaper = pkgs.fetchurl {
@@ -18,7 +24,6 @@ in
 
   config = {
     dotfiles.paths = [
-      ../../dotfiles/nvim.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
       ../../dotfiles/dd.nix
@@ -26,7 +31,6 @@ in
       ../../dotfiles/mypassgen.nix
       ../../dotfiles/wofi.nix
       ../../dotfiles/countdown.nix
-      ../../dotfiles/zed.nix
       ../../dotfiles/work.nix
       ../../dotfiles/jwt.nix
       ../../dotfiles/helix.nix
@@ -51,7 +55,7 @@ in
           field_prefix = "temp1";
         }
       ];
-      temperatureFiles = [];
+      temperatureFiles = [ ];
       batteries = [ "1" ];
       fullName = "Matej Cotman";
       email = "matej.cotman@kumorion.com";
@@ -118,23 +122,36 @@ in
 
     home.stateVersion = "25.05";
     home.packages = with pkgs; [
-      keepassxc
       git-crypt
       jq
       yq-go
-      minikube kubectl docker-machine-kvm2 ttyd
-      unzip stdenv.cc gnumake colima docker docker-compose
+      minikube
+      kubectl
+      docker-machine-kvm2
+      ttyd
+      unzip
+      stdenv.cc
+      gnumake
+      docker
+      docker-compose
       # asdf-vm
       python312Packages.python
       devenv
       tmux
-      kitty neovim-qt
-      spice-gtk
+      kitty
     ];
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
     };
+
+    xdg.enable = lib.mkForce false;
+    gtk.enable = lib.mkForce false;
+    qt.enable = lib.mkForce false;
+    services.gnome-keyring = {
+      enable = lib.mkForce false;
+    };
+    fonts.fontconfig.enable = lib.mkForce false;
     # programs.chromium.enable = true;
     # programs.chromium.package = lib.mkForce (pkgs.ungoogled-chromium.overrideAttrs (old: {
     #   buildCommand = let

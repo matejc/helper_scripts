@@ -48,6 +48,7 @@
       START_CHARGE_THRESH_BAT1 = 90;
       STOP_CHARGE_THRESH_BAT1 = 95;
     };
+    security.pam.services.quickshell.fprintAuth = true;
 
     # services.envfs.enable = true;
     # services.envfs.extraFallbackPathCommands = ''
@@ -66,36 +67,36 @@
     users.users.${defaultUser}.extraGroups = [
       "fuse"
       # "docker"
-      "podman"
+      # "podman"
     ];
 
-    services.dnsmasq = {
-      enable = false;
-      settings = {
-        listen-address = "127.0.0.1";
-        interface = "lo";
-      };
-    };
+    # services.dnsmasq = {
+    #   enable = false;
+    #   settings = {
+    #     listen-address = "127.0.0.1";
+    #     interface = "lo";
+    #   };
+    # };
 
-    networking.resolvconf.extraConfig = ''
-      unbound_conf=/etc/unbound/resolvconf.conf
-    '';
-    services.unbound = {
-      enable = true;
-      settings = {
-        server = {
-          interface = [ "127.0.0.1" ];
-          port = 53;
-        };
-        include = [ "/etc/unbound/resolvconf.conf" ];
-      };
-    };
-    systemd.services.unbound.serviceConfig.ReadOnlyPaths = [ "/etc/unbound/resolvconf.conf" ];
+    # networking.resolvconf.extraConfig = ''
+    #   unbound_conf=/etc/unbound/resolvconf.conf
+    # '';
+    # services.unbound = {
+    #   enable = true;
+    #   settings = {
+    #     server = {
+    #       interface = [ "127.0.0.1" ];
+    #       port = 53;
+    #     };
+    #     include = [ "/etc/unbound/resolvconf.conf" ];
+    #   };
+    # };
+    # systemd.services.unbound.serviceConfig.ReadOnlyPaths = [ "/etc/unbound/resolvconf.conf" ];
 
-    virtualisation.podman = {
-      enable = true;
-      dockerSocket.enable = true;
-      dockerCompat = true;
-    };
+    # virtualisation.podman = {
+    #   enable = true;
+    #   dockerSocket.enable = true;
+    #   dockerCompat = true;
+    # };
   };
 }
