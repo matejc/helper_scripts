@@ -211,14 +211,10 @@ in
       pkgs.git
       pkgs.git-crypt
       pkgs.zsh
-      pkgs.wl-clipboard
       pkgs.xdg-utils
       pkgs.dconf
-      pkgs.rofi
-      pkgs.qt6.qtwayland
       pkgs.file
       pkgs.jq
-      pkgs.devenv
       pkgs.tempstatus_all
       pkgs.sleepCmd
       config.nix.package

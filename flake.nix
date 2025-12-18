@@ -86,7 +86,6 @@
       # url = "github:matejc/noctalia-shell";
       # url = "path:/home/matejc/workarea/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.quickshell.follows = "quickshell";
     };
     quickshell = {
       url = "github:outfoxxed/quickshell";
