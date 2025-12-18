@@ -3,6 +3,7 @@
   lib,
   config,
   defaultUser,
+  inputs,
   ...
 }:
 let
@@ -152,6 +153,11 @@ in
       enable = lib.mkForce false;
     };
     fonts.fontconfig.enable = lib.mkForce false;
+
+    home.sessionVariables = lib.mkForce {
+      NIX_PATH = "nixpkgs=${inputs.nixpkgs}";
+    };
+
     # programs.chromium.enable = true;
     # programs.chromium.package = lib.mkForce (pkgs.ungoogled-chromium.overrideAttrs (old: {
     #   buildCommand = let
