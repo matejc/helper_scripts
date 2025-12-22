@@ -16,6 +16,7 @@ in
   imports = [
     ../../home/variables.nix
     ../../home/misc.nix
+    ../../home/misc-gui.nix
     ../../home/dotfiles.nix
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix

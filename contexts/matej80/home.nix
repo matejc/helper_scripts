@@ -1,4 +1,11 @@
-{ pkgs, lib, config, inputs, defaultUser, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  defaultUser,
+  ...
+}:
 let
   variables = config.variables;
 
@@ -12,6 +19,7 @@ in
   imports = [
     ../../home/variables.nix
     ../../home/misc.nix
+    ../../home/misc-gui.nix
     ../../home/dotfiles.nix
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix
@@ -62,7 +70,11 @@ in
       mounts = [ "/" ];
       # hwmonPath = "/sys/class/hwmon/hwmon2/temp1_input";
       temperatures = [
-        { device = "coretemp-isa-0000"; group = "Package id 0"; field_prefix = "temp1"; }
+        {
+          device = "coretemp-isa-0000";
+          group = "Package id 0";
+          field_prefix = "temp1";
+        }
       ];
       font = {
         family = "SauceCodePro Nerd Font Mono";
@@ -106,16 +118,18 @@ in
         n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
-      outputs = [{
-        criteria = "eDP-1";
-        position = "0,0";
-        output = "eDP-1";
-        mode = "1920x1080";
-        workspaces = [ ];
-        wallpaper = variables.wallpaper;
-        scale = 1.0;
-        status = "enable";
-      }];
+      outputs = [
+        {
+          criteria = "eDP-1";
+          position = "0,0";
+          output = "eDP-1";
+          mode = "1920x1080";
+          workspaces = [ ];
+          wallpaper = variables.wallpaper;
+          scale = 1.0;
+          status = "enable";
+        }
+      ];
       nixmy = {
         backup = "git@github.com:matejc/configurations.git";
         remote = "https://github.com/matejc/nixpkgs";
@@ -127,8 +141,16 @@ in
         "${variables.profileDir}/bin/logseq"
       ];
       services = [
-        { name = "network-manager-applet"; delay = 5; group = "always"; }
-        { name = "kdeconnect-indicator"; delay = 5; group = "always"; }
+        {
+          name = "network-manager-applet";
+          delay = 5;
+          group = "always";
+        }
+        {
+          name = "kdeconnect-indicator";
+          delay = 5;
+          group = "always";
+        }
       ];
     };
 
@@ -138,15 +160,22 @@ in
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;
     services.syncthing.enable = true;
-    services.syncthing.extraOptions = [ "-home=${config.variables.homeDir}/Syncthing/.config/syncthing" ];
+    services.syncthing.extraOptions = [
+      "-home=${config.variables.homeDir}/Syncthing/.config/syncthing"
+    ];
     programs.waybar.enable = true;
     home.packages = with pkgs; [
-      networkmanagerapplet deploy-rs logseq
-      nheko keepassxc kitty
+      networkmanagerapplet
+      deploy-rs
+      logseq
+      nheko
+      keepassxc
+      kitty
     ];
     programs.firefox.enable = true;
     programs.chromium.enable = true;
     services.network-manager-applet.enable = true;
-    systemd.user.services.network-manager-applet.Service.ExecStart = lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
+    systemd.user.services.network-manager-applet.Service.ExecStart =
+      lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
   };
 }

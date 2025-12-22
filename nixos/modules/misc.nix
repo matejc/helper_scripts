@@ -51,12 +51,14 @@
       extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       xdgOpenUsePortal = true;
     };
+    environment.extraInit = ''
+      export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
+    '';
+
     fonts.packages = [
       pkgs.font-awesome
       pkgs.corefonts
       pkgs.nerd-fonts.sauce-code-pro
-      pkgs.nerd-fonts.fira-code
-      pkgs.nerd-fonts.fira-mono
     ];
 
     services.tlp = {
