@@ -18,7 +18,7 @@
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+    boot.kernelPackages = pkgs.linuxPackages_cachyos;
     chaotic.mesa-git.enable = true;
     services.scx.enable = true;
     services.scx.scheduler = "scx_bpfland";

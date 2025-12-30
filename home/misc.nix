@@ -186,6 +186,7 @@ in
       autosuggestion.enable = true;
       autocd = true;
       defaultKeymap = "emacs";
+      dotDir = config.home.homeDirectory;
     };
     programs.starship = {
       enable = true;
