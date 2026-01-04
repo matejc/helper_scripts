@@ -39,7 +39,6 @@ in
       ../../dotfiles/gitignore.nix
       ../../dotfiles/oath.nix
       ../../dotfiles/jstools.nix
-      ../../dotfiles/superslicer.nix
       ../../dotfiles/scan.nix
       ../../dotfiles/noctalialockscreen.nix
       ../../dotfiles/kitty.nix
