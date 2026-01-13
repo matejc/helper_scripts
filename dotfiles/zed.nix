@@ -9,6 +9,7 @@ let
     nixd
     nil
     jq
+    shellcheck
   ];
   configFile = pkgs.writeText "settings.json" (
     builtins.toJSON {
@@ -27,6 +28,7 @@ let
         folder_icons = false;
       };
       auto_update = false;
+      auto_indent = false;
       languages = {
         Nix = {
           tab_size = 2;

@@ -79,7 +79,7 @@ in
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         terminal = "${pkgs.kitty}/bin/kitty --start-as=maximized";
-        browser = "${variables.profileDir}/bin/firefox";
+        browser = "chromium";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
       };
@@ -140,6 +140,7 @@ in
       devenv
       tmux
       kitty
+      nmap
     ];
     programs.direnv = {
       enable = true;
