@@ -1,19 +1,31 @@
 rec {
-  packageOverrides = pkgs:
-  rec {
+  packageOverrides = pkgs: rec {
     mypidgin = pkgs.pidgin-with-plugins.override {
       plugins = with pkgs; [
-        pidgin-otr pidgin-opensteamworks pidgin-skypeweb pidgin-window-merge
-        pidgin-xmpp-receipts purple-discord purple-hangouts purple-matrix
-        telegram-purple toxprpl purple-facebook purple-xmpp-http-upload
+        pidgin-otr
+        pidgin-opensteamworks
+        pidgin-skypeweb
+        pidgin-window-merge
+        pidgin-xmpp-receipts
+        purple-discord
+        purple-hangouts
+        purple-matrix
+        telegram-purple
+        toxprpl
+        purple-facebook
+        purple-xmpp-http-upload
         purple-slack
       ];
     };
 
     dockerenv = pkgs.buildEnv {
       name = "dockerenv";
-      paths = [ pkgs.bashInteractive pkgs.docker pkgs.which
-      pkgs.docker_compose ];
+      paths = [
+        pkgs.bashInteractive
+        pkgs.docker
+        pkgs.which
+        pkgs.docker_compose
+      ];
     };
 
     py3env = pkgs.buildEnv {
@@ -21,10 +33,13 @@ rec {
       paths = with pkgs; [
         python3Full.out
         pypi2nix
-        libxslt.dev libxml2.dev zlib
+        libxslt.dev
+        libxml2.dev
+        zlib
 
         chromedriver
-        postgresql libmysqlclient
+        postgresql
+        libmysqlclient
         scrot
 
         # required by opencv-python
@@ -56,7 +71,18 @@ rec {
 
         python3Packages.robotframework
 
-        (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python37Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
+        (ansible.overrideDerivation (oldDrv: {
+          propagatedBuildInputs =
+            with python37Packages;
+            [
+              urllib3
+              idna
+              chardet
+              certifi
+              dopy
+            ]
+            ++ oldDrv.propagatedBuildInputs;
+        }))
         python3Packages.pyyaml
 
         makeenv
@@ -81,7 +107,10 @@ rec {
 
     homeEnv = pkgs.buildEnv {
       name = "homeEnv";
-      paths = [ pkgs.emacs24 pkgs.bsdgames ];
+      paths = [
+        pkgs.emacs24
+        pkgs.bsdgames
+      ];
     };
 
     workEnv = pkgs.buildEnv {
@@ -127,7 +156,6 @@ rec {
         python27Packages.ipython
       ];
     };
-
 
     # we want virtualenv with custom modules!
     venv = pkgs.buildEnv {
@@ -225,16 +253,32 @@ rec {
         python2Packages.pyperclip
         python2Packages.requests
 
-        /*opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
-        python27Packages.flask python27Packages.sqlite3 python27Packages.werkzeug
-        python27Packages.jinja2 python27Packages.markupsafe python27Packages.itsdangerous
-        strace python27Packages.opencv*/
+        /*
+          opencv pkgconfig imagemagick python27Packages.wand python27Packages.numpy
+          python27Packages.flask python27Packages.sqlite3 python27Packages.werkzeug
+          python27Packages.jinja2 python27Packages.markupsafe python27Packages.itsdangerous
+          strace python27Packages.opencv
+        */
 
-        pypi2nix gcc.cc gcc.cc.lib
+        pypi2nix
+        gcc.cc
+        gcc.cc.lib
 
-        libpulseaudio libusb1
+        libpulseaudio
+        libusb1
 
-        (ansible.overrideDerivation (oldDrv: { propagatedBuildInputs = with python27Packages; [ urllib3 idna chardet certifi dopy ] ++ oldDrv.propagatedBuildInputs;}))
+        (ansible.overrideDerivation (oldDrv: {
+          propagatedBuildInputs =
+            with python27Packages;
+            [
+              urllib3
+              idna
+              chardet
+              certifi
+              dopy
+            ]
+            ++ oldDrv.propagatedBuildInputs;
+        }))
 
         makeenv
       ];
@@ -256,15 +300,19 @@ rec {
     rubyenv = pkgs.buildEnv {
       name = "rubyenv";
       paths = with pkgs; [
-        stdenv busybox
+        stdenv
+        busybox
         git
         ruby
         #rubyLibs.nix
 
-        bundler bundix
+        bundler
+        bundix
         rubyPackages.jekyll
         rubyPackages.jekyll-watch
-        gnumake stdenv.cc pkg-config
+        gnumake
+        stdenv.cc
+        pkg-config
 
         zlib.dev
         zlib
@@ -274,7 +322,7 @@ rec {
 
         #rubyLibs.heroku rubyLibs.rb_readline
         #rubyLibs.travis
-        /* nodejs which python2 pythonPackages.pygments */
+        # nodejs which python2 pythonPackages.pygments
       ];
       ignoreCollisions = true;
     };
@@ -282,9 +330,22 @@ rec {
     ruby2env = pkgs.buildEnv {
       name = "ruby2env";
       paths = with pkgs; [
-        stdenv gnumake coreutils strace
+        stdenv
+        gnumake
+        coreutils
+        strace
         git
-        ruby bundler libffi.dev stdenv.cc gnugrep gawk pkg-config libxml2.dev libxslt.dev zlib zlib.dev
+        ruby
+        bundler
+        libffi.dev
+        stdenv.cc
+        gnugrep
+        gawk
+        pkg-config
+        libxml2.dev
+        libxslt.dev
+        zlib
+        zlib.dev
         readline
         gnused
         nodejs
@@ -296,7 +357,9 @@ rec {
     makeenv = pkgs.buildEnv {
       name = "makeenv";
       paths = with pkgs; [
-        stdenv gnumake strace
+        stdenv
+        gnumake
+        strace
         stdenv.cc
         git
         pkg-config
@@ -334,7 +397,15 @@ rec {
     nodeenv = pkgs.buildEnv {
       name = "nodeenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
+        stdenv.cc
+        git
+        nix
+        gnumake
+        unzip
+        which
+        bashInteractive
+        ruby
+        busybox
         xorg.libX11.dev
         # (npm2nix.override { nodejs = nodejs-9_x; })
         nodejs-10_x
@@ -348,7 +419,11 @@ rec {
         imagemagick
 
         bzip2
-        libpng nasm libtool autoconf automake
+        libpng
+        nasm
+        libtool
+        autoconf
+        automake
         libarchive
         busybox
 
@@ -356,13 +431,16 @@ rec {
 
         libpcap
 
-        sqlite sqlite.dev
+        sqlite
+        sqlite.dev
 
         binutils
 
         # electron libnotify
 
-        openjdk openapi-generator-cli python37Packages.yapf
+        openjdk
+        openapi-generator-cli
+        python37Packages.yapf
       ];
       ignoreCollisions = true;
     };
@@ -370,14 +448,26 @@ rec {
     nodestableenv = pkgs.buildEnv {
       name = "nodestableenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which bashInteractive ruby busybox
+        stdenv.cc
+        git
+        nix
+        gnumake
+        unzip
+        which
+        bashInteractive
+        ruby
+        busybox
         nodejs
         yarn
         python
         utillinux
 
         bzip2
-        libpng nasm libtool autoconf automake
+        libpng
+        nasm
+        libtool
+        autoconf
+        automake
         libarchive
         busybox
       ];
@@ -387,12 +477,19 @@ rec {
     blackenv = pkgs.buildEnv {
       name = "blackenv";
       paths = with pkgs; [
-        stdenv.cc git nix gnumake unzip which bashInteractive
+        stdenv.cc
+        git
+        nix
+        gnumake
+        unzip
+        which
+        bashInteractive
         nodejs-5_x
         busybox
         python
 
-        electron libnotify
+        electron
+        libnotify
         (with nodePackages; [ bower ])
       ];
       ignoreCollisions = true;
@@ -406,7 +503,7 @@ rec {
         dep
         dep2nix
         vgo2nix
-        /*oniguruma*/
+        # oniguruma
       ];
       ignoreCollisions = true;
     };
@@ -479,21 +576,25 @@ rec {
       paths = [
         # jdk strace gcc.cc.lib
 
-        /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
-        inherit pkgs;
-        pkgs_i686 = pkgs.pkgsi686Linux;
-        })) */
+        /*
+          ((import <nixpkgs/pkgs/development/mobile/androidenv> {
+          inherit pkgs;
+          pkgs_i686 = pkgs.pkgsi686Linux;
+          }))
+        */
 
         pkgs.adb-sync
 
-        /* ((import <nixpkgs/pkgs/development/mobile/androidenv> {
-        inherit pkgs;
-        pkgs_i686 = pkgs.pkgsi686Linux;
-        }).androidsdk {
-        platformVersions = [ ];
-        abiVersions = [ ];
-        useGoogleAPIs = false;
-        }) */
+        /*
+          ((import <nixpkgs/pkgs/development/mobile/androidenv> {
+          inherit pkgs;
+          pkgs_i686 = pkgs.pkgsi686Linux;
+          }).androidsdk {
+          platformVersions = [ ];
+          abiVersions = [ ];
+          useGoogleAPIs = false;
+          })
+        */
       ];
     };
 
@@ -503,83 +604,106 @@ rec {
         stdenv
         bash
         git
-        jdk strace gcc.cc.lib maven coreutils
+        jdk
+        strace
+        gcc.cc.lib
+        maven
+        coreutils
       ];
     };
 
-    restyenv = let
-      openidc_src = pkgs.fetchurl {
-        url = "https://github.com/zmartzone/lua-resty-openidc/archive/15a6110626bc355047e98ac48fcc9953eef034c3.tar.gz";
-        name = "openidc.tar.gz";
-        sha256 = "1v2ljjdv19bf1b0651hdbhm1q7hqp58smzjbd2avn84akf5gcv2b";
-      };
+    restyenv =
+      let
+        openidc_src = pkgs.fetchurl {
+          url = "https://github.com/zmartzone/lua-resty-openidc/archive/15a6110626bc355047e98ac48fcc9953eef034c3.tar.gz";
+          name = "openidc.tar.gz";
+          sha256 = "1v2ljjdv19bf1b0651hdbhm1q7hqp58smzjbd2avn84akf5gcv2b";
+        };
 
-      http_src = pkgs.fetchurl {
-        url = "https://github.com/pintsized/lua-resty-http/archive/fe5c10a47cf40440845c140a5d29cd0e0cd0208f.tar.gz";
-        name = "http.tar.gz";
-        sha256 = "1zvahgyigs24cypnrxr6cmf5r7j9372c8a46j1fk6pri1c90z2s6";
-      };
+        http_src = pkgs.fetchurl {
+          url = "https://github.com/pintsized/lua-resty-http/archive/fe5c10a47cf40440845c140a5d29cd0e0cd0208f.tar.gz";
+          name = "http.tar.gz";
+          sha256 = "1zvahgyigs24cypnrxr6cmf5r7j9372c8a46j1fk6pri1c90z2s6";
+        };
 
-      session_src = pkgs.fetchurl {
-        url = "https://github.com/bungle/lua-resty-session/archive/4429a06ffac1724a056fafa954c0394d437b261f.tar.gz";
-        name = "session.tar.gz";
-        sha256 = "0a9avrr3hyj8ibpm5c6ifrmnhfw727hm2v46rd0ldw237cljixgl";
-      };
+        session_src = pkgs.fetchurl {
+          url = "https://github.com/bungle/lua-resty-session/archive/4429a06ffac1724a056fafa954c0394d437b261f.tar.gz";
+          name = "session.tar.gz";
+          sha256 = "0a9avrr3hyj8ibpm5c6ifrmnhfw727hm2v46rd0ldw237cljixgl";
+        };
 
-      jwt_src = pkgs.fetchurl {
-        url = "https://github.com/cdbattags/lua-resty-jwt/archive/f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98.tar.gz";
-        name = "jwt.tar.gz";
-        sha256 = "09z425namy84888a8ca5lsmyp4c3xkdg0i8yx682bg8c2mimkxgx";
-      };
+        jwt_src = pkgs.fetchurl {
+          url = "https://github.com/cdbattags/lua-resty-jwt/archive/f17d7c6ed45d59beb9fbf3bd5f50e89ead395b98.tar.gz";
+          name = "jwt.tar.gz";
+          sha256 = "09z425namy84888a8ca5lsmyp4c3xkdg0i8yx682bg8c2mimkxgx";
+        };
 
-      hmac_src = pkgs.fetchurl {
-        url = "https://github.com/jkeys089/lua-resty-hmac/archive/989f601acbe74dee71c1a48f3e140a427f2d03ae.tar.gz";
-        name = "hmac.tar.gz";
-        sha256 = "164ad4i4vxa8cmrm6vw2vdlsq4idg75cbl59imwg764s4l9ii79n";
-      };
+        hmac_src = pkgs.fetchurl {
+          url = "https://github.com/jkeys089/lua-resty-hmac/archive/989f601acbe74dee71c1a48f3e140a427f2d03ae.tar.gz";
+          name = "hmac.tar.gz";
+          sha256 = "164ad4i4vxa8cmrm6vw2vdlsq4idg75cbl59imwg764s4l9ii79n";
+        };
 
-      openidc = pkgs.stdenv.mkDerivation {
-        name = "openidc";
-        srcs = [openidc_src http_src session_src jwt_src hmac_src];
-        sourceRoot = ".";
-        installPhase = ''
-          mkdir -p $out/lib/{openidc,http,session,jwt,hmac}/
-          cp -r lua-resty-openidc-*/lib/resty $out/lib/openidc/
-          cp -r lua-resty-http-*/lib/resty $out/lib/http/
-          cp -r lua-resty-session-*/lib/resty $out/lib/session/
-          cp -r lua-resty-jwt-*/lib/resty $out/lib/jwt/
-          cp -r lua-resty-hmac-*/lib/resty $out/lib/hmac/
-        '';
+        openidc = pkgs.stdenv.mkDerivation {
+          name = "openidc";
+          srcs = [
+            openidc_src
+            http_src
+            session_src
+            jwt_src
+            hmac_src
+          ];
+          sourceRoot = ".";
+          installPhase = ''
+            mkdir -p $out/lib/{openidc,http,session,jwt,hmac}/
+            cp -r lua-resty-openidc-*/lib/resty $out/lib/openidc/
+            cp -r lua-resty-http-*/lib/resty $out/lib/http/
+            cp -r lua-resty-session-*/lib/resty $out/lib/session/
+            cp -r lua-resty-jwt-*/lib/resty $out/lib/jwt/
+            cp -r lua-resty-hmac-*/lib/resty $out/lib/hmac/
+          '';
+        };
+      in
+      pkgs.buildEnv {
+        name = "restyenv";
+        paths = [
+          openidc
+        ];
       };
-    in pkgs.buildEnv {
-      name = "restyenv";
-      paths = [
-        openidc
-      ];
-    };
 
     monoenv = pkgs.buildEnv {
       name = "monoenv";
       paths = with pkgs; [
-        mono msbuild dotnet-sdk
+        mono
+        msbuild
+        dotnet-sdk
         lsb-release
-        openssl_1_0_2.out openssl_1_0_2.dev
-        gnome3.gtk gnome3.gtk.dev
+        openssl_1_0_2.out
+        openssl_1_0_2.dev
+        gnome3.gtk
+        gnome3.gtk.dev
         hicolor-icon-theme
         gsettings_desktop_schemas
         #androidenv.androidPkgs_9_0.androidsdk
 
-        ((import <nixpkgs/pkgs/development/mobile/androidenv> {
-          config = { android_sdk.accept_license = true; };
-        }).composeAndroidPackages {
-          platformVersions = [ "24" ];
-          abiVersions = [ "armeabi-v7a" ];
-        }).androidsdk
+        (
+          (import <nixpkgs/pkgs/development/mobile/androidenv> {
+            config = {
+              android_sdk.accept_license = true;
+            };
+          }).composeAndroidPackages
+          {
+            platformVersions = [ "24" ];
+            abiVersions = [ "armeabi-v7a" ];
+          }
+        ).androidsdk
       ];
       ignoreCollisions = true;
     };
 
-    nixmy-package = pkgs.callPackage /home/matejc/workarea/nixmy { config.nixpkgs.config.nixmy = nixmy; };
+    nixmy-package = pkgs.callPackage /home/matejc/workarea/nixmy {
+      config.nixpkgs.config.nixmy = nixmy;
+    };
   };
 
   allowUnfree = true;
@@ -598,7 +722,8 @@ rec {
     "openssl-1.1.1w"
     "electron-27.3.11"
     "olm-3.2.16"
-    "libsoup-2.74.3"  # heroic
-    "qtwebengine-5.15.19"  # swiftpoint
+    "libsoup-2.74.3" # heroic
+    "qtwebengine-5.15.19" # swiftpoint
+    "nexusmods-app-unfree-0.21.1"
   ];
 }

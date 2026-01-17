@@ -33,7 +33,6 @@ in
 
   config = {
     dotfiles.paths = [
-      ../../dotfiles/nvim.nix
       ../../dotfiles/xfce4-terminal.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
@@ -133,7 +132,7 @@ in
         exec = "${config.programs.niri.package}/bin/niri";
       };
       vims = {
-        q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
+        # q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
         # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none --no-vsync'';
         # g = "${pkgs.gnvim}/bin/gnvim --nvim ${homeDir}/bin/nvim --disable-ext-tabline --disable-ext-popupmenu --disable-ext-cmdline";
       };
@@ -232,7 +231,6 @@ in
       tmux
       kitty
       networkmanagerapplet
-      freecad-wayland
       movemaster
       quickemu
     ]);
