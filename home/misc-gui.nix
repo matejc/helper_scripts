@@ -93,6 +93,7 @@ in
         };
         element-desktop = pkgs.callPackage ../nixes/element-desktop.nix { pkgs = prev; };
         movemaster = pkgs.callPackage ../nixes/movemaster.nix { };
+        creality-print = pkgs.callPackage ../nixes/creality-print.nix { };
         configure-gtk = configure-gtk;
         recordCmd = recordCmd;
       })

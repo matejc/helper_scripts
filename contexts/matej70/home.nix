@@ -233,6 +233,7 @@ in
       networkmanagerapplet
       movemaster
       quickemu
+      creality-print
     ]);
     programs.chromium.enable = true;
     # services.network-manager-applet.enable = true;

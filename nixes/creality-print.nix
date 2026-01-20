@@ -51,5 +51,17 @@ pkgs.stdenv.mkDerivation {
       --set SSL_CERT_FILE "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" \
       --set GIO_MODULE_DIR "${pkgs.glib-networking}/lib/gio/modules" \
       --set TMPDIR /tmp
+
+    DESKTOP_ITEM="$(cat "$out/share/CrealityPrint/CrealityPrint.desktop")"
+    mkdir -p $out/share/applications
+    echo "$DESKTOP_ITEM" > "$out/share/applications/CrealityPrint.desktop"
+    substituteInPlace $out/share/applications/CrealityPrint.desktop \
+      --replace-fail 'Exec=AppRun %F' "Exec=$out/bin/${pname} %F"
+
+    for res in 16x16 22x22 32x32 48x48 64x64 72x72 96x96 128x128 256x256 512x512
+    do
+      mkdir -p "$out/share/icons/hicolor/$res/apps"
+      ${pkgs.imagemagick}/bin/magick $out/share/CrealityPrint/CrealityPrint.png -resize $res $out/share/icons/hicolor/$res/apps/CrealityPrint.png
+    done
   '';
 }

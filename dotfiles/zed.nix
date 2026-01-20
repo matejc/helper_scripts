@@ -36,6 +36,7 @@ let
       };
       lsp = {
         nil.settings.nix.flake.autoArchive = false;
+        rust-analyzer.binary.path = "${pkgs.rust-analyzer}/bin/rust-analyzer";
       };
       disable_ai = true;
       collaboration_panel.button = false;
