@@ -108,7 +108,11 @@
         "value": "https://github.com/matejc/helper_scripts.git",
         "emailresponsible": false
       },
-      "name": { "type": "string", "value": "packages", "emailresponsible": false }
+      "name": {
+        "type": "string",
+        "value": "packages",
+        "emailresponsible": false
+      }
     }
   },
   "nixpkgs": {
@@ -133,7 +137,30 @@
         "value": "https://github.com/matejc/nixpkgs.git",
         "emailresponsible": false
       },
-      "attrs": { "type": "nix", "value": "[\"curl\"]", "emailresponsible": false }
+      "attrs": {
+        "type": "nix",
+        "value": "[\"curl\"]",
+        "emailresponsible": false
+      }
+    }
+  },
+  "cachyos-kernel": {
+    "enabled": 1,
+    "hidden": true,
+    "description": "CachyOS kernel for NixOS",
+    "nixexprinput": "nix-cachyos-kernel",
+    "nixexprpath": "packages.x86_64-linux.linux-cachyos-latest-lto",
+    "checkinterval": 600,
+    "schedulingshares": 100,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 10,
+    "inputs": {
+      "nix-cachyos-kernel": {
+        "type": "git",
+        "value": "https://github.com/xddxdd/nix-cachyos-kernel.git",
+        "emailresponsible": false
+      }
     }
   }
 }
