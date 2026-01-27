@@ -1,16 +1,22 @@
-{ lib, pkgs, config, defaultUser, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  defaultUser,
+  ...
+}:
 
 with lib;
 
 {
-/*
-  imports = [
-    ./../modules/wayvnc.nix
-  ];
+  /*
+    imports = [
+      ./../modules/wayvnc.nix
+    ];
 
-  services.wayvnc.enable = true;
-  services.wayvnc.user = defaultUser;
-*/
+    services.wayvnc.enable = true;
+    services.wayvnc.user = defaultUser;
+  */
   documentation.enable = false;
 
   nixpkgs.config.allowUnfree = true;
@@ -35,7 +41,6 @@ with lib;
 
   services.gnome.gnome-keyring.enable = true;
 
-  services.timesyncd.enable = true;
   time.timeZone = "Europe/Helsinki";
 
   wsl.enable = true;
@@ -49,7 +54,10 @@ with lib;
 
   users.users.${defaultUser} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "docker" ];
+    extraGroups = [
+      "wheel"
+      "docker"
+    ];
     shell = pkgs.zsh;
     uid = 1000;
     group = defaultUser;
