@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   inputs,
   defaultUser,
   ...
@@ -10,16 +9,15 @@
     ../../nixos/modules/variables.nix
     ../../nixos/modules/misc.nix
     ../../nixos/modules/home-manager.nix
-    inputs.chaotic.nixosModules.default
   ];
 
   config = {
+    nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
     variables = {
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    boot.kernelPackages = pkgs.linuxPackages_cachyos;
-    chaotic.mesa-git.enable = true;
+    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     services.scx.enable = true;
     services.scx.scheduler = "scx_bpfland";
     services.scx.extraArgs = [

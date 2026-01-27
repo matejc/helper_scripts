@@ -3,7 +3,6 @@
   nixpkgs ? <nixpkgs>,
 }:
 let
-
   pkgsRustNightly = import nixpkgs {
     overlays = [
       (import (
@@ -15,7 +14,7 @@ let
         }
       ))
     ];
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
   };
 
   cargo = pkgsRustNightly.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default);
@@ -32,14 +31,14 @@ in
     src = pkgs.fetchFromGitHub {
       owner = "tsukinaha";
       repo = "tsukimi";
-      rev = "30627a8e3058d9a99eb4618345e547147b10194e";
-      hash = "sha256-JlDJfAiptzyseMhKhLRjEb3mGWlNn16iOPhNK9Nkrf8=";
+      rev = "fa73520d1d3a8db161bfe4c37ca05e3198fb7a59";
+      hash = "sha256-XKkr0dR5NENqN5N0gLRZqAH/CfHOYx8opjp5gzTJ8/s=";
     };
 
     cargoDeps = rustPlatform.fetchCargoVendor {
       inherit (final) pname src version;
       hash = final.cargoHash;
     };
-    cargoHash = "sha256-eKiC4THwcVRcMCCzNxr2tqmp4YY/F09yWfQp9XQPVI0=";
+    cargoHash = "sha256-iFl3ibmkghHUaiOQXNWBCBDcK/JvFGbkAOg9mPC/z3A=";
   }
 )

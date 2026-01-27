@@ -80,7 +80,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.rust-overlay.follows = "rust-overlay";
     };
-    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     noctalia-shell = {
       url = "github:noctalia-dev/noctalia-shell";
       # url = "github:matejc/noctalia-shell";
@@ -95,18 +94,17 @@
       url = "github:quickemu-project/quickemu";
       # inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
   nixConfig = {
     extra-substituters = [
       "https://cache.matejc.com"
-      "https://chaotic-nyx.cachix.org"
       "https://nix-community.cachix.org"
       "https://niri.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.matejc.com-1:1gX7YfpZK4zkYf5MRrz9HPsJq9XZBC6bJgDySZmzbUM="
-      "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "niri.cachix.org-1:Wv0OmO7PsuocRKzfDoJ3mulSl7Z6oezYhGhR+3W2964="
     ];
@@ -148,51 +146,75 @@
     in
     {
       hydraJobs = {
-        matej70.system =
-          (nixosBuild {
-            context = "matej70";
-            modules = [
-              ./nixos/minimal-configuration.nix
-            ];
-          }).config.system.build.toplevel;
-        matej70.home =
-          (homeBuild {
-            context = "matej70";
-          }).activationPackage;
-        matej80.system =
-          (nixosBuild {
-            context = "matej80";
-            modules = [
-              ./nixos/minimal-configuration.nix
-            ];
-          }).config.system.build.toplevel;
-        matej80.home =
-          (homeBuild {
-            context = "matej80";
-          }).activationPackage;
-        nixko.system =
-          (nixosBuild {
-            context = "nixko";
-            modules = [
-              ./nixos/minimal-configuration.nix
-            ];
-          }).config.system.build.toplevel;
-        nixko.home =
-          (homeBuild {
-            context = "nixko";
-          }).activationPackage;
-        nixko.home-minimal =
-          (homeBuild {
-            context = "nixko-minimal";
-          }).activationPackage;
-        wsl.system = self.nixosConfigurations.wsl.config.system.build.toplevel;
-        wsl.builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
-        packages = {
-          deploy-rs = {
-            ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
-            "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+        matej70 =
+          { ... }:
+          {
+            system =
+              (nixosBuild {
+                context = "matej70";
+                modules = [
+                  ./nixos/minimal-configuration.nix
+                ];
+              }).config.system.build.toplevel;
+            home =
+              (homeBuild {
+                context = "matej70";
+              }).activationPackage;
           };
-        };
+        matej80 =
+          { ... }:
+          {
+            system =
+              (nixosBuild {
+                context = "matej80";
+                modules = [
+                  ./nixos/minimal-configuration.nix
+                ];
+              }).config.system.build.toplevel;
+            home =
+              (homeBuild {
+                context = "matej80";
+              }).activationPackage;
+          };
+        nixko =
+          { ... }:
+          {
+            system =
+              (nixosBuild {
+                context = "nixko";
+                modules = [
+                  ./nixos/minimal-configuration.nix
+                ];
+              }).config.system.build.toplevel;
+            home =
+              (homeBuild {
+                context = "nixko";
+              }).activationPackage;
+            home-minimal =
+              (homeBuild {
+                context = "nixko-minimal";
+              }).activationPackage;
+          };
+        wsl =
+          { ... }:
+          {
+            system = self.nixosConfigurations.wsl.config.system.build.toplevel;
+            builder = self.nixosConfigurations.wsl.config.system.build.tarballBuilder;
+          };
+        packages =
+          { ... }:
+          {
+            deploy-rs = {
+              ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
+              "aarch64-linux" = inputs.deploy-rs.packages."aarch64-linux".deploy-rs;
+            };
+          };
+        nix-cachyos-kernel =
+          { nix-cachyos-kernel, ... }:
+          {
+            linux-cachyos-latest = nix-cachyos-kernel.packages.x86_64-linux.linux-cachyos-latest;
+            linux-cachyos-latest-lto = nix-cachyos-kernel.packages.x86_64-linux.linux-cachyos-latest-lto;
+          };
       };
       homeConfigurations = {
         nixko = homeBuild {
