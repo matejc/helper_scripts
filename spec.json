@@ -163,7 +163,7 @@
       },
       "nix-cachyos-kernel": {
         "type": "git",
-        "value": "https://github.com/xddxdd/nix-cachyos-kernel.git",
+        "value": "https://github.com/xddxdd/nix-cachyos-kernel.git release",
         "emailresponsible": false
       },
       "name": {
