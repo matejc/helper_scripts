@@ -8,6 +8,8 @@
   imports = [
     ../../nixos/modules/variables.nix
     ../../nixos/modules/misc.nix
+    ../../nixos/modules/misc-gui.nix
+    ../../nixos/modules/physical.nix
     ../../nixos/modules/home-manager.nix
   ];
 
