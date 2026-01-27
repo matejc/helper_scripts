@@ -214,6 +214,8 @@
           {
             linux-cachyos-latest-lto =
               (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest-lto;
+            linux-cachyos-latest-lto-x86_64-v3 =
+              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest-lto-x86_64-v3;
           };
       };
       homeConfigurations = {
