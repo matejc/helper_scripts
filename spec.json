@@ -161,7 +161,7 @@
         "value": "https://github.com/matejc/helper_scripts.git",
         "emailresponsible": false
       },
-      "nix-cachyos-kernel": {
+      "nix-cachyos-kernel-src": {
         "type": "git",
         "value": "https://github.com/xddxdd/nix-cachyos-kernel.git release",
         "emailresponsible": false
