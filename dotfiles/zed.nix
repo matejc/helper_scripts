@@ -28,7 +28,7 @@ let
         folder_icons = false;
       };
       auto_update = false;
-      auto_indent = false;
+      format_on_save = "off";
       languages = {
         Nix = {
           tab_size = 2;

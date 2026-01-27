@@ -173,6 +173,7 @@ in
       docker
       podman-compose
       docker-compose
+      aider-chat-with-playwright
     ];
     programs.direnv = {
       enable = true;
