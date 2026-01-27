@@ -46,7 +46,6 @@ in
   ];
   config = {
     dotfiles.paths = [
-      ../../dotfiles/nvim.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
       ../../dotfiles/dd.nix
@@ -90,8 +89,8 @@ in
       shellRc = "${variables.homeDir}/.zshrc";
       vims = {
         # q = "env QT_PLUGIN_PATH='${pkgs.qt5.qtbase.bin}/${pkgs.qt5.qtbase.qtPluginPrefix}' ${pkgs.neovim-qt}/bin/nvim-qt --nvim ${homeDir}/bin/nvim";
-        q = "env NVIM_FRONTEND_PATH=${neovim-qt-win}/bin/nvim-qt ${variables.profileDir}/bin/guinvim";
-        n = "env NVIM_FRONTEND_PATH=${neovide-win}/bin/neovide NVIM_FRONTEND_ARGS='--remote-tcp' ${variables.profileDir}/bin/guinvim";
+        #q = "env NVIM_FRONTEND_PATH=${neovim-qt-win}/bin/nvim-qt ${variables.profileDir}/bin/guinvim";
+        #n = "env NVIM_FRONTEND_PATH=${neovide-win}/bin/neovide NVIM_FRONTEND_ARGS='--remote-tcp' ${variables.profileDir}/bin/guinvim";
       };
       outputs = [{
         output = "HEADLESS-1";

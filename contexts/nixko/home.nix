@@ -25,7 +25,6 @@ in
 
   config = {
     dotfiles.paths = [
-      ../../dotfiles/nvim.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
       ../../dotfiles/noctalialockscreen.nix
@@ -99,7 +98,7 @@ in
         exec = "${config.programs.niri.package}/bin/niri";
       };
       vims = {
-        q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
+        #q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
         # neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';
       };
       outputs = [
