@@ -23,10 +23,6 @@
           defaultUser
         ];
       };
-      gc = {
-        automatic = true;
-        dates = "weekly";
-      };
     };
 
     programs.nh = {
