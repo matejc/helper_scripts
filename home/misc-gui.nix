@@ -96,6 +96,7 @@ in
         creality-print = pkgs.callPackage ../nixes/creality-print.nix { };
         configure-gtk = configure-gtk;
         recordCmd = recordCmd;
+        zed-editor = pkgs.callPackage ../nixes/zed.nix { pkgs = prev; };
       })
     ];
     home.file = {
