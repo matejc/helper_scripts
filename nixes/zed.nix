@@ -11,5 +11,5 @@ pkgs.zed-editor.overrideAttrs (final: old: {
     hash = final.cargoHash;
   };
   cargoHash = "sha256-Jvzjv7ujf9bHSqZqQkHSCvC0BVywCBvsHevAfoJwzF4=";
-  doCheck = false;
+  RUST_BACKTRACE = "full";
 })
