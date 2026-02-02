@@ -10,6 +10,6 @@ pkgs.zed-editor.overrideAttrs (final: old: {
     inherit (final) pname src version;
     hash = final.cargoHash;
   };
-  NIX_BUILD_CORES = "2";
+  NIX_BUILD_CORES = "6";
   cargoHash = "sha256-Jvzjv7ujf9bHSqZqQkHSCvC0BVywCBvsHevAfoJwzF4=";
 })
