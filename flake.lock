@@ -420,11 +420,11 @@
     "nixmy": {
       "flake": false,
       "locked": {
-        "lastModified": 1769628511,
-        "narHash": "sha256-akTR6Ip6VDa7khEYr3+B8Mgg0E+HOZpNa6tmaXxjnVg=",
+        "lastModified": 1770219128,
+        "narHash": "sha256-jLqMyuYoUuuV4sxLMWfOegrSrSlhvYS8HuDO0wxZRlc=",
         "owner": "matejc",
         "repo": "nixmy",
-        "rev": "c9e55032097e82abe2c609afca67fb18aaae8e02",
+        "rev": "029d2e5942c2dacb95ab281da78d94811891fc17",
         "type": "github"
       },
       "original": {
