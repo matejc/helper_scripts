@@ -153,6 +153,7 @@ in
         "erasedups"
         "ignorespace"
       ];
+      historyFile = "${config.home.homeDirectory}/.bash_history";
     };
 
     programs.zsh = {
@@ -176,6 +177,12 @@ in
       history = {
         expireDuplicatesFirst = true;
         extended = true;
+        findNoDups = true;
+        share = true;
+        ignoreSpace = true;
+        path = "${config.programs.zsh.dotDir}/.zsh_history";
+        save = 1000000;
+        size = 1000000;
       };
       historySubstringSearch = {
         enable = true;

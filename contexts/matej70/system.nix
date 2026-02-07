@@ -31,8 +31,16 @@
     services.udev.packages = [
       (pkgs.writeTextFile {
         name = "ntsync-udev-rules";
-        text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess", GROUP="${defaultUser}"'';
+        text = ''KERNEL=="ntsync", MODE="0660", TAG+="uaccess", GROUP="users"'';
         destination = "/etc/udev/rules.d/70-ntsync.rules";
+      })
+      (pkgs.writeTextFile {
+        name = "keychron-udev-rules";
+        text = ''
+          KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="3434", MODE="0660", TAG+="uaccess", GROUP="plugdev"
+          KERNEL=="event*", SUBSYSTEM=="input", ENV{ID_VENDOR_ID}=="3434", ENV{ID_INPUT_JOYSTICK}=="*?", ENV{ID_INPUT_JOYSTICK}=""
+        '';
+        destination = "/etc/udev/rules.d/70-keychron.rules";
       })
     ];
     nixpkgs.config = import ../../dotfiles/nixpkgs-config.nix;
@@ -73,10 +81,6 @@
     services.fprintd.enable = true;
     security.pam.services.greetd.fprintAuth = true;
     security.pam.services.quickshell.fprintAuth = true;
-    # fileSystems."/mnt/games/SteamLibrary/steamapps/compatdata/1716740/pfx/drive_c/users/steamuser/Documents/My Games/Starfield/Data" = {
-    #   device = "/mnt/games/SteamLibrary/steamapps/common/Starfield/Data";
-    #   options = [ "bind" ];
-    # };
     hardware.graphics = {
       enable = true;
       enable32Bit = true;
@@ -98,5 +102,8 @@
         "default.clock.max-quantum" = 512;
       };
     };
+    services.printing.enable = true;
+    services.avahi.enable = true;
+    hardware.keyboard.qmk.enable = true;
   };
 }

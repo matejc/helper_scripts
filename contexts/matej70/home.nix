@@ -234,9 +234,9 @@ in
       movemaster
       quickemu
       creality-print
+      airscan
     ]);
     programs.chromium.enable = true;
-    # services.network-manager-applet.enable = true;
     programs.firefox.enable = true;
   };
 }

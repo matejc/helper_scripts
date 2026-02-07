@@ -199,16 +199,6 @@ in
       bindkey -r '^S'
     fi
 
-    export HISTFILESIZE=10000000
-    export HISTSIZE=10000000
-    export SAVEHIST=10000000
-    export HISTFILE=~/.zsh_history
-
-    setopt HIST_FIND_NO_DUPS
-    setopt SHARE_HISTORY
-
-    setopt histignorespace
-
     # 0 -- vanilla completion (abc => abc)
     # 1 -- smart case completion (abc => Abc)
     # 2 -- word flex completion (abc => A-big-Car)
