@@ -108,6 +108,16 @@ in
               "workspace::SendKeystrokes"
               "down down down down down"
             ];
+            "ctrl-shift-f" = "project_panel::NewSearchInDirectory";
+            "ctrl-f" = "project_panel::NewSearchInDirectory";
+            "r" = "project_panel::Rename";
+            "d" = "project_panel::Duplicate";
+            "x" = "project_panel::Cut";
+            "c" = "project_panel::Copy";
+            "v" = "project_panel::Paste";
+            "n" = "project_panel::NewFile";
+            "shift-n" = "project_panel::NewDirectory";
+            "p" = "project_panel::SelectParent";
           };
         }
         {
