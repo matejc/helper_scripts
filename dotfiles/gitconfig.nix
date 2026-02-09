@@ -46,6 +46,11 @@ let
         gum confirm "Commit changes?" && "$@"
     }
 
+    if git diff --staged --quiet
+    then
+        exit 1
+    fi
+
     SUMMARY="$@"
 
     if [ -z "$SUMMARY" ]
