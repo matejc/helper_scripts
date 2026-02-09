@@ -128,7 +128,6 @@ in
       yq-go
       minikube
       kubectl
-      docker-machine-kvm2
       ttyd
       unzip
       stdenv.cc

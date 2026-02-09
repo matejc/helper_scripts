@@ -420,11 +420,11 @@
     "nixmy": {
       "flake": false,
       "locked": {
-        "lastModified": 1770499387,
-        "narHash": "sha256-923VJxauBT+fkr6G/wrAwROFn1Uyb7aCbw9z1+uo5g4=",
+        "lastModified": 1770563626,
+        "narHash": "sha256-2hvQZAV4GpfYglHww60U6B/x7KWrzVXLryWsLVNxfbw=",
         "owner": "matejc",
         "repo": "nixmy",
-        "rev": "9fe8b87c2236b52155238a84c84f462040959d0b",
+        "rev": "8d822490a8e7bc088f6a4df177871e1a61351fa7",
         "type": "github"
       },
       "original": {
@@ -437,8 +437,8 @@
     "nixos-configuration": {
       "flake": false,
       "locked": {
-        "lastModified": 1767730828,
-        "narHash": "sha256-Zg++6Kd7DLGhsIpv5A0isrmENCI0Fa7h8QZi27MlEMQ=",
+        "lastModified": 1770391612,
+        "narHash": "sha256-lozOCo1LefEZMXsE7Yh9fq55zftM5jWUzzTNyq2alR0=",
         "path": "/etc/nixos",
         "type": "path"
       },

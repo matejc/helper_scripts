@@ -72,6 +72,7 @@ in
         quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default;
         sleepCmd = sleepCmd;
         tempstatus_all = tempstatus_all;
+        searxngr = pkgs.callPackage ../nixes/searxngr.nix { };
       })
     ];
     nixpkgs.config = import ../dotfiles/nixpkgs-config.nix;
