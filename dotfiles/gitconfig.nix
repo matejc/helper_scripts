@@ -6,6 +6,8 @@
 }:
 let
   push_sh = pkgs.writeShellScript "push.sh" ''
+    set -e
+
     export PATH="$PATH:${pkgs.gum}/bin"
 
     echor() {
@@ -29,19 +31,24 @@ let
     if [ -n "$REMOTE" ] && [ -n "$BRANCH" ]
     then
         echor git push "$REMOTE" "$BRANCH"
+    else
+        exit 1
     fi
   '';
   commit_sh = pkgs.writeShellScript "commit.sh" ''
+    set -e
+
     export PATH="$PATH:${pkgs.gum}/bin"
 
-    echor() {
+    echo_confirm() {
         echo "> $@" >&2
-        "$@"
+        echo >&2
+        gum confirm "Commit changes?" && "$@"
     }
 
     SUMMARY="$@"
 
-    if [ -z "$@" ]
+    if [ -z "$SUMMARY" ]
     then
         TYPE=$(gum choose "fix" "feat" "docs" "style" "refactor" "test" "chore" "revert")
         SCOPE=$(gum input --placeholder "scope")
@@ -51,7 +58,18 @@ let
         SUMMARY=$(gum input --value "$TYPE$SCOPE: " --placeholder "Summary of this change")
     fi
 
-    echor git commit -m "$SUMMARY"
+    DESCRIPTION=""
+    gum confirm "Enter details?" && DESCRIPTION=$(gum write --placeholder "Details of this change")
+
+    if [ -n "$SUMMARY" ] && [ -n "$DESCRIPTION" ]
+    then
+        echo_confirm git commit -m "$SUMMARY" -m "$DESCRIPTION"
+    elif [ -n "$SUMMARY" ]
+    then
+        echo_confirm git commit -m "$SUMMARY"
+    else
+        exit 1
+    fi
   '';
 in
 {
