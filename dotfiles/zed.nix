@@ -97,7 +97,7 @@ in
           };
         }
         {
-          context = "ProjectPanel";
+          context = "ProjectPanel && not_editing";
           bindings = {
             enter = "project_panel::OpenPermanent";
             pageup = [
