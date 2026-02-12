@@ -25,16 +25,16 @@ pkgs.stdenv.mkDerivation {
           with pkgs;
           [
             libusb1
-            xorg.libX11
+            libx11
             libgcc.lib
             libglvnd
             zlib
             glib
             fontconfig
             freetype
-            xorg.libXext
-            xorg.libXrender
-            xorg.libxcb
+            libxext
+            libxrender
+            libxcb
             libxkbcommon
             dbus
             libsForQt5.qt5.qtbase
