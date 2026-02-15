@@ -3,12 +3,12 @@
 }:
 let
   pname = "CrealityPrint";
-  version = "7.0.0";
-  buildVersion = "4127";
+  version = "7.0.1";
+  buildVersion = "4212";
 
   src = pkgs.fetchurl {
-    url = "https://github.com/CrealityOfficial/CrealityPrint/releases/download/v${version}/CrealityPrint-V${version}.${buildVersion}-x86_64-Release.AppImage";
-    sha256 = "sha256-J3oVSp6mR5qmm9zNcFQTqK+A0XAJSmVYzC3hKWQOjr4=";
+    url = "https://github.com/CrealityOfficial/CrealityPrint/releases/download/v${version}/CrealityPrint_Ubuntu2404-V${version}.${buildVersion}-x86_64-Release.AppImage";
+    sha256 = "sha256-M+umhMXFypw1+sjTPq1tr1WXqWBSFpLD3DsaRd5e14I=";
   };
 in
 pkgs.stdenv.mkDerivation {
@@ -25,8 +25,8 @@ pkgs.stdenv.mkDerivation {
   buildInputs = with pkgs; [
     libdeflate
     bzip2
-    xorg.libSM
-    xorg.libICE
+    libsm
+    libice
     webkitgtk_4_1
     libsecret
     nss
