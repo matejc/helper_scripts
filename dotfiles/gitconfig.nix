@@ -114,6 +114,7 @@ in
         stash-pull = !git stash && git pull "$@" && git stash pop && echo
         grep-history = !git rev-list --all --date-order | PAGER=cat xargs git grep -n
         grep-all = !git show-ref | ${pkgs.gawk}/bin/awk '{print $2}' | PAGER=cat xargs git grep -n
+        find-first = "!f() { res=$(git log -S \"$@\" --reverse --oneline | head -n 1 | ${pkgs.gawk}/bin/awk '{print $1}') && test -n \"$res\" && git show $res; }; f"
         x = "!f() { git add -p && ${commit_sh} \"$3\" && ${push_sh} \"$1\" \"$2\"; }; f"
     [pull]
         rebase = true
