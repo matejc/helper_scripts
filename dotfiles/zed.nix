@@ -94,6 +94,7 @@ in
             ctrl-q = "workspace::CloseWindow";
             ctrl-shift-q = "zed::Quit";
             ctrl-t = "terminal_panel::Toggle";
+            ctrl-j = "outline::Toggle";
             alt-left = "pane::GoBack";
             alt-right = "pane::GoForward";
           };
