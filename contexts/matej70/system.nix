@@ -79,6 +79,10 @@
         };
       };
     services.fprintd.enable = true;
+    security.pam.u2f = {
+      enable = true;
+      settings.cue = true;
+    };
     security.pam.services.greetd.fprintAuth = true;
     security.pam.services.quickshell.fprintAuth = true;
     hardware.graphics = {
