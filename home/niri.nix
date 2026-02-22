@@ -204,25 +204,39 @@ let
   '';
 in
 {
-  imports = [
-    inputs.niri.homeModules.niri
-  ];
   config = lib.mkMerge [
     {
-
       nixpkgs.overlays = [
         inputs.niri.overlays.niri
         (final: prev: {
-          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.programs.niri.package; };
+          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
-            niri = config.programs.niri.package;
+            niri = config.variables.graphical.package;
           };
           noctalia-shell = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default;
           quickshell = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })
       ];
 
+      xdg.portal = {
+        enable = true;
+        config = {
+          common.default = "*";
+          niri = {
+            default = ["gnome" "gtk"];
+            "org.freedesktop.impl.portal.Access" = ["gtk"];
+            "org.freedesktop.impl.portal.Notification" = ["gtk"];
+            "org.freedesktop.impl.portal.OpenURI" = ["gtk"];
+            "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+            "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+          };
+        };
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
+        xdgOpenUsePortal = true;
+      };
+
       home.packages = with pkgs; [
+        config.variables.graphical.package
         noctalia-shell
         quickshell
         bluez
@@ -241,8 +255,7 @@ in
         wlsunset
         app2unit
       ];
-      programs.niri.enable = true;
-      programs.niri.package = pkgs.niri-unstable;
+
       programs.niri.config =
         let
           noctalia-shell = "${pkgs.noctalia-shell}/bin/noctalia-shell";

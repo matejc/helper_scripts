@@ -4,7 +4,7 @@
     nixpkgs.url = "github:matejc/nixpkgs/latest";
     # nixpkgs.url = "path:/home/matejc/workarea/nixpkgs";
     flake-compat = {
-      url = "github:edolstra/flake-compat";
+      url = "github:NixOS/flake-compat";
       flake = false;
     };
     nixos-configuration = {

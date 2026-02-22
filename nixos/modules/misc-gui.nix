@@ -19,20 +19,9 @@
 
     xdg.portal = {
       enable = true;
-      wlr = {
-        # enable = true;
-      };
-      config.niri = {
-        default = "gnome;gtk;";
-        "org.freedesktop.impl.portal.Access" = "gtk";
-        "org.freedesktop.impl.portal.Notification" = "gtk";
-        "org.freedesktop.impl.portal.OpenURI" = "gtk";
-        "org.freedesktop.impl.portal.FileChooser" = "gtk";
-        "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
-      };
-      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
       xdgOpenUsePortal = true;
     };
+
     environment.extraInit = ''
       export XDG_DATA_DIRS="$XDG_DATA_DIRS:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
     '';

@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, lib, ... }:
 let
   steam-xrun = pkgs.writeShellScriptBin "steam-xrun" ''
     export PATH="$PATH:${lib.makeBinPath [ pkgs.openbox pkgs.xsel pkgs.xwayland-run pkgs.steam ]}"
@@ -109,6 +109,53 @@ in
   }
   '';
 } {
+  target = "${variables.homeDir}/bin/proton-exec";
+  source = pkgs.writeShellScript "proton-exec.sh" ''
+    set -e
+    args="$@"
+    argn="$#"
+
+    function usage() {
+      echo "Usage: $0 <app_id> <run> <<prefix> [cmd]|cmd>" >&2
+      return 1
+    }
+
+    function check_args() {
+      if [ $argn -ge $1 ]
+      then
+        for a in $args
+        do
+          if [ -z "$a" ]
+          then
+            usage
+          fi
+        done
+      else
+        usage
+      fi
+    }
+
+    check_args 3
+    app_id="$1"
+    action="$2"
+
+    if [[ "$action" = "launch" ]]
+    then
+      protontricks-launch --appid "$app_id" "''${@:3}"
+    elif [[ "$action" = "run" ]]
+    then
+      protontricks -c "''${@:3}" "$app_id"
+    elif [[ "$action" = "protontricks" ]]
+    then
+      ${pkgs.protontricks}/bin/protontricks "''${@:3}"
+    elif [[ "$action" = "winetricks" ]]
+    then
+      ${pkgs.winetricks}/bin/winetricks "''${@:3}"
+    else
+      usage
+    fi
+  '';
+}] ++ (lib.optionals (variables.steam?wine-exec && variables.steam.wine-exec == true) [{
   target = "${variables.homeDir}/bin/wine-exec";
   source = pkgs.writeShellScript "wine-exec.sh" ''
     set -e
@@ -157,54 +204,7 @@ in
       usage
     fi
   '';
-} {
-  target = "${variables.homeDir}/bin/proton-exec";
-  source = pkgs.writeShellScript "proton-exec.sh" ''
-    set -e
-    args="$@"
-    argn="$#"
-
-    function usage() {
-      echo "Usage: $0 <app_id> <run> <<prefix> [cmd]|cmd>" >&2
-      return 1
-    }
-
-    function check_args() {
-      if [ $argn -ge $1 ]
-      then
-        for a in $args
-        do
-          if [ -z "$a" ]
-          then
-            usage
-          fi
-        done
-      else
-        usage
-      fi
-    }
-
-    check_args 3
-    app_id="$1"
-    action="$2"
-
-    if [[ "$action" = "launch" ]]
-    then
-      protontricks-launch --appid "$app_id" "''${@:3}"
-    elif [[ "$action" = "run" ]]
-    then
-      protontricks -c "''${@:3}" "$app_id"
-    elif [[ "$action" = "protontricks" ]]
-    then
-      ${pkgs.protontricks}/bin/protontricks "''${@:3}"
-    elif [[ "$action" = "winetricks" ]]
-    then
-      ${pkgs.winetricks}/bin/winetricks "''${@:3}"
-    else
-      usage
-    fi
-  '';
-} {
+}]) ++ (lib.optionals (variables.steam?tui && variables.steam.tui == true) ([{
   target = "${variables.homeDir}/bin/steam-tui";
   source = pkgs.writeShellScript "steam-tui" ''
     export STEAM_TUI_SCRIPT_DIR="$HOME/.config/steam-tui/scripts"
@@ -221,5 +221,5 @@ in
     ${variables.homeDir}/bin/protonge-update "${v.compatibilityTool}"
     mkdir -p "$HOME/.steam/steam/steamapps/compatdata/${app_id}"
     exec ${pkgs.steam-run}/bin/steam-run env DISPLAY=:0 STEAM_COMPAT_DATA_PATH="$HOME/.steam/steam/steamapps/compatdata/${app_id}" STEAM_COMPAT_CLIENT_INSTALL_PATH="$HOME/.steam/steam" "$HOME/.steam/steam/compatibilitytools.d/${v.compatibilityTool}/proton" waitforexitandrun "$@"
-  '' else builtins.throw "Steam: AppID(${app_id}) has invalid compatibility tool: ${if v ? compatibilityTool then v.compatibilityTool else "empty"}");
-}) (variables.steam.run or {}))
+  '' else throw "Steam: AppID(${app_id}) has invalid compatibility tool: ${if v ? compatibilityTool then v.compatibilityTool else "empty"}");
+}) (variables.steam.run or {}))))
