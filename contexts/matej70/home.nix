@@ -127,7 +127,7 @@ in
       sway.enable = false;
       graphical = rec {
         name = "niri";
-        logout = "${variables.graphical.exec} msg action quit --skip-confirmation";
+        logout = "${exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
         exec = "${package}/bin/niri";
