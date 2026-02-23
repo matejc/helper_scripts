@@ -6,201 +6,50 @@
   ...
 }:
 let
-  noctaliaShellDefaultSettings = pkgs.writeText "noctalia-shell-settings.json" ''
-    {
-        "appLauncher": {
-            "backgroundOpacity": 0.98,
-            "enableClipboardHistory": true,
-            "pinnedExecs": [
-            ],
-            "position": "center"
-        },
-        "audio": {
-            "cavaFrameRate": 30,
-            "mprisBlacklist": [
-            ],
-            "preferredPlayer": "mpv",
-            "showMiniplayerAlbumArt": false,
-            "showMiniplayerCava": false,
-            "visualizerType": "linear",
-            "volumeStep": 5
-        },
-        "bar": {
-            "alwaysShowBatteryPercentage": true,
-            "backgroundOpacity": 0.98,
-            "monitors": [
-            ],
-            "position": "bottom",
-            "showActiveWindowIcon": true,
-            "showNetworkStats": false,
-            "showWorkspaceLabel": "index",
-            "useDistroLogo": false,
-            "widgets": {
-                "center": [
-                    {
-                        "id": "Workspace"
-                    }
-                ],
-                "left": [
-                    {
-                        "id": "SystemMonitor"
-                    },
-                    {
-                        "id": "MediaMini"
-                    },
-                    {
-                        "id": "ActiveWindow"
-                    }
-                ],
-                "right": [
-                    {
-                        "id": "ScreenRecorderIndicator"
-                    },
-                    {
-                        "id": "KeepAwake"
-                    },
-                    {
-                        "id": "NotificationHistory"
-                    },
-                    {
-                        "id": "WiFi"
-                    },
-                    {
-                        "id": "Bluetooth"
-                    },
-                    {
-                        "id": "Battery"
-                    },
-                    {
-                        "id": "Volume"
-                    },
-                    {
-                        "id": "Microphone"
-                    },
-                    {
-                        "id": "Brightness"
-                    },
-                    {
-                        "id": "NightLight"
-                    },
-                    {
-                        "id": "Tray"
-                    },
-                    {
-                        "id": "Clock"
-                    },
-                    {
-                        "id": "SidePanelToggle"
-                    }
-                ]
-            }
-        },
-        "brightness": {
-            "brightnessStep": 5
-        },
-        "colorSchemes": {
-            "darkMode": true,
-            "predefinedScheme": "${pkgs.noctalia-shell}/share/noctalia-shell/Assets/ColorScheme/Gruvbox.json",
-            "useWallpaperColors": false
-        },
-        "dock": {
-            "autoHide": true,
-            "exclusive": false,
-            "monitors": [
-            ]
-        },
-        "general": {
-            "animationSpeed": 0.5,
-            "avatarImage": "/home/matejc/.face",
-            "dimDesktop": true,
-            "radiusRatio": 1,
-            "showScreenCorners": false
-        },
-        "hooks": {
-            "darkModeChange": "",
-            "enabled": false,
-            "wallpaperChange": ""
-        },
-        "location": {
-            "name": "Helsinki",
-            "reverseDayMonth": false,
-            "showDateWithClock": true,
-            "use12HourClock": false,
-            "useFahrenheit": false
-        },
-        "matugen": {
-            "enableUserTemplates": false,
-            "foot": false,
-            "fuzzel": false,
-            "ghostty": false,
-            "gtk3": true,
-            "gtk4": true,
-            "kitty": false,
-            "qt5": true,
-            "qt6": true,
-            "vesktop": false
-        },
-        "network": {
-            "bluetoothEnabled": true,
-            "wifiEnabled": true
-        },
-        "nightLight": {
-            "autoSchedule": true,
-            "dayTemp": "6500",
-            "enabled": true,
-            "manualSunrise": "06:30",
-            "manualSunset": "18:30",
-            "nightTemp": "4000"
-        },
-        "notifications": {
-            "monitors": [
-            ]
-        },
-        "screenRecorder": {
-            "audioCodec": "opus",
-            "audioSource": "both",
-            "colorRange": "limited",
-            "directory": "/home/matejc/Videos",
-            "frameRate": 60,
-            "quality": "very_high",
-            "showCursor": true,
-            "videoCodec": "h264",
-            "videoSource": "portal"
-        },
-        "settingsVersion": 1,
-        "ui": {
-            "fontBillboard": "Roboto Medium",
-            "fontDefault": "Roboto",
-            "fontFixed": "SauceCodePro Nerd Font Mono",
-            "idleInhibitorEnabled": false,
-            "monitorsScaling": [
-            ]
-        },
-        "wallpaper": {
-            "directory": "/home/matejc/Pictures/Wallpapers",
-            "enableMultiMonitorDirectories": false,
-            "enabled": true,
-            "fillColor": "#000000",
-            "fillMode": "crop",
-            "monitors": [
-            ],
-            "randomEnabled": false,
-            "randomIntervalSec": 300,
-            "setWallpaperOnAllMonitors": true,
-            "transitionDuration": 1500,
-            "transitionEdgeSmoothness": 0.05,
-            "transitionType": "random"
-        }
-    }
-  '';
+  niriSidebarConfigFile = pkgs.writeText "niri-sidebar.toml" ''
+    [geometry]
+    # Width of the sidebar in pixels
+    width = 400
+    # Height of the sidebar windows
+    height = 300
+    # Gap between windows in the stack
+    gap = 10
 
-  noctaliaShellStartPreSh = pkgs.writeShellScript "noctalia-shell-start-pre.sh" ''
-    mkdir -p ${config.variables.homeDir}/.config/noctalia
+    [margins]
+    # Margins are default to 0 if left out
+    # Space from the top of the screen
+    top = 10
+    # Space from the right edge of the screen
+    right = 10
+    # Space from the left edge of the screen
+    left = 10
+    # Space from the bottom of the screen
+    bottom = 50
 
-    if [ ! -e "${config.variables.homeDir}/.config/noctalia/settings.json" ]
-    then
-      cat "${noctaliaShellDefaultSettings}" > "${config.variables.homeDir}/.config/noctalia/settings.json"
-    fi
+    [interaction]
+    # Where to put the sidebar, can be "left", "right", "top" or "bottom"
+    # Defaults to "right"
+    position = "right"
+    # Width of windows when sidebar is hidden in pixels
+    peek = 10
+    # Width of window when sidebar is hidden but window is focused in pixels
+    # set this equal to peek to disable this feature
+    # set this equal to sidebar_width + offset_right to make focused windows "unhide"
+    # Optional and defaults to peek if ommitted
+    focus_peek = 50
+    # Whether the sidebar should follow if you switch workspaces
+    sticky = false
+
+    # Example window rule
+    # all fields are optional if not given a default from other configs will be used
+    # [[window_rule]]
+    # app_id = "firefox"  # if not set will match all app_id's
+    # title = "^Picture-in-Picture$"  # if not set will match no matter the title
+    # width = 700
+    # height = 400
+    # focus_peek = 710
+    # peek = 10
+    # auto_add = true  # defaults to false
   '';
 in
 {
@@ -209,7 +58,7 @@ in
       nixpkgs.overlays = [
         inputs.niri.overlays.niri
         (final: prev: {
-          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
+          niri-sidebar = prev.callPackage ../nixes/niri-sidebar.nix { };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.variables.graphical.package;
           };
@@ -234,6 +83,8 @@ in
         extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
         xdgOpenUsePortal = true;
       };
+
+      home.file.".config/niri-sidebar/config.toml".source = niriSidebarConfigFile;
 
       home.packages = with pkgs; [
         config.variables.graphical.package
@@ -561,7 +412,7 @@ in
               // Suggested binds for running programs: terminal, app launcher, screen locker.
               Ctrl+Alt+T { spawn "${config.variables.programs.terminal}"; }
               Ctrl+Alt+H { spawn "${config.variables.programs.filemanager}"; }
-              Ctrl+Alt+Space { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher toggle"; }
+              Super+Space { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher toggle"; }
               Ctrl+Alt+L { spawn "${config.variables.lockscreen}"; }
               Super+L { spawn "${config.variables.lockscreen}"; }
               Ctrl+Alt+Delete { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call sessionMenu toggle"; }
@@ -625,8 +476,8 @@ in
               Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
               Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
-              Ctrl+Alt+Up        { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-up"; }
-              Ctrl+Alt+Down      { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-down"; }
+              Ctrl+Alt+Up        { focus-workspace-up; }
+              Ctrl+Alt+Down      { focus-workspace-down; }
               Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
               Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
 
@@ -645,12 +496,12 @@ in
               // * adjust width as a percentage of screen width: "-10%" or "+10%"
               // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
               // set-column-width "100" will make the column occupy 200 physical screen pixels.
-              Super+Minus { set-column-width "-10%"; }
-              Super+Equal { set-column-width "+10%"; }
+              Super+Minus { set-column-width "-25%"; }
+              Super+Equal { set-column-width "+25%"; }
 
               // Finer height adjustments when in column with other windows.
-              Super+Ctrl+Minus { set-window-height "-10%"; }
-              Super+Ctrl+Equal { set-window-height "+10%"; }
+              Super+Ctrl+Minus { set-window-height "-25%"; }
+              Super+Ctrl+Equal { set-window-height "+25%"; }
 
               // Actions to switch layouts.
               // Note: if you uncomment these, make sure you do NOT have
@@ -679,7 +530,11 @@ in
               Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Super+O repeat=false { toggle-overview; }
+              Ctrl+Alt+Space repeat=false { toggle-overview; }
               Super+grave repeat=false { switch-focus-between-floating-and-tiling; }
+
+              Super+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-window"; }
+              Super+Shift+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-visibility"; }
           }
 
           // Settings for debugging. Not meant for normal use.
@@ -732,7 +587,6 @@ in
         Install.WantedBy = [ config.variables.graphical.target ];
         Service = {
           Type = "simple";
-          ExecStartPre = "${noctaliaShellStartPreSh}";
           ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell";
         };
       };
@@ -770,17 +624,16 @@ in
       # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
       systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
 
-      systemd.user.services.niri-switcher = {
+      systemd.user.services.niri-sidebar = {
         Unit = {
-          Description = "Niri Switcher User Service";
+          Description = "Niri-Sidebar User Service";
           After = [ config.variables.graphical.target ];
         };
         Install.WantedBy = [ config.variables.graphical.target ];
         Service = {
           Type = "simple";
           Restart = "on-failure";
-          ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
-          ExecStopPost = "${pkgs.coreutils}/bin/rm -f ${config.variables.homeDir}/.niri-switch.fifo";
+          ExecStart = "${pkgs.niri-sidebar}/bin/niri-sidebar listen";
         };
       };
     }
