@@ -350,6 +350,11 @@ in
       };
     };
 
+    programs.lazygit = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
     home.activation = {
       zshrcActivationAction = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run rm -f ${config.variables.homeDir}/.zshrc.zwc

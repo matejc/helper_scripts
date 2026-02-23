@@ -52,6 +52,10 @@
       STOP_CHARGE_THRESH_BAT1 = 95;
     };
     security.pam.services.quickshell.fprintAuth = true;
+    security.pam.u2f = {
+      enable = true;
+      settings.cue = true;
+    };
 
     # services.envfs.enable = true;
     # services.envfs.extraFallbackPathCommands = ''
