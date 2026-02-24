@@ -36,7 +36,7 @@ let
     # set this equal to peek to disable this feature
     # set this equal to sidebar_width + offset_right to make focused windows "unhide"
     # Optional and defaults to peek if ommitted
-    focus_peek = 50
+    focus_peek = 30
     # Whether the sidebar should follow if you switch workspaces
     sticky = false
 
