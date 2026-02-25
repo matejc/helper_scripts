@@ -99,6 +99,7 @@ in
         exec = "${package}/bin/niri";
         package = osConfig.programs.niri.package;
       };
+      niri-switcher = true;
       vims = {
         #q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
         # neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';

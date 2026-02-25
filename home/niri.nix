@@ -6,6 +6,31 @@
   ...
 }:
 let
+  nirimapConfigFile = pkgs.writeText "nirimap.toml" ''
+    [display]
+    height = 100              # Minimap height in pixels (width is dynamic)
+    max_width_percent = 0.5   # Maximum width as fraction of screen (0.0 - 1.0)
+    anchor = "center"      # Position: top-left, top-center, top-right,
+                              #           bottom-left, bottom-center, bottom-right, center
+    margin_x = 10             # Horizontal margin from edge
+    margin_y = 10             # Vertical margin from edge
+
+    [appearance]
+    background = "#1e1e2e"    # Background color (hex)
+    window_color = "#45475a"  # Default window rectangle color
+    focused_color = "#89b4fa" # Focused window highlight
+    border_color = "#6c7086"  # Window border color
+    border_width = 1          # Window border thickness
+    border_radius = 2         # Corner radius for window rectangles
+    gap = 2                   # Gap between windows (in minimap pixels)
+    background_opacity = 1.0  # Background opacity (0.0 = transparent, 1.0 = opaque)
+
+    [behavior]
+    show_on_overview = false   # Keep visible in Niri overview mode
+    always_visible = false     # Always show minimap (false = only on focus change)
+    hide_timeout_ms = 500    # Milliseconds before hiding after focus change
+  '';
+
   niriSidebarConfigFile = pkgs.writeText "niri-sidebar.toml" ''
     [geometry]
     # Width of the sidebar in pixels
@@ -59,6 +84,8 @@ in
         inputs.niri.overlays.niri
         (final: prev: {
           niri-sidebar = prev.callPackage ../nixes/niri-sidebar.nix { };
+          nirimap = prev.callPackage ../nixes/nirimap.nix { };
+          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.variables.graphical.package;
           };
@@ -84,7 +111,10 @@ in
         xdgOpenUsePortal = true;
       };
 
-      home.file.".config/niri-sidebar/config.toml".source = niriSidebarConfigFile;
+      home.file = {
+        ".config/niri-sidebar/config.toml".source = niriSidebarConfigFile;
+        ".config/nirimap/config.toml" = lib.mkIf (config.variables?nirimap && config.variables.nirimap) { source = nirimapConfigFile; };
+      };
 
       home.packages = with pkgs; [
         config.variables.graphical.package
@@ -412,27 +442,27 @@ in
               // Suggested binds for running programs: terminal, app launcher, screen locker.
               Ctrl+Alt+T { spawn "${config.variables.programs.terminal}"; }
               Ctrl+Alt+H { spawn "${config.variables.programs.filemanager}"; }
-              Super+Space { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher toggle"; }
+              Super+Space { spawn-sh "${noctalia-shell} ipc call launcher toggle"; }
               Ctrl+Alt+L { spawn "${config.variables.lockscreen}"; }
               Super+L { spawn "${config.variables.lockscreen}"; }
-              Ctrl+Alt+Delete { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call sessionMenu toggle"; }
-              Ctrl+Alt+N { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call notifications toggleHistory"; }
+              Ctrl+Alt+Delete { spawn-sh "${noctalia-shell} ipc call sessionMenu toggle"; }
+              Ctrl+Alt+N { spawn-sh "${noctalia-shell} ipc call notifications toggleHistory"; }
 
-              XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume increase"; }
-              XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume decrease"; }
-              XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteOutput"; }
-              Shift+XF86AudioRaiseVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 5%+"; }
-              Shift+XF86AudioLowerVolume { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"; }
-              Shift+XF86AudioMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteInput"; }
-              XF86AudioMicMute allow-when-locked=true { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call volume muteInput"; }
-              XF86MonBrightnessUp { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call brightness increase"; }
-              XF86MonBrightnessDown { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call brightness decrease"; }
-              XF86AudioPlay { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl play-pause"; }
-              XF86AudioNext { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl next"; }
-              XF86AudioPrev { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.playerctl}/bin/playerctl previous"; }
+              XF86AudioRaiseVolume { spawn-sh "${noctalia-shell} ipc call volume increase"; }
+              XF86AudioLowerVolume { spawn-sh "${noctalia-shell} ipc call volume decrease"; }
+              XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteOutput"; }
+              Shift+XF86AudioRaiseVolume { spawn-sh "${pkgs.wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 5%+"; }
+              Shift+XF86AudioLowerVolume { spawn-sh "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"; }
+              Shift+XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteInput"; }
+              XF86AudioMicMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteInput"; }
+              XF86MonBrightnessUp { spawn-sh "${noctalia-shell} ipc call brightness increase"; }
+              XF86MonBrightnessDown { spawn-sh "${noctalia-shell} ipc call brightness decrease"; }
+              XF86AudioPlay { spawn-sh "${pkgs.playerctl}/bin/playerctl play-pause"; }
+              XF86AudioNext { spawn-sh "${pkgs.playerctl}/bin/playerctl next"; }
+              XF86AudioPrev { spawn-sh "${pkgs.playerctl}/bin/playerctl previous"; }
 
               Super+K { close-window; }
-              Super+Shift+K { spawn "${pkgs.stdenv.shell}" "-c" "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
+              Super+Shift+K { spawn-sh "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
 
               Super+Left  { focus-column-left; }
               Super+Down  { focus-window-down; }
@@ -476,8 +506,13 @@ in
               Super+Shift+Ctrl+Up    { move-window-to-monitor-up; }
               Super+Shift+Ctrl+Right { move-window-to-monitor-right; }
 
-              Ctrl+Alt+Up        { focus-workspace-up; }
-              Ctrl+Alt+Down      { focus-workspace-down; }
+              ${if (config.variables?niri-switcher && config.variables.niri-switcher) then ''
+                Ctrl+Alt+Up        { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-up"; }
+                Ctrl+Alt+Down      { spawn "${pkgs.niri-switcher}/bin/niri-switcher" "focus-workspace-down"; }
+              '' else ''
+                Ctrl+Alt+Up        { focus-workspace-up; }
+                Ctrl+Alt+Down      { focus-workspace-down; }
+              ''}
               Ctrl+Alt+Shift+Up   { move-window-to-workspace-up; }
               Ctrl+Alt+Shift+Down { move-window-to-workspace-down; }
 
@@ -523,7 +558,7 @@ in
               Super+Shift+P { spawn "${config.variables.graphical.exec}" "msg" "output" "${(lib.head config.variables.outputs).output}" "off"; }
 
               Ctrl+Alt+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
-              Super+C { spawn "${pkgs.stdenv.shell}" "-c" "${noctalia-shell} ipc call launcher clipboard"; }
+              Super+C { spawn-sh "${noctalia-shell} ipc call launcher clipboard"; }
               Super+Shift+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${config.variables.homeDir}/.cache cliphist wipe"; }
               Ctrl+Alt+R { spawn "bash" "-c" "${pkgs.recordCmd}"; }
               Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head config.variables.outputs).output}"; }
@@ -634,6 +669,30 @@ in
           Type = "simple";
           Restart = "on-failure";
           ExecStart = "${pkgs.niri-sidebar}/bin/niri-sidebar listen";
+        };
+      };
+      systemd.user.services.nirimap = lib.mkIf (config.variables?nirimap && config.variables.nirimap) {
+        Unit = {
+          Description = "Nirimap User Service";
+          After = [ config.variables.graphical.target ];
+        };
+        Install.WantedBy = [ config.variables.graphical.target ];
+        Service = {
+          Type = "simple";
+          Restart = "on-failure";
+          ExecStart = "${pkgs.nirimap}/bin/nirimap";
+        };
+      };
+      systemd.user.services.niri-switcher = lib.mkIf (config.variables?niri-switcher && config.variables.niri-switcher) {
+        Unit = {
+          Description = "Niri-Switcher User Service";
+          After = [ config.variables.graphical.target ];
+        };
+        Install.WantedBy = [ config.variables.graphical.target ];
+        Service = {
+          Type = "simple";
+          Restart = "on-failure";
+          ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
         };
       };
     }
