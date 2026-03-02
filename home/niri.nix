@@ -461,8 +461,12 @@ in
               XF86AudioNext { spawn-sh "${pkgs.playerctl}/bin/playerctl next"; }
               XF86AudioPrev { spawn-sh "${pkgs.playerctl}/bin/playerctl previous"; }
 
-              F12 { spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 --detach kitten run-shell"; }
-              XF86AudioMedia { spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 --detach kitten run-shell"; }
+              F12 {
+                spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
+              }
+              XF86AudioMedia {
+                spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
+              }
 
               Super+K { close-window; }
               Super+Shift+K { spawn-sh "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
@@ -560,12 +564,12 @@ in
               Super+P allow-when-locked=true { spawn "${config.variables.graphical.exec}" "msg" "output" "${(lib.head config.variables.outputs).output}" "on"; }
               Super+Shift+P { spawn "${config.variables.graphical.exec}" "msg" "output" "${(lib.head config.variables.outputs).output}" "off"; }
 
-              Ctrl+Alt+C { spawn "bash" "-c" "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
+              Ctrl+Alt+C { spawn-sh "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
               Super+C { spawn-sh "${noctalia-shell} ipc call launcher clipboard"; }
-              Super+Shift+C { spawn "bash" "-c" "env XDG_CACHE_HOME=${config.variables.homeDir}/.cache cliphist wipe"; }
-              Ctrl+Alt+R { spawn "bash" "-c" "${pkgs.recordCmd}"; }
-              Ctrl+Alt+M { spawn "bash" "-c" "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head config.variables.outputs).output}"; }
-              Ctrl+Alt+Shift+M { spawn "bash" "-c" "${pkgs.procps}/bin/pkill wl-mirror"; }
+              Super+Shift+C { spawn-sh "env XDG_CACHE_HOME=${config.variables.homeDir}/.cache cliphist wipe"; }
+              Ctrl+Alt+R { spawn-sh "${pkgs.recordCmd}"; }
+              Ctrl+Alt+M { spawn-sh "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head config.variables.outputs).output}"; }
+              Ctrl+Alt+Shift+M { spawn-sh "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Super+O repeat=false { toggle-overview; }
               Ctrl+Alt+Space repeat=false { toggle-overview; }
