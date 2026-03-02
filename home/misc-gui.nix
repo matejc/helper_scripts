@@ -197,11 +197,11 @@ in
         let
           adn = rec {
             id = "omdnkjimmikpnlkkcjdfkmfknempnppc";
-            version = "3.27.0";
+            version = "3.28.2";
             crxPath = pkgs.fetchurl {
               url = "https://github.com/dhowe/AdNauseam/releases/download/v${version}/adnauseam-${version}.chromium.crx";
               name = "adnauseam-${version}.chromium.crx";
-              hash = "sha256-5ZaM6PTBkoRhjKozOFyyhk2qlVyRxhgazveRcEAwFco=";
+              hash = "sha256-ddtwXbzC28TO6FI+vGHmWHz9bmH3pOewqP/FGmSw7mI=";
             };
           };
         in
