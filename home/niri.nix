@@ -461,6 +461,9 @@ in
               XF86AudioNext { spawn-sh "${pkgs.playerctl}/bin/playerctl next"; }
               XF86AudioPrev { spawn-sh "${pkgs.playerctl}/bin/playerctl previous"; }
 
+              F12 { spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 --detach kitten run-shell"; }
+              XF86AudioMedia { spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 --detach kitten run-shell"; }
+
               Super+K { close-window; }
               Super+Shift+K { spawn-sh "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }
 
