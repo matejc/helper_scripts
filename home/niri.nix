@@ -567,7 +567,7 @@ in
               Ctrl+Alt+C { spawn-sh "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
               Super+C { spawn-sh "${noctalia-shell} ipc call launcher clipboard"; }
               Super+Shift+C { spawn-sh "env XDG_CACHE_HOME=${config.variables.homeDir}/.cache cliphist wipe"; }
-              Ctrl+Alt+R { spawn-sh "${pkgs.recordCmd}"; }
+              // Ctrl+Alt+R { spawn-sh "${pkgs.recordCmd}"; }
               Ctrl+Alt+M { spawn-sh "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head config.variables.outputs).output}"; }
               Ctrl+Alt+Shift+M { spawn-sh "${pkgs.procps}/bin/pkill wl-mirror"; }
 
