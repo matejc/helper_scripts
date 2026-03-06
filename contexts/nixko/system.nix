@@ -43,9 +43,10 @@
     };
     services.power-profiles-daemon.enable = lib.mkForce false;
     networking.enableIPv6 = false;
-    # virtualisation.docker = {
-    #   enable = true;
-    # };
+    virtualisation.docker.rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
     hardware.enableAllFirmware = true;
     services.tlp.settings = {
       START_CHARGE_THRESH_BAT1 = 90;
