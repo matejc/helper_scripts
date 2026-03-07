@@ -207,11 +207,11 @@ in
         in
         [
           # { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-          # { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
+          { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
           # { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
           { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
           # { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
-          adn
+          # adn
         ];
     };
 

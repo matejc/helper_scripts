@@ -7,13 +7,10 @@
 }:
 {
   config = {
-    systemd.sleep.extraConfig =
-      (lib.optionalString (config.variables ? "hibernate" && config.variables.hibernate) ''
-        AllowHibernation=yes
-      '')
-      + (lib.optionalString (config.variables ? "sleepMode" && config.variables.sleepMode != "") ''
-        MemorySleepMode=${config.variables.sleepMode}
-      '');
+    systemd.sleep.settings.Sleep = {
+      AllowHibernation = lib.mkIf (config.variables ? "hibernate" && config.variables.hibernate) "yes";
+      MemorySleepMode = lib.mkIf (config.variables ? "sleepMode" && config.variables.sleepMode != "") config.variables.sleepMode;
+    };
 
     services.logind.settings.Login = {
       KillUserProcesses = true;

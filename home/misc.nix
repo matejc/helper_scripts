@@ -69,7 +69,6 @@ in
         graftcp = pkgs.callPackage ../nixes/graftcp.nix { };
         nix-index =
           inputs.nix-index-database.packages.${pkgs.stdenv.hostPlatform.system}.nix-index-with-db; # for nixmy
-        quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default;
         sleepCmd = sleepCmd;
         tempstatus_all = tempstatus_all;
         searxngr = pkgs.callPackage ../nixes/searxngr.nix { };
