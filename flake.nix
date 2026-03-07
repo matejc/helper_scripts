@@ -152,10 +152,6 @@
                   ./nixos/minimal-configuration.nix
                 ];
               }).config.system.build.toplevel;
-            home =
-              (homeBuild {
-                context = "matej70";
-              }).activationPackage;
           };
         matej80 =
           { ... }:
@@ -167,10 +163,6 @@
                   ./nixos/minimal-configuration.nix
                 ];
               }).config.system.build.toplevel;
-            home =
-              (homeBuild {
-                context = "matej80";
-              }).activationPackage;
           };
         nixko =
           { ... }:
@@ -182,10 +174,6 @@
                   ./nixos/minimal-configuration.nix
                 ];
               }).config.system.build.toplevel;
-            home =
-              (homeBuild {
-                context = "nixko";
-              }).activationPackage;
             home-minimal =
               (homeBuild {
                 context = "nixko-minimal";
