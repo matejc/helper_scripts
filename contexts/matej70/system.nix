@@ -116,8 +116,14 @@
       rules.autoconnect = [{
         application = "Chromium input";
         binary = "electron";
-        sinks = [ "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo" "alsa_output.pci-0000_00_1f.3.analog-stereo" ];
-        sources = [ "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback" "alsa_input.usb-046d_HD_Webcam_C525_7DDD8F80-00.mono-fallback" ];
+        sinks = [
+          "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
+          "alsa_output.pci-0000_00_1f.3.analog-stereo"
+        ];
+        sources = [
+          "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback"
+          "alsa_input.usb-046d_HD_Webcam_C525_7DDD8F80-00.mono-fallback"
+        ];
       }];
     };
   };

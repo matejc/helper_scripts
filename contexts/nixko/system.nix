@@ -15,6 +15,7 @@
     ../../nixos/modules/niri.nix
     ../../nixos/modules/physical.nix
     ../../nixos/modules/home-manager.nix
+    ../../nixos/modules/wireplumber.nix
   ];
 
   config = {
@@ -22,7 +23,7 @@
 
     environment.systemPackages = with pkgs; [
       sbctl
-      python312Packages.python
+      python3Packages.python
     ];
 
     # Lanzaboote currently replaces the systemd-boot module.
@@ -106,5 +107,20 @@
     #   dockerSocket.enable = true;
     #   dockerCompat = true;
     # };
+
+    programs.wireplumber = {
+      enable = true;
+      rules.autoconnect = [{
+        application = "Chromium.*|Firefox";
+        sinks = [
+          "alsa_output.usb-0b0e_Jabra_Speak_710_50C275E0324E-00.analog-stereo"
+          "alsa_output.pci-0000_c1_00.6.analog-stereo"
+        ];
+        sources = [
+          "alsa_input.usb-0b0e_Jabra_Speak_710_08C8C2390BC2-00.mono-fallback"
+          "alsa_input.pci-0000_c1_00.6.analog-stereo"
+        ];
+      }];
+    };
   };
 }

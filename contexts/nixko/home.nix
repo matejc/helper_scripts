@@ -162,8 +162,7 @@ in
       unzip
       stdenv.cc
       gnumake
-      # asdf-vm
-      python312Packages.python
+      # python312Packages.python
       devenv
       tmux
       kitty
@@ -175,6 +174,7 @@ in
       podman-compose
       docker-compose
       aider-chat-with-playwright
+      remmina
     ];
     programs.direnv = {
       enable = true;

@@ -10,7 +10,7 @@ let
       matches = {
         "application.name" = value.application;
         "media.class" = "Audio/${if value?sink then "Sink" else "Source"}";
-      } // (lib.optionalAttrs (value.binary != null) { "application.process.binary" = value.binary; });
+      } // (lib.optionalAttrs (value.binary != "") { "application.process.binary" = value.binary; });
       actions.apply_properties = {
         "node.dont-fallback" = false;
         "node.autoconnect" = true;
@@ -20,8 +20,8 @@ let
     };
 
   splitByApp = i: attrSet: [] ++
-    (lib.optionals (attrSet?sinks) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; sink = v; priority = i+j+100; }) attrSet.sinks)) ++
-    (lib.optionals (attrSet?sources) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; source = v; priority = i+j+500; }) attrSet.sources));
+    (lib.optionals (attrSet?sinks) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; sink = v; priority = (i*10)+j; }) attrSet.sinks)) ++
+    (lib.optionals (attrSet?sources) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; source = v; priority = (i*10)+j; }) attrSet.sources));
 
   autoconnectRules = lib.flatten (lib.imap0 splitByApp cfg.rules.autoconnect);
 in
@@ -39,15 +39,17 @@ in
           binary = lib.mkOption {
             type = lib.types.str;
             description = "Application binary";
-            default = null;
+            default = "";
           };
           sinks = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             description = "node.name of sinks by priority";
+            default = [];
           };
           sources = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             description = "node.name of sources by priority";
+            default = [];
           };
         };
       });
