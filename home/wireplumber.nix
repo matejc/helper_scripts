@@ -1,4 +1,5 @@
 {
+  pkgs,
   lib,
   config,
   ...
@@ -6,24 +7,29 @@
 let
   cfg = config.programs.wireplumber;
   mkAutoconnectRule = value:
+  let
+    nodeName = if value?sink then value.sink else value.source;
+    mediaClass = if value?sink then "Stream/Output/Audio" else "Stream/Input/Audio";
+  in
     {
       matches = {
+        "node.name" = nodeName;
         "application.name" = value.application;
-        "media.class" = "Audio/${if value?sink then "Sink" else "Source"}";
+        "media.class" = mediaClass;
       } // (lib.optionalAttrs (value.binary != "") { "application.process.binary" = value.binary; });
-      actions.apply_properties = {
-        "node.dont-fallback" = false;
+      apply_properties = {
+        "node.dont-fallback" = true;
         "node.autoconnect" = true;
-        "target.node" = if value?sink then value.sink else value.source;
+        "priority.session" = value.priority;
+        "target.node" = nodeName;
       };
-      inherit (value) priority;
     };
 
   splitByApp = i: attrSet: [] ++
-    (lib.optionals (attrSet?sinks) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; sink = v; priority = (i*10)+j; }) attrSet.sinks)) ++
-    (lib.optionals (attrSet?sources) (lib.imap0 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; source = v; priority = (i*10)+j; }) attrSet.sources));
+    (lib.optionals (attrSet?sinks) (lib.imap1 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; sink = v; priority = (i*10)+j; }) (lib.reverseList attrSet.sinks))) ++
+    (lib.optionals (attrSet?sources) (lib.imap1 (j: v: mkAutoconnectRule { application = attrSet.application; binary = attrSet.binary; source = v; priority = (i*10)+j; }) (lib.reverseList attrSet.sources)));
 
-  autoconnectRules = lib.flatten (lib.imap0 splitByApp cfg.rules.autoconnect);
+  autoconnectRules = lib.reverseList (lib.flatten (lib.imap1 splitByApp cfg.rules.autoconnect));
 in
 {
   options.programs.wireplumber = {
@@ -57,6 +63,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    services.pipewire.wireplumber.extraConfig."10-autoconnect".rules = autoconnectRules;
+    xdg.configFile."wireplumber/wireplumber.conf.d/10-autoconnect.lua" = {
+      source = (pkgs.formats.lua {}).generate "10-autoconnect.lua" { "rules" = autoconnectRules; };
+      onChange = "${pkgs.systemd}/bin/systemctl --user restart wireplumber";
+    };
   };
 }

@@ -30,6 +30,7 @@ in
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix
     ../../home/niri.nix
+    ../../home/wireplumber.nix
   ];
 
   config = {
@@ -243,5 +244,22 @@ in
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;
+
+    programs.wireplumber = {
+      enable = true;
+      rules.autoconnect = [
+        {
+          application = "Chromium.*|Firefox";
+          sinks = [
+            "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
+            "alsa_output.pci-0000_00_1f.3.analog-stereo"
+          ];
+          sources = [
+            "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback"
+            "alsa_input.usb-046d_HD_Webcam_C525_7DDD8F80-00.mono-fallback"
+          ];
+        }
+      ];
+    };
   };
 }
