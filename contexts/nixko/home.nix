@@ -22,7 +22,7 @@ in
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix
     ../../home/niri.nix
-    ../../home/wireplumber.nix
+    ../../home/wireplumber
   ];
 
   config = {
@@ -195,7 +195,7 @@ in
     programs.wireplumber = {
       enable = true;
       rules.autoconnect = [{
-        application = "Chromium.*|Firefox";
+        application = "/.*/";
         sinks = [
           "alsa_output.usb-0b0e_Jabra_Speak_710_50C275E0324E-00.analog-stereo"
           "alsa_output.pci-0000_c1_00.6.analog-stereo"

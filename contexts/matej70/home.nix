@@ -30,7 +30,7 @@ in
     ../../home/nixmy.nix
     ../../home/nix-index-database.nix
     ../../home/niri.nix
-    ../../home/wireplumber.nix
+    ../../home/wireplumber
   ];
 
   config = {
@@ -249,7 +249,7 @@ in
       enable = true;
       rules.autoconnect = [
         {
-          application = "Chromium.*|Firefox";
+          application = "/.*/";
           sinks = [
             "bluez_output.20:74:CF:68:C4:4C"  # aftershockz
             "bluez_output.68:D6:ED:B9:AB:74"  # TWS
