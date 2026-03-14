@@ -39,7 +39,6 @@ let
         rust-analyzer.binary.path = "${pkgs.rust-analyzer}/bin/rust-analyzer";
       };
       disable_ai = true;
-      collaboration_panel.button = false;
 
       node = {
         path = lib.getExe pkgs.nodejs;
@@ -78,6 +77,13 @@ let
           alt = true;
         };
       };
+
+      title_bar.show_sign_in = false;
+      git_panel.button = false;
+      outline_panel.button = false;
+      collaboration_panel.button = false;
+
+      restore_on_startup = "last_session";
     }
   );
 in
@@ -97,6 +103,8 @@ in
             ctrl-j = "outline::Toggle";
             alt-left = "pane::GoBack";
             alt-right = "pane::GoForward";
+            ctrl-shift-w = "pane::ReopenClosedItem";
+            ctrl-w = [ "pane::CloseActiveItem" { "close_pinned" = false; } ];
           };
         }
         {

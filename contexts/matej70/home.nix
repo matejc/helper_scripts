@@ -247,21 +247,19 @@ in
 
     programs.wireplumber = {
       enable = true;
-      rules.autoconnect = [
-        {
-          application = "/.*/";
-          sinks = [
-            "bluez_output.20:74:CF:68:C4:4C"  # aftershockz
-            "bluez_output.68:D6:ED:B9:AB:74"  # TWS
-            "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
-            "alsa_output.pci-0000_00_1f.3.analog-stereo"
-          ];
-          sources = [
-            "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback"
-            "alsa_input.usb-046d_HD_Webcam_C525_7DDD8F80-00.mono-fallback"
-          ];
-        }
-      ];
+      autoconnect.rules = [{
+        match = [ { application = "Firefox"; } { application = "/Chromium.*/"; } ];
+        sinks = [
+          "bluez_output.20:74:CF:68:C4:4C"  # aftershockz
+          "bluez_output.68:D6:ED:B9:AB:74"  # TWS
+          "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
+          "alsa_output.pci-0000_00_1f.3.analog-stereo"
+        ];
+        sources = [
+          "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback"
+          "alsa_input.usb-046d_HD_Webcam_C525_7DDD8F80-00.mono-fallback"
+        ];
+      }];
     };
   };
 }
