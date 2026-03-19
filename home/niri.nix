@@ -322,7 +322,8 @@ in
                   // Proportion sets the width as a fraction of the output width, taking gaps into account.
                   // For example, you can perfectly fit four windows sized "proportion 0.25" on an output.
                   // The default preset widths are 1/3, 1/2 and 2/3 of the output.
-                  proportion 0.5
+                  proportion 0.3332
+                  proportion 0.6667
                   proportion 1.0
 
                   // Fixed sets the width in logical pixels exactly.
@@ -538,12 +539,12 @@ in
               // * adjust width as a percentage of screen width: "-10%" or "+10%"
               // Pixel sizes use logical, or scaled, pixels. I.e. on an output with scale 2.0,
               // set-column-width "100" will make the column occupy 200 physical screen pixels.
-              Super+Minus { set-column-width "-25%"; }
-              Super+Equal { set-column-width "+25%"; }
+              Super+Minus { set-column-width "-10%"; }
+              Super+Equal { set-column-width "+10%"; }
 
               // Finer height adjustments when in column with other windows.
-              Super+Ctrl+Minus { set-window-height "-25%"; }
-              Super+Ctrl+Equal { set-window-height "+25%"; }
+              Super+Ctrl+Minus { set-window-height "-10%"; }
+              Super+Ctrl+Equal { set-window-height "+10%"; }
 
               // Actions to switch layouts.
               // Note: if you uncomment these, make sure you do NOT have

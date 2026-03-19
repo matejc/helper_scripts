@@ -139,19 +139,6 @@ end
 local function connect_stream(stream, node, source)
     print(node.properties["node.name"], " -> ", stream.properties["node.name"])
 
-    -- Set target.node metadata FIRST so WirePlumber's default policy
-    -- does not try to link this stream to a different node
-    local metadata_om = source:call("get-object-manager", "metadata")
-    local metadata = metadata_om:lookup {
-        Constraint { "metadata.name", "=", "default" }
-    }
-    if metadata then
-        metadata:set(stream["bound-id"], "target.node", "Spa:Id", tostring(node["bound-id"]))
-        metadata:set(stream["bound-id"], "node.dont-reconnect", "Spa:Bool", "true")
-    else
-        print("WARNING: could not find default metadata object")
-    end
-
     local si_om = source:call("get-object-manager", "session-item")
     local si_node = find_si_for_node(si_om, node)
     local si_stream = find_si_for_node(si_om, stream)

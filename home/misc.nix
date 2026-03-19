@@ -371,6 +371,7 @@ in
         theme = "Monokai Remastered";
         background-opacity = 0.95;
         font-family = config.variables.font.family;
+        font-size = config.variables.font.size;
         keybind = [
           "global:F12=toggle_quick_terminal"
           "global:ctrl+alt+enter=toggle_quick_terminal"

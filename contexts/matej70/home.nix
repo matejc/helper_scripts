@@ -99,13 +99,13 @@ in
       font = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Bold";
-        size = 10.0;
+        size = 10.5;
       };
       term = null;
       programs = {
         filemanager = "${pkgs.nemo-with-extensions}/bin/nemo";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${config.programs.ghostty.package}/bin/ghostty";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
@@ -244,11 +244,12 @@ in
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;
+    programs.ghostty.enable = true;
 
     programs.wireplumber = {
       enable = true;
       autoconnect.rules = [{
-        match = [ { application = "Firefox"; } { application = "/Chromium.*/"; } ];
+        match = [ { application = "Firefox"; } { application = "Chromium input"; } ];
         sinks = [
           "bluez_output.20:74:CF:68:C4:4C"  # aftershockz
           "bluez_output.68:D6:ED:B9:AB:74"  # TWS

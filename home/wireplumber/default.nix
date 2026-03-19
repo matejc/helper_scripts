@@ -25,25 +25,6 @@ let
     }
   '';
 
-  defaultConfFile = builtins.toFile "9-default.conf" ''
-    wireplumber.components = [
-      {
-        name = "9-default.lua", type = script/lua
-        provides = default
-        arguments = {
-          sinks = ${builtins.toJSON cfg.default.sinks}
-          sources = ${builtins.toJSON cfg.default.sources}
-        }
-      }
-    ]
-
-    wireplumber.profiles = {
-      main = {
-        default = required
-      }
-    }
-  '';
-
   mkAutoconnectRule = value:
   let
     nodeName = if value?sink then value.sink else value.source;
@@ -65,7 +46,6 @@ let
   autoconnectRules = lib.flatten (map splitByApp cfg.autoconnect.rules);
 
   autoconnectEnable = cfg.autoconnect.rules != [];
-  defaultEnable = cfg.default.sinks != [] || cfg.default.sources != [];
 in
 {
   options.programs.wireplumber = {
@@ -107,18 +87,6 @@ in
         });
       };
     };
-    default = {
-      sinks = lib.mkOption {
-        description = "Default sink rules";
-        type = lib.types.listOf lib.types.str;
-        default = [];
-      };
-      sources = lib.mkOption {
-        description = "Default source rules";
-        type = lib.types.listOf lib.types.str;
-        default = [];
-      };
-    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -128,15 +96,6 @@ in
     };
     xdg.dataFile."wireplumber/scripts/10-autoconnect.lua" = lib.mkIf autoconnectEnable {
       source = ./10-autoconnect.lua;
-      onChange = "${pkgs.systemd}/bin/systemctl --user restart wireplumber";
-    };
-
-    xdg.configFile."wireplumber/wireplumber.conf.d/9-default.conf" = lib.mkIf defaultEnable {
-      source = defaultConfFile;
-      onChange = "${pkgs.systemd}/bin/systemctl --user restart wireplumber";
-    };
-    xdg.dataFile."wireplumber/scripts/9-default.lua" = lib.mkIf defaultEnable {
-      source = ./9-default.lua;
       onChange = "${pkgs.systemd}/bin/systemctl --user restart wireplumber";
     };
   };
