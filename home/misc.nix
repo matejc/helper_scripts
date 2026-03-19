@@ -376,7 +376,16 @@ in
           "global:ctrl+alt+enter=toggle_quick_terminal"
           "ctrl+shift+page_down=move_tab:1"
           "ctrl+shift+page_up=move_tab:-1"
+          "ctrl+shift+arrow_up=goto_split:up"
+          "ctrl+shift+page_up=new_split:up"
+          "ctrl+shift+arrow_down=goto_split:down"
+          "ctrl+shift+page_down=new_split:down"
+          "ctrl+shift+arrow_left=goto_split:left"
+          "ctrl+shift+home=new_split:left"
+          "ctrl+shift+arrow_right=goto_split:right"
+          "ctrl+shift+end=new_split:right"
         ];
+        focus-follows-mouse = true;
         quick-terminal-position = "top";
         quick-terminal-size = "75%";
         quick-terminal-autohide = true;
