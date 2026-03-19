@@ -461,12 +461,12 @@ in
               XF86AudioNext { spawn-sh "${pkgs.playerctl}/bin/playerctl next"; }
               XF86AudioPrev { spawn-sh "${pkgs.playerctl}/bin/playerctl previous"; }
 
-              F12 {
-                spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
-              }
-              XF86AudioMedia {
-                spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
-              }
+              // F12 {
+              //   spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
+              // }
+              // XF86AudioMedia {
+              //   spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
+              // }
 
               Super+K { close-window; }
               Super+Shift+K { spawn-sh "${pkgs.coreutils}/bin/kill -9 $(niri msg -j focused-window | jq -r \".pid\")"; }

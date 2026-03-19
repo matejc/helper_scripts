@@ -84,7 +84,7 @@ in
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${config.programs.ghostty.package}/bin/ghostty";
         browser = "${variables.profileDir}/bin/firefox";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
@@ -190,9 +190,10 @@ in
     home.sessionVariables = {
       SSH_ASKPASS = "${pkgs.seahorse}/libexec/seahorse/ssh-askpass";
     };
+    programs.ghostty.enable = true;
 
     programs.wireplumber = {
-      enable = true;
+      enable = false;
       autoconnect.rules = [{
         match = [ { application = "Firefox"; } { application = "/Chromium.*/"; } ];
         sinks = [

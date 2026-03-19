@@ -365,5 +365,21 @@ in
       );
     };
 
+    programs.ghostty = {
+      enableZshIntegration = true;
+      settings = {
+        theme = "Monokai Remastered";
+        background-opacity = 0.95;
+        font-family = config.variables.font.family;
+        keybind = [
+          "global:F12=toggle_quick_terminal"
+          "global:ctrl+alt+enter=toggle_quick_terminal"
+        ];
+        quick-terminal-position = "top";
+        quick-terminal-size = "75%";
+        quick-terminal-autohide = true;
+        quick-terminal-screen = "mouse";
+      };
+    };
   };
 }
