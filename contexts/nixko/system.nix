@@ -15,7 +15,6 @@
     ../../nixos/modules/niri.nix
     ../../nixos/modules/physical.nix
     ../../nixos/modules/home-manager.nix
-    ../../nixos/modules/wireplumber.nix
   ];
 
   config = {

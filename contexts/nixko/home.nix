@@ -167,7 +167,6 @@ in
       devenv
       tmux
       kitty
-      neovim-qt
       quickemu
       spice-gtk
       sshfs
@@ -197,10 +196,12 @@ in
       autoconnect.rules = [{
         match = [ { application = "Firefox"; } { application = "/Chromium.*/"; } ];
         sinks = [
+          "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
           "alsa_output.usb-0b0e_Jabra_Speak_710_50C275E0324E-00.analog-stereo"
           "alsa_output.pci-0000_c1_00.6.analog-stereo"
         ];
         sources = [
+          "alsa_input.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.mono-fallback"
           "alsa_input.usb-0b0e_Jabra_Speak_710_08C8C2390BC2-00.mono-fallback"
           "alsa_input.pci-0000_c1_00.6.analog-stereo"
         ];
