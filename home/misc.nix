@@ -374,11 +374,14 @@ in
         keybind = [
           "global:F12=toggle_quick_terminal"
           "global:ctrl+alt+enter=toggle_quick_terminal"
+          "ctrl+shift+page_down=move_tab:1"
+          "ctrl+shift+page_up=move_tab:-1"
         ];
         quick-terminal-position = "top";
         quick-terminal-size = "75%";
         quick-terminal-autohide = true;
         quick-terminal-screen = "mouse";
+        shell-integration-features = "sudo,ssh-env,title";
       };
     };
   };
