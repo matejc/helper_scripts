@@ -56,6 +56,7 @@ in
       ../../dotfiles/caprine.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/gravatar.nix
+      ../../dotfiles/opencode.nix
     ];
 
     variables = {
@@ -241,6 +242,7 @@ in
       quickemu
       creality-print
       airscan
+      opencode
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;

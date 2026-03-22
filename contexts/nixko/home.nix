@@ -45,6 +45,7 @@ in
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
       ../../dotfiles/gravatar.nix
+      ../../dotfiles/opencode.nix
     ];
     variables = {
       homeDir = "/home/${variables.user}";
@@ -175,6 +176,7 @@ in
       docker-compose
       aider-chat-with-playwright
       remmina
+      opencode
     ];
     programs.direnv = {
       enable = true;
