@@ -406,11 +406,11 @@
     "nixmy": {
       "flake": false,
       "locked": {
-        "lastModified": 1770563626,
-        "narHash": "sha256-2hvQZAV4GpfYglHww60U6B/x7KWrzVXLryWsLVNxfbw=",
+        "lastModified": 1774633880,
+        "narHash": "sha256-Y5NR6E2b+Sf4kO7o9lvXgofI6prNtXtheaiJsFFxEYM=",
         "owner": "matejc",
         "repo": "nixmy",
-        "rev": "8d822490a8e7bc088f6a4df177871e1a61351fa7",
+        "rev": "0d4ff6c30610042aa983f4502bd41cc9e71b02fc",
         "type": "github"
       },
       "original": {
