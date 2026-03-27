@@ -251,12 +251,13 @@ in
     programs.wireplumber = {
       enable = true;
       autoconnect.rules = [{
-        match = [ { application = "Firefox"; } { application = "Chromium input"; } ];
+        match = [ { application = "Firefox"; } { application = "Chromium input"; } { application = "ringrtc"; } ];
         sinks = [
           "bluez_output.20:74:CF:68:C4:4C"  # aftershockz
           "bluez_output.68:D6:ED:B9:AB:74"  # TWS
           "alsa_output.usb-Harman_International_Inc_JBL_Quantum_TWS_0000000000000000-00.analog-stereo"
           "alsa_output.pci-0000_00_1f.3.analog-stereo"
+          "alsa_output.pci-0000_09_00.0.analog-stereo"
         ];
         sources = [
           "alsa_input.usb-Jieli_Technology_USB_Composite_Device_4250323032373602-00.mono-fallback"
