@@ -181,7 +181,7 @@ in
         package = pkgs.vanilla-dmz;
         size = 16;
       };
-      gtk4.theme = null;
+      gtk4.theme = config.gtk.theme;
     };
 
     qt = {
