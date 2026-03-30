@@ -106,5 +106,12 @@
     #   dockerSocket.enable = true;
     #   dockerCompat = true;
     # };
+    services.udev.packages = [
+      (pkgs.writeTextFile {
+        name = "ppp-udev-rules";
+        text = ''KERNEL=="ppp*", MODE="0660", GROUP="matejc"'';
+        destination = "/etc/udev/rules.d/70-ppp.rules";
+      })
+    ];
   };
 }

@@ -140,6 +140,7 @@ in
       tmux
       kitty
       nmap
+      nil nixd
     ];
     programs.direnv = {
       enable = true;
