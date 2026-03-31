@@ -177,6 +177,7 @@ in
       aider-chat-with-playwright
       remmina
       opencode
+      t3code
     ];
     programs.direnv = {
       enable = true;

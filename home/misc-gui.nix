@@ -96,6 +96,7 @@ in
         creality-print = pkgs.callPackage ../nixes/creality-print.nix { };
         configure-gtk = configure-gtk;
         recordCmd = recordCmd;
+        t3code = pkgs.callPackage ../nixes/t3code.nix { };
       })
     ];
     home.file = {
