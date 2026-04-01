@@ -15,7 +15,6 @@ in
     inherit pname version src;
     extraInstallCommands = ''
       install -Dm444 ${appimageContents}/t3-code-desktop.desktop $out/share/applications/t3-code-desktop.desktop
-      cat $out/share/applications/t3-code-desktop.desktop
       substituteInPlace $out/share/applications/t3-code-desktop.desktop \
         --replace-fail 'Exec=AppRun --no-sandbox %U' "Exec=$out/bin/t3code %U"
 
