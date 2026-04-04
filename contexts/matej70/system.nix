@@ -110,5 +110,15 @@
     services.printing.enable = true;
     services.avahi.enable = true;
     hardware.keyboard.qmk.enable = true;
+
+    programs.obs-studio = {
+      enable = true;
+      enableVirtualCamera = true;
+      plugins = [
+        pkgs.obs-studio-plugins.wlrobs
+        pkgs.obs-studio-plugins.obs-vkcapture
+        pkgs.obs-studio-plugins.obs-vaapi
+      ];
+    };
   };
 }

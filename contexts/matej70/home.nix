@@ -205,13 +205,6 @@ in
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;
     services.syncthing.enable = true;
-    programs.obs-studio = {
-      enable = true;
-      plugins = [
-        pkgs.obs-studio-plugins.wlrobs
-        pkgs.obs-studio-plugins.obs-vkcapture
-      ];
-    };
     home.packages = [
       inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
     ]
