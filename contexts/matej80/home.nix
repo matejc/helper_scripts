@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  osConfig,
   config,
   inputs,
   defaultUser,
@@ -105,12 +106,13 @@ in
       shell = "${variables.profileDir}/bin/zsh";
       shellRc = "${variables.homeDir}/.zshrc";
       sway.enable = false;
-      graphical = {
+      graphical = rec {
         name = "niri";
         logout = "${variables.graphical.exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
-        exec = "${config.programs.niri.package}/bin/niri";
+        exec = "${package}/bin/niri";
+        package = osConfig.programs.niri.package;
       };
       vims = {
         #q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
