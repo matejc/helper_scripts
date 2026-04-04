@@ -634,7 +634,7 @@ in
         };
       };
       services.swayidle = {
-        systemdTarget = config.variables.graphical.target;
+        systemdTargets = [ config.variables.graphical.target ];
         events = {
           "before-sleep" = "${config.variables.lockscreen}";
           "after-resume" = "${config.variables.lockscreen}";

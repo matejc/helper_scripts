@@ -174,7 +174,6 @@ in
       docker
       podman-compose
       docker-compose
-      aider-chat-with-playwright
       remmina
       opencode
       t3code

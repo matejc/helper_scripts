@@ -242,7 +242,7 @@ in
     programs.ghostty.enable = true;
 
     programs.wireplumber = {
-      enable = true;
+      enable = false;
       autoconnect.rules = [{
         match = [ { application = "Firefox"; } { application = "Chromium input"; } { application = "ringrtc"; } ];
         sinks = [
