@@ -10,7 +10,7 @@
 
 set -e
 
-SW_FIFO="$HOME/.niri-switch.fifo"
+SW_FIFO="/run/user/$(id -u)/niri-switcher/fifo"
 
 cleanup() {
   rm -f "$SW_FIFO"

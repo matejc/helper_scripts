@@ -701,6 +701,7 @@ in
           Type = "simple";
           Restart = "on-failure";
           ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
+          RuntimeDirectory = "niri-switcher";
         };
       };
     }
