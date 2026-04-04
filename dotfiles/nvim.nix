@@ -80,7 +80,7 @@ let
     bashls = ''
       setup_lsp("bashls", {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.bash-language-server}/bin/bash-language-server", "start"};
+        cmd = {"${pkgs.bash-language-server}/bin/bash-language-server", "start"};
         capabilities = capabilities;
       })
     '';
@@ -116,21 +116,21 @@ let
     ts_ls = ''
       setup_lsp("ts_ls", {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.typescript-language-server}/bin/typescript-language-server", "--stdio"};
+        cmd = {"${pkgs.typescript-language-server}/bin/typescript-language-server", "--stdio"};
         capabilities = capabilities;
       })
     '';
     jsonls = ''
       nvim_lsp["jsonls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-json-language-server", "--stdio"};
+        cmd = {"${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
     vimls = ''
       nvim_lsp["vimls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vim-language-server}/bin/vim-language-server", "--stdio"};
+        cmd = {"${pkgs.vim-language-server}/bin/vim-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
@@ -144,14 +144,14 @@ let
     html = ''
       nvim_lsp["html"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-html-language-server", "--stdio"};
+        cmd = {"${pkgs.vscode-langservers-extracted}/bin/vscode-html-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';
     cssls = ''
       nvim_lsp["cssls"].setup {
         on_attach = on_attach;
-        cmd = {"${pkgs.nodePackages.vscode-langservers-extracted}/bin/vscode-css-language-server", "--stdio"};
+        cmd = {"${pkgs.vscode-langservers-extracted}/bin/vscode-css-language-server", "--stdio"};
         capabilities = capabilities;
       }
     '';

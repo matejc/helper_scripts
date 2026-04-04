@@ -24,7 +24,7 @@ let
 
   json-languageserver = pkgs.writeScriptBin "vscode-json-language-server" ''
     #!${pkgs.stdenv.shell}
-    exec ${pkgs.nodePackages_latest.vscode-langservers-extracted}/bin/vscode-json-language-server $@
+    exec ${pkgs.vscode-langservers-extracted}/bin/vscode-json-language-server $@
   '';
 
   path = with pkgs; lib.makeBinPath [
@@ -71,7 +71,7 @@ in
     command = "${pkgs.lemminx}/bin/lemminx"
 
     [language-server.typescript-language-server]
-    config = { tsserver = { path = "${pkgs.nodePackages_latest.typescript}/bin/tsserver" } }
+    config = { tsserver = { path = "${pkgs.typescript}/bin/tsserver" } }
 
     [language-server.pylsp]
     config = { pylsp = { configurationSources = ["pycodestyle", "flake8"], plugins = { pycodestyle = { enabled = true }, flake8 = { enabled = true, executable = "${pkgs.python3Packages.flake8}/bin/flake8" } } } }
