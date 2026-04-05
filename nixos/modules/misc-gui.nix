@@ -4,13 +4,21 @@
   config,
   ...
 }:
+let
+  graphicalSessionScript = pkgs.writeScript "graphical-session.sh" ''
+    ${config.variables.graphicalSessionCmd}
+    graphicalSessionPID=$!
+    wait $graphicalSessionPID
+    loginctl terminate-user $USER
+  '';
+in
 {
   config = {
     services.greetd = {
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${config.variables.graphicalSessionCmd}";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${graphicalSessionScript}";
           user = "greeter";
         };
         terminal.vt = lib.mkForce 2;
