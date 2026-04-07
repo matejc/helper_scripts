@@ -20,7 +20,7 @@
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto-x86_64-v3;
+    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     services.scx.enable = true;
     services.scx.scheduler = "scx_bpfland";
     services.scx.extraArgs = [
