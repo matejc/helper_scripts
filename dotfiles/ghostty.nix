@@ -1,6 +1,6 @@
 { variables, config, pkgs, lib }:
 {
-  target = "${variables.homeDir}/.config/ghostty/config";
+  target = "${variables.homeDir}/.config/ghostty/config.ghostty";
   source = pkgs.writeScript "ghostty.config" ''
     theme = Monokai Soda
     font-family = ${variables.font.family}

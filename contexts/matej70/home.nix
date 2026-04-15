@@ -57,6 +57,7 @@ in
       ../../dotfiles/tmux.nix
       ../../dotfiles/gravatar.nix
       ../../dotfiles/opencode.nix
+      ../../dotfiles/ghostty.nix
     ];
 
     variables = {
