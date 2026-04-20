@@ -4,6 +4,15 @@
   pkgs,
   lib,
 }:
+let
+  historySh = pkgs.writeShellScript "tmux-history.sh" ''
+    export LANG=C.UTF-8
+    export LC_ALL=C.UTF-8
+    f="$(mktemp)"
+    tmux capture-pane -e -J -p -S - -t ! > "$f"
+    less -R "$f"; rm -f "$f"
+  '';
+in
 [
   {
     target = "${variables.homeDir}/.tmux.conf";
@@ -78,6 +87,8 @@
 
       set -g history-limit 100000
 
+      bind-key h new-window -a -n history "${historySh}"
+
       set-option -s set-clipboard on
 
       #set-option -s set-clipboard off
@@ -91,7 +102,11 @@
       set -g set-titles on
       set -g set-titles-string "#{session_name}:#(echo \"#{pane_current_path}\" | rev | cut -d'/' -f-2 | rev): #{pane_current_command}"
 
-      set-option -g renumber-windows on
+      set -g base-index 1
+      setw -g pane-base-index 1
+      set -g renumber-windows on
+      bind-key c new-window -a
+
       setw -g aggressive-resize on
 
       source-file "${variables.homeDir}/.tmuxtheme"
