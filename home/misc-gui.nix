@@ -218,6 +218,7 @@ in
     };
 
     programs.firefox = {
+      configPath = "${config.home.homeDirectory}/.mozilla/firefox";
       profiles = {
         default = {
           extensions.packages = with nur.repos.rycee.firefox-addons; [
