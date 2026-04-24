@@ -3,12 +3,12 @@
 }:
 let
   pname = "CrealityPrint";
-  version = "7.0.1";
-  buildVersion = "4212";
+  version = "7.1.0";
+  buildVersion = "4414";
 
   src = pkgs.fetchurl {
     url = "https://github.com/CrealityOfficial/CrealityPrint/releases/download/v${version}/CrealityPrint_Ubuntu2404-V${version}.${buildVersion}-x86_64-Release.AppImage";
-    sha256 = "sha256-M+umhMXFypw1+sjTPq1tr1WXqWBSFpLD3DsaRd5e14I=";
+    sha256 = "sha256-AQG1V4smqBEHyyDOINJkd5uVuNYw4ELQ9tNjOuN/7Y8=";
   };
 in
 pkgs.stdenv.mkDerivation {
