@@ -8,6 +8,9 @@
     background-opacity = 0.95
     window-decoration = false
     cursor-invert-fg-bg = true
+    working-directory = home
+    window-inherit-working-directory = false
+    tab-inherit-working-directory = true
     keybind = ctrl+shift+page_down=move_tab:+1
     keybind = ctrl+shift+page_up=move_tab:-1
     keybind = alt+k>up=new_split:up

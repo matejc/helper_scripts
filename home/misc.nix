@@ -72,6 +72,8 @@ in
         sleepCmd = sleepCmd;
         tempstatus_all = tempstatus_all;
         searxngr = pkgs.callPackage ../nixes/searxngr.nix { };
+        quickemu =
+          inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.quickemu;
       })
     ];
     nixpkgs.config = import ../dotfiles/nixpkgs-config.nix;

@@ -1,9 +1,7 @@
 {
   pkgs,
-  lib,
   config,
   defaultUser,
-  inputs,
   ...
 }:
 let

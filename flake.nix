@@ -91,6 +91,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    quickemu = {
+      url = "path:/home/matejc/workarea/quickemu";
+      # url = "github:matejc/quickemu/feat/virtiofs-support";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
