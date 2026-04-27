@@ -86,7 +86,7 @@ in
         sway-wsshare = pkgs.callPackage ../nixes/sway-wsshare/default.nix { };
         thorium = pkgs.callPackage ../nixes/thorium.nix { };
         swiftpoint = pkgs.callPackage ../nixes/swiftpoint.nix { };
-        logseq = pkgs.callPackage ../nixes/logseq.nix { };
+        # logseq = pkgs.callPackage ../nixes/logseq.nix { };
         cinny-desktop = pkgs.callPackage ../nixes/cinny-desktop.nix { pkgs = prev; };
         mpv = prev.mpv.override {
           scripts = [ prev.mpvScripts.mpris ];

@@ -370,6 +370,7 @@ in
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${pkgs.configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${config.variables.profileDir}/bin/service-group-always restart"
+          spawn-at-startup "${pkgs.noctalia-shell}/bin/noctalia-shell"
 
           ${lib.concatMapStringsSep "\n" (i: ''
             spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
@@ -619,20 +620,6 @@ in
         };
       };
 
-      systemd.user.services.noctalia-shell = {
-        Unit = {
-          Description = "Noctalia Shell User Service";
-          BindsTo = [ config.variables.graphical.target ];
-          PartOf = [ config.variables.graphical.target ];
-          After = [ config.variables.graphical.target ];
-          Requisite = [ config.variables.graphical.target ];
-        };
-        Install.WantedBy = [ config.variables.graphical.target ];
-        Service = {
-          Type = "simple";
-          ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell";
-        };
-      };
       services.swayidle = {
         systemdTargets = [ config.variables.graphical.target ];
         events = {
