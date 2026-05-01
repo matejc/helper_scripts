@@ -145,9 +145,9 @@ in
       };
       outputs = [
         {
-          criteria = "DP-2";
+          criteria = "DP-1";
           position = "0,0";
-          output = "DP-2";
+          output = "DP-1";
           mode = "1920x1080";
           workspaces = [
             "1"
@@ -160,9 +160,9 @@ in
           status = "enable";
         }
         {
-          criteria = "DP-1";
+          criteria = "DP-2";
           position = "2000,0";
-          output = "DP-1";
+          output = "DP-2";
           mode = "2560x1440";
           workspaces = [ "5" ];
           wallpaper = "${witcher4-wallpaper}";
@@ -201,7 +201,6 @@ in
     };
 
     home.stateVersion = "20.09";
-    services.kanshi.enable = true;
     services.swayidle.enable = true;
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;

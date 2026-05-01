@@ -128,10 +128,12 @@ in
     home.username = config.variables.user;
     home.homeDirectory = config.variables.homeDir;
 
-    services.syncthing.extraOptions = [
-      "--gui-address=127.0.0.1:8384"
-      "--home=${config.variables.homeDir}/Syncthing/.config/syncthing"
-    ];
+    services.syncthing = {
+      guiAddress = "127.0.0.1:8384";
+      extraOptions = [
+        "--home=${config.variables.homeDir}/Syncthing/.config/syncthing"
+      ];
+    };
 
     programs.gpg = {
       enable = true;

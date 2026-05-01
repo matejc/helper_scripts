@@ -90,10 +90,9 @@
       url = "github:outfoxxed/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
     quickemu = {
-      url = "path:/home/matejc/workarea/quickemu";
-      # url = "github:matejc/quickemu/feat/virtiofs-support";
+      url = "github:matejc/quickemu/feat/virtiofs-support";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -201,12 +200,8 @@
         nix-cachyos-kernel =
           { nix-cachyos-kernel-src, ... }:
           {
-            linux-cachyos-latest =
-              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest;
             linux-cachyos-latest-lto =
               (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest-lto;
-            linux-cachyos-latest-lto-x86_64-v3 =
-              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest-lto-x86_64-v3;
           };
       };
       homeConfigurations = {

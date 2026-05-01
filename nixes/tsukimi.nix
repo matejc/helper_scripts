@@ -9,8 +9,8 @@ let
         pkgs.fetchFromGitHub {
           owner = "oxalica";
           repo = "rust-overlay";
-          rev = "6604534e44090c917db714faa58d47861657690c";
-          hash = "sha256-6fCtyVdTzoQejwoextAu7dCLoy5fyD3WVh+Qm7t2Nhg=";
+          rev = "3be56bd430bfd65d3c468a50626c3a601c7dee03";
+          hash = "sha256-vEl3cGHRxEFdVNuP9PbrhAWnmU98aPOLGy9/1JXzSuM=";
         }
       ))
     ];
@@ -31,14 +31,14 @@ in
     src = pkgs.fetchFromGitHub {
       owner = "tsukinaha";
       repo = "tsukimi";
-      rev = "fa73520d1d3a8db161bfe4c37ca05e3198fb7a59";
-      hash = "sha256-XKkr0dR5NENqN5N0gLRZqAH/CfHOYx8opjp5gzTJ8/s=";
+      rev = "fc419ea97717b13ddfb27b9fb9377f105d4d949b";
+      hash = "sha256-9jB1Lj1TxSMoF6wi4zyLEjh9/lhDzkHnUk6vHx5t+mA=";
     };
 
     cargoDeps = rustPlatform.fetchCargoVendor {
       inherit (final) pname src version;
       hash = final.cargoHash;
     };
-    cargoHash = "sha256-iFl3ibmkghHUaiOQXNWBCBDcK/JvFGbkAOg9mPC/z3A=";
+    cargoHash = "sha256-iUaMnVo76JTUflkkZh0DnkD147Amd2UTFT2bHH3o46Q=";
   }
 )
