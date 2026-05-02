@@ -23,9 +23,10 @@ let
       buffer_font_family = variables.font.family;
       buffer_font_size = variables.font.size + 3;
       project_panel = {
-        default_width = 180;
+        default_width = 200;
         file_icons = false;
         folder_icons = false;
+        dock = "left";
       };
       auto_update = false;
       format_on_save = "off";
@@ -84,6 +85,8 @@ let
       collaboration_panel.button = false;
 
       restore_on_startup = "last_session";
+
+      minimap.show = "auto";
     }
   );
 in
@@ -201,7 +204,7 @@ in
       fi
       jq '.' "${configFile}" > "${variables.homeDir}/.config/zed/settings.json"
 
-      exec ${pkgs.zed-editor}/bin/zeditor "''${@:-.}"
+      exec ${pkgs.zed-editor}/bin/zeditor --classic "''${@:-.}"
     '';
   }
 ]
