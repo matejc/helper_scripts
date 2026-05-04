@@ -195,9 +195,6 @@
             deploy-rs = {
               ${system} = inputs.deploy-rs.packages."${system}".deploy-rs;
             };
-            matrix-tuwunel = {
-              ${system} = inputs.nixpkgs.legacyPackages.${system}.matrix-tuwunel;
-            };
           };
         nix-cachyos-kernel =
           { nix-cachyos-kernel-src, ... }:
