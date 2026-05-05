@@ -16,6 +16,8 @@ let
       grep = "allow";
       glob = "allow";
       websearch = "allow";
+      webfetch = "allow";
+      todowrite = "allow";
       codesearch = "allow";
     };
   };
