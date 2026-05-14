@@ -61,20 +61,23 @@ let
     # set this equal to peek to disable this feature
     # set this equal to sidebar_width + offset_right to make focused windows "unhide"
     # Optional and defaults to peek if ommitted
-    focus_peek = 30
+    focus_peek = 20
     # Whether the sidebar should follow if you switch workspaces
-    sticky = false
+    sticky = true
 
-    # Example window rule
     # all fields are optional if not given a default from other configs will be used
-    # [[window_rule]]
-    # app_id = "firefox"  # if not set will match all app_id's
-    # title = "^Picture-in-Picture$"  # if not set will match no matter the title
+    [[window_rule]]
+    title = "^Picture in picture$"  # if not set will match no matter the title
+    auto_add = true  # defaults to false
     # width = 700
     # height = 400
     # focus_peek = 710
     # peek = 10
-    # auto_add = true  # defaults to false
+
+    [[window_rule]]
+    app_id = "firefox"  # if not set will match all app_id's
+    title = "^Picture-in-Picture$"  # if not set will match no matter the title
+    auto_add = true  # defaults to false
   '';
 in
 {
@@ -658,6 +661,7 @@ in
         Unit = {
           Description = "Niri-Sidebar User Service";
           After = [ config.variables.graphical.target ];
+          X-Restart-Triggers = [ niriSidebarConfigFile ];
         };
         Install.WantedBy = [ config.variables.graphical.target ];
         Service = {

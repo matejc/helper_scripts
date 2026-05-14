@@ -2,12 +2,13 @@
 with pkgs;
 rustPlatform.buildRustPackage rec {
   pname = "niri-sidebar";
-  version = "20260223";
+  version = "dev";
   src = fetchFromGitHub {
-    owner = "Vigintillionn";
+    # owner = "Vigintillionn";
+    owner = "smatheusblu";
     repo = pname;
-    rev = "83603353eceb51a0a1d889b17713000dcb222794";
-    hash = "sha256-YDNugm3RQ65tN0jYdD0sO//AWYGJ+P+WP8APu40r2fM=";
+    rev = "b8abfbfca0355f16654e866ccaa6776f50ff1f45";
+    hash = "sha256-NEBsOYZMDosdSLfKTrmrtAVpRMcqqtUoPby3QKWLLAs=";
   };
-  cargoHash = "sha256-13gDpYcG0gB35zu8pzKUuSRvTc10cCjWQkIg42zejpc=";
+  cargoHash = "sha256-zZlfwAxWE1ZZy6k7QoBOamCGigGShd89sD27vfvgR00=";
 }
