@@ -33,10 +33,11 @@ in
       ../../dotfiles/work.nix
       ../../dotfiles/jwt.nix
       ../../dotfiles/helix.nix
-      ../../dotfiles/kitty.nix
       ../../dotfiles/zellij.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
+      ../../dotfiles/ghostty.nix
+      ../../dotfiles/opencode.nix
     ];
     variables = {
       homeDir = "/home/${variables.user}";
@@ -76,7 +77,7 @@ in
       term = null;
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
-        terminal = "${pkgs.kitty}/bin/kitty --start-as=maximized";
+        terminal = "${config.programs.ghostty.package}/bin/ghostty";
         browser = "chromium";
         editor = "${pkgs.helix}/bin/hx";
         launcher = "${pkgs.wofi}/bin/wofi --show run";
@@ -136,9 +137,9 @@ in
       python312Packages.python
       devenv
       tmux
-      kitty
       nmap
       nil nixd
+      opencode
     ];
     programs.direnv = {
       enable = true;

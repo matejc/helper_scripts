@@ -85,8 +85,6 @@ let
       collaboration_panel.button = false;
 
       restore_on_startup = "last_session";
-
-      minimap.show = "auto";
     }
   );
 in
