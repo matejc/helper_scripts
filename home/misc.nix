@@ -147,7 +147,7 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      matchBlocks."*".addKeysToAgent = "10m";
+      settings."*".addKeysToAgent = "10m";
     };
 
     programs.bash = {

@@ -122,7 +122,6 @@ in
       home.packages = with pkgs; [
         config.variables.graphical.package
         noctalia-shell
-        quickshell
         bluez
         brightnessctl
         cava
