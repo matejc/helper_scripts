@@ -64,6 +64,9 @@ let
     focus_peek = 20
     # Whether the sidebar should follow if you switch workspaces
     sticky = true
+    # If set, sticky sidebar movement only follows workspaces on this output.
+    # Leave empty to follow the focused workspace on any output.
+    sticky_output = "${(builtins.head config.variables.outputs).output}"
 
     # all fields are optional if not given a default from other configs will be used
     [[window_rule]]

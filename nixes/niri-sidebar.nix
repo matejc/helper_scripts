@@ -5,10 +5,10 @@ rustPlatform.buildRustPackage rec {
   version = "dev";
   src = fetchFromGitHub {
     # owner = "Vigintillionn";
-    owner = "smatheusblu";
+    owner = "matejc";
     repo = pname;
-    rev = "b8abfbfca0355f16654e866ccaa6776f50ff1f45";
-    hash = "sha256-NEBsOYZMDosdSLfKTrmrtAVpRMcqqtUoPby3QKWLLAs=";
+    rev = "55cb82621fc075df48bb23bf90162193be91edde";
+    hash = "sha256-+CZIaeVQ+Af6XSieQ0i2xs5mAc/cSom5fGtRAOuNtLU=";
   };
   cargoHash = "sha256-zZlfwAxWE1ZZy6k7QoBOamCGigGShd89sD27vfvgR00=";
 }
