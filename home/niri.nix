@@ -36,7 +36,7 @@ let
     # Width of the sidebar in pixels
     width = 400
     # Height of the sidebar windows
-    height = 300
+    height = 200
     # Gap between windows in the stack
     gap = 10
 
@@ -61,7 +61,7 @@ let
     # set this equal to peek to disable this feature
     # set this equal to sidebar_width + offset_right to make focused windows "unhide"
     # Optional and defaults to peek if ommitted
-    focus_peek = 20
+    focus_peek = 410
     # Whether the sidebar should follow if you switch workspaces
     sticky = true
     # If set, sticky sidebar movement only follows workspaces on this output.
@@ -72,10 +72,6 @@ let
     [[window_rule]]
     title = "^Picture in picture$"  # if not set will match no matter the title
     auto_add = true  # defaults to false
-    # width = 700
-    # height = 400
-    # focus_peek = 710
-    # peek = 10
 
     [[window_rule]]
     app_id = "firefox"  # if not set will match all app_id's
@@ -290,6 +286,12 @@ in
           window-rule {
               draw-border-with-background true
               geometry-corner-radius 3
+          }
+
+          window-rule {
+              match is-floating=true
+              min-width 100
+              min-height 100
           }
 
           layout {
