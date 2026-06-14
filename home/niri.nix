@@ -645,7 +645,7 @@ in
               background_opacity = 0.9;
               thickness = 28;
               shadow = false;
-              start = ["sysmon" "media" "workspaces"];
+              start = ["sysmon" "workspaces" "media"];
               center = ["active_window"];
               end = ["notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "caffeine" "nightlight" "battery" "control-center" "tray" "clock" "session"];
             };
