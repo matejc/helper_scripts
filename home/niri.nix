@@ -629,6 +629,7 @@ in
           wallpaper = {
             enabled = true;
           };
+          location.auto_locate = true;
           bar = {
             order = ["main"];
             widgets = {
@@ -644,12 +645,34 @@ in
               background_opacity = 0.9;
               thickness = 28;
               shadow = false;
-              start = ["workspaces"];
+              start = ["sysmon" "media" "workspaces"];
               center = ["active_window"];
-              end = ["media" "notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "battery" "control-center" "tray" "clock" "session"];
+              end = ["notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "caffeine" "nightlight" "battery" "control-center" "tray" "clock" "session"];
             };
           };
           widget.clock.format = "{:%R} - {:%a, %b %d, %Y}";
+          nightlight.enabled = true;
+          system.monitor.enabled = true;
+          idle.behavior = {
+            brightness = {
+              timeout = 100;
+              command = "${pkgs.noctalia}/bin/noctalia msg brightness-down";
+              resume_command = "${pkgs.noctalia}/bin/noctalia msg brightness-up";
+            };
+            lock = {
+              timeout = 120;
+              command = "noctalia:session lock";
+            };
+            screen-off = {
+              timeout = 300;
+              command = "noctalia:dpms-off";
+              resume_command = "noctalia:dpms-on";
+            };
+            sleep = {
+              timeout = 3600;
+              command = "${pkgs.sleepCmd}/bin/systemctl-sleep";
+            };
+          };
         };
       };
       systemd.user.services.pre-sleep = {
@@ -697,7 +720,7 @@ in
       };
 
       # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
-      systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkForce [ ];
+      systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkIf config.services.swayidle.enable (lib.mkForce [ ]);
 
       systemd.user.services.niri-sidebar = {
         Unit = {

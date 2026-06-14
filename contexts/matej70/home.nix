@@ -201,7 +201,6 @@ in
     };
 
     home.stateVersion = "20.09";
-    services.swayidle.enable = true;
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;
     services.syncthing.enable = true;

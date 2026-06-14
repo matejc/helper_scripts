@@ -156,7 +156,6 @@ in
     };
 
     home.stateVersion = "23.05";
-    services.swayidle.enable = true;
     services.kanshi.enable = true;
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;
