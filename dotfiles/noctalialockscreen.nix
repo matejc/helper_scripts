@@ -9,7 +9,7 @@
     target = "${variables.homeDir}/bin/lockscreen";
     source = pkgs.writeScript "noctalialockscreen.sh" ''
       #!${pkgs.stdenv.shell}
-      exec ${pkgs.noctalia-shell}/bin/noctalia-shell ipc call lockScreen lock
+      exec ${pkgs.noctalia}/bin/noctalia msg session lock
     '';
   }
 ]

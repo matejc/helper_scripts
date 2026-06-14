@@ -37,7 +37,7 @@ pkgs.stdenv.mkDerivation {
             libxcb
             libxkbcommon
             dbus
-            libsForQt5.qt5.qtbase
+            qt5.qtbase
             openssl
           ]
         )

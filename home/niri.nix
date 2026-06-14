@@ -80,6 +80,7 @@ let
   '';
 in
 {
+  imports = [ inputs.noctalia.homeModules.default ];
   config = lib.mkMerge [
     {
       nixpkgs.overlays = [
@@ -91,7 +92,7 @@ in
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.variables.graphical.package;
           };
-          noctalia-shell = inputs.noctalia-shell.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
           quickshell = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })
       ];
@@ -120,7 +121,7 @@ in
 
       home.packages = with pkgs; [
         config.variables.graphical.package
-        noctalia-shell
+        noctalia
         bluez
         brightnessctl
         cava
@@ -140,7 +141,7 @@ in
 
       programs.niri.config =
         let
-          noctalia-shell = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+          noctalia = "${pkgs.noctalia}/bin/noctalia";
         in
         ''
           // This config is in the KDL format: https://kdl.dev
@@ -377,7 +378,7 @@ in
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${pkgs.dbus}/bin/dbus-update-activation-environment WAYLAND_DISPLAY DISPLAY XDG_RUNTIME_DIR"
           spawn-at-startup "${pkgs.configure-gtk}/bin/configure-gtk"
           spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${config.variables.profileDir}/bin/service-group-always restart"
-          spawn-at-startup "${pkgs.noctalia-shell}/bin/noctalia-shell"
+          // spawn-at-startup "${noctalia}"
 
           ${lib.concatMapStringsSep "\n" (i: ''
             spawn-at-startup "${pkgs.stdenv.shell}" "-c" "${i}"
@@ -451,24 +452,24 @@ in
               // Suggested binds for running programs: terminal, app launcher, screen locker.
               Ctrl+Alt+T { spawn "${config.variables.programs.terminal}"; }
               Ctrl+Alt+H { spawn "${config.variables.programs.filemanager}"; }
-              Super+Space { spawn-sh "${noctalia-shell} ipc call launcher toggle"; }
+              Super+Space { spawn-sh "${noctalia} msg panel-toggle launcher"; }
               Ctrl+Alt+L { spawn "${config.variables.lockscreen}"; }
               Super+L { spawn "${config.variables.lockscreen}"; }
-              Ctrl+Alt+Delete { spawn-sh "${noctalia-shell} ipc call sessionMenu toggle"; }
-              Ctrl+Alt+N { spawn-sh "${noctalia-shell} ipc call notifications toggleHistory"; }
+              Ctrl+Alt+Delete { spawn-sh "${noctalia} msg panel-toggle session"; }
+              Ctrl+Alt+N { spawn-sh "${noctalia} msg panel-toggle control-center notifications"; }
 
-              XF86AudioRaiseVolume { spawn-sh "${noctalia-shell} ipc call volume increase"; }
-              XF86AudioLowerVolume { spawn-sh "${noctalia-shell} ipc call volume decrease"; }
-              XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteOutput"; }
-              Shift+XF86AudioRaiseVolume { spawn-sh "${pkgs.wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SOURCE@ 5%+"; }
-              Shift+XF86AudioLowerVolume { spawn-sh "${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SOURCE@ 5%-"; }
-              Shift+XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteInput"; }
-              XF86AudioMicMute allow-when-locked=true { spawn-sh "${noctalia-shell} ipc call volume muteInput"; }
-              XF86MonBrightnessUp { spawn-sh "${noctalia-shell} ipc call brightness increase"; }
-              XF86MonBrightnessDown { spawn-sh "${noctalia-shell} ipc call brightness decrease"; }
-              XF86AudioPlay { spawn-sh "${pkgs.playerctl}/bin/playerctl play-pause"; }
-              XF86AudioNext { spawn-sh "${pkgs.playerctl}/bin/playerctl next"; }
-              XF86AudioPrev { spawn-sh "${pkgs.playerctl}/bin/playerctl previous"; }
+              XF86AudioRaiseVolume { spawn-sh "${noctalia} msg volume-up"; }
+              XF86AudioLowerVolume { spawn-sh "${noctalia} msg volume-down"; }
+              XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia} msg volume-mute"; }
+              Shift+XF86AudioRaiseVolume { spawn-sh "${noctalia} msg mic-volume-up"; }
+              Shift+XF86AudioLowerVolume { spawn-sh "${noctalia} msg mic-volume-down"; }
+              Shift+XF86AudioMute allow-when-locked=true { spawn-sh "${noctalia} msg mic-mute"; }
+              XF86AudioMicMute allow-when-locked=true { spawn-sh "${noctalia} msg mic-mute"; }
+              XF86MonBrightnessUp { spawn-sh "${noctalia} msg brightness-up"; }
+              XF86MonBrightnessDown { spawn-sh "${noctalia} msg brightness-down"; }
+              XF86AudioPlay { spawn-sh "${noctalia} msg media toggle"; }
+              XF86AudioNext { spawn-sh "${noctalia} msg media next"; }
+              XF86AudioPrev { spawn-sh "${noctalia} msg media previous"; }
 
               // F12 {
               //   spawn-sh "${pkgs.kitty}/bin/kitten quick-access-terminal -o lines=50 -o background_opacity=0.95 -o focus_policy=on-demand -o output_name=${(lib.head config.variables.outputs).output} --detach kitten run-shell && niri msg action focus-monitor ${(lib.head config.variables.outputs).output}";
@@ -574,8 +575,8 @@ in
               Super+Shift+P { spawn "${config.variables.graphical.exec}" "msg" "output" "${(lib.head config.variables.outputs).output}" "off"; }
 
               Ctrl+Alt+C { spawn-sh "${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.tesseract5}/bin/tesseract stdin stdout | ${pkgs.wl-clipboard}/bin/wl-copy"; }
-              Super+C { spawn-sh "${noctalia-shell} ipc call launcher clipboard"; }
-              Super+Shift+C { spawn-sh "env XDG_CACHE_HOME=${config.variables.homeDir}/.cache cliphist wipe"; }
+              Super+C { spawn-sh "${noctalia} msg panel-toggle clipboard"; }
+              Super+Shift+C { spawn-sh "${noctalia} msg clipboard-clear"; }
               // Ctrl+Alt+R { spawn-sh "${pkgs.recordCmd}"; }
               Ctrl+Alt+M { spawn-sh "${pkgs.wl-mirror}/bin/wl-mirror --fullscreen ${(lib.head config.variables.outputs).output}"; }
               Ctrl+Alt+Shift+M { spawn-sh "${pkgs.procps}/bin/pkill wl-mirror"; }
@@ -615,6 +616,42 @@ in
               // render-drm-device "/dev/dri/renderD129"
           }
         '';
+      programs.noctalia = {
+        enable = true;
+        package = pkgs.noctalia;
+        systemd.enable = true;
+
+        settings = { # This may also be a string or path to a .toml file.
+          theme = {
+            mode = "dark";
+            source = "wallpaper";
+          };
+          wallpaper = {
+            enabled = true;
+          };
+          bar = {
+            order = ["main"];
+            widgets = {
+              enabled = false;
+            };
+            main = {
+              enabled = true;
+              position = "bottom";
+              capsule = true;
+              margin_ends = 0;
+              margin_edge = 0;
+              radius = 0;
+              background_opacity = 0.9;
+              thickness = 28;
+              shadow = false;
+              start = ["workspaces"];
+              center = ["active_window"];
+              end = ["media" "notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "battery" "control-center" "tray" "clock" "session"];
+            };
+          };
+          widget.clock.format = "{:%R} - {:%a, %b %d, %Y}";
+        };
+      };
       systemd.user.services.pre-sleep = {
         Unit = {
           Description = "Pre-sleep User Service";
@@ -639,8 +676,8 @@ in
         timeouts = lib.mkOverride 900 [
           {
             timeout = 100;
-            command = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call brightness decrease";
-            resumeCommand = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call brightness increase";
+            command = "${pkgs.noctalia}/bin/noctalia msg brightness-down";
+            resumeCommand = "${pkgs.noctalia}/bin/noctalia msg brightness-up";
           }
           {
             timeout = 120;
@@ -648,7 +685,8 @@ in
           }
           {
             timeout = 300;
-            command = ''${config.variables.graphical.exec} msg action power-off-monitors'';
+            command = "${pkgs.noctalia}/bin/noctalia msg dpms-off";
+            resumeCommand = "${pkgs.noctalia}/bin/noctalia msg dpms-on";
             # resumeCommand = lib.concatMapStringsSep "; " (o: ''${context.variables.graphical.exec} msg output ${o.output} on'') context.variables.outputs;
           }
           {
@@ -711,14 +749,14 @@ in
               PartOf = [ config.variables.graphical.target ];
               After = [
                 config.variables.graphical.target
-                "noctalia-shell.service"
+                "noctalia.service"
               ];
               Requisite = [ config.variables.graphical.target ];
             };
             Install.WantedBy = [ config.variables.graphical.target ];
             Service = {
               Type = "oneshot";
-              ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell ipc call wallpaper set ${o.wallpaper} ${o.output}";
+              ExecStart = "${pkgs.noctalia}/bin/noctalia msg wallpaper-set ${o.output} ${o.wallpaper}";
             };
           };
         }) config.variables.outputs

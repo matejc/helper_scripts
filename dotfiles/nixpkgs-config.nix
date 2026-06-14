@@ -725,5 +725,6 @@ rec {
     "libsoup-2.74.3" # heroic
     "qtwebengine-5.15.19" # swiftpoint
     "nexusmods-app-unfree-0.21.1"
+    "electron-39.8.10"
   ];
 }
