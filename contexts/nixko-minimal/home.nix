@@ -33,7 +33,6 @@ in
       ../../dotfiles/work.nix
       ../../dotfiles/jwt.nix
       ../../dotfiles/helix.nix
-      ../../dotfiles/zellij.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
       ../../dotfiles/ghostty.nix
@@ -140,6 +139,7 @@ in
       nmap
       nil nixd
       opencode
+      okteto
     ];
     programs.direnv = {
       enable = true;

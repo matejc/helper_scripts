@@ -629,7 +629,7 @@ in
           theme = {
             mode = "dark";
             source = "wallpaper";
-            wallpaper_scheme = "vibrant";
+            wallpaper_scheme = "faithful";
           };
           wallpaper = {
             enabled = true;
@@ -650,12 +650,13 @@ in
               background_opacity = 0.9;
               thickness = 28;
               shadow = false;
-              start = ["control-center" "sysmon" "workspaces" "media"];
-              center = ["active_window"];
-              end = ["notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "caffeine" "nightlight" "battery" "tray" "clock" "session"];
+              start = ["control-center" "sysmon" "workspaces" "media" "active_window"];
+              center = [];
+              end = ["notifications" "caffeine" "clipboard" "network" "bluetooth" "volume" "brightness" "nightlight" "battery" "tray" "clock" "session"];
             };
           };
           widget.clock.format = "{:%R} - {:%a, %b %d, %Y}";
+          widget.media.hide_when_no_media = true;
           nightlight.enabled = true;
           system.monitor.enabled = true;
           idle.behavior = {

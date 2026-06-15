@@ -41,7 +41,6 @@ in
       ../../dotfiles/jwt.nix
       ../../dotfiles/helix.nix
       ../../dotfiles/kitty.nix
-      ../../dotfiles/zellij.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
       ../../dotfiles/gravatar.nix
