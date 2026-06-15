@@ -21,5 +21,6 @@
       enable = true;
       package = pkgs.niri-unstable;
     };
+    programs.gpu-screen-recorder.enable = true;
   };
 }

@@ -192,6 +192,7 @@ in
 
     programs.chromium = {
       package = pkgs.ungoogled-chromium;
+      commandLineArgs = ["--enable-features=UseOzonePlatform" "--ozone-platform=wayland"];
       dictionaries = [
         pkgs.hunspellDictsChromium.en_US
       ];

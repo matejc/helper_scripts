@@ -628,8 +628,9 @@ in
           };
           theme = {
             mode = "dark";
-            source = "wallpaper";
-            wallpaper_scheme = "m3-rainbow";
+            source = "community";
+            community_palette = "Breeze";
+            # wallpaper_scheme = "m3-rainbow";
           };
           wallpaper = {
             enabled = true;
@@ -678,6 +679,15 @@ in
               timeout = 3600;
               command = "${pkgs.sleepCmd}/bin/systemctl-sleep";
             };
+          };
+          plugins = {
+            source = {
+              name = "official";
+              kind = "git";
+              location = "https://github.com/noctalia-dev/official-plugins";
+              auto_update = true;
+            };
+            enabled = ["noctalia/screen_recorder"];
           };
         };
       };
