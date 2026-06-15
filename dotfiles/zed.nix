@@ -130,6 +130,7 @@ in
             "n" = "project_panel::NewFile";
             "shift-n" = "project_panel::NewDirectory";
             "p" = "project_panel::SelectParent";
+            escape = "project_panel::ToggleFocus";
           };
         }
         {
@@ -166,6 +167,10 @@ in
             "ctrl-backspace" = "editor::DeleteToPreviousSubwordStart";
             "ctrl-delete" = "editor::DeleteToNextSubwordEnd";
             "ctrl-shift-d" = "editor::DuplicateLineDown";
+            ctrl-l = [
+              "workspace::SendKeystrokes"
+              "escape"
+            ];
           };
         }
         {

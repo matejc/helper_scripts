@@ -629,7 +629,7 @@ in
           theme = {
             mode = "dark";
             source = "wallpaper";
-            wallpaper_scheme = "faithful";
+            wallpaper_scheme = "m3-rainbow";
           };
           wallpaper = {
             enabled = true;
