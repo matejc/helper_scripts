@@ -622,9 +622,14 @@ in
         systemd.enable = true;
 
         settings = { # This may also be a string or path to a .toml file.
+          shell.animation = {
+            enabled = true;
+            speed = 2.0;
+          };
           theme = {
             mode = "dark";
             source = "wallpaper";
+            wallpaper_scheme = "vibrant";
           };
           wallpaper = {
             enabled = true;
@@ -645,9 +650,9 @@ in
               background_opacity = 0.9;
               thickness = 28;
               shadow = false;
-              start = ["sysmon" "workspaces" "media"];
+              start = ["control-center" "sysmon" "workspaces" "media"];
               center = ["active_window"];
-              end = ["notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "caffeine" "nightlight" "battery" "control-center" "tray" "clock" "session"];
+              end = ["notifications" "clipboard" "network" "bluetooth" "volume" "brightness" "caffeine" "nightlight" "battery" "tray" "clock" "session"];
             };
           };
           widget.clock.format = "{:%R} - {:%a, %b %d, %Y}";
