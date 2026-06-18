@@ -628,8 +628,8 @@ in
           };
           theme = {
             mode = "dark";
-            source = "community";
-            community_palette = "Breeze";
+            source = "builtin";
+            community_palette = "Gruvbox";
             # wallpaper_scheme = "m3-rainbow";
           };
           wallpaper = {
