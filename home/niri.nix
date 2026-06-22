@@ -689,6 +689,7 @@ in
             };
             enabled = ["noctalia/screen_recorder"];
           };
+          osd.kinds.brightness = false;
         };
       };
       systemd.user.services.pre-sleep = {
