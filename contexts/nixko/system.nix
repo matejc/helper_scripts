@@ -36,7 +36,7 @@
       pkiBundle = "/var/lib/sbctl";
     };
 
-    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_latest;
+    boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_0;
     hardware.bluetooth.enable = true;
     hardware.graphics = {
       enable = true;
