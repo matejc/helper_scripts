@@ -26,19 +26,19 @@ in
 (pkgsRustNightly.tsukimi.override { inherit rustPlatform cargo rustc; }).overrideAttrs (
   final: old: {
     pname = "tsukimi";
-    version = "25.5.0";
+    version = "26.6.3";
 
     src = pkgs.fetchFromGitHub {
       owner = "tsukinaha";
       repo = "tsukimi";
-      rev = "fc419ea97717b13ddfb27b9fb9377f105d4d949b";
-      hash = "sha256-9jB1Lj1TxSMoF6wi4zyLEjh9/lhDzkHnUk6vHx5t+mA=";
+      rev = "refs/tags/v${final.version}";
+      hash = "sha256-Q+WMwd4GEA1K0Ul8e3g+uBmaUT7nWA865vhuIioqqi4=";
     };
 
     cargoDeps = rustPlatform.fetchCargoVendor {
       inherit (final) pname src version;
       hash = final.cargoHash;
     };
-    cargoHash = "sha256-iUaMnVo76JTUflkkZh0DnkD147Amd2UTFT2bHH3o46Q=";
+    cargoHash = "sha256-P77AS0+zbi2lfgkH5TDg9JdoYAiWJVdlgHs/ThU547U=";
   }
 )

@@ -663,8 +663,8 @@ in
           idle.behavior = {
             brightness = {
               timeout = 100;
-              command = "${pkgs.noctalia}/bin/noctalia msg brightness-down";
-              resume_command = "${pkgs.noctalia}/bin/noctalia msg brightness-up";
+              command = "noctalia:brightness-down all 20%";
+              resume_command = "noctalia:brightness-up all 20%";
             };
             lock = {
               timeout = 120;
@@ -689,7 +689,12 @@ in
             };
             enabled = ["noctalia/screen_recorder"];
           };
-          osd.kinds.brightness = false;
+          osd = {
+            monitors = [ ((lib.head config.variables.outputs).output) ];
+            kinds = {
+              brightness = false;
+            };
+          };
         };
       };
       systemd.user.services.pre-sleep = {
