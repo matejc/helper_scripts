@@ -34,9 +34,9 @@ let
   niriSidebarConfigFile = pkgs.writeText "niri-sidebar.toml" ''
     [geometry]
     # Width of the sidebar in pixels
-    width = 400
+    width = 500
     # Height of the sidebar windows
-    height = 200
+    height = 300
     # Gap between windows in the stack
     gap = 10
 
@@ -61,7 +61,7 @@ let
     # set this equal to peek to disable this feature
     # set this equal to sidebar_width + offset_right to make focused windows "unhide"
     # Optional and defaults to peek if ommitted
-    focus_peek = 410
+    focus_peek = 510
     # Whether the sidebar should follow if you switch workspaces
     sticky = true
     # If set, sticky sidebar movement only follows workspaces on this output.
