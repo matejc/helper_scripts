@@ -36,7 +36,7 @@ let
     # Width of the sidebar in pixels
     width = 500
     # Height of the sidebar windows
-    height = 300
+    height = 280
     # Gap between windows in the stack
     gap = 10
 
@@ -262,6 +262,7 @@ in
           window-rule {
             match app-id="org.keepassxc.KeePassXC"
             match app-id="Logseq"
+            match app-id="standard-notes"
             open-on-workspace "first"
           }
 
@@ -281,6 +282,7 @@ in
               match app-id="org.keepassxc.KeePassXC"
               match app-id="Logseq"
               match app-id="Slack"
+              match app-id="standard-notes"
               block-out-from "screencast"
           }
 

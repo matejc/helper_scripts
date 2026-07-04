@@ -137,7 +137,7 @@ in
         package = osConfig.programs.niri.package;
       };
       nirimap = false;
-      niri-switcher = true;
+      niri-switcher = false;
       vims = {
         # q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
         # n = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none --no-vsync'';
@@ -178,6 +178,7 @@ in
       startup = [
         "${variables.profileDir}/bin/browser"
         "${variables.profileDir}/bin/keepassxc"
+        "${variables.profileDir}/bin/standardnotes"
       ];
       steam = {
         xrun = [
@@ -210,7 +211,7 @@ in
     ++ (with pkgs; [
       keepassxc
       mpv
-      logseq
+      standardnotes
       element-desktop
       signal-desktop
       steamcmd
