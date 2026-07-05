@@ -638,6 +638,11 @@ in
             enabled = true;
           };
           location.auto_locate = true;
+          lockscreen = {
+            enabled = true;
+            fingerprint = false;
+            allow_empty_password = true;
+          };
           bar = {
             order = ["main"];
             widgets = {
@@ -670,7 +675,7 @@ in
             };
             lock = {
               timeout = 120;
-              command = "noctalia:session lock";
+              command = "${config.variables.lockscreen}";
             };
             screen-off = {
               timeout = 300;
@@ -707,7 +712,7 @@ in
         Install.WantedBy = [ "sleep.target" ];
         Service = {
           Type = "simple";
-          ExecStart = "${config.variables.profileDir}/bin/lockscreen";
+          ExecStart = "${config.variables.lockscreen}";
         };
       };
 

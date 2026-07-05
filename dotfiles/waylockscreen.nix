@@ -1,7 +1,7 @@
 { variables, config, pkgs, lib }:
 [{
   target = "${variables.homeDir}/bin/lockscreen";
-  source = pkgs.writeScript "swaylockscreen.sh" ''
+  source = pkgs.writeScript "waylockscreen.sh" ''
     #!${pkgs.stdenv.shell}
     ${pkgs.procps}/bin/pgrep waylock
     if [ $? -ne 0 ]
