@@ -176,9 +176,9 @@ in
         nixpkgs = "/home/matejc/workarea/nixpkgs";
       };
       startup = [
-        "${variables.profileDir}/bin/browser"
         "${variables.profileDir}/bin/keepassxc"
         "${variables.profileDir}/bin/standardnotes"
+        "${variables.profileDir}/bin/browser"
       ];
       steam = {
         xrun = [

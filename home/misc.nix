@@ -307,11 +307,11 @@ in
             use = "play";
           }
           {
-            name = "*.json";
+            mime = "*/json";
             use = "open-json";
           }
           {
-            name = "*";
+            mime = "*";
             use = "open";
           }
         ];
