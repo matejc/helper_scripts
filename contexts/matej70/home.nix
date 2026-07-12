@@ -236,6 +236,7 @@ in
       creality-print
       airscan
       opencode
+      zmx
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;

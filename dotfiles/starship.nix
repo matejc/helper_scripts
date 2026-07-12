@@ -10,5 +10,11 @@
     [character]
     success_symbol = "[❯](bold green) "
     error_symbol = "[✗](bold red) "
+
+    [env_var.ZMX_SESSION]
+    symbol = " "
+    format = "[$symbol$env_value]($style) "
+    description = "zmx session name"
+    style = "bold magenta"
   '';
 }]

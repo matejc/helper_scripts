@@ -293,6 +293,10 @@ in
     #autoload -U compinit
     #compinit -i
 
+    if command -v zmx &> /dev/null; then
+        eval "$(zmx completions zsh)"
+    fi
+
     # include .extra if it exists
     if [ -f "$HOME/.extra" ]; then
         . "$HOME/.extra"
