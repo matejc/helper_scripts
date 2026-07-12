@@ -102,6 +102,7 @@ in
       pkgs.git
       pkgs.git-crypt
       pkgs.zsh
+      pkgs.zmx
       pkgs.xdg-utils
       pkgs.dconf
       pkgs.file
@@ -208,6 +209,12 @@ in
         status.disabled = false;
         status.style = "fg:red";
         status.format = "[\\[$common_meaning$signal_name$maybe_int\\]]($style) ";
+        env_var.ZMX_SESSION = {
+          symbol = " ";
+          format = "[$symbol$env_value]($style) ";
+          description = "zmx session name";
+          style = "bold magenta";
+        };
       };
     };
     programs.fzf = {
