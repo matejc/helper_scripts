@@ -273,7 +273,7 @@ in
             match app-id="chromium-browser"
             match app-id="thorium-browser"
             match app-id="firefox"
-            match app-id="Slack"
+            match app-id="slack"
             match app-id="zen"
             open-on-workspace "second"
           }
