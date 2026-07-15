@@ -667,11 +667,11 @@ in
           nightlight.enabled = true;
           system.monitor.enabled = true;
           idle.behavior = {
-            brightness = {
-              timeout = 100;
-              command = "noctalia:brightness-down all 20%";
-              resume_command = "noctalia:brightness-up all 20%";
-            };
+            # brightness = {
+            #   timeout = 100;
+            #   command = "noctalia:brightness-down all 20%";
+            #   resume_command = "noctalia:brightness-up all 20%";
+            # };
             lock = {
               timeout = 120;
               command = "${config.variables.lockscreen}";
