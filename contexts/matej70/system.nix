@@ -44,6 +44,7 @@
         '';
         destination = "/etc/udev/rules.d/70-keychron.rules";
       })
+      (pkgs.callPackage ../../nixes/swiftpoint.nix { })
     ];
     services.udev.extraRules = ''
       ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="0e81", ATTR{power/wakeup}="disabled"
@@ -63,6 +64,7 @@
       "openrazer"
       "gamemode"
       "dialout"
+      "vboxusers"
     ];
     systemd.services.after-sleep =
       let
@@ -124,5 +126,7 @@
         pkgs.obs-studio-plugins.obs-vaapi
       ];
     };
+
+    virtualisation.virtualbox.host.enable = true;
   };
 }

@@ -6,8 +6,8 @@ pkgs.stdenv.mkDerivation {
   version = "dev";
 
   src = pkgs.fetchurl {
-    url = "https://swiftpointdrivers.blob.core.windows.net/pro/beta/linux/Swiftpoint%20X1%20Control%20Panel%203.0.8.9-df346765.tar.xz";
-    sha256 = "sha256-TxCGSxiZdAtFgJXWtunPuRfazHFePmpjG2dyMBhyOL4=";
+    url = "https://swiftpointdrivers.blob.core.windows.net/pro/beta/linux/Swiftpoint%20X1%20Control%20Panel%203.1.0.76-db4a0109.tar.xz";
+    sha256 = "sha256-zLcIoF/noPNVwUDoHJopAcT2s5HtwEFdEJWSxANRzgo=";
   };
 
   nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -37,13 +37,24 @@ pkgs.stdenv.mkDerivation {
             libxcb
             libxkbcommon
             dbus
-            qt5.qtbase
+            qt6.qtbase
             openssl
+            udev
+            zstd
+            krb5
+            libxcb-cursor
+            libxcb-wm
+            libxcb-render-util
+            libxcb-image
+            libxcb-keysyms
+            kdePackages.wayland
           ]
         )
       }" \
       --set QT_PLUGIN_PATH "$out/share/swiftpoint/plugins" \
-      --set QT_QPA_PLATFORM_PLUGIN_PATH "$out/share/swiftpoint/plugins/platforms" \
-      --set QT_QPA_PLATFORM xcb
+      --set QT_QPA_PLATFORM_PLUGIN_PATH "$out/share/swiftpoint/plugins/platforms"
+      # --set QT_QPA_PLATFORM wayland
+    mkdir -p $out/etc/udev/rules.d
+    ln -s $out/share/swiftpoint/60-Swiftpoint.rules $out/etc/udev/rules.d/
   '';
 }

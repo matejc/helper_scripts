@@ -454,6 +454,7 @@ in
               Ctrl+Alt+T { spawn "${config.variables.programs.terminal}"; }
               Ctrl+Alt+H { spawn "${config.variables.programs.filemanager}"; }
               Super+Space { spawn-sh "${noctalia} msg panel-toggle launcher"; }
+              Super+Alt+Space { spawn-sh "${noctalia} msg panel-toggle launcher"; }
               Ctrl+Alt+L { spawn "${config.variables.lockscreen}"; }
               Super+L { spawn "${config.variables.lockscreen}"; }
               Ctrl+Alt+Delete { spawn-sh "${noctalia} msg panel-toggle session"; }
@@ -583,7 +584,6 @@ in
               Ctrl+Alt+Shift+M { spawn-sh "${pkgs.procps}/bin/pkill wl-mirror"; }
 
               Super+O repeat=false { toggle-overview; }
-              Ctrl+Alt+Space repeat=false { toggle-overview; }
               Super+grave repeat=false { switch-focus-between-floating-and-tiling; }
 
               Super+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-window"; }
