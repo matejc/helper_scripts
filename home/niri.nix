@@ -111,7 +111,6 @@ in
           };
         };
         extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
-        xdgOpenUsePortal = true;
       };
 
       home.file = {

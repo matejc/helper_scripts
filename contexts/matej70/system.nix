@@ -45,6 +45,9 @@
         destination = "/etc/udev/rules.d/70-keychron.rules";
       })
     ];
+    services.udev.extraRules = ''
+      ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="0e81", ATTR{power/wakeup}="disabled"
+    '';
     nixpkgs.config = import ../../dotfiles/nixpkgs-config.nix;
     programs.steam = {
       enable = true;
