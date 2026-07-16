@@ -280,7 +280,7 @@ in
           window-rule {
               match app-id="org.keepassxc.KeePassXC"
               match app-id="Logseq"
-              match app-id="Slack"
+              match app-id="slack"
               match app-id="standard-notes"
               block-out-from "screencast"
           }
