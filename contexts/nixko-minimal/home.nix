@@ -129,7 +129,6 @@ in
       git-crypt
       jq
       yq-go
-      minikube
       kubectl
       ttyd
       unzip
