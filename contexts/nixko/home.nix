@@ -162,7 +162,6 @@ in
       graftcp
       file-roller
       eog
-      minikube
       kubectl
       ttyd
       unzip
