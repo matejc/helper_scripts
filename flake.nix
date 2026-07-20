@@ -178,9 +178,13 @@
                   ./nixos/minimal-configuration.nix
                 ];
               }).config.system.build.toplevel;
-            home-minimal =
+          };
+        nixtu =
+          { ... }:
+          {
+            home =
               (homeBuild {
-                context = "nixko-minimal";
+                context = "nixtu";
               }).activationPackage;
           };
         wsl =
@@ -204,8 +208,8 @@
           };
       };
       homeConfigurations = {
-        nixko = homeBuild {
-          context = "nixko-minimal";
+        nixtu = homeBuild {
+          context = "nixtu";
         };
       };
       nixosConfigurations = {
