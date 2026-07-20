@@ -380,8 +380,8 @@ in
       settings = {
         theme = "Monokai Remastered";
         background-opacity = 0.95;
-        font-family = config.variables.font.family;
-        font-size = config.variables.font.size;
+        font-family = config.variables.font_mono.family;
+        font-size = config.variables.font_mono.size;
         keybind = [
           "global:F12=toggle_quick_terminal"
           "global:ctrl+alt+enter=toggle_quick_terminal"

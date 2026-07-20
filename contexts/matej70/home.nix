@@ -98,10 +98,15 @@ in
         }
       ];
       batteries = [ ];
-      font = {
-        family = "SauceCodePro Nerd Font Mono";
-        style = "Bold";
+      font_mono = {
+        family = "IntoneMono Nerd Font Mono";
+        style = "Regular";
         size = 10.5;
+      };
+      font_propo = {
+        family = "IntoneMono Nerd Font Propo";
+        style = "Regular";
+        size = 11.5;
       };
       term = null;
       programs = {

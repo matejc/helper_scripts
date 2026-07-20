@@ -76,10 +76,15 @@ in
           field_prefix = "temp1";
         }
       ];
-      font = {
-        family = "SauceCodePro Nerd Font Mono";
-        style = "Bold";
+      font_mono = {
+        family = "IntoneMono Nerd Font Mono";
+        style = "Regular";
         size = 10.0;
+      };
+      font_propo = {
+        family = "IntoneMono Nerd Font Propo";
+        style = "Regular";
+        size = 11.0;
       };
       term = null;
       programs = {

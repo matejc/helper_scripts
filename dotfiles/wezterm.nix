@@ -13,9 +13,9 @@
 
     return {
       font = wezterm.font({
-        family = '${variables.font.family}',
+        family = '${variables.font_mono.family}',
       }),
-      font_size = ${toString variables.font.size},
+      font_size = ${toString variables.font_mono.size},
       warn_about_missing_glyphs = false,
       default_cursor_style = 'SteadyBar',
       window_background_opacity = 0.95,
@@ -64,8 +64,8 @@
         },
       },
       window_frame = {
-        font = wezterm.font('${variables.font.family}', {}),
-        font_size = ${toString (1.0 + variables.font.size)},
+        font = wezterm.font('${variables.font_propo.family}', {}),
+        font_size = ${toString (1.0 + variables.font_propo.size)},
       },
       colors = {
         selection_fg = 'none',

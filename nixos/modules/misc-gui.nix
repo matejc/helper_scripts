@@ -38,6 +38,7 @@ in
       pkgs.font-awesome
       pkgs.corefonts
       pkgs.nerd-fonts.sauce-code-pro
+      pkgs.nerd-fonts.intone-mono
     ];
   };
 }

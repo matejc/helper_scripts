@@ -8,7 +8,7 @@
 #: individual font faces and even specify special fonts for particular
 #: characters.
 
-  font_family      ${variables.font.family}
+  font_family      ${variables.font_mono.family}
   bold_font        auto
   italic_font      auto
   bold_italic_font auto
@@ -25,7 +25,7 @@
 #:     italic_font      Operator Mono Book Italic
 #:     bold_italic_font Operator Mono Medium Italic
 
-  font_size ${toString variables.font.size}
+  font_size ${toString variables.font_mono.size}
 
 #: Font size (in pts)
 

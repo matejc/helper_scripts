@@ -20,7 +20,7 @@ let
         gnome_schema=org.gnome.desktop.interface
         ${pkgs.glib}/bin/gsettings set $gnome_schema gtk-theme 'Breeze-Dark'
         ${pkgs.glib}/bin/gsettings set $gnome_schema color-scheme 'prefer-dark'
-        ${pkgs.glib}/bin/gsettings set $gnome_schema font-name '${config.variables.font.family} ${toString config.variables.font.size}'
+        ${pkgs.glib}/bin/gsettings set $gnome_schema font-name '${config.variables.font_propo.family} ${toString config.variables.font_propo.size}'
       '';
   };
   recordCmd = pkgs.writeShellScript "record.sh" ''
@@ -165,9 +165,9 @@ in
     gtk = {
       enable = true;
       font = {
-        package = pkgs.nerd-fonts.sauce-code-pro;
-        name = config.variables.font.family;
-        size = builtins.floor config.variables.font.size;
+        package = pkgs.nerd-fonts.intone-mono;
+        name = config.variables.font_propo.family;
+        size = builtins.floor config.variables.font_propo.size;
       };
       iconTheme = {
         name = "breeze-dark";
@@ -238,7 +238,7 @@ in
           };
           userChrome = ''
             * {
-               font-size: ${toString config.variables.font.size}pt !important;
+               font-size: ${toString config.variables.font_propo.size}pt !important;
             }
 
             /* Hide main tabs toolbar */

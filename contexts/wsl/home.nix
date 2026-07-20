@@ -72,10 +72,15 @@ in
       wirelessInterfaces = [];
       ethernetInterfaces = [ variables.networkInterface ];
       mounts = [ "/" ];
-      font = {
+      font_mono = {
         family = "SauceCodePro NFM";
-        style = "Bold";
+        style = "Regular";
         size = 10.0;
+      };
+      font_propo = {
+        family = "SauceCodePro NFM";
+        style = "Regular";
+        size = 11.0;
       };
       term = null;
       programs = {

@@ -511,7 +511,7 @@ let
         if exists('g:GuiLoaded')
           GuiPopupmenu 0
           GuiTabline 0
-          GuiFont! ${lib.escape [ " " ] "${variables.font.family}:h${toString variables.font.size}"}
+          GuiFont! ${lib.escape [ " " ] "${variables.font_mono.family}:h${toString variables.font_mono.size}"}
           "call GuiClipboard()
           call rpcnotify(0, 'Gui', 'Clipboard', 1)
         endif
@@ -520,7 +520,7 @@ let
           let g:neovide_cursor_animation_length=0.1
           let g:neovide_position_animation_length = 0.1
           let g:neovide_scroll_animation_length = 0.1
-          set guifont=${lib.escape [ " " ] "${variables.font.family}:h${toString variables.font.size}"}
+          set guifont=${lib.escape [ " " ] "${variables.font_mono.family}:h${toString variables.font_mono.size}"}
 
           let g:neovide_opacity = 0.95
           let g:neovide_normal_opacity = 0.95
@@ -531,9 +531,9 @@ let
         endif
 
     lua << EOF
-          vim.g.gui_font_default_size = ${toString variables.font.size}
+          vim.g.gui_font_default_size = ${toString variables.font_mono.size}
           vim.g.gui_font_size = vim.g.gui_font_default_size
-          vim.g.gui_font_face = "${variables.font.family}"
+          vim.g.gui_font_face = "${variables.font_mono.family}"
 
           RefreshGuiFont = function()
             vim.opt.guifont = string.format("%s:h%s",vim.g.gui_font_face, vim.g.gui_font_size)
@@ -585,7 +585,7 @@ let
         set cursorline
         set number
 
-        set guifont=${lib.escape [ " " ] "${variables.font.family}:h${toString variables.font.size}"}
+        set guifont=${lib.escape [ " " ] "${variables.font_mono.family}:h${toString variables.font_mono.size}"}
         set termguicolors
         set background=dark
 

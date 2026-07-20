@@ -32,11 +32,11 @@ in
     # fallback fonts according to the given orders if possible.
     # NOTE: Not all backends support fallback font.
     fonts:
-      - ${variables.font.family}
+      - ${variables.font_mono.family}
 
     # The font size to be used.
     #
-    font_size: ${toString variables.font.size}
+    font_size: ${toString variables.font_mono.size}
 
     # Set to true if the terminal's default configuration should be loaded
     # first. Other glrnvim configurations will overwrite the terminal settings

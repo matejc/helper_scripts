@@ -3,8 +3,8 @@
   target = "${variables.homeDir}/.config/ghostty/config.ghostty";
   source = pkgs.writeScript "ghostty.config" ''
     theme = Monokai Soda
-    font-family = ${variables.font.family}
-    font-size = ${toString variables.font.size}
+    font-family = ${variables.font_mono.family}
+    font-size = ${toString variables.font_mono.size}
     background-opacity = 0.95
     window-decoration = false
     cursor-invert-fg-bg = true

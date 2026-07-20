@@ -263,7 +263,7 @@ in
         border: none;
         border-radius: 0;
         /* `otf-font-awesome` is required to be installed for icons */
-        font-family: ${variables.font.family}, Helvetica, sans-serif;
+        font-family: ${variables.font_propo.family}, Helvetica, sans-serif;
         font-size: 13px;
         font-weight: bold;
         min-height: 0;

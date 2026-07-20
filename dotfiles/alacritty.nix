@@ -62,7 +62,7 @@
     style = "Beam"
 
     [font]
-    size = ${toString variables.font.size}
+    size = ${toString variables.font_mono.size}
 
     [font.bold]
     style = "Bold"
@@ -74,7 +74,7 @@
     style = "Italic"
 
     [font.normal]
-    family = "${variables.font.family}"
+    family = "${variables.font_mono.family}"
     style = "Normal"
 
     [mouse]

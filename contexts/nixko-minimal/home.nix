@@ -67,10 +67,15 @@ in
       wirelessInterfaces = [ "wlp192s0" ];
       ethernetInterfaces = [ ];
       mounts = [ "/" ];
-      font = {
-        family = "SauceCodePro Nerd Font Mono";
+      font_mono = {
+        family = "IntoneMono Nerd Font Mono";
+        style = "Regular";
         size = 12.0;
-        style = "Bold";
+      };
+      font_propo = {
+        family = "IntoneMono Nerd Font Propo";
+        style = "Regular";
+        size = 13.0;
       };
       i3-msg = "${variables.graphical.exec} msg";
       term = null;

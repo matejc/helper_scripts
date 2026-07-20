@@ -20,8 +20,10 @@ let
         metrics = false;
         diagnostics = false;
       };
-      buffer_font_family = variables.font.family;
-      buffer_font_size = variables.font.size + 3;
+      buffer_font_family = variables.font_mono.family;
+      buffer_font_size = variables.font_mono.size + 3;
+      ui_font_family = variables.font_propo.family;
+      ui_font_size = variables.font_propo.size + 3;
       project_panel = {
         default_width = 200;
         file_icons = false;
@@ -55,7 +57,7 @@ let
         env = {
           TERM = "xterm-256color";
         };
-        font_family = variables.font.family;
+        font_family = variables.font_mono.family;
         font_features = null;
         font_size = null;
         line_height = "standard";
