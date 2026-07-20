@@ -71,6 +71,30 @@
       }
     }
   },
+  "nixtu": {
+    "enabled": 1,
+    "hidden": true,
+    "description": "Home Manager",
+    "nixexprinput": "src",
+    "nixexprpath": "build.nix",
+    "checkinterval": 600,
+    "schedulingshares": 100,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 10,
+    "inputs": {
+      "src": {
+        "type": "git",
+        "value": "https://github.com/matejc/helper_scripts.git",
+        "emailresponsible": false
+      },
+      "name": {
+        "type": "string",
+        "value": "nixtu",
+        "emailresponsible": false
+      }
+    }
+  },
   "wsl": {
     "enabled": 1,
     "hidden": true,
