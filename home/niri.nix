@@ -641,6 +641,7 @@ in
               speed = 2.0;
             };
             niri_overview_type_to_launch_enabled = true;
+            avatar_path = "${config.variables.homeDir}/.face";
           };
           theme = {
             mode = "dark";
