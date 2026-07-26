@@ -147,7 +147,8 @@ in
     fonts.fontconfig.enable = true;
     home.packages = [
       pkgs.font-awesome
-      config.gtk.font.package
+      config.variables.font_propo.package
+      config.variables.font_mono.package
       pkgs.noto-fonts-color-emoji
     ]
     ++ services-cmds
@@ -165,7 +166,7 @@ in
     gtk = {
       enable = true;
       font = {
-        package = pkgs.nerd-fonts.intone-mono;
+        package = config.variables.font_propo.package;
         name = config.variables.font_propo.family;
         size = builtins.floor config.variables.font_propo.size;
       };
@@ -188,6 +189,18 @@ in
     qt = {
       enable = true;
       platformTheme.name = "adwaita";
+      qt6ctSettings = {
+        Fonts = {
+          fixed = "\"${config.variables.font_mono.family},${toString config.variables.font_mono.size}\"";
+          general = "\"${config.variables.font_propo.family},${toString config.variables.font_propo.size}\"";
+        };
+      };
+      qt5ctSettings = {
+        Fonts = {
+          fixed = "\"${config.variables.font_mono.family},${toString config.variables.font_mono.size}\"";
+          general = "\"${config.variables.font_propo.family},${toString config.variables.font_propo.size}\"";
+        };
+      };
     };
 
     programs.chromium = {
