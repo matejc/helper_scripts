@@ -76,11 +76,13 @@ in
         family = "SauceCodePro NFM";
         style = "Regular";
         size = 10.0;
+        package = pkgs.nerd-fonts.sauce-code-pro;
       };
       font_propo = {
         family = "SauceCodePro NFM";
         style = "Regular";
         size = 11.0;
+        package = pkgs.nerd-fonts.sauce-code-pro;
       };
       term = null;
       programs = {
