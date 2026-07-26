@@ -6,8 +6,10 @@ pkgs.stdenv.mkDerivation {
   version = "dev";
 
   src = pkgs.fetchurl {
-    url = "https://swiftpointdrivers.blob.core.windows.net/pro/beta/linux/Swiftpoint%20X1%20Control%20Panel%203.1.0.76-db4a0109.tar.xz";
-    sha256 = "sha256-zLcIoF/noPNVwUDoHJopAcT2s5HtwEFdEJWSxANRzgo=";
+    # url = "https://swiftpointdrivers.blob.core.windows.net/pro/beta/linux/Swiftpoint%20X1%20Control%20Panel%203.1.0.76-db4a0109.tar.xz";
+    url = "https://drive.usercontent.google.com/download?id=1K8iIzPn7UMVJTjoqPfNgojys_WwfpUmz&export=download&authuser=0";
+    name = "swiftpoint.tar.xz";
+    sha256 = "sha256-ZtG9mgpyxD7cVYYU2Sh/poHArAlcCOd9JELiobIIHhM=";
   };
 
   nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -53,7 +55,6 @@ pkgs.stdenv.mkDerivation {
       }" \
       --set QT_PLUGIN_PATH "$out/share/swiftpoint/plugins" \
       --set QT_QPA_PLATFORM_PLUGIN_PATH "$out/share/swiftpoint/plugins/platforms"
-      # --set QT_QPA_PLATFORM wayland
     mkdir -p $out/etc/udev/rules.d
     ln -s $out/share/swiftpoint/60-Swiftpoint.rules $out/etc/udev/rules.d/
   '';

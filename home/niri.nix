@@ -287,13 +287,22 @@ in
 
           window-rule {
               draw-border-with-background true
-              geometry-corner-radius 3
+              geometry-corner-radius 10
+              clip-to-geometry true
           }
 
           window-rule {
               match is-floating=true
               min-width 100
               min-height 100
+          }
+
+          // Floating Noctalia settings window.
+          window-rule {
+            match app-id="dev.noctalia.Noctalia"
+            open-floating true
+            default-column-width { fixed 1080; }
+            default-window-height { fixed 920; }
           }
 
           layout {
@@ -592,7 +601,7 @@ in
 
           // Settings for debugging. Not meant for normal use.
           // These can change or stop working at any point with little notice.
-          /-debug {
+          debug {
               // Make niri take over its DBus services even if it's not running as a session.
               // Useful for testing screen recording changes without having to relogin.
               // The main niri instance will *not* currently take back the services; so you will
@@ -615,6 +624,9 @@ in
 
               // Override the DRM device that niri will use for all rendering.
               // render-drm-device "/dev/dri/renderD129"
+
+              // Allows notification actions and window activation from Noctalia.
+              honor-xdg-activation-with-invalid-serial
           }
         '';
       programs.noctalia = {
@@ -623,14 +635,17 @@ in
         systemd.enable = true;
 
         settings = { # This may also be a string or path to a .toml file.
-          shell.animation = {
-            enabled = true;
-            speed = 2.0;
+          shell = {
+            animation = {
+              enabled = true;
+              speed = 2.0;
+            };
+            niri_overview_type_to_launch_enabled = true;
           };
           theme = {
             mode = "dark";
             source = "builtin";
-            community_palette = "Gruvbox";
+            builtin = "Gruvbox";
             # wallpaper_scheme = "m3-rainbow";
           };
           wallpaper = {
