@@ -68,6 +68,12 @@
       ln -sf ${pkgs.python312}/bin/python3 /usr/bin/python3
     '';
 
+    # quickemu fix
+    system.activationScripts.smbd = ''
+      mkdir -p /usr/sbin
+      ln -sf ${pkgs.samba}/bin/smbd /usr/sbin/smbd
+    '';
+
     # virtualisation.libvirtd.enable = true;
     # users.groups.libvirtd.members = [ defaultUser ];
     # programs.virt-manager.enable = true;
