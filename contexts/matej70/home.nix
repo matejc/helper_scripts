@@ -229,7 +229,6 @@ in
       xwayland-run
       winetricks
       umu-launcher
-      # nexusmods-app-unfree
       heroic
       swiftpoint
       eog
