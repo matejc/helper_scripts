@@ -135,7 +135,6 @@ in
         networkmanager
         wl-clipboard
         wlsunset
-        app2unit
       ];
 
       programs.niri.config =
@@ -429,7 +428,7 @@ in
           recent-windows {
               // off
               previews {
-                  max-height 480
+                  max-height 300
                   max-scale 0.5
               }
 
