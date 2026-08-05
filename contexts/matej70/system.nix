@@ -20,13 +20,12 @@
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
+    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-rc;
     # boot.kernelPackages = pkgs.linuxPackages_latest;
     services.scx.enable = true;
-    services.scx.scheduler = "scx_bpfland";
+    services.scx.scheduler = "scx_lavd";
     services.scx.extraArgs = [
-      "-m"
-      "performance"
+      "--performance"
     ];
     services.scx.package = pkgs.scx.full;
     boot.kernelModules = [ "ntsync" ];

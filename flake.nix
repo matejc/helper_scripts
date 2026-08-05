@@ -203,8 +203,10 @@
         nix-cachyos-kernel =
           { nix-cachyos-kernel-src, ... }:
           {
-            linux-cachyos-latest-lto =
-              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest-lto;
+            linux-cachyos-latest =
+              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-latest;
+            linux-cachyos-rc =
+              (import nix-cachyos-kernel-src).packages.x86_64-linux.linux-cachyos-rc;
           };
       };
       homeConfigurations = {
