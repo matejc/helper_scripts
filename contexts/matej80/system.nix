@@ -26,7 +26,6 @@
         intel-media-driver
       ];
     };
-    networking.networkmanager.enable = true;
     services.dbus.packages = [ pkgs.dconf ];
     services.gnome.at-spi2-core.enable = true;
     services.gnome.gnome-keyring.enable = true;
