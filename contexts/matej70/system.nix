@@ -20,7 +20,7 @@
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
-    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-rc;
+    boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
     # boot.kernelPackages = pkgs.linuxPackages_latest;
     services.scx.enable = true;
     services.scx.scheduler = "scx_lavd";
@@ -28,6 +28,7 @@
       "--performance"
     ];
     services.scx.package = pkgs.scx.full;
+    # boot.kernelParams = [ "mem_sleep_default=s2idle" ];
     boot.kernelModules = [ "ntsync" ];
     services.udev.packages = [
       (pkgs.writeTextFile {
@@ -45,9 +46,32 @@
       })
       (pkgs.callPackage ../../nixes/swiftpoint.nix { })
     ];
-    services.udev.extraRules = ''
-      ACTION=="add|change", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="0e81", ATTR{power/wakeup}="disabled"
-    '';
+
+    systemd.services.swiftpoint-suspend-fix = {
+      description = "Disable Swiftpoint USB devices during suspend";
+      wantedBy = [ "sleep.target" ];
+      before = [ "sleep.target" ];
+      partOf = [ "sleep.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = ''
+        for dev in /sys/bus/usb/devices/*; do
+          if [ "$(cat "$dev/idVendor" 2>/dev/null)" = "214e" ]; then
+            echo 0 > "$dev/authorized"
+          fi
+        done
+      '';
+      postStop = ''
+        for dev in /sys/bus/usb/devices/*; do
+          if [ "$(cat "$dev/idVendor" 2>/dev/null)" = "214e" ]; then
+            echo 1 > "$dev/authorized"
+          fi
+        done
+      '';
+    };
+
     nixpkgs.config = import ../../dotfiles/nixpkgs-config.nix;
     programs.steam = {
       enable = true;
