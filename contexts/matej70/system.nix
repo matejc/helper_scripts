@@ -48,27 +48,54 @@
     ];
 
     systemd.services.swiftpoint-suspend-fix = {
-      description = "Disable Swiftpoint USB devices during suspend";
+      description = "Disable Swiftpoint USB ports during suspend";
+
       wantedBy = [ "sleep.target" ];
       before = [ "sleep.target" ];
       partOf = [ "sleep.target" ];
+
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = true;
       };
+
       script = ''
+        : > /run/swiftpoint-disabled-ports
+
         for dev in /sys/bus/usb/devices/*; do
-          if [ "$(cat "$dev/idVendor" 2>/dev/null)" = "214e" ]; then
-            echo 0 > "$dev/authorized"
-          fi
+          [ "$(cat "$dev/idVendor" 2>/dev/null)" = "214e" ] || continue
+
+          real="$(readlink -f "$dev")"
+          name="$(basename "$real")"
+          parent="$(dirname "$real")"
+
+          port="''${name##*.}"
+
+          disable="$(
+            find "$parent" -maxdepth 3 -type f \
+              -path "*-port$port/disable" \
+              -print -quit
+          )"
+
+          [ -n "$disable" ] || continue
+
+          echo "Disable: $(cat "$dev/idVendor"):$(cat "$dev/idProduct") via $(basename "$(dirname "$disable")")"
+          echo "$disable" >> /run/swiftpoint-disabled-ports
+          echo 1 > "$disable"
         done
       '';
+
       postStop = ''
-        for dev in /sys/bus/usb/devices/*; do
-          if [ "$(cat "$dev/idVendor" 2>/dev/null)" = "214e" ]; then
-            echo 1 > "$dev/authorized"
-          fi
-        done
+        [ -f /run/swiftpoint-disabled-ports ] || exit 0
+
+        while read -r disable; do
+          [ -e "$disable" ] || continue
+
+          echo "Enable: $(basename "$(dirname "$disable")")"
+          echo 0 > "$disable"
+        done < /run/swiftpoint-disabled-ports
+
+        rm -f /run/swiftpoint-disabled-ports
       '';
     };
 
