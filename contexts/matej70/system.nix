@@ -105,6 +105,7 @@
       package = pkgs.steam.override {
         extraPkgs = pkgs: [ pkgs.xdg-user-dirs ];
       };
+      extraCompatPackages = with pkgs; [ proton-ge-bin ];
     };
     hardware.openrazer = {
       # enable = true;
@@ -141,7 +142,6 @@
       settings.cue = true;
     };
     security.pam.services.greetd.fprintAuth = true;
-    security.pam.services.quickshell.fprintAuth = true;
     hardware.graphics = {
       enable = true;
       enable32Bit = true;

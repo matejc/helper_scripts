@@ -93,7 +93,6 @@ in
             niri = config.variables.graphical.package;
           };
           noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
-          quickshell = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })
       ];
 

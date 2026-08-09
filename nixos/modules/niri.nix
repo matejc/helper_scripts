@@ -16,5 +16,6 @@
       package = pkgs.niri-unstable;
     };
     programs.gpu-screen-recorder.enable = true;
+    niri-flake.cache.enable = true;
   };
 }
