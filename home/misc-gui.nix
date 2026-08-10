@@ -248,6 +248,21 @@ in
             "browser.tabs.drawInTitlebar" = false;
             "browser.toolbars.bookmarks.visibility" = "never";
             "browser.startup.page" = 3;
+
+            # Firefox about:config privacy settings
+            "privacy.fingerprintingProtection" = true;  # Enables Firefox’s newer fingerprinting protections
+            "privacy.resistFingerprinting" = false;  # alternatively set this true for stronger fingerprint resistance, might be problematic for regular browser usage
+
+            "privacy.fingerprintingProtection.pbmode" = false;
+            "privacy.resistFingerprinting.pbmode" = true;  # use stronger fingerprint resistance for private browsing
+
+            "privacy.trackingprotection.enabled" = true;  # Enables tracking protection in normal browsing
+            "privacy.trackingprotection.pbmode.enabled" = true;
+            "privacy.trackingprotection.emailtracking.enabled" = true;  # Blocks known email-tracking resources
+            "dom.security.https_only_mode" = true;  # Forces HTTPS where possible
+            "dom.security.https_only_mode_pbm" = true;
+            "network.http.referer.XOriginTrimmingPolicy" = 2;  # For cross-origin requests, sends only the origin rather than the full referring URL
+            "browser.send_pings" = false;  # Disables hyperlink auditing/ping requests
           };
           userChrome = ''
             * {
