@@ -13,7 +13,7 @@ let
       url = thoriumSrc.${system};
       sha256 = "sha256-RBPSGgwF6A4KXgLdn/YIrdFpZG2+KwMJ8MkTjSPpkhU=";
     };
-    appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
+    appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
   in pkgs.appimageTools.wrapType2 {
     inherit pname version src;
     extraInstallCommands = ''

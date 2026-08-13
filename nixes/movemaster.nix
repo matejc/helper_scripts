@@ -21,7 +21,7 @@ let
     '';
     outputs = [ "out" "update" "docs" ];
   };
-  appimageContents = pkgs.appimageTools.extractType2 { inherit pname version src; };
+  appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
 in
   pkgs.appimageTools.wrapType2 {
     inherit pname version src;
