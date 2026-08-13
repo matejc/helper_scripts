@@ -233,7 +233,6 @@ in
       swiftpoint
       eog
       file-roller
-      wf-recorder
       tmux
       kitty
       networkmanagerapplet
