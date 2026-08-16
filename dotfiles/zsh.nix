@@ -281,6 +281,7 @@ in
     }
     zle -N first-tab
     bindkey '^I' first-tab
+    # fix the double Esc:
     bindkey $'\e\t' first-tab
     .{1..9} (){ local d=.; repeat ''${0:1} d+=/..; cd $d;}
     - (){cd -;}

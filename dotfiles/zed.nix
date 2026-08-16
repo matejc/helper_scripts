@@ -173,6 +173,8 @@ in
               "workspace::SendKeystrokes"
               "escape"
             ];
+            "ctrl-shift-c" = "editor::Copy";
+            "ctrl-shift-v" = "editor::Paste";
           };
         }
         {
