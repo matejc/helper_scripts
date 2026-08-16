@@ -281,6 +281,7 @@ in
     }
     zle -N first-tab
     bindkey '^I' first-tab
+    bindkey $'\e\t' first-tab
     .{1..9} (){ local d=.; repeat ''${0:1} d+=/..; cd $d;}
     - (){cd -;}
 
