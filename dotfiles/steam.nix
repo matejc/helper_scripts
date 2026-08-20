@@ -149,6 +149,36 @@ in
   target = "${variables.homeDir}/bin/steam-xrun";
   source = "${steam-xrun}/bin/steam-xrun";
 } {
+  target = "${variables.homeDir}/bin/umu-exec";
+  source = pkgs.writeShellScript "umu-exec.sh" ''
+    set -euo pipefail
+
+    _exec="''${1?"Missing executable path as first argument!"}"
+
+    if [ -z "$_exec" ]
+    then
+      echo "Usage: $0 <exe> [args]" >&2
+      exit 1
+    fi
+
+    exec="$(${pkgs.coreutils}/bin/realpath "$_exec")"
+    if [[ "$exec" == "$HOME/"* ]]
+    then
+        prefix="$HOME"
+    else
+        prefix=$(${pkgs.util-linux}/bin/findmnt -n -o TARGET -T "$exec")
+    fi
+
+    exec_hash="$(echo -n "$exec" | ${pkgs.coreutils}/bin/md5sum | ${pkgs.coreutils}/bin/cut -d' ' -f1)"
+
+    export PROTONPATH="''${PROTONPATH:-"GE-Proton"}"
+    export WINEPREFIX="''${WINEPREFIX:-"$prefix/WinePrefixes/$exec_hash"}"
+    mkdir -p "$WINEPREFIX"
+    echo "Using WINEPREFIX=$WINEPREFIX" >&2
+    echo "Using PROTONPATH=$PROTONPATH" >&2
+    exec ${pkgs.umu-launcher}/bin/umu-run "$exec" "''${@:2}"
+  '';
+} {
   target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
   source = "${steamtinkerlaunch}/bin/steamtinkerlaunch";
 } {
