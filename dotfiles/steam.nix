@@ -170,13 +170,18 @@ in
     fi
 
     exec_hash="$(echo -n "$exec" | ${pkgs.coreutils}/bin/md5sum | ${pkgs.coreutils}/bin/cut -d' ' -f1)"
+    exec_name="$(basename "$exec")"
 
     export PROTONPATH="''${PROTONPATH:-"GE-Proton"}"
     export WINEPREFIX="''${WINEPREFIX:-"$prefix/WinePrefixes/$exec_hash"}"
+    export PWD="$(dirname "$exec")"
     mkdir -p "$WINEPREFIX"
     echo "Using WINEPREFIX=$WINEPREFIX" >&2
     echo "Using PROTONPATH=$PROTONPATH" >&2
-    exec ${pkgs.umu-launcher}/bin/umu-run "$exec" "''${@:2}"
+    echo "Using PWD=$PWD" >&2
+    echo "Launching ./$exec_name ''${@:2}" >&2
+    cd "$PWD"
+    exec ${pkgs.umu-launcher}/bin/umu-run "./$exec_name" "''${@:2}"
   '';
 } {
   target = "${variables.homeDir}/.steam/steam/compatibilitytools.d/SteamTinkerLaunch/steamtinkerlaunch";
