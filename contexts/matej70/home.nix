@@ -225,9 +225,7 @@ in
       jq
       scanmem
       steam-run
-      steamtinkerlaunch
       xwayland-run
-      winetricks
       umu-launcher
       heroic
       swiftpoint
@@ -236,11 +234,8 @@ in
       tmux
       kitty
       networkmanagerapplet
-      movemaster
       quickemu
-      creality-print
       airscan
-      opencode
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;

@@ -23,9 +23,10 @@
     boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
     # boot.kernelPackages = pkgs.linuxPackages_latest;
     services.scx.enable = true;
-    services.scx.scheduler = "scx_lavd";
+    services.scx.scheduler = "scx_bpfland";
     services.scx.extraArgs = [
-      "--performance"
+      "-m"
+      "performance"
     ];
     services.scx.package = pkgs.scx.full;
     # boot.kernelParams = [ "mem_sleep_default=s2idle" ];
@@ -48,6 +49,7 @@
     ];
 
     systemd.services.swiftpoint-suspend-fix = {
+      enable = false;
       description = "Disable Swiftpoint USB ports during suspend";
 
       wantedBy = [ "sleep.target" ];
