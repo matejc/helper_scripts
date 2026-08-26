@@ -266,61 +266,77 @@ in
           };
           userChrome = ''
             * {
-               font-size: ${toString config.variables.font_propo.size}pt !important;
+              font-size: ${toString config.variables.font_propo.size}pt !important;
             }
 
             /* Hide main tabs toolbar */
 
             #main-window[tabsintitlebar="true"]:not([extradragspace="true"]) #TabsToolbar > .toolbar-items {
-                opacity: 0;
-                pointer-events: none;
+              opacity: 0;
+              pointer-events: none;
             }
 
             #main-window:not([tabsintitlebar="true"]) #TabsToolbar {
-                visibility: collapse !important;
+              visibility: collapse !important;
             }
 
             /* Sidebar min and max width removal */
 
             #sidebar-box {
-                max-width: none !important;
-                min-width: 0px !important;
+              max-width: none !important;
+              min-width: 0px !important;
             }
             /* Hide splitter, when using Tree Style Tab. */
 
             #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] + #sidebar-splitter {
-                display: none !important;
+              display: none !important;
             }
             /* Hide sidebar header, when using Tree Style Tab. */
 
             #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
-                visibility: collapse;
+              visibility: collapse;
             }
 
             /* Shrink sidebar until hovered, when using Tree Style Tab. */
             :root {
-                --thin-tab-width: 100px;
-                --wide-tab-width: 350px;
+              --thin-tab-width: 100px;
+              --wide-tab-width: 350px;
             }
 
             #sidebar-box:not([sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]) {
-                min-width: var(--wide-tab-width) !important;
-                max-width: none !important;
+              min-width: var(--wide-tab-width) !important;
+              max-width: none !important;
             }
 
             #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] {
-                position: relative !important;
-                transition: all 200ms !important;
-                min-width: var(--thin-tab-width) !important;
-                max-width: var(--thin-tab-width) !important;
-                z-index: calc(var(--browser-area-z-index-tabbox, 10000) + 1) !important;
+              position: relative !important;
+              transition: all 200ms !important;
+              min-width: var(--thin-tab-width) !important;
+              max-width: var(--thin-tab-width) !important;
+              z-index: calc(var(--browser-area-z-index-tabbox, 10000) + 1) !important;
             }
 
             #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]:hover {
-                transition: all 200ms !important;
-                min-width: var(--wide-tab-width) !important;
-                max-width: var(--wide-tab-width) !important;
-                margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1) !important;
+              transition: all 200ms !important;
+              min-width: var(--wide-tab-width) !important;
+              max-width: var(--wide-tab-width) !important;
+              margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1) !important;
+            }
+
+            /* Auto-hide sidebar when fullscreen */
+
+            #main-window[inFullscreen] #sidebar-box,
+
+            #main-window[inFullscreen] #sidebar-splitter {
+              display: none !important;
+              width: 0px !important;
+            }
+          '';
+          userContent = ''
+            @-moz-document url-prefix("moz-extension://") {
+              .newtab-button-box .newtab-button {
+                display: none !important;
+              }
             }
           '';
         };
