@@ -78,7 +78,7 @@ in
       };
       signing = {
         keyName = "id_ed25519";
-        allowedSigners = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPiQzUigZO8ZNhb6DMsMQkp11LhfyFSZNvIRBb8kYd4E matejc@matej70" ];
+        allowedSigners = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyLesVQbNR9JT0bknKeKxQYAIV19R4OAIeFmgWFrkVOG7lp5/mqUvs1ynaBFYfpN/WBkka3PFkiHlLTu3QAK9+Jqce8mmAxL7cxhPPCw8xGQSlqC6P2Ejrr6YaV9FyRuUX+agP2SSkryeldZdr4733L6QXAifEBDdEh41n6lPdhtIQSiIIRm5QavecORl/GofVUbk2xK60ZDSox4htMWYTbbWe4md91yNqEM7MskHSuprix5mAoBLct9Nf7/rPWagb4P8cTxmb8LRXHNoXU3dPjqVdjyzNGZJ0j8fs9VG+fbQxH2Fcz4CxfJSkufUTbngKNHHeHtLgmxYcXDAVHdWO8vIpHdEXcG+rcpko4ryOzHu7bK6VGX+e6sKbiHK8/hX+zp4jsR9midkORNtpN7j2UTqChJHTOk6Q8nVbLZ+XeQ+N+2SirJm3TfJKUcS2cfH1rhNoie+PNCJ8ykWMN8uMs7ESTECC6kjxhcFkqsVCQlilNH8kHj1dAlaktIZaLts=" "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPiQzUigZO8ZNhb6DMsMQkp11LhfyFSZNvIRBb8kYd4E matejc@matej70" ];
       };
       locale.all = "en_US.UTF-8";
       wirelessInterfaces = [ "wlp0s20f3" ];

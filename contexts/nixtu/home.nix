@@ -62,7 +62,10 @@ in
         id = "4da2b4fbe517560a41393bc38a9f2b40a05226ff1adf0840a6a0b841b20fc32f";
         hash = "sha256-bUa7RrA6M+NUqX7OZJ2khUoBrU0iGEzIZSflK4fPKOg=";
       };
-      signingkey = "429264DEEB7036EE8B426AA9E97E56DFA314778A";
+      signing = {
+        keyName = "id_ed25519";
+        allowedSigners = [ "" ];
+      };
       locale.all = "en_US.UTF-8";
       wirelessInterfaces = [ "wlp192s0" ];
       ethernetInterfaces = [ ];
