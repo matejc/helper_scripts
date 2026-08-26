@@ -76,7 +76,10 @@ in
         id = "4da2b4fbe517560a41393bc38a9f2b40a05226ff1adf0840a6a0b841b20fc32f";
         hash = "sha256-bUa7RrA6M+NUqX7OZJ2khUoBrU0iGEzIZSflK4fPKOg=";
       };
-      signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPiQzUigZO8ZNhb6DMsMQkp11LhfyFSZNvIRBb8kYd4E matejc@matej70";
+      signing = {
+        keyName = "id_ed25519";
+        allowedSigners = [ "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPiQzUigZO8ZNhb6DMsMQkp11LhfyFSZNvIRBb8kYd4E matejc@matej70" ];
+      };
       locale.all = "en_US.UTF-8";
       wirelessInterfaces = [ "wlp0s20f3" ];
       ethernetInterfaces = [ "eno1" ];

@@ -83,7 +83,7 @@ in
     [user]
         name = ${variables.fullName}
         email = ${variables.email}
-        signingkey = key::${variables.signingkey}
+        signingkey = ${variables.homeDir}/.ssh/${variables.signing.keyName}
     [core]
         editor = ${variables.programs.editor}
         excludesfile = ${variables.homeDir}/.gitignore
@@ -125,9 +125,7 @@ in
     [gpg]
         format = ssh
     [gpg "ssh"]
-        allowedSignersFile = ${lib.toFile "allowed_signers" ''
-          ${variables.email} ${variables.signingkey}
-        ''}
+        allowedSignersFile = ${lib.toFile "allowed_signers" (lib.concatMapStringsSep "\n" (pubKey: "${variables.email} ${pubKey}") variables.signing.allowedSigners)}
     [credential]
         helper = store
     [include]
