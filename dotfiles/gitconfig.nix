@@ -83,7 +83,7 @@ in
     [user]
         name = ${variables.fullName}
         email = ${variables.email}
-        signingkey = ${variables.signingkey}
+        signingkey = key::${variables.signingkey}
     [core]
         editor = ${variables.programs.editor}
         excludesfile = ${variables.homeDir}/.gitignore
@@ -123,7 +123,11 @@ in
         gpgsign = true
         verbose = true
     [gpg]
-        program = ${pkgs.gnupg}/bin/gpg
+        format = ssh
+    [gpg "ssh"]
+        allowedSignersFile = ${lib.toFile "allowed_signers" ''
+          ${variables.email} ${variables.signingkey}
+        ''}
     [credential]
         helper = store
     [include]
