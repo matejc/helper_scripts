@@ -21,7 +21,7 @@
     });
 
     services.tlp = {
-      enable = true;
+      enable = lib.mkDefault true;
       settings = {
         START_CHARGE_THRESH_BAT0 = 90;
         STOP_CHARGE_THRESH_BAT0 = 95;

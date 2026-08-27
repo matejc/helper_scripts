@@ -250,6 +250,7 @@ in
                   position x=${x} y=${y}
                 ''
               }
+              ${if o ? vrr && o.vrr then "variable-refresh-rate" else ""}
             }
           '') config.variables.outputs}
 

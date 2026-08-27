@@ -87,6 +87,8 @@ let
       collaboration_panel.button = false;
 
       restore_on_startup = "last_session";
+
+      markdown_preview.limit_content_width = false;
     }
   );
 in
