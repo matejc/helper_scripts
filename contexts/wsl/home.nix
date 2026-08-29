@@ -66,7 +66,10 @@ in
       lockscreen = "${variables.homeDir}/bin/lockscreen";
       fullName = "Matej Cotman";
       email = "matej@matejc.com";
-      signingkey = "";
+      signing = {
+        keyName = "id_ed25519";
+        allowedSigners = [ ];
+      };
       locale.all = "en_US.UTF-8";
       networkInterface = "eth0";
       wirelessInterfaces = [];
