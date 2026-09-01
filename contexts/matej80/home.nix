@@ -95,7 +95,7 @@ in
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${config.programs.ghostty.package}/bin/ghostty +new-window";
+        terminal = "${config.programs.ghostty.package}/bin/ghostty";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
