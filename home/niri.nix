@@ -459,8 +459,8 @@ in
               Super+Shift+Slash { show-hotkey-overlay; }
 
               // Suggested binds for running programs: terminal, app launcher, screen locker.
-              Ctrl+Alt+T { spawn "${config.variables.programs.terminal}"; }
-              Ctrl+Alt+H { spawn "${config.variables.programs.filemanager}"; }
+              Ctrl+Alt+T { spawn-sh "${config.variables.programs.terminal}"; }
+              Ctrl+Alt+H { spawn-sh "${config.variables.programs.filemanager}"; }
               Super+Space { spawn-sh "${noctalia} msg panel-toggle launcher"; }
               Ctrl+Alt+Space { spawn-sh "${noctalia} msg panel-toggle launcher"; }
               Ctrl+Alt+L { spawn "${config.variables.lockscreen}"; }

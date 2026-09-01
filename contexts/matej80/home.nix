@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   osConfig,
   config,
   inputs,
@@ -29,15 +28,12 @@ in
 
   config = {
     dotfiles.paths = [
-      ../../dotfiles/xfce4-terminal.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
       ../../dotfiles/oath.nix
       ../../dotfiles/jstools.nix
-      ../../dotfiles/superslicer.nix
       ../../dotfiles/scan.nix
       ../../dotfiles/noctalialockscreen.nix
-      ../../dotfiles/kitty.nix
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix
       ../../dotfiles/mypassgen.nix
@@ -45,6 +41,9 @@ in
       ../../dotfiles/helix.nix
       ../../dotfiles/mac.nix
       ../../dotfiles/gravatar.nix
+      ../../dotfiles/tmux.nix
+      ../../dotfiles/zed.nix
+      ../../dotfiles/ghostty.nix
     ];
 
     variables = {
@@ -79,6 +78,7 @@ in
           field_prefix = "temp1";
         }
       ];
+      batteries = [ ];
       font_mono = {
         family = "SauceCodePro Nerd Font Mono";
         style = "Regular";
@@ -95,7 +95,7 @@ in
       programs = {
         filemanager = "${pkgs.pcmanfm}/bin/pcmanfm";
         #terminal = "${xfce.terminal}/bin/xfce4-terminal";
-        terminal = "${pkgs.kitty}/bin/kitty";
+        terminal = "${config.programs.ghostty.package}/bin/ghostty +new-window";
         # terminal = "${pkgs.wezterm}/bin/wezterm start --always-new-process";
         #dropdown = "env WAYLAND_DISPLAY=no  ${pkgs.tdrop}/bin/tdrop -mta -w -4 -y 90% terminal";
         #dropdown = "${dotFileAt "i3config.nix" 1} --class=ScratchTerm";
@@ -147,16 +147,11 @@ in
         nixpkgs = "${inputs.nixpkgs}";
       };
       startup = [
-        "${variables.profileDir}/bin/browser"
+        "${variables.profileDir}/bin/standardnotes"
         "${variables.profileDir}/bin/keepassxc"
-        "${variables.profileDir}/bin/logseq"
+        "${variables.profileDir}/bin/browser"
       ];
       services = [
-        {
-          name = "network-manager-applet";
-          delay = 5;
-          group = "always";
-        }
         {
           name = "kdeconnect-indicator";
           delay = 5;
@@ -166,26 +161,19 @@ in
     };
 
     home.stateVersion = "23.05";
-    services.kanshi.enable = true;
+    programs.ghostty.enable = true;
     services.kdeconnect.enable = true;
     services.kdeconnect.indicator = true;
     services.syncthing.enable = true;
-    services.syncthing.extraOptions = [
-      "-home=${config.variables.homeDir}/Syncthing/.config/syncthing"
-    ];
-    programs.waybar.enable = true;
-    home.packages = with pkgs; [
+    home.packages = [
+      inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
+    ] ++ (with pkgs; [
       networkmanagerapplet
-      deploy-rs
-      logseq
-      nheko
+      standardnotes
       keepassxc
-      kitty
-    ];
+      cinny
+    ]);
     programs.firefox.enable = true;
     programs.chromium.enable = true;
-    services.network-manager-applet.enable = true;
-    systemd.user.services.network-manager-applet.Service.ExecStart =
-      lib.mkForce "${pkgs.networkmanagerapplet}/bin/nm-applet --sm-disable --indicator";
   };
 }
