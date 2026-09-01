@@ -22,6 +22,7 @@
         trusted-users = [
           defaultUser
         ];
+        accept-flake-config = true;
       };
     };
 
