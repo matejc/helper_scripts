@@ -172,6 +172,8 @@ in
       standardnotes
       keepassxc
       cinny-desktop
+      signal-desktop
+      telegram-desktop
     ]);
     programs.firefox.enable = true;
     programs.chromium.enable = true;
