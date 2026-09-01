@@ -171,7 +171,7 @@ in
       networkmanagerapplet
       standardnotes
       keepassxc
-      cinny
+      cinny-desktop
     ]);
     programs.firefox.enable = true;
     programs.chromium.enable = true;
