@@ -377,6 +377,7 @@ in
 
     programs.ghostty = {
       enableZshIntegration = true;
+      enableBashIntegration = true;
       settings = {
         theme = "Monokai Remastered";
         background-opacity = 0.95;
