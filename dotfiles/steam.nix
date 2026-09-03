@@ -169,13 +169,15 @@ in
         prefix=$(${pkgs.util-linux}/bin/findmnt -n -o TARGET -T "$exec")
     fi
 
-    exec_hash="$(echo -n "$exec" | ${pkgs.coreutils}/bin/md5sum | ${pkgs.coreutils}/bin/cut -d' ' -f1)"
     exec_name="$(basename "$exec")"
+    exec_dir="$(dirname "$exec")"
+    exec_hash="$(echo -n "$exec_dir" | ${pkgs.coreutils}/bin/md5sum | ${pkgs.coreutils}/bin/cut -d' ' -f1)"
 
     export PROTONPATH="''${PROTONPATH:-"GE-Proton"}"
     export WINEPREFIX="''${WINEPREFIX:-"$prefix/WinePrefixes/$exec_hash"}"
-    export PWD="$(dirname "$exec")"
-    mkdir -p "$WINEPREFIX"
+    export PWD="$exec_dir"
+    mkdir -p "$WINEPREFIX/bin"
+    ln -sf "$exec" "$WINEPREFIX/bin/"
     echo "Using WINEPREFIX=$WINEPREFIX" >&2
     echo "Using PROTONPATH=$PROTONPATH" >&2
     echo "Using PWD=$PWD" >&2
