@@ -78,6 +78,8 @@ let
     title = "^Picture-in-Picture$"  # if not set will match no matter the title
     auto_add = true  # defaults to false
   '';
+
+  xwayland-satellite = pkgs.xwayland-satellite-stable;
 in
 {
   imports = [ inputs.noctalia.homeModules.default ];
@@ -117,7 +119,7 @@ in
         ".config/nirimap/config.toml" = lib.mkIf (config.variables?nirimap && config.variables.nirimap) { source = nirimapConfigFile; };
       };
 
-      home.packages = with pkgs; [
+      home.packages = [ xwayland-satellite ] ++ (with pkgs; [
         config.variables.graphical.package
         noctalia
         bluez
@@ -134,7 +136,7 @@ in
         networkmanager
         wl-clipboard
         wlsunset
-      ];
+      ]);
 
       programs.niri.config =
         let
@@ -443,7 +445,7 @@ in
           }
 
           xwayland-satellite {
-              path "${pkgs.xwayland-satellite-unstable}/bin/xwayland-satellite"
+              path "${xwayland-satellite}/bin/xwayland-satellite"
           }
 
           binds {

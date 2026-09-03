@@ -53,6 +53,7 @@
     # devenv.url = "github:cachix/devenv";
     niri = {
       url = "github:epireyn/niri-flake";
+      inputs.xwayland-satellite-stable.url = "github:Supreeeme/xwayland-satellite/v0.8.1";
     };
     # jupyenv = {
     #   url = "github:tweag/jupyenv/main";

@@ -191,9 +191,7 @@ in
         "${variables.profileDir}/bin/browser"
       ];
       steam = {
-        xrun = [
-          "swiftpoint"
-        ];
+        xrun = [ ];
         library = "/mnt/games/SteamLibrary";
         run = {
           # "2420110".compatibilityTool = "SteamTinkerLaunch";
