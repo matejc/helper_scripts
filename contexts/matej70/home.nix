@@ -220,8 +220,6 @@ in
       keepassxc
       mpv
       standardnotes
-      element-desktop
-      signal-desktop
       steamcmd
       jq
       scanmem
@@ -237,6 +235,9 @@ in
       networkmanagerapplet
       quickemu
       airscan
+      cinny-desktop
+      signal-desktop
+      telegram-desktop
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;
