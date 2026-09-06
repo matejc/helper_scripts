@@ -97,6 +97,7 @@ in
         configure-gtk = configure-gtk;
         recordCmd = recordCmd;
         t3code = pkgs.callPackage ../nixes/t3code.nix { };
+        amethyst-mod-manager = pkgs.callPackage ../nixes/amethyst-mod-manager.nix { };
       })
     ];
     home.file = {

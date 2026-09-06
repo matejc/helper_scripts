@@ -238,6 +238,7 @@ in
       cinny-desktop
       signal-desktop
       telegram-desktop
+      amethyst-mod-manager
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;
