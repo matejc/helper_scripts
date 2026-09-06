@@ -167,7 +167,10 @@
     };
     services.printing.enable = true;
     services.avahi.enable = true;
-    hardware.keyboard.qmk.enable = true;
+    hardware.keyboard.qmk = {
+      enable = true;
+      keychronSupport = true;
+    };
 
     programs.obs-studio = {
       enable = true;
