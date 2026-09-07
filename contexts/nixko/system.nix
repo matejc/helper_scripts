@@ -116,7 +116,7 @@
       (pkgs.writeTextFile {
         name = "bt-udev-rules";
         text = ''SUBSYSTEM=="usb", ATTR{idVendor}=="0e8d", ATTR{idProduct}=="0717", TAG+="uaccess"'';
-        destination = "/etc/udev/rules.d/99-bt-usb.rules";
+        destination = "/etc/udev/rules.d/70-bt-usb.rules";
       })
     ];
 

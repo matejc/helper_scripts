@@ -184,6 +184,7 @@ in
       docker-compose
       remmina
       xauth
+      sofka
     ];
     programs.direnv = {
       enable = true;
