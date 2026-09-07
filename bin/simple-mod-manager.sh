@@ -1,5 +1,5 @@
 #!/usr/bin/env nix-shell
-#!nix-shell -p bash unar coreutils -i bash
+#!nix-shell -p bash unar coreutils meld -i bash
 
 set -e
 
@@ -32,6 +32,10 @@ _mk_contents() {
         then
             mkdir -p "$dstFile"
             _mk_contents "$srcFile" "$dstFile"
+        elif [ -f "$dstFile" ] && ! diff -s "$srcFile" "$dstFile" >/dev/null
+        then
+            echo "  Meld '$srcFile' to '$dstFile' ..."
+            meld "$srcFile" "$dstFile"
         elif [ ! -e "$dstFile" ]
         then
             echo "  Linking '$srcFile' to '$dstFile' ..."
