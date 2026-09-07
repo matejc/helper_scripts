@@ -108,15 +108,20 @@
     #   dockerCompat = true;
     # };
     services.udev.packages = [
+      # (pkgs.writeTextFile {
+      #   name = "ppp-udev-rules";
+      #   text = ''KERNEL=="ppp*", MODE="0660", GROUP="wheel"'';
+      #   destination = "/etc/udev/rules.d/70-ppp.rules";
+      # })
       (pkgs.writeTextFile {
-        name = "ppp-udev-rules";
-        text = ''KERNEL=="ppp*", MODE="0660", GROUP="matejc"'';
-        destination = "/etc/udev/rules.d/70-ppp.rules";
+        name = "bt-udev-rules";
+        text = ''SUBSYSTEM=="usb", ATTR{idVendor}=="0e8d", ATTR{idProduct}=="0717", TAG+="uaccess"'';
+        destination = "/etc/udev/rules.d/99-bt-usb.rules";
       })
     ];
 
-    environment.etc."chromium/policies/managed/policy.json".text = builtins.toJSON {
-      CommandLineFlagSecurityWarningsEnabled = false;
-    };
+    # environment.etc."chromium/policies/managed/policy.json".text = builtins.toJSON {
+    #   CommandLineFlagSecurityWarningsEnabled = false;
+    # };
   };
 }

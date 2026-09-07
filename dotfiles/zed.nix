@@ -43,10 +43,10 @@ let
       };
       disable_ai = true;
 
-      node = {
-        path = lib.getExe pkgs.nodejs;
-        npm_path = lib.getExe' pkgs.nodejs "npm";
-      };
+      # node = {
+      #   path = lib.getExe pkgs.nodejs;
+      #   npm_path = lib.getExe' pkgs.nodejs "npm";
+      # };
 
       terminal = {
         alternate_scroll = "off";

@@ -183,8 +183,7 @@ in
       podman-compose
       docker-compose
       remmina
-      opencode
-      t3code
+      xauth
     ];
     programs.direnv = {
       enable = true;

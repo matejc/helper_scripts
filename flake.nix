@@ -85,7 +85,7 @@
     };
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
     quickemu = {
-      url = "github:codemedic/quickemu/feat/virtiofs-support";
+      url = "github:matejc/quickemu/feat/virtiofs-support";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

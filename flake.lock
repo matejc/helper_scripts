@@ -581,15 +581,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1780331130,
-        "narHash": "sha256-LiiPSJ9Kks9cX1YSGn60/W4j+yhNsfPmEl5kZh+1mlY=",
-        "owner": "codemedic",
+        "lastModified": 1788509920,
+        "narHash": "sha256-x8FBhL6zdRxq7qWzbS4jfSgR7Mcp+sdB+T2JAkVevGo=",
+        "owner": "matejc",
         "repo": "quickemu",
-        "rev": "6e1b4d6789d8736f212c205592c7fcf8e71dc456",
+        "rev": "7a36d429d7333d88e70ddf86be7581b88cdb0f14",
         "type": "github"
       },
       "original": {
-        "owner": "codemedic",
+        "owner": "matejc",
         "ref": "feat/virtiofs-support",
         "repo": "quickemu",
         "type": "github"
