@@ -97,7 +97,6 @@ in
         configure-gtk = configure-gtk;
         recordCmd = recordCmd;
         t3code = pkgs.callPackage ../nixes/t3code.nix { };
-        amethyst-mod-manager = pkgs.callPackage ../nixes/amethyst-mod-manager.nix { };
       })
     ];
     home.file = {
@@ -206,29 +205,21 @@ in
 
     programs.chromium = {
       package = pkgs.ungoogled-chromium;
-      commandLineArgs = ["--enable-features=UseOzonePlatform" "--ozone-platform=wayland"];
+      commandLineArgs = [ "--enable-features=UseOzonePlatform" "--ozone-platform=wayland" "--disable-features=ExtensionManifestV2Unsupported"];
       dictionaries = [
         pkgs.hunspellDictsChromium.en_US
       ];
       extensions =
         let
-          adn = rec {
-            id = "omdnkjimmikpnlkkcjdfkmfknempnppc";
-            version = "3.28.2";
-            crxPath = pkgs.fetchurl {
-              url = "https://github.com/dhowe/AdNauseam/releases/download/v${version}/adnauseam-${version}.chromium.crx";
-              name = "adnauseam-${version}.chromium.crx";
-              hash = "sha256-ddtwXbzC28TO6FI+vGHmWHz9bmH3pOewqP/FGmSw7mI=";
-            };
-          };
+          adn = import ../nixes/adnauseam.nix { inherit pkgs; };
         in
         [
           # { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-          { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
+          # { id = "ddkjiahejlhfcafbddmgiahcphecmpfh"; } # ublock origin lite
           # { id = "gcbommkclmclpchllfjekcdonpmejbdp"; } # https everywhere
           { id = "oboonakemofpalcgghocfoadofidjkkk"; } # keepassxc
           # { id = "clpapnmmlmecieknddelobgikompchkk"; } # disable automatic gain control
-          # adn
+          adn
         ];
     };
 

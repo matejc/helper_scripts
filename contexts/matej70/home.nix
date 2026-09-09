@@ -243,6 +243,15 @@ in
     programs.chromium.enable = true;
     programs.firefox.enable = true;
     programs.ghostty.enable = true;
+    xdg = {
+      mimeApps = {
+        defaultApplications = {
+          "x-scheme-handler/nxm" = [ "amethystmodmanager-nxm.desktop" ];
+          "x-scheme-handler/modl" = [ "amethystmodmanager-modl.desktop" ];
+          "x-scheme-handler/ror2mm" = [ "amethystmodmanager-ror2mm.desktop" ];
+        };
+      };
+    };
 
     programs.wireplumber = {
       enable = false;
