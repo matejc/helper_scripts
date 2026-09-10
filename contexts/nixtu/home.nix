@@ -149,6 +149,7 @@ in
       nil nixd
       opencode
       okteto
+      sofka
     ];
     programs.direnv = {
       enable = true;
