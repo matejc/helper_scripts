@@ -73,7 +73,7 @@ in
         tempstatus_all = tempstatus_all;
         searxngr = pkgs.callPackage ../nixes/searxngr.nix { };
         quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default.override { qemu_full = pkgs.qemu_kvm.override { cephSupport = false; }; };
-        sofka = pkgs.callPackage ../nixes/sofka.nix { };
+        sofka = import ../nixes/sofka.nix { inherit pkgs; };
       })
     ];
     nixpkgs.config = import ../dotfiles/nixpkgs-config.nix;
