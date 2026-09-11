@@ -300,11 +300,24 @@ in
 
           // Floating Noctalia settings window.
           window-rule {
-            match app-id="dev.noctalia.Noctalia"
-            open-floating true
-            default-column-width { fixed 1080; }
-            default-window-height { fixed 920; }
+              match app-id="dev.noctalia.Noctalia"
+              open-floating true
+              default-column-width { fixed 1080; }
+              default-window-height { fixed 920; }
           }
+
+          window-rule {
+              match is-window-cast-target=true
+              focus-ring {
+                  active-color "#f38ba8"
+                  inactive-color "#7d0d2d"
+              }
+              tab-indicator {
+                  active-color "#f38ba8"
+                  inactive-color "#7d0d2d"
+              }
+          }
+
 
           layout {
               // You can change how the focus ring looks.
@@ -598,6 +611,9 @@ in
 
               Super+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-window"; }
               Super+Shift+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-visibility"; }
+
+              Ctrl+Alt+S repeat=false { set-dynamic-cast-window; }
+              Ctrl+Alt+Shift+S repeat=false { clear-dynamic-cast-target; }
           }
 
           // Settings for debugging. Not meant for normal use.
