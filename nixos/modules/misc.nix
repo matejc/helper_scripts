@@ -1,5 +1,4 @@
 {
-  pkgs,
   inputs,
   defaultUser,
   ...
@@ -8,7 +7,6 @@
   config = {
     programs.nix-ld.enable = true;
     programs.dconf.enable = true;
-    services.dbus.packages = [ pkgs.gcr ]; # gpg-entry.pinentryFlavor = "gnome3"
 
     nix = {
       channel.enable = false;
