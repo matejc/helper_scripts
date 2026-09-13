@@ -79,7 +79,7 @@ let
     auto_add = true  # defaults to false
   '';
 
-  xwayland-satellite = pkgs.xwayland-satellite-stable;
+  xwayland-satellite = pkgs.xwayland-satellite-unstable;
 in
 {
   imports = [ inputs.noctalia.homeModules.default ];
