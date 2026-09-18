@@ -239,6 +239,7 @@ in
       signal-desktop
       telegram-desktop
       amethyst-mod-manager
+      logseq
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;
