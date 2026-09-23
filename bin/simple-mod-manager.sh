@@ -79,7 +79,7 @@ clean_mods() {
     destination="$2"
     find "$destination" -type l -print0 | while IFS= read -r -d '' subFile
     do
-        if [ -L "$subFile" ] && realpath "$subFile" | grep -q "^$modsPrefix"
+        if [ -L "$subFile" ] && realpath -m "$subFile" | grep -q "^$modsPrefix"
         then
             echo "Removing '$subFile' ..."
             if [ -z "$DRYRUN" ]
@@ -115,8 +115,9 @@ process_file() {
 
 if [ -d "$source" ]
 then
-    modsDir="$source/.mods/$(date -u -Is)"
-    clean_mods "$source/.mods" "$destination"
+    modsDirPrefix="$source/.mods"
+    modsDir="$modsDirPrefix/$(date +%s)"
+    clean_mods "$modsDirPrefix" "$destination"
     for subFile in "$source"/*
     do
         process_file "$subFile" "$modsDir"

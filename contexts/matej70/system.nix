@@ -181,7 +181,7 @@
         pkgs.obs-studio-plugins.obs-vaapi
       ];
     };
-
+    networking.firewall.allowedUDPPorts = [ 37008 ];
     # virtualisation.virtualbox.host.enable = true;
   };
 }

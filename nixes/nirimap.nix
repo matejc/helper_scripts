@@ -1,15 +1,17 @@
 { pkgs ? import <nixpkgs> {} }:
-with pkgs;
-rustPlatform.buildRustPackage rec {
+let
+  version = "0.3.1";
+in
+pkgs.rustPlatform.buildRustPackage (final: {
   pname = "nirimap";
-  version = "20251205";
-  src = fetchFromGitHub {
-    owner = "matejc";
-    repo = pname;
-    rev = "a5fd28537925fdc74beffae0824d959ec1bd9b54";
-    hash = "sha256-xMXqTOoRvbFvRoqdHRSp+B097XiWKTAdaqKySFV1W/U=";
+  inherit version;
+  src = pkgs.fetchFromGitHub {
+    owner = "alexandergknoll";
+    repo = final.pname;
+    tag = "v${version}";
+    hash = "sha256-NwUQT5BGELboNBSMJkHTMTjFqxIFoMc8mEB953JP7IE=";
   };
-  cargoHash = "sha256-aDeMZ9WyuMNRcCgxGBmMJvPQeMqXd9Eppsesb+vUKZA=";
-  nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ gtk4 gtk4-layer-shell ];
-}
+  cargoHash = "sha256-5MlYtZwGO19/ZyN6w4+8b+iMP9fGbZqxBSj8lIWx/6o=";
+  nativeBuildInputs = with pkgs; [ pkg-config ];
+  buildInputs = with pkgs; [ gtk4 gtk4-layer-shell ];
+})

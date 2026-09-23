@@ -8,27 +8,66 @@
 let
   nirimapConfigFile = pkgs.writeText "nirimap.toml" ''
     [display]
-    height = 100              # Minimap height in pixels (width is dynamic)
-    max_width_percent = 0.5   # Maximum width as fraction of screen (0.0 - 1.0)
-    anchor = "center"      # Position: top-left, top-center, top-right,
-                              #           bottom-left, bottom-center, bottom-right, center
-    margin_x = 10             # Horizontal margin from edge
-    margin_y = 10             # Vertical margin from edge
+    height = 100                # Per-workspace row height in pixels
+                                # "current" mode: whole widget height
+                                # "all" mode: height of a single workspace row
+    max_width_percent = 0.5     # Maximum width as fraction of screen (0.0 - 1.0)
+    max_height_percent = 0.8    # Maximum height as fraction of screen ("all" mode)
+    anchor = "center"        # Position: top-left, top-center, top-right,
+                                #           bottom-left, bottom-center, bottom-right, center
+    margin_x = 10               # Horizontal margin from edge
+    margin_y = 10               # Vertical margin from edge
+    workspace_mode = "current"      # "all"     - stack every workspace vertically (default)
+                                # "current" - show only the active workspace
 
     [appearance]
     background = "#1e1e2e"    # Background color (hex)
     window_color = "#45475a"  # Default window rectangle color
     focused_color = "#89b4fa" # Focused window highlight
     border_color = "#6c7086"  # Window border color
-    border_width = 1          # Window border thickness
-    border_radius = 2         # Corner radius for window rectangles
-    gap = 2                   # Gap between windows (in minimap pixels)
-    background_opacity = 1.0  # Background opacity (0.0 = transparent, 1.0 = opaque)
+    border_width = 1            # Window border thickness
+    border_radius = 2           # Corner radius for window rectangles
+    gap = 2                     # Gap between windows (in minimap pixels)
+    background_opacity = 0.0    # Background opacity (0.0 = transparent, 1.0 = opaque)
+                                # Applies in both "current" and "all" modes
+    window_opacity = 0.7        # Fill opacity for unfocused windows (0 = outlines only)
+    focused_opacity = 1.0       # Fill opacity for the focused window
+    workspace_gap = 4                           # Vertical gap between stacked workspaces ("all" mode)
+    active_workspace_border_color = "#89b4fa"   # Highlight border for the active workspace ("all" mode)
+    active_workspace_border_width = 2           # Highlight border thickness ("all" mode)
+
+    [labels]
+    enabled = false           # Draw text labels on window rectangles
+    content = "title"         # What to show: "title", "app-id", "app-id-title", "none"
+    font_family = "Sans"      # Font family name
+    font_size = 10            # Font size in pixels
+    font_weight = "normal"    # "normal" or "bold"
+    font_style = "normal"     # "normal" or "italic"
+    color = "#cdd6f4"         # Text color
+    focused_color = "#1e1e2e" # Text color on the focused window
+    position = "center"       # Anchor within the window rectangle: center, top-left,
+                              # top-center, top-right, bottom-left, bottom-center, bottom-right
+    padding = 2               # Inner padding between label and window edge
+    min_window_size = 30      # Skip labels on rectangles smaller than this (minimap pixels)
+    shadow = false            # Dark drop shadow behind text for legibility
+
+    [icons]
+    enabled = true            # Draw application icons on window rectangles
+    size = "auto"             # "auto" (scales with the rectangle) or explicit pixels, e.g. 16
+    position = "center"       # Anchor within the window rectangle (same options as labels)
+    opacity = 1.0             # Icon opacity (0.0 - 1.0)
+    # theme_override = "Papirus" # GTK icon theme name (defaults to system theme)
+    min_window_size = 16      # Skip icons on rectangles smaller than this (minimap pixels)
 
     [behavior]
-    show_on_overview = false   # Keep visible in Niri overview mode
-    always_visible = false     # Always show minimap (false = only on focus change)
-    hide_timeout_ms = 500    # Milliseconds before hiding after focus change
+    show_on_overview = false        # Keep visible in Niri overview mode (not yet implemented)
+    always_visible = false          # Always show minimap (false = only on events)
+    hide_timeout_ms = 500         # Milliseconds before hiding after an event
+    show_for_floating_windows = false # Surface the minimap for floating-window events
+                                      # (focus to/from a floating window, floating window
+                                      # spawn). Off by default — floating windows aren't
+                                      # drawn on the minimap, so popup activity would
+                                      # otherwise flash it on/off.
   '';
 
   niriSidebarConfigFile = pkgs.writeText "niri-sidebar.toml" ''
@@ -79,6 +118,162 @@ let
     auto_add = true  # defaults to false
   '';
 
+  niriPipConfigFile = pkgs.writeText "niri-pip.toml" ''
+    [general]
+    enabled = true
+    auto_detect = true
+    follow_workspace = true
+    # follow-workspace | follow-focused-output | stay-on-output
+    # Multi-monitor modes other than follow-workspace are advanced modes; validate on your multi-monitor setup.
+    follow_mode = "stay-on-output"
+    remember_geometry = true
+    detection_threshold = 100
+    restore_layout_on_unpin = true
+    action_suppression_ms = 650
+    workspace_debounce_ms = 75
+    # Restore pre-PiP focus only when a newly mapped PiP stole it within this window.
+    focus_restore_window_ms = 500
+
+    [pip]
+    # top-left | top-right | bottom-left | bottom-right | center
+    position = "bottom-right"
+    # remember learns external/manual geometry changes; fixed keeps configured placement.
+    position_mode = "fixed"
+    # Used when profile = "custom". Built-ins: tiny=320x180, small=384x216, medium=480x270, large=640x360, cinema=960x540.
+    profile = "medium"
+    width = 480
+    height = 270
+    gap = 18
+    # niri-pip intentionally rejects true: management should not steal keyboard focus.
+    steal_focus = false
+    # Keep the observed PiP aspect ratio while targeting roughly the profile area.
+    preserve_aspect_ratio = true
+
+    # Universal overlay defaults for arbitrary focused windows.
+    [overlay]
+    position = "bottom-right"
+    width = 520
+    height = 340
+    follow_workspace = true
+    follow_mode = "stay-on-output"
+
+    # Temporary enlarged view. Peek never overwrites remembered/base geometry.
+    [peek]
+    position = "center"
+    width = 960
+    height = 540
+
+    # Hide ordinary windows on a guarded service workspace while the app keeps running.
+    # The table keeps its historical [minimize] name for v0.3.0 config compatibility.
+    [minimize]
+    enabled = true
+    scratchpad_name = "niri-pip:scratchpad"
+    restore_focus = true
+
+    # Optional named overlay profiles. Use with:
+    #   niripip overlay --profile study
+    [profiles.study]
+    position = "top-right"
+    width = 700
+    height = 420
+    follow_workspace = true
+    follow_mode = "follow-workspace"
+
+    [profiles.call]
+    position = "top-right"
+    width = 420
+    height = 420
+    follow_workspace = true
+    follow_mode = "follow-focused-output"
+
+    [profiles.monitor]
+    position = "bottom-left"
+    width = 560
+    height = 360
+    follow_workspace = true
+    follow_mode = "follow-workspace"
+
+    # Safe insets used by the position approximation. Niri's move action is relative to its
+    # working area, but the calculated working-area rectangle is not exposed by Niri IPC.
+    # iNiR layer-shell exclusive zones are normally already part of Niri's working area; keep
+    # these values small unless your bar/dock overlaps floating windows.
+    [margins]
+    top = 18
+    right = 18
+    bottom = 18
+    left = 18
+
+    # These switches gate the matching built-in browser-specific detectors. The generic PiP
+    # title detector remains active; remove/override it if you want title-only matching disabled.
+    [browsers]
+    chromium = true
+    firefox = true
+    brave = true
+    vivaldi = true
+    edge = true
+
+    # Highest eligible detector score above general.detection_threshold wins.
+    # Regex/size/floating fields are required constraints when specified. Bonus fields add
+    # score after all constraints match.
+
+    # Chromium/xwayland-satellite case observed in the target environment:
+    # title="Picture in picture", app-id="".
+    [[detectors]]
+    name = "chromium-empty-app-id"
+    action = "pip"
+    title_regex = "(?i)^picture(?:[ -]?in[ -]?)picture$"
+    app_id_regex = "^$"
+    score = 155
+    compact_bonus = 10
+    aspect_16_9_bonus = 10
+    empty_app_id_bonus = 20
+    new_window_bonus = 5
+
+    # Niri's own documentation uses firefox + Picture-in-Picture as its PiP rule example.
+    [[detectors]]
+    name = "firefox-pip"
+    action = "pip"
+    title_regex = "(?i)^picture-in-picture$"
+    app_id_regex = "(?i)^(firefox|org\\.mozilla\\.firefox)$"
+    score = 150
+    compact_bonus = 10
+    aspect_16_9_bonus = 10
+    new_window_bonus = 5
+
+    [[detectors]]
+    name = "chromium-family-pip"
+    action = "pip"
+    title_regex = "(?i)^picture(?:[ -]?in[ -]?)picture$"
+    app_id_regex = "(?i)(chrome|chromium|brave|vivaldi|edge)"
+    score = 145
+    compact_bonus = 10
+    aspect_16_9_bonus = 10
+    new_window_bonus = 5
+
+    # Conservative fallback for PiP windows whose browser identity is unavailable through IPC.
+    [[detectors]]
+    name = "generic-pip-title"
+    action = "pip"
+    title_regex = "(?i)^picture(?:[ -]?in[ -]?)picture$"
+    max_width = 1280
+    max_height = 900
+    score = 105
+    compact_bonus = 5
+    aspect_16_9_bonus = 5
+
+    # Example custom detector:
+    # [[detectors]]
+    # name = "my-localized-pip"
+    # action = "pip"
+    # title_regex = "(?i)^картинка в картинке$"
+    # max_width = 1280
+    # max_height = 900
+    # score = 130
+
+    [logging]
+    level = "info"
+  '';
+
   xwayland-satellite = pkgs.xwayland-satellite-unstable;
 in
 {
@@ -91,6 +286,7 @@ in
           niri-sidebar = prev.callPackage ../nixes/niri-sidebar.nix { };
           nirimap = prev.callPackage ../nixes/nirimap.nix { };
           niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
+          niri-pip = prev.callPackage ../nixes/niri-pip.nix { };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.variables.graphical.package;
           };
@@ -115,8 +311,9 @@ in
       };
 
       home.file = {
-        ".config/niri-sidebar/config.toml".source = niriSidebarConfigFile;
+        ".config/niri-sidebar/config.toml" = lib.mkIf (config.variables?niri-sidebar && config.variables.niri-sidebar) { source = niriSidebarConfigFile; };
         ".config/nirimap/config.toml" = lib.mkIf (config.variables?nirimap && config.variables.nirimap) { source = nirimapConfigFile; };
+        ".config/niri-pip/config.toml" = lib.mkIf (config.variables?niri-pip && config.variables.niri-pip) { source = niriPipConfigFile; };
       };
 
       home.packages = [ xwayland-satellite ] ++ (with pkgs; [
@@ -609,8 +806,10 @@ in
               Super+O repeat=false { toggle-overview; }
               Super+grave repeat=false { switch-focus-between-floating-and-tiling; }
 
+              ${lib.optionalString (config.variables?niri-sidebar && config.variables.niri-sidebar) ''
               Super+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-window"; }
               Super+Shift+S { spawn-sh "${pkgs.niri-sidebar}/bin/niri-sidebar toggle-visibility"; }
+              ''}
 
               Ctrl+Alt+S repeat=false { set-dynamic-cast-window; }
               Ctrl+Alt+Shift+S repeat=false { clear-dynamic-cast-target; }
@@ -783,7 +982,7 @@ in
       # systemd.user.services.swayidle.Service.Environment = [ "WAYLAND_DISPLAY=wayland-1" ];
       systemd.user.services.swayidle.Unit.ConditionEnvironment = lib.mkIf config.services.swayidle.enable (lib.mkForce [ ]);
 
-      systemd.user.services.niri-sidebar = {
+      systemd.user.services.niri-sidebar = lib.mkIf (config.variables?niri-sidebar && config.variables.niri-sidebar) {
         Unit = {
           Description = "Niri-Sidebar User Service";
           After = [ config.variables.graphical.target ];
@@ -800,6 +999,7 @@ in
         Unit = {
           Description = "Nirimap User Service";
           After = [ config.variables.graphical.target ];
+          X-Restart-Triggers = [ nirimapConfigFile ];
         };
         Install.WantedBy = [ config.variables.graphical.target ];
         Service = {
@@ -819,6 +1019,30 @@ in
           Restart = "on-failure";
           ExecStart = "${pkgs.niri-switcher}/bin/niri-switcher";
           RuntimeDirectory = "niri-switcher";
+        };
+      };
+      systemd.user.services.niri-pip = lib.mkIf (config.variables?niri-pip && config.variables.niri-pip) {
+        Unit = {
+          Description = "Niri Picture-in-Picture and sticky-window daemon";
+          PartOf = [ config.variables.graphical.target ];
+          After = [ config.variables.graphical.target ];
+          Requisite = [ config.variables.graphical.target ];
+          ConditionEnvironment = "NIRI_SOCKET";
+          StartLimitIntervalSec = 0;
+          X-Restart-Triggers = [ niriPipConfigFile ];
+        };
+        Install.WantedBy = [ config.variables.graphical.target ];
+        Service = {
+          Type = "simple";
+          Restart = "always";
+          RestartSec = "1s";
+          TimeoutStopSec = "5s";
+          KillMode = "control-group";
+          NoNewPrivileges = true;
+          UMask = "0077";
+          ExecStart = "${pkgs.niri-pip}/bin/niripipd";
+          ExecReload = "${pkgs.niri-pip}/bin/niripipd reload";
+          RuntimeDirectory = "niri-pip";
         };
       };
     }
