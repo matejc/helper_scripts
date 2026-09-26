@@ -873,6 +873,8 @@ in
             enabled = true;
             fingerprint = false;
             allow_empty_password = true;
+            transition = [ "fade" ];
+            transition_duration = 300;
           };
           bar = {
             order = ["main"];
