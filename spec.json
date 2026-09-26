@@ -169,7 +169,7 @@
     }
   },
   "cachyos-kernel": {
-    "enabled": 1,
+    "enabled": 0,
     "hidden": true,
     "description": "CachyOS kernel for NixOS",
     "nixexprinput": "helper_scripts",
