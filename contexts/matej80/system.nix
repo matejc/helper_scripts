@@ -59,7 +59,11 @@
     # services.fprintd.tod.enable = true;
     # services.fprintd.tod.driver = pkgs.libfprint-2-tod1-goodix;
     security.pam.services.swaylock.fprintAuth = true;
-    services.tailscale.enable = true;
     hardware.bluetooth.enable = true;
+
+    services.netbird = {
+      enable = true;
+      clients.default.ui.enable = true;
+    };
   };
 }

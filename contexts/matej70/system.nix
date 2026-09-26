@@ -183,5 +183,12 @@
     };
     networking.firewall.allowedUDPPorts = [ 37008 ];
     # virtualisation.virtualbox.host.enable = true;
+
+    services.tailscale.enable = true;
+    # services.tailscale.useRoutingFeatures = "both";
+    services.netbird = {
+      enable = true;
+      clients.default.ui.enable = true;
+    };
   };
 }
