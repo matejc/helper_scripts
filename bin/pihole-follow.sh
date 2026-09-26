@@ -1,7 +1,7 @@
 #!/usr/bin/env nix-shell
 #!nix-shell -i bash -p bash curl jq
 
-set -e
+set -euo pipefail
 
 pihole_base="$1"
 pihole_password="$2"
@@ -28,10 +28,7 @@ do
 
   if (( last != prev_last ))
   then
-    echo >&2
     jq -n --argjson devs "$devs" --argjson queries "$queries" --argjson last "$prev_last" -c '$queries[]|select(.id>$last)|{time:.time|tonumber|todate,type:.type,domain:.domain,client:.client.ip,status:.status,hwaddr:$devs[.client.ip]}'
-  else
-    echo -n . >&2
   fi
 
   prev_last="$last"
