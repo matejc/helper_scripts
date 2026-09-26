@@ -42,7 +42,6 @@ in
       ../../dotfiles/jstools.nix
       ../../dotfiles/scan.nix
       ../../dotfiles/noctalialockscreen.nix
-      ../../dotfiles/kitty.nix
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix
       ../../dotfiles/mypassgen.nix
@@ -56,7 +55,6 @@ in
       ../../dotfiles/caprine.nix
       ../../dotfiles/tmux.nix
       ../../dotfiles/gravatar.nix
-      ../../dotfiles/opencode.nix
       ../../dotfiles/ghostty.nix
     ];
 
@@ -233,7 +231,6 @@ in
       eog
       file-roller
       tmux
-      kitty
       networkmanagerapplet
       quickemu
       airscan
