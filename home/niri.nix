@@ -649,8 +649,8 @@ in
               }
 
               binds {
-                  Super+Tab         { next-window scope="output"; }
-                  Super+Shift+Tab   { previous-window scope="output"; }
+                  Super+Tab         { next-window scope="workspace"; }
+                  Super+Shift+Tab   { previous-window scope="workspace"; }
               }
           }
 

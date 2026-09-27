@@ -171,7 +171,7 @@ in
       networkmanagerapplet
       standardnotes
       keepassxc
-      cinny-desktop
+      nheko
       signal-desktop
       telegram-desktop
     ]);

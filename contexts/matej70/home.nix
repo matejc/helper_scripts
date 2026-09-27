@@ -234,7 +234,7 @@ in
       networkmanagerapplet
       quickemu
       airscan
-      cinny-desktop
+      nheko
       signal-desktop
       telegram-desktop
       amethyst-mod-manager
