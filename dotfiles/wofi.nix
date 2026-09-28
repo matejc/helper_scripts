@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 [{
   target = "${variables.homeDir}/.config/wofi/config";
   source = pkgs.writeText "wofi.conf" ''

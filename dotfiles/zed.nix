@@ -1,7 +1,7 @@
 {
   variables,
   pkgs,
-  lib,
+  inputs,
   ...
 }:
 let
@@ -11,6 +11,45 @@ let
     jq
     shellcheck
   ];
+  tree-sitter-bpftrace = pkgs.buildZedGrammar (finalAttrs: {
+    name = "bpftrace";
+    version = "0.4.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "sgruszka";
+      repo = "tree-sitter-bpftrace";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-Kmr/a4pazV3k21M0KDNPSUJgvsXKicnB6MZ70Juufiw=";
+    };
+  });
+  zed-bpftrace-extension = pkgs.runCommand "zed-bpftrace-extension" {} ''
+    mkdir -p $out/grammars
+    mkdir -p $out/languages/bpftrace
+
+    ln -s \
+    ${tree-sitter-bpftrace}/share/zed/grammars/bpftrace.wasm \
+    $out/grammars/bpftrace.wasm
+
+    cat > $out/extension.toml <<'EOF'
+    id = "bpftrace"
+    name = "BPFTrace"
+    version = "0.1.0"
+    schema_version = 1
+
+    [grammars.bpftrace]
+    repository = "https://github.com/sgruszka/tree-sitter-bpftrace"
+    rev = "v${tree-sitter-bpftrace.version}"
+    EOF
+
+    cat > $out/languages/bpftrace/config.toml <<'EOF'
+    name = "BPFTrace"
+    grammar = "bpftrace"
+    path_suffixes = ["bt"]
+    line_comments = ["// "]
+    EOF
+
+    ln -s ${tree-sitter-bpftrace.src}/queries/highlights.scm $out/languages/bpftrace/
+    ln -s ${tree-sitter-bpftrace.src}/queries/injections.scm $out/languages/bpftrace/
+'';
   configFile = pkgs.writeText "settings.json" (
     builtins.toJSON {
       base_keymap = "VSCode";
@@ -93,6 +132,10 @@ let
   );
 in
 [
+  {
+    target = "${variables.homeDir}/.local/share/zed/extensions/installed/bpftrace";
+    source = "${zed-bpftrace-extension}";
+  }
   {
     target = "${variables.homeDir}/.config/zed/keymap.json";
     source = pkgs.writeText "keymap.json" (

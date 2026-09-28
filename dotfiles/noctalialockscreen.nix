@@ -1,8 +1,7 @@
 {
   variables,
-  config,
   pkgs,
-  lib,
+  ...
 }:
 [
   {

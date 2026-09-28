@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 {
   target = "${variables.homeDir}/bin/jwt-decode";
   source = pkgs.writeScript "jwt-decode.sh" ''

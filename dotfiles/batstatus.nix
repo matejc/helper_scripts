@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, lib, ... }:
 let
     now = lib.concatMapStringsSep " + " (i: ''$(cat /sys/class/power_supply/BAT${i}/charge_now)'') variables.batteries;
     full = lib.concatMapStringsSep " + " (i: ''$(cat /sys/class/power_supply/BAT${i}/charge_full)'') variables.batteries;

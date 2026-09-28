@@ -33,8 +33,6 @@ in
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix
       ../../dotfiles/mypassgen.nix
-      ../../dotfiles/wofi.nix
-      ../../dotfiles/nwgbar.nix
       ../../dotfiles/countdown.nix
       ../../dotfiles/zed.nix
       ../../dotfiles/work.nix
@@ -44,7 +42,6 @@ in
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
       ../../dotfiles/gravatar.nix
-      ../../dotfiles/opencode.nix
       ../../dotfiles/ghostty.nix
     ];
     variables = {
@@ -111,7 +108,10 @@ in
         exec = "${package}/bin/niri";
         package = osConfig.programs.niri.package;
       };
+      nirimap = false;
       niri-switcher = true;
+      niri-sidebar = false;
+      niri-pip = false;
       vims = {
         #q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
         # neo = ''${pkgs.neovide}/bin/neovide --neovim-bin "${variables.profileDir}/bin/nvim" --frame none'';

@@ -88,6 +88,10 @@
       url = "github:matejc/quickemu/feat/virtiofs-support";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zed-extensions = {
+      url = "github:SwornSystems/nix-zed-extensions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {

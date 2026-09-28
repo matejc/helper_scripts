@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 {
   target = "${variables.homeDir}/bin/mydd";
   source = pkgs.writeScript "dd.sh" ''

@@ -1,11 +1,11 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, inputs, ... }:
 let
   dotFileFun =
     nixFilePath:
     let
       dotNixFiles = lib.toList (
         import nixFilePath {
-          inherit config pkgs lib;
+          inherit config pkgs lib inputs;
           inherit (config) variables;
         }
       );

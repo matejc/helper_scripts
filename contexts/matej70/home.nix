@@ -45,8 +45,6 @@ in
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix
       ../../dotfiles/mypassgen.nix
-      ../../dotfiles/wofi.nix
-      ../../dotfiles/nwgbar.nix
       ../../dotfiles/helix.nix
       ../../dotfiles/vlc.nix
       ../../dotfiles/mac.nix

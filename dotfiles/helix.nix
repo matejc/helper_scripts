@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, lib, ... }:
 let
   groovyls = pkgs.runCommand "groovy-language-server" {
     src = builtins.fetchurl {

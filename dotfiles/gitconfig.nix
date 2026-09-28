@@ -1,8 +1,8 @@
 {
   variables,
-  config,
   pkgs,
   lib,
+  ...
 }:
 let
   push_sh = pkgs.writeShellScript "push.sh" ''

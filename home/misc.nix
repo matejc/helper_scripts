@@ -75,6 +75,7 @@ in
         quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default.override { qemu_full = pkgs.qemu_kvm.override { cephSupport = false; }; };
         sofka = import ../nixes/sofka.nix { inherit pkgs; };
       })
+      inputs.zed-extensions.overlays.default
     ];
     nixpkgs.config = import ../dotfiles/nixpkgs-config.nix;
     nix = {

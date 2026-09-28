@@ -1,8 +1,7 @@
 {
   variables,
-  config,
   pkgs,
-  lib,
+  ...
 }:
 let
   historySh = pkgs.writeShellScript "tmux-history.sh" ''

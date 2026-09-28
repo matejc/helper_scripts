@@ -36,7 +36,6 @@ in
       ../../dotfiles/tmux.nix
       ../../dotfiles/batstatus.nix
       ../../dotfiles/ghostty.nix
-      ../../dotfiles/opencode.nix
     ];
     variables = {
       homeDir = "/home/${variables.user}";
