@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 {
   target = "${variables.homeDir}/bin/find-mac";
   source = pkgs.writeScript "mac.sh" ''

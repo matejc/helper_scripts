@@ -35,12 +35,10 @@ in
 
   config = {
     dotfiles.paths = [
-      ../../dotfiles/xfce4-terminal.nix
       ../../dotfiles/gitconfig.nix
       ../../dotfiles/gitignore.nix
       ../../dotfiles/oath.nix
       ../../dotfiles/jstools.nix
-      ../../dotfiles/scan.nix
       ../../dotfiles/noctalialockscreen.nix
       ../../dotfiles/dd.nix
       ../../dotfiles/sync.nix

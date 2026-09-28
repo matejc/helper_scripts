@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 {
   target = "${variables.homeDir}/bin/airprint-scan";
   source = pkgs.writeScript "airprint-scan.nix" ''

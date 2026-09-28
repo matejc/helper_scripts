@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 [{
   target = "${variables.homeDir}/.local/share/vlc/lua/playlist/youtube.lua";
   source = pkgs.fetchurl {

@@ -1,4 +1,4 @@
-{ variables, config, pkgs, lib }:
+{ variables, pkgs, ... }:
 [{
   target = "${variables.homeDir}/.config/Caprine/custom.css";
   source = pkgs.writeText "custom.css" ''
