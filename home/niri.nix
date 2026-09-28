@@ -460,6 +460,7 @@ in
             match app-id="org.keepassxc.KeePassXC"
             match app-id="Logseq"
             match app-id="standard-notes"
+            match app-id="appimagekit-joplin"
             open-on-workspace "first"
           }
 
@@ -480,6 +481,7 @@ in
               match app-id="Logseq"
               match app-id="slack"
               match app-id="standard-notes"
+              match app-id="appimagekit-joplin"
               block-out-from "screencast"
           }
 

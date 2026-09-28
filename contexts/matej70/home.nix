@@ -185,7 +185,7 @@ in
       };
       startup = [
         "${variables.profileDir}/bin/keepassxc"
-        "${variables.profileDir}/bin/standardnotes"
+        "${variables.profileDir}/bin/joplin-desktop"
         "${variables.profileDir}/bin/browser"
       ];
       steam = {
@@ -217,7 +217,6 @@ in
     ++ (with pkgs; [
       keepassxc
       mpv
-      standardnotes
       steamcmd
       jq
       scanmem
@@ -235,6 +234,7 @@ in
       nheko
       signal-desktop
       telegram-desktop
+      joplin-desktop
       amethyst-mod-manager
       logseq
     ]);

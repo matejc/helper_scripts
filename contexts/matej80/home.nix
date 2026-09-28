@@ -147,7 +147,7 @@ in
         nixpkgs = "${inputs.nixpkgs}";
       };
       startup = [
-        "${variables.profileDir}/bin/standardnotes"
+        "${variables.profileDir}/bin/joplin-desktop"
         "${variables.profileDir}/bin/keepassxc"
         "${variables.profileDir}/bin/browser"
       ];
@@ -169,13 +169,17 @@ in
       inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
     ] ++ (with pkgs; [
       networkmanagerapplet
-      standardnotes
       keepassxc
       nheko
       signal-desktop
       telegram-desktop
+      joplin-desktop
     ]);
     programs.firefox.enable = true;
     programs.chromium.enable = true;
+    services.nextcloud-client = {
+      enable = true;
+      startInBackground = true;
+    };
   };
 }
