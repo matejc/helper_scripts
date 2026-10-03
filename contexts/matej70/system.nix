@@ -19,6 +19,7 @@
     variables = {
       sleepMode = "deep";
       graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
+      graphicalSessionDefault = "Niri";
     };
     # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     boot.kernelPackages = pkgs.linuxPackages_latest;

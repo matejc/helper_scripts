@@ -15,7 +15,7 @@
     nix = {
       channel.enable = false;
       settings = {
-        nix-path = "nixpkgs=${inputs.nixpkgs}";
+        nix-path = [ "nixpkgs=${inputs.nixpkgs}" ];
         experimental-features = [
           "configurable-impure-env"
           "nix-command"

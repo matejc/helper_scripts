@@ -134,6 +134,7 @@ in
       sway.enable = false;
       graphical = rec {
         name = "niri";
+        sessionName = "Niri";
         logout = "${exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
