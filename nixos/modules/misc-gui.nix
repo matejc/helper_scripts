@@ -29,12 +29,17 @@
       enable = true;
       settings = {
         session.default = config.home-manager.users.${defaultUser}.variables.graphical.sessionName;
+        user.default = defaultUser;
+        clock = {
+          enabled = true;
+          position = "above-panel";
+        };
         appearance = {
           scheme = "Gruvbox";
           hide_logo = true;
           scheme_selector_position = "hidden";
           theme_mode = "dark";
-          wallpaper = lib.listToAttrs (map (v: {
+          wallpapers = lib.listToAttrs (map (v: {
             name = v.output;
             value = {
               path = v.wallpaper;
@@ -43,7 +48,7 @@
         };
         idle.timeout = 60;
         keyboard.layout = "us";
-        auth.request_timeout = 0;
+        auth.allow_empty_password = true;
       };
     };
 
