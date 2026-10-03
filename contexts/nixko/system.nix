@@ -18,7 +18,7 @@
   ];
 
   config = {
-    variables.graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
+    # variables.graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
 
     environment.systemPackages = with pkgs; [
       sbctl

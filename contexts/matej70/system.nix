@@ -18,8 +18,7 @@
     nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
     variables = {
       sleepMode = "deep";
-      graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
-      graphicalSessionDefault = "Niri";
+      # graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
     # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     boot.kernelPackages = pkgs.linuxPackages_latest;

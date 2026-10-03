@@ -16,7 +16,7 @@
   config = {
     variables = {
       hibernate = false;
-      graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
+      # graphicalSessionCmd = "/home/${defaultUser}/.nix-profile/bin/niri-session";
     };
 
     hardware.graphics = {
