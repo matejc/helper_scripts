@@ -149,6 +149,7 @@ in
       opencode
       okteto
       sofka
+      isolated_agent
     ];
     programs.direnv = {
       enable = true;

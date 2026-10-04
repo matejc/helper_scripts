@@ -186,6 +186,7 @@ in
       remmina
       xauth
       sofka
+      isolated_agent
     ];
     programs.direnv = {
       enable = true;

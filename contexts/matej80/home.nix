@@ -174,6 +174,7 @@ in
       signal-desktop
       telegram-desktop
       joplin-desktop
+      isolated_agent
     ]);
     programs.firefox.enable = true;
     programs.chromium.enable = true;

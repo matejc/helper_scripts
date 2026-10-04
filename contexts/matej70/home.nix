@@ -236,6 +236,7 @@ in
       joplin-desktop
       amethyst-mod-manager
       logseq
+      isolated_agent
     ]);
     programs.chromium.enable = true;
     programs.firefox.enable = true;

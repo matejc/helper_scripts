@@ -74,6 +74,7 @@ in
         searxngr = pkgs.callPackage ../nixes/searxngr.nix { };
         quickemu = inputs.quickemu.packages.${pkgs.stdenv.hostPlatform.system}.default.override { qemu_full = pkgs.qemu_kvm.override { cephSupport = false; }; };
         sofka = import ../nixes/sofka.nix { inherit pkgs; };
+        isolated_agent = import ../nixes/isolated_agent.nix { inherit pkgs; };
       })
       inputs.zed-extensions.overlays.default
     ];
