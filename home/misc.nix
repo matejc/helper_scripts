@@ -150,7 +150,7 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
-      settings."*".addKeysToAgent = "6h";
+      settings."*".addKeysToAgent = "8h";
     };
 
     programs.bash = {
