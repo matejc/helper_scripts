@@ -241,6 +241,9 @@ in
             "browser.startup.page" = 3;
 
             "sidebar.verticalTabs" = true;
+            "sidebar.expandOnHover" = true;
+            "sidebar.animation.expand-on-hover.delay-duration-ms" = 50;
+            "sidebar.animation.expand-on-hover.duration-ms" = 150;
 
             # Firefox about:config privacy settings
             "privacy.fingerprintingProtection" = true;  # Enables Firefox’s newer fingerprinting protections
