@@ -241,7 +241,7 @@ in
             "browser.startup.page" = 3;
 
             "sidebar.verticalTabs" = true;
-            "sidebar.expandOnHover" = true;
+            "sidebar.visibility" = "expand-on-hover";
             "sidebar.animation.expand-on-hover.delay-duration-ms" = 50;
             "sidebar.animation.expand-on-hover.duration-ms" = 150;
 
