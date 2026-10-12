@@ -150,6 +150,7 @@ in
       okteto
       sofka
       isolated_agent
+      socat
     ];
     programs.direnv = {
       enable = true;

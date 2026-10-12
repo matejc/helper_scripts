@@ -187,6 +187,7 @@ in
       xauth
       sofka
       isolated_agent
+      socat
     ];
     programs.direnv = {
       enable = true;
