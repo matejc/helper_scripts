@@ -104,7 +104,6 @@ in
     home.packages = [
       pkgs.git
       pkgs.git-crypt
-      pkgs.zsh
       pkgs.zmx
       pkgs.xdg-utils
       pkgs.dconf
