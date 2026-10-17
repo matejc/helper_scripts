@@ -3,8 +3,8 @@
 }:
 let
   desktop = pkgs.makeDesktopItem {
-    name = "Swiftpoint X1 Control Panel";
     desktopName = "Swiftpoint X1 Control Panel";
+    name = "swiftpoint";
     exec = "swiftpoint";
     icon = "swiftpoint";
   };
@@ -14,12 +14,12 @@ let
     sha256 = "sha256-7l2/5dYbVjLO75p0Oh97zD3n7UqVuY7Ui/dsYNwmsKA=";
   };
 in
-pkgs.stdenv.mkDerivation {
+pkgs.stdenv.mkDerivation (final: {
   pname = "swiftpoint";
-  version = "dev";
+  version = "3.1.4.0-33507352";
 
   src = pkgs.fetchurl {
-    url = "https://swiftpointdrivers.blob.core.windows.net/pro/public/linux/Swiftpoint%20X1%20Control%20Panel%203.1.4.0-33507352.tar.xz";
+    url = "https://swiftpointdrivers.blob.core.windows.net/pro/public/linux/Swiftpoint%20X1%20Control%20Panel%20${final.version}.tar.xz";
     name = "swiftpoint.tar.xz";
     sha256 = "sha256-WTJKFF5/zC9aVLOHib6p2ZrqlB57Kfxj0UjafihBGRM=";
   };
@@ -74,11 +74,11 @@ pkgs.stdenv.mkDerivation {
     mkdir -p "$out/etc/udev/rules.d"
     ln -s $out/share/swiftpoint/60-Swiftpoint.rules $out/etc/udev/rules.d/
     mkdir -p "$out/share/applications"
-    cp "${desktop}/share/applications/Swiftpoint X1 Control Panel.desktop" "$out/share/applications/"
+    cp "${desktop}/share/applications/swiftpoint.desktop" "$out/share/applications/"
     for res in 16x16 32x32 64x64 128x128 256x256 512x512
     do
       mkdir -p "$out/share/icons/hicolor/$res/apps"
       ${pkgs.imagemagick}/bin/convert "${icon}" -resize "$res" -gravity center -background none -extent "$res" "$out/share/icons/hicolor/$res/apps/swiftpoint.png"
     done
   '';
-}
+})
