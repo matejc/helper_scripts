@@ -1,6 +1,19 @@
 {
   pkgs ? import <nixpkgs> { },
 }:
+let
+  desktop = pkgs.makeDesktopItem {
+    name = "Swiftpoint X1 Control Panel";
+    desktopName = "Swiftpoint X1 Control Panel";
+    exec = "swiftpoint";
+    icon = "swiftpoint";
+  };
+  icon = pkgs.fetchurl {
+    name = "swiftpoint.png";
+    url = "https://www.swiftpoint.eu/cdn/shop/files/SP_Black.png?height=512&width=512";
+    sha256 = "sha256-7l2/5dYbVjLO75p0Oh97zD3n7UqVuY7Ui/dsYNwmsKA=";
+  };
+in
 pkgs.stdenv.mkDerivation {
   pname = "swiftpoint";
   version = "dev";
@@ -58,7 +71,14 @@ pkgs.stdenv.mkDerivation {
       }" \
       --set QT_PLUGIN_PATH "$out/share/swiftpoint/plugins" \
       --set QT_QPA_PLATFORM_PLUGIN_PATH "$out/share/swiftpoint/plugins/platforms"
-    mkdir -p $out/etc/udev/rules.d
+    mkdir -p "$out/etc/udev/rules.d"
     ln -s $out/share/swiftpoint/60-Swiftpoint.rules $out/etc/udev/rules.d/
+    mkdir -p "$out/share/applications"
+    cp "${desktop}/share/applications/Swiftpoint X1 Control Panel.desktop" "$out/share/applications/"
+    for res in 16x16 32x32 64x64 128x128 256x256 512x512
+    do
+      mkdir -p "$out/share/icons/hicolor/$res/apps"
+      ${pkgs.imagemagick}/bin/convert "${icon}" -resize "$res" -gravity center -background none -extent "$res" "$out/share/icons/hicolor/$res/apps/swiftpoint.png"
+    done
   '';
 }
