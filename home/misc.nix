@@ -112,6 +112,7 @@ in
       pkgs.tempstatus_all
       pkgs.sleepCmd
       config.nix.package
+      pkgs.trash-cli
     ]
     ++ services-cmds
     ++ programs;

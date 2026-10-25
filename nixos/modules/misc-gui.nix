@@ -65,5 +65,7 @@
       pkgs.font-awesome
       pkgs.corefonts
     ];
+
+    services.gvfs.enable = true;  # trash, network locations, and virtual filesystem
   };
 }
