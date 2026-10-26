@@ -143,7 +143,13 @@ let
             --preview-window 'right,75%,border-left' \
             --bind 'pgdn:preview-page-down' \
             --bind 'pgup:preview-page-up' \
-            --bind 'ctrl-/:toggle-preview'
+            --bind 'esc:transform:
+              if [ "''${FZF_PREVIEW_COLUMNS:-0}" -gt 0 ]; then
+                echo hide-preview
+              else
+                echo abort
+              fi
+            '
   '';
 in
 {
