@@ -76,81 +76,6 @@ let
         exit 1
     fi
   '';
-
-  pickaxe_diff_sh = pkgs.writeShellScript "pickaxe-diff.sh" ''
-    set -euo pipefail
-
-    export PATH="$PATH:${pkgs.patchutils_0_4_2}/bin"
-
-    path=$1
-    old_file=$2
-    new_file=$5
-
-    # Generate the original diff without calling ourselves.
-    diff_output=$(
-        git diff --no-color --no-ext-diff \
-            --no-index -p -- "$old_file" "$new_file" || :
-    )
-
-    # Filter out unrelated hunks.
-    filtered=$(
-        printf '%s\n' "$diff_output" |
-            grepdiff "$GREPDIFF_REGEX" \
-                --output-matching=hunk \
-                --only-match=mod |
-            sed -n '/^@@ /,$p'
-    )
-
-    # Only print files containing matching hunks.
-    if [[ -n "$filtered" ]]; then
-        printf 'diff --git a/%s b/%s\n' "$path" "$path"
-        printf '%s\n' "$filtered"
-    fi
-  '';
-
-  hunks_sh = pkgs.writeShellScript "hunks.sh" ''
-    set -euo pipefail
-
-    export PATH="${pkgs.fzf}/bin:${pkgs.delta}/bin:${pkgs.ripgrep}/bin:$PATH"
-
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: git hunks <regex> [path...]" >&2
-        exit 1
-    fi
-
-    pattern=$1
-    shift
-
-    export GREPDIFF_REGEX="$pattern"
-    export GIT_EXTERNAL_DIFF="${pickaxe_diff_sh}"
-
-    git log \
-        --reverse \
-        --format='%h %s' \
-        -G "$pattern" \
-        -- "$@" |
-        fzf \
-            --no-sort \
-            --layout=reverse \
-            --preview '
-              git --no-pager show --format= --ext-diff {1} |
-                delta --paging=never --dark --file-style=omit --hunk-header-style="file line-number syntax" |
-                rg --passthru --color=always \
-                   --colors "match:fg:black" \
-                   --colors "match:bg:yellow" \
-                   -- "$GREPDIFF_REGEX"
-            ' \
-            --preview-window 'right,75%,border-left' \
-            --bind 'pgdn:preview-page-down' \
-            --bind 'pgup:preview-page-up' \
-            --bind 'esc:transform:
-              if [ "''${FZF_PREVIEW_COLUMNS:-0}" -gt 0 ]; then
-                echo hide-preview
-              else
-                echo abort
-              fi
-            '
-  '';
 in
 {
   target = "${variables.homeDir}/.gitconfig";
@@ -192,7 +117,7 @@ in
         find-first = "!f() { res=$(git log -S \"$@\" --reverse --oneline | head -n 1 | ${pkgs.gawk}/bin/awk '{print $1}') && test -n \"$res\" && git show $res; }; f"
         find-last = "!f() { res=$(git log -S \"$@\" --oneline | head -n 1 | ${pkgs.gawk}/bin/awk '{print $1}') && test -n \"$res\" && git show $res; }; f"
         x = "!f() { git add -p && ${commit_sh} \"$3\" && ${push_sh} \"$1\" \"$2\"; }; f"
-        hunks = !${hunks_sh}
+        hunks = !${pkgs.git-hunks}/bin/git-hunks
     [pull]
         rebase = true
     [commit]
