@@ -11,6 +11,7 @@
     working-directory = home
     window-inherit-working-directory = false
     tab-inherit-working-directory = true
+    unfocused-split-opacity = 0.3
     keybind = ctrl+shift+page_down=move_tab:+1
     keybind = ctrl+shift+page_up=move_tab:-1
     keybind = alt+k>up=new_split:up
