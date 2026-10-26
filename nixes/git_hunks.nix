@@ -61,10 +61,24 @@ in
                    --colors "match:bg:yellow" \
                    -- "$GREPDIFF_REGEX"
             ' \
-            --preview-window 'right,75%,border-left,hidden' \
+            --preview-window 'right,75%,border-left,hidden,wrap' \
             --bind 'pgdn:preview-page-down' \
             --bind 'pgup:preview-page-up' \
             --bind 'enter:show-preview' \
+            --bind 'up:transform:
+              if [ "''${FZF_PREVIEW_COLUMNS:-0}" -gt 0 ]; then
+                echo preview-up
+              else
+                echo up
+              fi
+            ' \
+            --bind 'down:transform:
+              if [ "''${FZF_PREVIEW_COLUMNS:-0}" -gt 0 ]; then
+                echo preview-down
+              else
+                echo down
+              fi
+            ' \
             --bind 'esc:transform:
               if [ "''${FZF_PREVIEW_COLUMNS:-0}" -gt 0 ]; then
                 echo hide-preview
