@@ -113,6 +113,7 @@ in
       pkgs.sleepCmd
       config.nix.package
       pkgs.trash-cli
+      pkgs.tig
     ]
     ++ services-cmds
     ++ programs;
