@@ -18,7 +18,7 @@ let
     buildInputs = [ pkgs.makeWrapper ];
   } ''
     mkdir -p $out/bin
-    makeWrapper ${pkgs.vscode-extensions.valentjn.vscode-ltex}/share/vscode/extensions/valentjn.vscode-ltex/lib/ltex-ls-*/bin/ltex-ls $out/bin/ltex-ls \
+    makeWrapper ${pkgs.ltex-ls-plus}/bin/ltex-ls-plus $out/bin/ltex-ls \
       --prefix JAVACMD : ${pkgs.jre}/bin/java
   '';
 
