@@ -55,11 +55,9 @@ in
             --layout=reverse \
             --preview '
               git --no-pager show --format= --ext-diff {1} |
-                delta --paging=never --dark --file-style=omit --hunk-header-style="file line-number syntax" |
-                rg --passthru --color=always \
-                   --colors "match:fg:black" \
-                   --colors "match:bg:yellow" \
-                   -- "$GREPDIFF_REGEX"
+                delta --paging=never --dark \
+                  --file-style=omit \
+                  --hunk-header-style="file line-number syntax"
             ' \
             --preview-window 'right,75%,border-left,hidden,wrap' \
             --bind 'pgdn:preview-page-down' \
