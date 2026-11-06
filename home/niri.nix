@@ -290,7 +290,7 @@ in
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.variables.graphical.package;
           };
-          noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          # noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })
       ];
 
