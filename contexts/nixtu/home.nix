@@ -122,7 +122,6 @@ in
         "${variables.profileDir}/bin/logseq"
         "${variables.profileDir}/bin/slack"
         "${variables.profileDir}/bin/browser"
-        "${variables.profileDir}/bin/keepassxc"
       ];
       services = [ ];
     };

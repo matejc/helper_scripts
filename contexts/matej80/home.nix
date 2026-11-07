@@ -109,7 +109,6 @@ in
         #window-size = dotFileAt "i3config.nix" 5;
         #i3-msg = "${profileDir}/bin/swaymsg";
         #nextcloud = "${nextcloud-client}/bin/nextcloud";
-        #keepassxc = "${pkgs.keepassxc}/bin/keepassxc";
         #tmux = "${pkgs.tmux}/bin/tmux";
       };
       shell = "${variables.profileDir}/bin/zsh";
@@ -148,7 +147,6 @@ in
       };
       startup = [
         "${variables.profileDir}/bin/joplin-desktop"
-        "${variables.profileDir}/bin/keepassxc"
         "${variables.profileDir}/bin/browser"
       ];
       services = [
@@ -169,7 +167,6 @@ in
       inputs.deploy-rs.packages.${pkgs.stdenv.hostPlatform.system}.deploy-rs
     ] ++ (with pkgs; [
       networkmanagerapplet
-      keepassxc
       nheko
       signal-desktop
       telegram-desktop

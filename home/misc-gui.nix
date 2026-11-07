@@ -108,6 +108,7 @@ in
 
     xdg = {
       enable = true;
+      autostart.enable = true;
       mime.enable = true;
       mimeApps = {
         enable = true;
@@ -265,6 +266,25 @@ in
               font-size: ${toString config.variables.font_propo.size}pt !important;
             }
           '';
+        };
+      };
+    };
+
+    programs.keepassxc = {
+      enable = true;
+      autostart = true;
+      settings = {
+        Browser = {
+          Enabled = true;
+        };
+        GUI = {
+          AdvancedSettings = true;
+          ApplicationTheme = "dark";
+          CompactMode = true;
+          HidePasswords = true;
+        };
+        SSHAgent = {
+          Enabled = false;
         };
       };
     };

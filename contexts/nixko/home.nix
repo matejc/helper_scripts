@@ -138,7 +138,6 @@ in
         "${variables.profileDir}/bin/logseq"
         "${variables.profileDir}/bin/slack"
         "${variables.profileDir}/bin/browser"
-        "${variables.profileDir}/bin/keepassxc"
       ];
       services = [
         {
@@ -157,7 +156,6 @@ in
       slack
       teams-for-linux
       logseq
-      keepassxc
       pulseaudio
       networkmanagerapplet
       git-crypt
