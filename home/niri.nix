@@ -937,6 +937,7 @@ in
               brightness = false;
             };
           };
+          hooks.session_locked = lib.mkIf config.programs.keepassxc.enable "${pkgs.keepassxc}/bin/keepassxc --lock";
         };
       };
       systemd.user.services.pre-sleep = {

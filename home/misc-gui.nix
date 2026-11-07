@@ -276,15 +276,23 @@ in
       settings = {
         Browser = {
           Enabled = true;
+          UpdateBinaryPath = false;
         };
         GUI = {
           AdvancedSettings = true;
           ApplicationTheme = "dark";
           CompactMode = true;
           HidePasswords = true;
+          ShowTrayIcon = true;
         };
         SSHAgent = {
           Enabled = false;
+        };
+        PasswordGenerator = {
+          EASCII = false;
+          Length = 16;
+          Logograms = true;
+          SpecialChars = true;
         };
       };
     };
