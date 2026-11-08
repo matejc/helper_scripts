@@ -877,7 +877,7 @@ in
             allow_empty_password = true;
             transition = [ "fade" ];
             transition_duration = 750;
-            grace_period_seconds = 3;
+            grace_period_seconds = 2;
           };
           bar = {
             order = ["main"];
@@ -903,24 +903,25 @@ in
           widget.media.hide_when_no_media = true;
           nightlight.enabled = true;
           system.monitor.enabled = true;
-          idle.behavior = {
-            # brightness = {
-            #   timeout = 100;
-            #   command = "noctalia:brightness-down all 20%";
-            #   resume_command = "noctalia:brightness-up all 20%";
-            # };
-            lock = {
-              timeout = 300;
-              command = "${config.variables.lockscreen}";
-            };
-            screen-off = {
-              timeout = 500;
-              command = "noctalia:dpms-off";
-              resume_command = "noctalia:dpms-on";
-            };
-            sleep = {
-              timeout = 3600;
-              command = "${pkgs.sleepCmd}/bin/systemctl-sleep";
+          idle = {
+            behavior_order = ["lock" "screen-off" "suspend"];
+            pre_action_fade_seconds = 3.0;
+            behavior = {
+              lock = {
+                enabled = true;
+                timeout = 300;
+                action = "lock";
+              };
+              screen-off = {
+                enabled = true;
+                timeout = 500;
+                action = "screen_off";
+              };
+              suspend = {
+                enabled = true;
+                timeout = 1800;
+                action = "lock_and_suspend";
+              };
             };
           };
           plugins = {
