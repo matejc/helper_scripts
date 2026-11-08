@@ -876,7 +876,8 @@ in
             fingerprint = false;
             allow_empty_password = true;
             transition = [ "fade" ];
-            transition_duration = 300;
+            transition_duration = 750;
+            grace_period_seconds = 3;
           };
           bar = {
             order = ["main"];
@@ -909,11 +910,11 @@ in
             #   resume_command = "noctalia:brightness-up all 20%";
             # };
             lock = {
-              timeout = 120;
+              timeout = 300;
               command = "${config.variables.lockscreen}";
             };
             screen-off = {
-              timeout = 300;
+              timeout = 500;
               command = "noctalia:dpms-off";
               resume_command = "noctalia:dpms-on";
             };
