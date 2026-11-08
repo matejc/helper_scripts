@@ -893,7 +893,7 @@ in
               background_opacity = 0.9;
               thickness = 28;
               shadow = false;
-              start = ["control-center" "sysmon" "workspaces" "media" "active_window"];
+              start = ["control-center" "sysmon" "workspaces" "active_window"];
               center = [];
               end = ["notifications" "caffeine" "clipboard" "network" "bluetooth" "volume" "brightness" "nightlight" "battery" "tray" "clock" "session"];
             };

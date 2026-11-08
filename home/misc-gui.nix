@@ -294,6 +294,10 @@ in
           Logograms = true;
           SpecialChars = true;
         };
+        Security = {
+          LockDatabaseIdleSeconds = 3600;
+          LockDatabaseScreenLock = true;
+        };
       };
     };
   };
