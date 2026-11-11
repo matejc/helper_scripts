@@ -876,7 +876,7 @@ in
             fingerprint = false;
             allow_empty_password = true;
             transition = [ "fade" ];
-            transition_duration = 750;
+            transition_duration = 300;
             grace_period_seconds = 2;
           };
           bar = {
@@ -910,7 +910,8 @@ in
               lock = {
                 enabled = true;
                 timeout = 300;
-                action = "lock";
+                action = "command";
+                command = "${config.variables.lockscreen}";
               };
               screen-off = {
                 enabled = true;
@@ -939,7 +940,6 @@ in
               brightness = false;
             };
           };
-          hooks.session_locked = lib.mkIf config.programs.keepassxc.enable "${pkgs.keepassxc}/bin/keepassxc --lock";
         };
       };
       systemd.user.services.pre-sleep = {
