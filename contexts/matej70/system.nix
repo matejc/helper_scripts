@@ -187,6 +187,7 @@
     # services.tailscale.useRoutingFeatures = "both";
     services.netbird = {
       enable = true;
+      ui.enable = true;
     };
   };
 }

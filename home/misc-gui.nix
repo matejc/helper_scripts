@@ -2,6 +2,7 @@
   pkgs,
   lib,
   config,
+  osConfig,
   inputs,
   ...
 }:
@@ -108,7 +109,10 @@ in
 
     xdg = {
       enable = true;
-      autostart.enable = true;
+      autostart = {
+        enable = true;
+        entries = lib.optionals osConfig.services.netbird.ui.enable [ "${osConfig.services.netbird.ui.package}/share/applications/netbird.desktop" ];
+      };
       mime.enable = true;
       mimeApps = {
         enable = true;
