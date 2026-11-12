@@ -1,21 +1,14 @@
 {
-  pkgs,
-  inputs,
+  config,
+  defaultUser,
   ...
 }:
 {
-  imports = [
-    inputs.niri.nixosModules.niri
-  ];
   config = {
-    nixpkgs.overlays = [
-      inputs.niri.overlays.niri
-    ];
-    programs.niri = {
-      enable = true;
-      package = pkgs.niri-unstable;
-    };
     programs.gpu-screen-recorder.enable = true;
-    niri-flake.cache.enable = true;
+    environment.systemPackages = [ config.home-manager.users.${defaultUser}.programs.niri.package ];
+    environment.extraInit = ''
+      export XDG_DATA_DIRS="$XDG_DATA_DIRS:${config.home-manager.users.${defaultUser}.programs.niri.package}/share"
+    '';
   };
 }

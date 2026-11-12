@@ -106,8 +106,7 @@ in
         logout = "${exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
-        exec = "${package}/bin/niri";
-        package = osConfig.programs.niri.package;
+        exec = "${config.programs.niri.package}/bin/niri";
       };
       nirimap = false;
       niri-switcher = true;

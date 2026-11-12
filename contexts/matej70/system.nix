@@ -22,13 +22,13 @@
     };
     # boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest-lto;
     boot.kernelPackages = pkgs.linuxPackages_latest;
-    services.scx.enable = true;
-    services.scx.scheduler = "scx_bpfland";
-    services.scx.extraArgs = [
-      "-m"
-      "performance"
-    ];
-    services.scx.package = pkgs.scx.full;
+    services.scx-loader = {
+      enable = true;
+      config = {
+        default_sched = "scx_bpfland";
+        default_mode = "Gaming";
+      };
+    };
     # boot.kernelParams = [ "mem_sleep_default=s2idle" ];
     boot.kernelModules = [ "ntsync" ];
     services.udev.packages = [
@@ -155,7 +155,6 @@
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
-      jack.enable = true;
     };
     services.pipewire.extraConfig.pipewire."92-low-latency" = {
       "context.properties" = {

@@ -52,7 +52,8 @@
     # };
     # devenv.url = "github:cachix/devenv";
     niri = {
-      url = "github:epireyn/niri-flake";
+      # url = "github:epireyn/niri-flake";
+      url = "github:matejc/niri-flake-epireyn";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # jupyenv = {
@@ -101,9 +102,11 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.matejc.com"
+      "https://niri-epireyn.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.matejc.com-1:1gX7YfpZK4zkYf5MRrz9HPsJq9XZBC6bJgDySZmzbUM="
+      "niri-epireyn.cachix.org-1:tlVyFN7CtsDT+ZcLPS+ekFWeT1X6X4OqvWqbBMyIzFA="
     ];
   };
 

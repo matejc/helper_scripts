@@ -277,7 +277,7 @@ let
   xwayland-satellite = pkgs.xwayland-satellite-unstable;
 in
 {
-  imports = [ inputs.noctalia.homeModules.default ];
+  imports = [ inputs.noctalia.homeModules.default inputs.niri.homeModules.niri ];
   config = lib.mkMerge [
     {
       nixpkgs.overlays = [
@@ -288,27 +288,27 @@ in
           niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
           niri-pip = prev.callPackage ../nixes/niri-pip.nix { };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
-            niri = config.variables.graphical.package;
+            niri = config.programs.niri.package;
           };
-          # noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+          noctalia = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
         })
       ];
 
-      xdg.portal = {
-        enable = true;
-        config = {
-          common.default = "*";
-          niri = {
-            default = ["gnome" "gtk"];
-            "org.freedesktop.impl.portal.Access" = ["gtk"];
-            "org.freedesktop.impl.portal.Notification" = ["gtk"];
-            "org.freedesktop.impl.portal.OpenURI" = ["gtk"];
-            "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
-            "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
-          };
-        };
-        extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
-      };
+      # xdg.portal = {
+      #   enable = true;
+      #   config = {
+      #     common.default = "*";
+      #     niri = {
+      #       default = ["gnome" "gtk"];
+      #       "org.freedesktop.impl.portal.Access" = ["gtk"];
+      #       "org.freedesktop.impl.portal.Notification" = ["gtk"];
+      #       "org.freedesktop.impl.portal.OpenURI" = ["gtk"];
+      #       "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+      #       "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+      #     };
+      #   };
+      #   extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
+      # };
 
       home.file = {
         ".config/niri-sidebar/config.toml" = lib.mkIf (config.variables?niri-sidebar && config.variables.niri-sidebar) { source = niriSidebarConfigFile; };
@@ -317,7 +317,6 @@ in
       };
 
       home.packages = [ xwayland-satellite ] ++ (with pkgs; [
-        config.variables.graphical.package
         noctalia
         bluez
         brightnessctl
@@ -335,14 +334,13 @@ in
         wlsunset
       ]);
 
+      programs.niri.enable = true;
+      programs.niri.package = pkgs.niri-unstable;
       programs.niri.config =
         let
           noctalia = "${pkgs.noctalia}/bin/noctalia";
         in
         ''
-          // This config is in the KDL format: https://kdl.dev
-          // "/-" comments out the following node.
-
           input {
               keyboard {
                   xkb {

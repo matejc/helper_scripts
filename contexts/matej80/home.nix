@@ -120,8 +120,7 @@ in
         logout = "${variables.graphical.exec} msg action quit --skip-confirmation";
         target = "graphical-session.target";
         waybar.prefix = "niri";
-        exec = "${package}/bin/niri";
-        package = osConfig.programs.niri.package;
+        exec = "${config.programs.niri.package}/bin/niri";
       };
       vims = {
         #q = "${pkgs.neovim-qt}/bin/nvim-qt --maximized --nvim ${variables.profileDir}/bin/nvim";
