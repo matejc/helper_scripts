@@ -918,7 +918,7 @@ in
               };
               suspend = {
                 enabled = true;
-                timeout = 1800;
+                timeout = 3600;
                 action = "lock_and_suspend";
               };
             };
