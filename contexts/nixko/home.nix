@@ -1,6 +1,5 @@
 {
   pkgs,
-  osConfig,
   config,
   defaultUser,
   ...

@@ -145,7 +145,6 @@ in
       tmux
       nmap
       nil nixd
-      opencode
       okteto
       sofka
       isolated_agent

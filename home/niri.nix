@@ -285,7 +285,7 @@ in
         (final: prev: {
           niri-sidebar = prev.callPackage ../nixes/niri-sidebar.nix { };
           nirimap = prev.callPackage ../nixes/nirimap.nix { };
-          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.variables.graphical.package; };
+          niri-switcher = prev.callPackage ../nixes/niri-switcher { niri = config.programs.niri.package; };
           niri-pip = prev.callPackage ../nixes/niri-pip.nix { };
           annotate-screenshot = prev.callPackage ../nixes/annotate-screenshot {
             niri = config.programs.niri.package;
