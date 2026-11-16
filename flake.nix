@@ -97,6 +97,10 @@
       url = "github:Mic92/fast-nix-gc";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sofka = {
+      url = "github:nklmilojevic/sofka";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   nixConfig = {
