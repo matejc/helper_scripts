@@ -1093,11 +1093,11 @@
         "url": "https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl",
         "version": "0.4.0"
       },
-      "pyautogen": {
+      "ag2": {
         "is_direct": false,
         "sha256": "69dffa4053096f496a50c8a252bbe23105b58fd6ffbb422fa8c043ecf3fc732b",
         "type": "url",
-        "url": "https://files.pythonhosted.org/packages/28/54/c98a6edbd57b17ee42aee9f51e41f20c87458870abcf02eb2dc0fccba428/pyautogen-0.2.28-py3-none-any.whl",
+        "url": "https://files.pythonhosted.org/packages/28/54/c98a6edbd57b17ee42aee9f51e41f20c87458870abcf02eb2dc0fccba428/ag2-0.2.28-py3-none-any.whl",
         "version": "0.2.28"
       },
       "pycparser": {
@@ -2350,7 +2350,7 @@
           "flask",
           "gradio",
           "markdown",
-          "pyautogen",
+          "ag2",
           "rich"
         ],
         "proto-plus": [
@@ -2368,7 +2368,7 @@
         "pyasn1-modules": [
           "pyasn1"
         ],
-        "pyautogen": [
+        "ag2": [
           "diskcache",
           "docker",
           "flaml",
