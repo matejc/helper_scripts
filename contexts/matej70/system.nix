@@ -189,5 +189,7 @@
       enable = true;
       ui.enable = true;
     };
+
+    programs.ladybird.enable = true;
   };
 }
