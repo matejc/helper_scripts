@@ -294,21 +294,21 @@ in
         })
       ];
 
-      # xdg.portal = {
-      #   enable = true;
-      #   config = {
-      #     common.default = "*";
-      #     niri = {
-      #       default = ["gnome" "gtk"];
-      #       "org.freedesktop.impl.portal.Access" = ["gtk"];
-      #       "org.freedesktop.impl.portal.Notification" = ["gtk"];
-      #       "org.freedesktop.impl.portal.OpenURI" = ["gtk"];
-      #       "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
-      #       "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
-      #     };
-      #   };
-      #   extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
-      # };
+      xdg.portal = {
+        enable = true;
+        config = {
+          common.default = "niri";
+          niri = {
+            default = ["gnome" "gtk"];
+            "org.freedesktop.impl.portal.Access" = ["gtk"];
+            "org.freedesktop.impl.portal.Notification" = ["gtk"];
+            "org.freedesktop.impl.portal.OpenURI" = ["gtk"];
+            "org.freedesktop.impl.portal.FileChooser" = ["gtk"];
+            "org.freedesktop.impl.portal.Secret" = ["gnome-keyring"];
+          };
+        };
+        extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
+      };
 
       home.file = {
         ".config/niri-sidebar/config.toml" = lib.mkIf (config.variables?niri-sidebar && config.variables.niri-sidebar) { source = niriSidebarConfigFile; };
